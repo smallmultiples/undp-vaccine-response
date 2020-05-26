@@ -211,6 +211,64 @@
             }
         )
 
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.on('click', 'beds', function(e) {
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties['Country'] + ' has ' + e.features[0].properties['Hospital beds'] + ' beds per 10,000 people';
+             
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+         
+            new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(map);
+        });
+         
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.on('mouseenter', 'beds', function() {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+         
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'beds', function() {
+            map.getCanvas().style.cursor = '';
+        });
+
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.on('click', 'covid-baselayer', function(e) {
+            var coordinates = e.lngLat;
+            var description = e.features[0].properties['ADMIN'] + ' so far has ' + e.features[0].properties['BASELINE-COVID19_Cumulative_deaths'] + ' COVID-19 caused deaths';
+             
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+         
+            new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(map);
+        });
+         
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.on('mouseenter', 'covid-baselayer', function() {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+         
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'covid-baselayer', function() {
+            map.getCanvas().style.cursor = '';
+        });
+
     });
 </script>
 
