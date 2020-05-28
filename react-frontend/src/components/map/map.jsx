@@ -8,6 +8,8 @@ import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import Geostats from "geostats";
 
+const DEFAULT_COLOUR = [242, 242, 242];
+
 const useDomains = (countryData, displaySettings) => {
     return React.useMemo(() => {
         const domainX = countryData
@@ -42,7 +44,7 @@ const useScales = displaySettings => {
 
         const bivariateColourScale = row => {
             if (row.variateX === null || row.variateY === null) {
-                return [242, 242, 242];
+                return DEFAULT_COLOUR;
             }
             const maxIndex = bivariateColourMatrix.length - 1;
 
@@ -147,8 +149,8 @@ const MapVis = props => {
     const displaySettings = React.useMemo(
         () => ({
             variateXColumn: "Hospital beds",
-            variateYColumn: "Cumulative_cases",
             variateXFlip: true,
+            variateYColumn: "test_death_rate",
             variateYFlip: false,
         }),
         []
@@ -166,8 +168,7 @@ const MapVis = props => {
             getFillColor: shape => {
                 const row = normalizedData[shape.properties["ISO3"]];
                 if (!row) {
-                    console.log("MISS " + shape.properties["ISO3"]);
-                    return [255, 0, 0, 0];
+                    return DEFAULT_COLOUR;
                 }
                 return scales.color(row);
             },
