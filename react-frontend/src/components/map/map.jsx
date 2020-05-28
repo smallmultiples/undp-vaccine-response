@@ -54,14 +54,7 @@ const Map = props => {
     return (
         <div>
             <div className={styles.mapContainer} ref={mapContainerRef}>
-                <DeckGL initialViewState={viewState} controller={true} layers={layers}>
-                    <StaticMap
-                        reuseMaps
-                        mapStyle={"mapbox://styles/mapbox/light-v9"}
-                        preventStyleDiffing={true}
-                        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-                    />
-                </DeckGL>
+                <DeckGL initialViewState={viewState} controller={true} layers={layers}></DeckGL>
                 <div className={styles.loader} data-visible={loading}>
                     <h4>Loading...</h4>
                 </div>
