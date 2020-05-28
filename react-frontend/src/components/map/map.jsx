@@ -1,5 +1,5 @@
 import React from "react";
-import DeckGL, { GeoJsonLayer } from "deck.gl";
+import DeckGL, { GeoJsonLayer, Viewport, WebMercatorViewport } from "deck.gl";
 import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
 import { feature as topojsonParse } from "topojson-client";
@@ -184,19 +184,53 @@ const PillarInfo = props => {
 const MapVis = props => {
     const { countryData, countryDataLoading } = props;
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
-    const [viewState, setViewState] = React.useState({
-        longitude: 0,
-        latitude: 0,
-        zoom: 1,
-        pitch: 0,
-        bearing: 0,
-    });
+    const [viewport, setViewport] = React.useState(null);
+
+    React.useEffect(() => {
+        if (viewport) return;
+        if (!mapContainerDimensions) return;
+        setViewport(
+            new WebMercatorViewport({
+                longitude: 0,
+                latitude: 0,
+                zoom: 1,
+                pitch: 0,
+                bearing: 0,
+                width: mapContainerDimensions.width,
+                height: mapContainerDimensions.height,
+            }).fitBounds(
+                // Bounds we zoom to on load.
+                // North west lng lat
+                // South east lng lat
+                [
+                    [-180, 76],
+                    [180, -60],
+                ],
+                {
+                    // Pixel padding around the bounds
+                    padding: 8,
+                }
+            )
+        );
+    }, [mapContainerDimensions, viewport]);
+
+    const handleViewStateChange = React.useCallback(newState => {
+        setViewport(
+            v =>
+                new WebMercatorViewport({
+                    ...v,
+                    ...newState.viewState,
+                })
+        );
+    }, []);
+
     const displaySettings = React.useMemo(
         () => ({
             variateXColumn: "Hospital beds",
             variateXFlip: true,
             variateYColumn: "test_death_rate",
             variateYFlip: false,
+            circleSizeColumn: "Physicians",
         }),
         []
     );
@@ -231,7 +265,14 @@ const MapVis = props => {
     return (
         <div>
             <div className={styles.mapContainer} ref={mapContainerRef}>
-                <DeckGL initialViewState={viewState} controller={true} layers={layers}></DeckGL>
+                {viewport && (
+                    <DeckGL
+                        viewState={viewport}
+                        controller
+                        layers={layers}
+                        onViewStateChange={handleViewStateChange}
+                    />
+                )}
                 <div className={styles.loader} data-visible={loading}>
                     <h4>Loading...</h4>
                 </div>
