@@ -81,14 +81,24 @@ const useScales = (domains, displaySettings) => {
         const circleRadiusScale = scaleLinear().range([0, 16]).domain(domains.extents.circle);
 
         const bivariateColourScale = row => {
-            if (row.variateX === null || row.variateY === null) {
+            if (row.variateX === null && row.variateY === null) {
                 return DEFAULT_COLOUR;
             }
+
             const maxIndex = bivariateColourMatrix.length - 1;
 
-            const xIndex = Math.floor(row.variateX * maxIndex);
-            // input colours are from top to bottom, not bottom to top so we deduct
-            const yIndex = maxIndex - Math.floor(row.variateY * maxIndex);
+            // Default to bottom/left cell
+            let xIndex = 0;
+            let yIndex = maxIndex;
+
+            if (displaySettings.variateXEnable) {
+                xIndex = Math.floor(row.variateX * maxIndex);
+            }
+            if (displaySettings.variateYEnable) {
+                // input colours are from top to bottom, not bottom to top so we deduct
+                yIndex = maxIndex - Math.floor(row.variateY * maxIndex);
+            }
+
             return bivariateColourMatrix[yIndex][xIndex];
         };
 
@@ -96,7 +106,7 @@ const useScales = (domains, displaySettings) => {
             radius: circleRadiusScale,
             color: bivariateColourScale,
         };
-    }, [domains]);
+    }, [domains, displaySettings.variateXEnable, displaySettings.variateYEnable]);
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
@@ -217,6 +227,8 @@ const MapVis = props => {
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
     const [tooltip, setTooltip] = React.useState(null);
+    const [bivariateEnableX, setBivariateEnableX] = React.useState(true);
+    const [bivariateEnableY, setBivariateEnableY] = React.useState(true);
 
     React.useEffect(() => {
         if (viewport) return;
@@ -261,11 +273,13 @@ const MapVis = props => {
         () => ({
             variateXColumn: "Hospital beds",
             variateXFlip: true,
+            variateXEnable: bivariateEnableX,
             variateYColumn: "test_death_rate",
             variateYFlip: false,
+            variateYEnable: bivariateEnableY,
             circleRadiusColumn: "Physicians",
         }),
-        []
+        [bivariateEnableX, bivariateEnableY]
     );
     const { shapeData, loading: geoLoading } = useGeoData();
     const domains = useDomains(countryData, displaySettings);
@@ -292,7 +306,7 @@ const MapVis = props => {
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
-                getFillColor: [normalizedData],
+                getFillColor: [normalizedData, bivariateEnableX, bivariateEnableY],
             },
         }),
     ];
@@ -308,14 +322,23 @@ const MapVis = props => {
                         onViewStateChange={handleViewStateChange}
                     />
                 )}
-                {viewport && (
+                {viewport && !loading && (
                     <CircleVis
                         viewport={viewport}
                         scales={scales}
                         normalizedData={normalizedData}
                     />
                 )}
-                <BivariateLegendOverlay displaySettings={displaySettings} domains={domains} />
+                <BivariateLegendOverlay
+                    displaySettings={displaySettings}
+                    domains={domains}
+                    {...{
+                        bivariateEnableX,
+                        bivariateEnableY,
+                        setBivariateEnableX,
+                        setBivariateEnableY,
+                    }}
+                />
                 <MapTooltip
                     tooltip={tooltip}
                     normalizedData={normalizedData}
@@ -372,16 +395,38 @@ const MapTooltip = props => {
 const formatSpanNum = number => (number === undefined ? "" : number.toFixed(1));
 
 const BivariateLegendOverlay = props => {
-    const { displaySettings } = props;
+    const {
+        displaySettings,
+        bivariateEnableX,
+        bivariateEnableY,
+        setBivariateEnableX,
+        setBivariateEnableY,
+    } = props;
     const { jenks } = props.domains;
     // TODO: format properly
+
+    const xOnlyDisabled = !bivariateEnableX && bivariateEnableY;
+    const yOnlyDisabled = !bivariateEnableY && bivariateEnableX;
+    const bothDisabled = !bivariateEnableX && !bivariateEnableY;
+    const eitherDisabled = !bivariateEnableX || !bivariateEnableY;
+
     return (
         <div className={styles.bivariateLegend}>
-            <div className={styles.legendColourLabel} data-y={true}>
-                {displaySettings.variateYColumn}
-            </div>
-            <div className={styles.legendColourLabel} data-x={true}>
+            <div
+                className={styles.legendColourLabel}
+                data-x={true}
+                data-enabled={bivariateEnableX}
+                onClick={() => setBivariateEnableX(d => !d)}
+            >
                 {displaySettings.variateXColumn}
+            </div>
+            <div
+                className={styles.legendColourLabel}
+                data-y={true}
+                data-enabled={bivariateEnableY}
+                onClick={() => setBivariateEnableY(d => !d)}
+            >
+                {displaySettings.variateYColumn}
             </div>
             <div className={styles.legendColourSpan} data-x={true}>
                 <div className={styles.legendColourSpanValue}>
@@ -409,42 +454,51 @@ const BivariateLegendOverlay = props => {
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[0][0] }}
+                        data-disabled={bothDisabled || yOnlyDisabled}
                     />
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[0][2] }}
+                        data-disabled={eitherDisabled}
                     />
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[0][4] }}
+                        data-disabled={eitherDisabled}
                     />
                 </div>
                 <div className={styles.legendColourRow}>
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[2][0] }}
+                        data-disabled={bothDisabled || yOnlyDisabled}
                     />
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[2][2] }}
+                        data-disabled={eitherDisabled}
                     />
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[2][4] }}
+                        data-disabled={eitherDisabled}
                     />
                 </div>
                 <div className={styles.legendColourRow}>
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[4][0] }}
+                        data-disabled={false}
                     />
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[4][2] }}
+                        data-disabled={bothDisabled || xOnlyDisabled}
                     />
                     <div
                         className={styles.legendColourCell}
                         style={{ background: bivariateColourMatrixHex[4][4] }}
+                        data-disabled={bothDisabled || xOnlyDisabled}
                     />
                 </div>
             </div>
