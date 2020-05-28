@@ -127,17 +127,17 @@ const useGeoData = () => {
 };
 
 const Map = props => {
-    const { countryData } = props;
+    const { countryData, countryDataLoading } = props;
 
     return (
         <div>
-            <MapVis countryData={countryData} />
+            <MapVis countryData={countryData} countryDataLoading={countryDataLoading} />
         </div>
     );
 };
 
 const MapVis = props => {
-    const { countryData } = props;
+    const { countryData, countryDataLoading } = props;
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewState, setViewState] = React.useState({
         longitude: 0,
@@ -159,6 +159,8 @@ const MapVis = props => {
     const domains = useDomains(countryData, displaySettings);
     const scales = useScales(displaySettings);
     const normalizedData = useNormalizedData(countryData, displaySettings);
+
+    const loading = [geoLoading, countryDataLoading].some(d => d);
 
     const layers = [
         new GeoJsonLayer({
@@ -185,7 +187,7 @@ const MapVis = props => {
         <div>
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 <DeckGL initialViewState={viewState} controller={true} layers={layers}></DeckGL>
-                <div className={styles.loader} data-visible={geoLoading}>
+                <div className={styles.loader} data-visible={loading}>
                     <h4>Loading...</h4>
                 </div>
             </div>

@@ -50,11 +50,10 @@ const useCountryData = () => {
 };
 
 function App() {
-    const { countryData } = useCountryData();
+    const { countryData, loading } = useCountryData();
     return (
         <div className="App">
-            <h1>Socio-Economic Recovery Data Platform</h1>
-            <Map countryData={countryData} />
+            <Map countryData={countryData} countryDataLoading={loading} />
         </div>
     );
 }
