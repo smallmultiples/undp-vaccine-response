@@ -70,7 +70,7 @@ const bivariateColourMatrixHex = [
     ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
     ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
     ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#F2F2F3"],
-];
+].map(d => d.reverse());
 
 const bivariateColourMatrix = bivariateColourMatrixHex.map(row =>
     row.map(colour => hexToRgb(colour))
@@ -272,7 +272,7 @@ const MapVis = props => {
     const displaySettings = React.useMemo(
         () => ({
             variateXColumn: "Hospital beds",
-            variateXFlip: true,
+            variateXFlip: false,
             variateXEnable: bivariateEnableX,
             variateYColumn: "test_death_rate",
             variateYFlip: false,
