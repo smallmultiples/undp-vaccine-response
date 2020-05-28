@@ -40,7 +40,11 @@ const PillarInfo = props => {
                 <p className={styles.pillarDescription}>{activePillar.description}</p>
             </div>
             <div className={styles.pillarIndicators}>
-                <span>Indicator select dropdown will go here</span>
+                <span style={{ textAlign: "center" }}>
+                    Currently selected indicator:
+                    <br />
+                    Physicians per 1000
+                </span>
                 <button
                     className={styles.indicatorTest}
                     data-enabled={Boolean(activeIndicator)}
