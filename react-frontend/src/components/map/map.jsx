@@ -9,14 +9,12 @@ import { scaleLinear } from "d3-scale";
 import Geostats from "geostats";
 
 const useDomains = (countryData, displaySettings) => {
-    // TODO: pass in settings.
-
     return React.useMemo(() => {
         const domainX = countryData
-            ? extent(countryData, d => d[displaySettings.variateXColumn])
+            ? extent(Object.values(countryData), d => d[displaySettings.variateXColumn])
             : [0, 1];
         const domainY = countryData
-            ? extent(countryData, d => d[displaySettings.variateYColumn])
+            ? extent(Object.values(countryData), d => d[displaySettings.variateYColumn])
             : [0, 1];
 
         return {
@@ -37,14 +35,23 @@ const bivariateColourMatrix = [
     ["#59C0F7", "#81C5F1", "#A6CAEB", "#CFCEE5", "#F8D3DF"],
     ["#0BC6FF", "#70DCFD", "#9FE5FA", "#CBEDF8", "#F2F2F3"],
 ].map(row => row.map(colour => hexToRgb(colour)));
+
 const useScales = displaySettings => {
     return React.useMemo(() => {
         const circleRadiusScale = row => row.size * 25;
 
         const bivariateColourScale = row => {
+            if (row.variateX === null || row.variateY === null) {
+                return [242, 242, 242];
+            }
             const maxIndex = bivariateColourMatrix.length - 1;
-            const xIndex = Math.floor(row.variateX * maxIndex);
-            const yIndex = maxIndex - Math.floor(row.variateY * maxIndex);
+
+            const invX = displaySettings.variateXFlip ? 1 - row.variateX : row.variateX;
+            const invY = displaySettings.variateYFlip ? 1 - row.variateY : row.variateY;
+
+            const xIndex = Math.floor(invX * maxIndex);
+            // input colours are from top to bottom, not bottom to top so we deduct
+            const yIndex = maxIndex - Math.floor(invY * maxIndex);
             return bivariateColourMatrix[yIndex][xIndex];
         };
 
@@ -52,10 +59,11 @@ const useScales = displaySettings => {
             radius: circleRadiusScale,
             color: bivariateColourScale,
         };
-    }, []);
+    }, [displaySettings.variateXFlip, displaySettings.variateYFlip]);
 };
 
 const getNormalFromJenks = (jenks, value) => {
+    if (value === undefined) return null;
     const index = jenks.findIndex((j, i) => {
         const low = j;
         const top = jenks[i + 1];
@@ -65,34 +73,33 @@ const getNormalFromJenks = (jenks, value) => {
     return index / (jenks.length - 2);
 };
 
-const useNormalizedData = (countryData, domains, displaySettings) => {
+const useNormalizedData = (countryData, displaySettings) => {
     return React.useMemo(() => {
         if (!countryData) return {};
-        const normalize = {
-            variateX: scaleLinear().range([0, 1]).domain(domains.variateX),
-            variateY: scaleLinear().range([0, 1]).domain(domains.variateY),
-        };
-        const geostatsX = new Geostats(countryData.map(raw => raw[displaySettings.variateXColumn]));
-        const geostatsY = new Geostats(countryData.map(raw => raw[displaySettings.variateYColumn]));
+
+        const valuesX = Object.values(countryData)
+            .map(raw => raw[displaySettings.variateXColumn])
+            .filter(d => d !== undefined);
+        const valuesY = Object.values(countryData)
+            .map(raw => raw[displaySettings.variateYColumn])
+            .filter(d => d !== undefined);
+
+        const geostatsX = new Geostats(valuesX);
+        const geostatsY = new Geostats(valuesY);
 
         const jenksX = geostatsX.getClassJenks(5);
         const jenksY = geostatsY.getClassJenks(5);
 
         let ret = {};
-        countryData.forEach(raw => {
+        Object.values(countryData).forEach(raw => {
             ret[raw["Alpha-3 code"]] = {
                 ...raw,
                 variateX: getNormalFromJenks(jenksX, raw[displaySettings.variateXColumn]),
                 variateY: getNormalFromJenks(jenksY, raw[displaySettings.variateYColumn]),
             };
-            console.log(
-                raw["Country"],
-                ret[raw["Alpha-3 code"]].variateX,
-                ret[raw["Alpha-3 code"]].variateY
-            );
         });
         return ret;
-    }, [countryData, displaySettings, domains]);
+    }, [countryData, displaySettings.variateXColumn, displaySettings.variateYColumn]);
 };
 
 const useGeoData = () => {
@@ -139,15 +146,17 @@ const MapVis = props => {
     });
     const displaySettings = React.useMemo(
         () => ({
-            variateXColumn: "Cumulative_cases",
-            variateYColumn: "Cumulative_deaths",
+            variateXColumn: "Hospital beds",
+            variateYColumn: "Cumulative_cases",
+            variateXFlip: true,
+            variateYFlip: false,
         }),
         []
     );
     const { shapeData, loading: geoLoading } = useGeoData();
     const domains = useDomains(countryData, displaySettings);
     const scales = useScales(displaySettings);
-    const normalizedData = useNormalizedData(countryData, domains, displaySettings);
+    const normalizedData = useNormalizedData(countryData, displaySettings);
 
     const layers = [
         new GeoJsonLayer({
