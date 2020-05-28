@@ -15,16 +15,46 @@ const GEO_SHAPE_ID = "ISO3";
 
 const useDomains = (countryData, displaySettings) => {
     return React.useMemo(() => {
-        const domainX = countryData
-            ? extent(Object.values(countryData), d => d[displaySettings.variateXColumn])
-            : [0, 1];
-        const domainY = countryData
-            ? extent(Object.values(countryData), d => d[displaySettings.variateYColumn])
-            : [0, 1];
+        const valuesX = countryData
+            ? Object.values(countryData)
+                  .map(raw => raw[displaySettings.variateXColumn])
+                  .filter(d => d !== undefined)
+            : [];
+        const valuesY = countryData
+            ? Object.values(countryData)
+                  .map(raw => raw[displaySettings.variateYColumn])
+                  .filter(d => d !== undefined)
+            : [];
+        const valuesCircle = countryData
+            ? Object.values(countryData)
+                  .map(raw => raw[displaySettings.circleRadiusColumn])
+                  .filter(d => d !== undefined)
+            : [];
+
+        let jenksX = [],
+            jenksY = [];
+
+        if (countryData) {
+            const geostatsX = new Geostats(valuesX);
+            const geostatsY = new Geostats(valuesY);
+
+            jenksX = geostatsX.getClassJenks(5);
+            jenksY = geostatsY.getClassJenks(5);
+        }
 
         return {
-            variateX: domainX,
-            variateY: domainY,
+            values: {
+                x: valuesX,
+                y: valuesY,
+                circle: valuesCircle,
+            },
+            extents: {
+                circle: extent(valuesCircle),
+            },
+            jenks: {
+                x: jenksX,
+                y: jenksY,
+            },
         };
     }, [countryData, displaySettings]);
 };
@@ -45,9 +75,9 @@ const bivariateColourMatrix = bivariateColourMatrixHex.map(row =>
     row.map(colour => hexToRgb(colour))
 );
 
-const useScales = displaySettings => {
+const useScales = (domains, displaySettings) => {
     return React.useMemo(() => {
-        const circleRadiusScale = scaleLinear().range([0, 16]).domain([0, 1]);
+        const circleRadiusScale = scaleLinear().range([0, 16]).domain(domains.extents.circle);
 
         const bivariateColourScale = row => {
             if (row.variateX === null || row.variateY === null) {
@@ -55,12 +85,9 @@ const useScales = displaySettings => {
             }
             const maxIndex = bivariateColourMatrix.length - 1;
 
-            const invX = displaySettings.variateXFlip ? 1 - row.variateX : row.variateX;
-            const invY = displaySettings.variateYFlip ? 1 - row.variateY : row.variateY;
-
-            const xIndex = Math.floor(invX * maxIndex);
+            const xIndex = Math.floor(row.variateX * maxIndex);
             // input colours are from top to bottom, not bottom to top so we deduct
-            const yIndex = maxIndex - Math.floor(invY * maxIndex);
+            const yIndex = maxIndex - Math.floor(row.variateY * maxIndex);
             return bivariateColourMatrix[yIndex][xIndex];
         };
 
@@ -68,10 +95,10 @@ const useScales = displaySettings => {
             radius: circleRadiusScale,
             color: bivariateColourScale,
         };
-    }, [displaySettings.variateXFlip, displaySettings.variateYFlip]);
+    }, [domains]);
 };
 
-const getNormalFromJenks = (jenks, value) => {
+const getNormalFromJenks = (jenks, value, flip = false) => {
     if (value === undefined) return null;
     const index = jenks.findIndex((j, i) => {
         const low = j;
@@ -79,41 +106,29 @@ const getNormalFromJenks = (jenks, value) => {
         return value >= low && value <= top;
     });
 
-    return index / (jenks.length - 2);
+    const v = index / (jenks.length - 2);
+    return flip ? 1 - v : v;
 };
 
-const useNormalizedData = (countryData, displaySettings) => {
+const useNormalizedData = (countryData, domains, displaySettings) => {
     return React.useMemo(() => {
         if (!countryData) return {};
-
-        const valuesX = Object.values(countryData)
-            .map(raw => raw[displaySettings.variateXColumn])
-            .filter(d => d !== undefined);
-        const valuesY = Object.values(countryData)
-            .map(raw => raw[displaySettings.variateYColumn])
-            .filter(d => d !== undefined);
-
-        // TODO: hate this. should be done in domains.
-        const geostatsX = new Geostats(valuesX);
-        const geostatsY = new Geostats(valuesY);
-
-        const jenksX = geostatsX.getClassJenks(5);
-        const jenksY = geostatsY.getClassJenks(5);
-
-        // TODO: i hate this. use a real scale.
-        const normalizeCircleValue = scaleLinear()
-            .range([0, 1])
-            .domain(
-                extent(Object.values(countryData), raw => raw[displaySettings.circleSizeColumn])
-            );
 
         let ret = {};
         Object.values(countryData).forEach(raw => {
             ret[raw[SHEET_ROW_ID]] = {
                 ...raw,
-                variateX: getNormalFromJenks(jenksX, raw[displaySettings.variateXColumn]),
-                variateY: getNormalFromJenks(jenksY, raw[displaySettings.variateYColumn]),
-                circleValue: normalizeCircleValue(raw[displaySettings.circleSizeColumn]),
+                variateX: getNormalFromJenks(
+                    domains.jenks.x,
+                    raw[displaySettings.variateXColumn],
+                    displaySettings.variateXFlip
+                ),
+                variateY: getNormalFromJenks(
+                    domains.jenks.y,
+                    raw[displaySettings.variateYColumn],
+                    displaySettings.variateYFlip
+                ),
+                circleValue: raw[displaySettings.circleRadiusColumn],
             };
         });
         return ret;
@@ -122,7 +137,6 @@ const useNormalizedData = (countryData, displaySettings) => {
 
 const useGeoData = () => {
     const [shapeData, setShapeData] = React.useState(null);
-    const [centroidData, setCentroidData] = React.useState(null);
 
     React.useEffect(() => {
         // Only load shapes once.
@@ -248,14 +262,14 @@ const MapVis = props => {
             variateXFlip: true,
             variateYColumn: "test_death_rate",
             variateYFlip: false,
-            circleSizeColumn: "Physicians",
+            circleRadiusColumn: "Physicians",
         }),
         []
     );
     const { shapeData, loading: geoLoading } = useGeoData();
     const domains = useDomains(countryData, displaySettings);
-    const scales = useScales(displaySettings);
-    const normalizedData = useNormalizedData(countryData, displaySettings);
+    const scales = useScales(domains, displaySettings);
+    const normalizedData = useNormalizedData(countryData, domains, displaySettings);
 
     const loading = [geoLoading, countryDataLoading].some(d => d);
 
