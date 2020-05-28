@@ -9,7 +9,7 @@ import { scaleLinear, scaleLog } from "d3-scale";
 import Geostats from "geostats";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 
-const DEFAULT_COLOUR = [242, 242, 242];
+const DEFAULT_COLOUR = [242, 242, 242]; // #F2F2F2
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
 
