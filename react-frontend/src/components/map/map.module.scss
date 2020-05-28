@@ -207,3 +207,33 @@ $lc-w: $l-w / 3;
         transform: translate(-50%, -50%) rotate(-90deg) translateY(-48px);
     }
 }
+
+.legendColourSpan {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    width: $l-w;
+
+    &[data-x="true"] {
+        bottom: 0;
+        left: 0;
+        transform: translateY(calc(100% + 8px));
+    }
+    &[data-y="true"] {
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%) rotate(-90deg) translateY(-16px);
+    }
+}
+
+.legendColourSpanValue {
+    @include bodySmall();
+    font-weight: bold;
+
+    svg:first-child {
+        margin-right: 8px;
+    }
+    svg:last-child {
+        margin-left: 8px;
+    }
+}

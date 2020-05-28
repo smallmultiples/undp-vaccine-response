@@ -8,6 +8,7 @@ import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import Geostats from "geostats";
 import PILLARS from "../../config/pillars";
+import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 
 const DEFAULT_COLOUR = [242, 242, 242];
 const SHEET_ROW_ID = "Alpha-3 code";
@@ -314,7 +315,7 @@ const MapVis = props => {
                         normalizedData={normalizedData}
                     />
                 )}
-                <BivariateLegendOverlay displaySettings={displaySettings} />
+                <BivariateLegendOverlay displaySettings={displaySettings} domains={domains} />
                 <MapTooltip
                     tooltip={tooltip}
                     normalizedData={normalizedData}
@@ -368,8 +369,12 @@ const MapTooltip = props => {
     );
 };
 
+const formatSpanNum = number => (number === undefined ? "" : number.toFixed(1));
+
 const BivariateLegendOverlay = props => {
     const { displaySettings } = props;
+    const { jenks } = props.domains;
+    // TODO: format properly
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.legendColourLabel} data-y={true}>
@@ -378,7 +383,27 @@ const BivariateLegendOverlay = props => {
             <div className={styles.legendColourLabel} data-x={true}>
                 {displaySettings.variateXColumn}
             </div>
-            <div></div>
+            <div className={styles.legendColourSpan} data-x={true}>
+                <div className={styles.legendColourSpanValue}>
+                    <IconArrowLeft />
+                    <span>{formatSpanNum(jenks.x[0])}</span>
+                </div>
+                <div className={styles.legendColourSpanValue}>
+                    <span>{formatSpanNum(jenks.x[jenks.x.length - 1])}</span>
+                    <IconArrowRight />
+                </div>
+            </div>
+            <div className={styles.legendColourSpan} data-y={true}>
+                <div className={styles.legendColourSpanValue}>
+                    <IconArrowLeft />
+                    <span>{formatSpanNum(jenks.y[0])}</span>
+                </div>
+                <div className={styles.legendColourSpanValue}>
+                    <span>{formatSpanNum(jenks.y[jenks.y.length - 1])}</span>
+                    <IconArrowRight />
+                </div>
+            </div>
+
             <div className={styles.legendColour}>
                 <div className={styles.legendColourRow}>
                     <div
