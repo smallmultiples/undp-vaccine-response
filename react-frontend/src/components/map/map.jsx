@@ -11,6 +11,7 @@ import PILLARS from "../../config/pillars";
 
 const DEFAULT_COLOUR = [242, 242, 242];
 const SHEET_ROW_ID = "Alpha-3 code";
+const GEO_SHAPE_ID = "ISO3";
 
 const useDomains = (countryData, displaySettings) => {
     return React.useMemo(() => {
@@ -196,6 +197,7 @@ const MapVis = props => {
     const { countryData, countryDataLoading } = props;
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
+    const [tooltip, setTooltip] = React.useState(null);
 
     React.useEffect(() => {
         if (viewport) return;
@@ -235,6 +237,7 @@ const MapVis = props => {
         );
     }, []);
 
+    // TODO: refactor this using the pillar.
     const displaySettings = React.useMemo(
         () => ({
             variateXColumn: "Hospital beds",
@@ -258,7 +261,7 @@ const MapVis = props => {
             data: shapeData,
             filled: true,
             getFillColor: shape => {
-                const row = normalizedData[shape.properties["ISO3"]];
+                const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
                 if (!row) {
                     return DEFAULT_COLOUR;
                 }
@@ -267,6 +270,8 @@ const MapVis = props => {
             stroked: true,
             getLineColor: [255, 255, 255],
             lineWidthMinPixels: 0.5,
+            pickable: true,
+            onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
                 getFillColor: [normalizedData],
             },
@@ -291,9 +296,53 @@ const MapVis = props => {
                         normalizedData={normalizedData}
                     />
                 )}
+                <MapTooltip
+                    tooltip={tooltip}
+                    normalizedData={normalizedData}
+                    displaySettings={displaySettings}
+                />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader */}
                     <h4>Loading...</h4>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const MapTooltip = props => {
+    const { tooltip, normalizedData, displaySettings } = props;
+
+    const data = React.useMemo(() => {
+        if (!tooltip) return null;
+        return normalizedData[tooltip.object.properties[GEO_SHAPE_ID]];
+    }, [tooltip]);
+
+    if (!data) return null;
+
+    return (
+        <div
+            className={styles.tooltip}
+            style={{
+                left: tooltip.x,
+                top: tooltip.y,
+            }}
+        >
+            <div className={styles.tooltipHeader}>
+                <div className={styles.tooltipHeading}>{data.Country}</div>
+            </div>
+            <div className={styles.tooltipBody}>
+                <div className={styles.tooltipDatum}>
+                    <div className={styles.tooltipDatumValue}>
+                        {data[displaySettings.variateXColumn].toFixed(1)}
+                    </div>
+                    <div className={styles.tooltipDatumLabel}>{displaySettings.variateXColumn}</div>
+                </div>
+                <div className={styles.tooltipDatum}>
+                    <div className={styles.tooltipDatumValue}>
+                        {data[displaySettings.variateYColumn].toFixed(1)}
+                    </div>
+                    <div className={styles.tooltipDatumLabel}>{displaySettings.variateYColumn}</div>
                 </div>
             </div>
         </div>

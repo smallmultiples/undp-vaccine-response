@@ -24,6 +24,16 @@ $container-width: 1166px;
     font-family: $font-neuzeit;
     font-style: normal;
     font-weight: bold;
+    font-size: 36px;
+    line-height: 43px;
+}
+@mixin h3($text-align: "") {
+    @if $text-align != "" {
+        text-align: $text-align;
+    }
+    font-family: $font-neuzeit;
+    font-style: normal;
+    font-weight: bold;
     font-size: 24px;
     line-height: 29px;
 }
