@@ -1,0 +1,23 @@
+$font-neuzeit: "Neuzeit Grotesk", "Helvetica Neue", "serif";
+
+@mixin headings_h1($text-align: "") {
+    @if $text-align != "" {
+        text-align: $text-align;
+    }
+    font-family: Neuzeit Grotesk;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    line-height: 144px;
+}
+
+@mixin body($text-align: "") {
+    @if $text-align != "" {
+        text-align: $text-align;
+    }
+    font-family: Neuzeit Grotesk;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 24px;
+}

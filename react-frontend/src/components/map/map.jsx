@@ -31,11 +31,11 @@ function hexToRgb(hex) {
     return result ? result.slice(1, 4).map(n => parseInt(n, 16)) : null;
 }
 const bivariateColourMatrix = [
-    ["#5C61DA", "#A088D6", "#BF88C6", "#DD88B7", "#F4618D"],
-    ["#769AEA", "#959BDF", "#B79DD3", "#DCA0C6", "#F9A1BB"],
-    ["#68ACF0", "#8BAFE7", "#B0B1DE", "#D6B4D4", "#FAB7CB"],
-    ["#59C0F7", "#81C5F1", "#A6CAEB", "#CFCEE5", "#F8D3DF"],
-    ["#0BC6FF", "#70DCFD", "#9FE5FA", "#CBEDF8", "#F2F2F3"],
+    ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
+    ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
+    ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
+    ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
+    ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#F2F2F3"],
 ].map(row => row.map(colour => hexToRgb(colour)));
 
 const useScales = displaySettings => {
