@@ -16,7 +16,7 @@
         .pillarButton {
             background: none;
             outline: none;
-            pointer: cursor;
+            cursor: pointer;
             border: 2px solid $color-navy;
             padding: 12px 16px;
             @include buttonFont();
