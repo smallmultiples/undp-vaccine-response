@@ -10,6 +10,7 @@ import Geostats from "geostats";
 import PILLARS from "../../config/pillars";
 
 const DEFAULT_COLOUR = [242, 242, 242];
+const SHEET_ROW_ID = "Alpha-3 code";
 
 const useDomains = (countryData, displaySettings) => {
     return React.useMemo(() => {
@@ -41,7 +42,7 @@ const bivariateColourMatrix = [
 
 const useScales = displaySettings => {
     return React.useMemo(() => {
-        const circleRadiusScale = row => row.size * 25;
+        const circleRadiusScale = scaleLinear().range([0, 16]).domain([0, 1]);
 
         const bivariateColourScale = row => {
             if (row.variateX === null || row.variateY === null) {
@@ -90,15 +91,24 @@ const useNormalizedData = (countryData, displaySettings) => {
         const geostatsX = new Geostats(valuesX);
         const geostatsY = new Geostats(valuesY);
 
+        console.log({ valuesX, valuesY });
+
         const jenksX = geostatsX.getClassJenks(5);
         const jenksY = geostatsY.getClassJenks(5);
 
+        const normalizeCircleValue = scaleLinear()
+            .range([0, 1])
+            .domain(
+                extent(Object.values(countryData), raw => raw[displaySettings.circleSizeColumn])
+            );
+
         let ret = {};
         Object.values(countryData).forEach(raw => {
-            ret[raw["Alpha-3 code"]] = {
+            ret[raw[SHEET_ROW_ID]] = {
                 ...raw,
                 variateX: getNormalFromJenks(jenksX, raw[displaySettings.variateXColumn]),
                 variateY: getNormalFromJenks(jenksY, raw[displaySettings.variateYColumn]),
+                circleValue: normalizeCircleValue(raw[displaySettings.circleSizeColumn]),
             };
         });
         return ret;
@@ -107,6 +117,7 @@ const useNormalizedData = (countryData, displaySettings) => {
 
 const useGeoData = () => {
     const [shapeData, setShapeData] = React.useState(null);
+    const [centroidData, setCentroidData] = React.useState(null);
 
     React.useEffect(() => {
         // Only load shapes once.
@@ -273,12 +284,36 @@ const MapVis = props => {
                         onViewStateChange={handleViewStateChange}
                     />
                 )}
+                {viewport && (
+                    <CircleVis
+                        viewport={viewport}
+                        scales={scales}
+                        normalizedData={normalizedData}
+                    />
+                )}
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader */}
                     <h4>Loading...</h4>
                 </div>
             </div>
         </div>
+    );
+};
+
+const CircleVis = props => {
+    const { viewport, scales, normalizedData } = props;
+
+    const circles = Object.values(normalizedData).map(row => {
+        if ([row["Longitude (average)"], row["Latitude (average)"]].some(d => !d)) return null;
+        const [x, y] = viewport.project([row["Longitude (average)"], row["Latitude (average)"]]);
+        const r = scales.radius(row.circleValue);
+        return <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />;
+    });
+
+    return (
+        <svg className={styles.circleVis}>
+            <g>{circles}</g>
+        </svg>
     );
 };
 
