@@ -274,6 +274,7 @@ const MapVis = props => {
                     />
                 )}
                 <div className={styles.loader} data-visible={loading}>
+                    {/* todo: nicer loader */}
                     <h4>Loading...</h4>
                 </div>
             </div>
