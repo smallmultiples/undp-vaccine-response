@@ -60,7 +60,10 @@ $container-width: 1166px;
     line-height: 19px;
 }
 
-@mixin buttonFont() {
+@mixin buttonFont($text-align: "") {
+    @if $text-align != "" {
+        text-align: $text-align;
+    }
     font-family: $font-anonymous;
     font-style: normal;
     font-weight: bold;

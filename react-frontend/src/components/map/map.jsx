@@ -33,13 +33,17 @@ function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? result.slice(1, 4).map(n => parseInt(n, 16)) : null;
 }
-const bivariateColourMatrix = [
+const bivariateColourMatrixHex = [
     ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
     ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
     ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
     ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
     ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#F2F2F3"],
-].map(row => row.map(colour => hexToRgb(colour)));
+];
+
+const bivariateColourMatrix = bivariateColourMatrixHex.map(row =>
+    row.map(colour => hexToRgb(colour))
+);
 
 const useScales = displaySettings => {
     return React.useMemo(() => {
@@ -89,14 +93,14 @@ const useNormalizedData = (countryData, displaySettings) => {
             .map(raw => raw[displaySettings.variateYColumn])
             .filter(d => d !== undefined);
 
+        // TODO: hate this. should be done in domains.
         const geostatsX = new Geostats(valuesX);
         const geostatsY = new Geostats(valuesY);
-
-        console.log({ valuesX, valuesY });
 
         const jenksX = geostatsX.getClassJenks(5);
         const jenksY = geostatsY.getClassJenks(5);
 
+        // TODO: i hate this. use a real scale.
         const normalizeCircleValue = scaleLinear()
             .range([0, 1])
             .domain(
@@ -296,6 +300,7 @@ const MapVis = props => {
                         normalizedData={normalizedData}
                     />
                 )}
+                <BivariateLegendOverlay displaySettings={displaySettings} />
                 <MapTooltip
                     tooltip={tooltip}
                     normalizedData={normalizedData}
@@ -343,6 +348,65 @@ const MapTooltip = props => {
                         {data[displaySettings.variateYColumn].toFixed(1)}
                     </div>
                     <div className={styles.tooltipDatumLabel}>{displaySettings.variateYColumn}</div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const BivariateLegendOverlay = props => {
+    const { displaySettings } = props;
+    return (
+        <div className={styles.bivariateLegend}>
+            <div className={styles.legendColourLabel} data-y={true}>
+                {displaySettings.variateYColumn}
+            </div>
+            <div className={styles.legendColourLabel} data-x={true}>
+                {displaySettings.variateXColumn}
+            </div>
+            <div></div>
+            <div className={styles.legendColour}>
+                <div className={styles.legendColourRow}>
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[0][0] }}
+                    />
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[0][2] }}
+                    />
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[0][4] }}
+                    />
+                </div>
+                <div className={styles.legendColourRow}>
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[2][0] }}
+                    />
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[2][2] }}
+                    />
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[2][4] }}
+                    />
+                </div>
+                <div className={styles.legendColourRow}>
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[4][0] }}
+                    />
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[4][2] }}
+                    />
+                    <div
+                        className={styles.legendColourCell}
+                        style={{ background: bivariateColourMatrixHex[4][4] }}
+                    />
                 </div>
             </div>
         </div>

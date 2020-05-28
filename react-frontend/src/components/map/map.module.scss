@@ -159,3 +159,51 @@
         stroke-width: 2px;
     }
 }
+
+// ------
+
+.bivariateLegend {
+    position: absolute;
+    bottom: 69px;
+    left: calc(50vw - (#{$container-width} / 2) + 69px);
+}
+
+$l-w: 120px;
+$lc-w: $l-w / 3;
+.legendColour {
+    display: flex;
+    flex-direction: column;
+    width: $l-w;
+}
+
+.legendColourRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.legendColourCell {
+    width: $lc-w;
+    height: $lc-w;
+}
+
+.legendColourLabel {
+    background: $color-navy;
+    color: white;
+    @include buttonFont(center);
+    font-size: 14px;
+    border-radius: 24000px;
+    padding: 8px 16px;
+    position: absolute;
+    transform-origin: center center;
+    white-space: nowrap;
+    &[data-x="true"] {
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 100%) translateY(32px);
+    }
+    &[data-y="true"] {
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%) rotate(-90deg) translateY(-48px);
+    }
+}
