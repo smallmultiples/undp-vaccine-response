@@ -43,12 +43,12 @@ const PillarInfo = props => {
                 <span style={{ textAlign: "center" }}>
                     Currently selected indicator:
                     <br />
-                    Physicians per 1000
+                    Cases, cumulative (log scale)
                 </span>
                 <button
                     className={styles.indicatorTest}
                     data-enabled={Boolean(activeIndicator)}
-                    onClick={() => setActiveIndicator(s => (s ? null : "Physicians"))}
+                    onClick={() => setActiveIndicator(s => (s ? null : "Cumulative_cases"))}
                 >
                     {activeIndicator ? "Disable" : "Enable"} indicator circles
                 </button>

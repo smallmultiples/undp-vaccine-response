@@ -57,7 +57,7 @@ function App() {
     const { countryData, loading } = useCountryData();
 
     const [activePillar, setActivePillar] = React.useState(PILLARS.Health);
-    const [activeIndicator, setActiveIndicator] = React.useState("Physicians");
+    const [activeIndicator, setActiveIndicator] = React.useState("Cumulative_cases");
 
     return (
         <div className={styles.root}>

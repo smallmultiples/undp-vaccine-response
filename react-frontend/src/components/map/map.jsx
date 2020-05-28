@@ -5,7 +5,7 @@ import axios from "axios";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleLinear } from "d3-scale";
+import { scaleLinear, scaleLog } from "d3-scale";
 import Geostats from "geostats";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 
@@ -77,7 +77,7 @@ const bivariateColourMatrix = bivariateColourMatrixHex.map(row =>
 
 const useScales = (domains, displaySettings) => {
     return React.useMemo(() => {
-        const circleRadiusScale = scaleLinear().range([0, 16]).domain(domains.extents.circle);
+        const circleRadiusScale = scaleLog().range([0, 16]).domain(domains.extents.circle);
 
         const bivariateColourScale = row => {
             if (row.variateX === null && row.variateY === null) {
