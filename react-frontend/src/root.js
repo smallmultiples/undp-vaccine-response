@@ -4,6 +4,7 @@ import axios from "axios";
 import styles from "./root.module.scss";
 import Header from "./components/header/header";
 import PILLARS from "./config/pillars";
+import Pillars from "./components/pillars/pillars";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
@@ -56,16 +57,23 @@ function App() {
     const { countryData, loading } = useCountryData();
 
     const [activePillar, setActivePillar] = React.useState(PILLARS.Health);
+    const [activeIndicator, setActiveIndicator] = React.useState("Physicians");
 
     return (
         <div className={styles.root}>
             <div className={styles.container}>
                 <Header />
+                <Pillars
+                    activePillar={activePillar}
+                    setActivePillar={setActivePillar}
+                    activeIndicator={activeIndicator}
+                    setActiveIndicator={setActiveIndicator}
+                />
                 <Map
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
-                    setActivePillar={setActivePillar}
+                    activeIndicator={activeIndicator}
                 />
             </div>
         </div>

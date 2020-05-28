@@ -7,7 +7,6 @@ import styles from "./map.module.scss";
 import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import Geostats from "geostats";
-import PILLARS from "../../config/pillars";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 
 const DEFAULT_COLOUR = [242, 242, 242];
@@ -143,7 +142,12 @@ const useNormalizedData = (countryData, domains, displaySettings) => {
             };
         });
         return ret;
-    }, [countryData, displaySettings.variateXColumn, displaySettings.variateYColumn]);
+    }, [
+        countryData,
+        displaySettings.variateXColumn,
+        displaySettings.variateYColumn,
+        displaySettings.circleRadiusColumn,
+    ]);
 };
 
 const useGeoData = () => {
@@ -169,61 +173,15 @@ const useGeoData = () => {
 };
 
 const Map = props => {
-    const { countryData, countryDataLoading } = props;
-
     return (
         <div>
-            <PillarControl {...props} />
-            <PillarInfo {...props} />
-            <MapVis countryData={countryData} countryDataLoading={countryDataLoading} />
-        </div>
-    );
-};
-
-const PillarControl = props => {
-    const { activePillar, setActivePillar } = props;
-    // This component is the selector for the pillar just under the header.
-    return (
-        <div className={styles.pillarControl}>
-            <p className={styles.pillarLabel}>
-                Leading the recovery effort by assessing and supporting countries in the following
-                areas:
-            </p>
-            <div className={styles.pillarButtons}>
-                {Object.values(PILLARS).map(pillar => {
-                    const selected = pillar === activePillar;
-                    return (
-                        <button
-                            key={pillar.labelShort}
-                            className={styles.pillarButton}
-                            onClick={() => setActivePillar(pillar)}
-                            data-selected={selected}
-                        >
-                            {pillar.labelShort}
-                        </button>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
-
-const PillarInfo = props => {
-    const { activePillar } = props;
-
-    return (
-        <div className={styles.pillarInfo}>
-            <div className={styles.pillarInfoText}>
-                <div className={styles.pillarHeading}>{activePillar.label}</div>
-                <p className={styles.pillarDescription}>{activePillar.description}</p>
-            </div>
-            <div className={styles.pillarIndicators}>Add indicator dropdown here</div>
+            <MapVis {...props} />
         </div>
     );
 };
 
 const MapVis = props => {
-    const { countryData, countryDataLoading } = props;
+    const { countryData, countryDataLoading, activeIndicator } = props;
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
     const [tooltip, setTooltip] = React.useState(null);
@@ -268,7 +226,6 @@ const MapVis = props => {
         );
     }, []);
 
-    // TODO: refactor this using the pillar.
     const displaySettings = React.useMemo(
         () => ({
             variateXColumn: "Hospital beds",
@@ -277,9 +234,9 @@ const MapVis = props => {
             variateYColumn: "test_death_rate",
             variateYFlip: false,
             variateYEnable: bivariateEnableY,
-            circleRadiusColumn: "Physicians",
+            circleRadiusColumn: activeIndicator, // TODO: refactor better.
         }),
-        [bivariateEnableX, bivariateEnableY]
+        [bivariateEnableX, bivariateEnableY, activeIndicator]
     );
     const { shapeData, loading: geoLoading } = useGeoData();
     const domains = useDomains(countryData, displaySettings);
@@ -327,6 +284,7 @@ const MapVis = props => {
                         viewport={viewport}
                         scales={scales}
                         normalizedData={normalizedData}
+                        displaySettings={displaySettings}
                     />
                 )}
                 <BivariateLegendOverlay
@@ -511,7 +469,9 @@ const BivariateLegendOverlay = props => {
 };
 
 const CircleVis = props => {
-    const { viewport, scales, normalizedData } = props;
+    const { viewport, scales, normalizedData, displaySettings } = props;
+
+    if (!displaySettings.circleRadiusColumn) return null;
 
     const circles = Object.values(normalizedData).map(row => {
         if ([row["Longitude (average)"], row["Latitude (average)"]].some(d => !d)) return null;
