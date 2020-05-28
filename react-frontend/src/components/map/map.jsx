@@ -7,6 +7,7 @@ import styles from "./map.module.scss";
 import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import Geostats from "geostats";
+import PILLARS from "../../config/pillars";
 
 const DEFAULT_COLOUR = [242, 242, 242];
 
@@ -131,7 +132,51 @@ const Map = props => {
 
     return (
         <div>
+            <PillarControl {...props} />
+            <PillarInfo {...props} />
             <MapVis countryData={countryData} countryDataLoading={countryDataLoading} />
+        </div>
+    );
+};
+
+const PillarControl = props => {
+    const { activePillar, setActivePillar } = props;
+    // This component is the selector for the pillar just under the header.
+    return (
+        <div className={styles.pillarControl}>
+            <p className={styles.pillarLabel}>
+                Leading the recovery effort by assessing and supporting countries in the following
+                areas:
+            </p>
+            <div className={styles.pillarButtons}>
+                {Object.values(PILLARS).map(pillar => {
+                    const selected = pillar === activePillar;
+                    return (
+                        <button
+                            key={pillar.labelShort}
+                            className={styles.pillarButton}
+                            onClick={() => setActivePillar(pillar)}
+                            data-selected={selected}
+                        >
+                            {pillar.labelShort}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const PillarInfo = props => {
+    const { activePillar } = props;
+
+    return (
+        <div className={styles.pillarInfo}>
+            <div className={styles.pillarInfoText}>
+                <div className={styles.pillarHeading}>{activePillar.label}</div>
+                <p className={styles.pillarDescription}>{activePillar.description}</p>
+            </div>
+            <div className={styles.pillarIndicators}>Add indicator dropdown here</div>
         </div>
     );
 };

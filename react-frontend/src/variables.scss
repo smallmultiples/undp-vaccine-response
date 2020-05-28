@@ -3,6 +3,7 @@ $font-anonymous: anonymous-pro, monospace;
 
 $color-blue-bg: #e9ecf6;
 $color-navy: #110848;
+$color-yellow: #e9ce2c;
 
 $container-width: 1166px;
 
@@ -47,4 +48,12 @@ $container-width: 1166px;
     font-weight: normal;
     font-size: 16px;
     line-height: 19px;
+}
+
+@mixin buttonFont() {
+    font-family: $font-anonymous;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 18px;
 }
