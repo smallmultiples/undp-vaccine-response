@@ -1,0 +1,8 @@
+{
+    "name": "undp-response-data-platform",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/smallmultiples/undp-response-data-platform.git",
+    "author": "Harry Morris <harry@small.mu>",
+    "license": "UNLICENSED"
+}
