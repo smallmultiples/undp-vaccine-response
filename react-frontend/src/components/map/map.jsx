@@ -353,6 +353,8 @@ const MapVis = props => {
     );
 };
 
+const formatNumTemp = number => (number === undefined ? "" : number.toFixed(1));
+
 const MapTooltip = props => {
     const { tooltip, normalizedData, displaySettings } = props;
 
@@ -377,13 +379,13 @@ const MapTooltip = props => {
             <div className={styles.tooltipBody}>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {data[displaySettings.variateXColumn].toFixed(1)}
+                        {formatNumTemp(data[displaySettings.variateXColumn])}
                     </div>
                     <div className={styles.tooltipDatumLabel}>{displaySettings.variateXColumn}</div>
                 </div>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {data[displaySettings.variateYColumn].toFixed(1)}
+                        {formatNumTemp(data[displaySettings.variateYColumn])}
                     </div>
                     <div className={styles.tooltipDatumLabel}>{displaySettings.variateYColumn}</div>
                 </div>
@@ -391,8 +393,6 @@ const MapTooltip = props => {
         </div>
     );
 };
-
-const formatSpanNum = number => (number === undefined ? "" : number.toFixed(1));
 
 const BivariateLegendOverlay = props => {
     const {
@@ -410,6 +410,10 @@ const BivariateLegendOverlay = props => {
     const bothDisabled = !bivariateEnableX && !bivariateEnableY;
     const eitherDisabled = !bivariateEnableX || !bivariateEnableY;
 
+    const x0 = formatNumTemp(jenks.x[0]);
+    const x1 = formatNumTemp(jenks.x[jenks.x.length - 1]);
+    const y0 = formatNumTemp(jenks.y[0]);
+    const y1 = formatNumTemp(jenks.y[jenks.y.length - 1]);
     return (
         <div className={styles.bivariateLegend}>
             <div
@@ -431,20 +435,20 @@ const BivariateLegendOverlay = props => {
             <div className={styles.legendColourSpan} data-x={true}>
                 <div className={styles.legendColourSpanValue}>
                     <IconArrowLeft />
-                    <span>{formatSpanNum(jenks.x[0])}</span>
+                    <span>{displaySettings.variateXFlip ? x1 : x0}</span>
                 </div>
                 <div className={styles.legendColourSpanValue}>
-                    <span>{formatSpanNum(jenks.x[jenks.x.length - 1])}</span>
+                    <span>{displaySettings.variateXFlip ? x0 : x1}</span>
                     <IconArrowRight />
                 </div>
             </div>
             <div className={styles.legendColourSpan} data-y={true}>
                 <div className={styles.legendColourSpanValue}>
                     <IconArrowLeft />
-                    <span>{formatSpanNum(jenks.y[0])}</span>
+                    <span>{displaySettings.variateYFlip ? y1 : y0}</span>
                 </div>
                 <div className={styles.legendColourSpanValue}>
-                    <span>{formatSpanNum(jenks.y[jenks.y.length - 1])}</span>
+                    <span>{displaySettings.variateYFlip ? y0 : y1}</span>
                     <IconArrowRight />
                 </div>
             </div>
