@@ -2,6 +2,9 @@ import React from "react";
 import Map from "./components/map/map";
 import axios from "axios";
 
+import styles from "./root.module.scss";
+import Header from "./components/header/header";
+
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
 const SHEET_RANGE = "COHESION-COVID19"; // TODO: just map sheet
@@ -52,8 +55,11 @@ const useCountryData = () => {
 function App() {
     const { countryData, loading } = useCountryData();
     return (
-        <div className="App">
-            <Map countryData={countryData} countryDataLoading={loading} />
+        <div className={styles.root}>
+            <div className={styles.container}>
+                <Header />
+                <Map countryData={countryData} countryDataLoading={loading} />
+            </div>
         </div>
     );
 }
