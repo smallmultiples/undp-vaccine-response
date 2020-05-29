@@ -48,6 +48,16 @@
     grid-area: overview;
     padding-left: 48px;
     margin-bottom: 24px;
+
+    .countryCount {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .label {
+            max-width: 100px;
+        }
+    }
 }
 
 .countryTable {
