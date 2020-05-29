@@ -176,7 +176,7 @@ const useNormalizedData = (countryData, domains, displaySettings) => {
 };
 
 const Map = props => {
-    const { countryData, countryDataLoading, activeIndicator } = props;
+    const { countryData } = props;
     const [bivariateEnableX, setBivariateEnableX] = React.useState(true);
     const [bivariateEnableY, setBivariateEnableY] = React.useState(true);
 
@@ -188,9 +188,9 @@ const Map = props => {
             variateYColumn: "test_death_rate",
             variateYFlip: false,
             variateYEnable: bivariateEnableY,
-            circleRadiusColumn: activeIndicator, // TODO: refactor better.
+            circleRadiusColumn: "Cumulative_cases", // TODO: refactor better.
         }),
-        [bivariateEnableX, bivariateEnableY, activeIndicator]
+        [bivariateEnableX, bivariateEnableY]
     );
     const domains = useDomains(countryData, displaySettings);
     const scales = useScales(domains, displaySettings);

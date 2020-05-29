@@ -156,7 +156,6 @@ function App() {
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
-                    activeIndicator={activeIndicator}
                 />
             </div>
         </div>
