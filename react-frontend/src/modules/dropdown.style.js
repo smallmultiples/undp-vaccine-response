@@ -1,23 +1,24 @@
-const lightBlue = "#ddf0f9";
-
+const lightBlue = "#E9ECF6";
 export default {
     control: (provided, state) => ({
         ...provided,
         border: "none",
         borderRadius: state.menuIsOpen ? "22px 22px 0 0 " : 22,
-        boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
+        // boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
+        background: lightBlue,
         padding: "0",
         boxSizing: "border-box",
-        fontFamily: "sommet",
+        fontFamily: "anonymous-pro",
+        fontWeight: "bold",
         transition: "border-radius 200ms",
         zIndex: state.menuIsOpen ? 10 : 8,
     }),
 
     valueContainer: (provided, state) => ({
         ...provided,
-        padding: "11px 16px",
+        padding: "0px 16px 8px 16px",
         boxSizing: "border-box",
-        fontSize: "1.125rem",
+        fontSize: "14px",
         letterSpacing: "0.4px",
         color: "black",
     }),
@@ -55,11 +56,13 @@ export default {
         boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
         padding: "0",
         boxSizing: "border-box",
-        fontFamily: "sommet",
+        fontFamily: "anonymous-pro",
+        fontWeight: "bold",
         overflow: "hidden",
         marginTop: 0,
         zIndex: 9,
         paddingBottom: 12,
+        fontSize: "14px",
     }),
 
     option: (provided, state) => ({

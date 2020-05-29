@@ -70,8 +70,10 @@ const BivariateIndicatorSelection = props => {
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
                         value={currentIndicators.bivariateY}
-                        style={dropdownStyle}
+                        styles={dropdownStyle}
                         isOptionSelected={isOptionSelected}
+                        isDisabled={!currentIndicators.bivariateYEnabled}
+                        isSearchable={false}
                     />
                 </div>
             </div>
@@ -92,8 +94,10 @@ const BivariateIndicatorSelection = props => {
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }
                         value={currentIndicators.bivariateX}
-                        style={dropdownStyle}
+                        styles={dropdownStyle}
                         isOptionSelected={isOptionSelected}
+                        isDisabled={!currentIndicators.bivariateXEnabled}
+                        isSearchable={false}
                     />
                 </div>
             </div>
