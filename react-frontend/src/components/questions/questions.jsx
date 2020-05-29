@@ -6,21 +6,51 @@ import { Chevron } from "../icons/icons";
 const COUNTRIES_TOTAL = 216;
 
 const Question = props => {
-    const { question, dataset } = props;
+    const { question, dataset, regionLookup, countryData } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(true);
 
-    const headersForCountryTable = ["Country", "Region"];
+    const headers = ["Country", "Region"];
 
     const rowsForOverviewTable = question.indicators.map(x => {
-        headersForCountryTable.push(x.label);
-        return [x.label, "one", "two", "three"];
+        const label = x.label;
+        const countryCount = x.meta ? x.meta.countryCount : "";
+        const currency = x.meta ? x.meta.currency : "";
+        const sources = (
+            <div>
+                {x.meta?.sources.map((s, i) => {
+                    return (
+                        <span key={`link_${i}`}>
+                            <a href={s.url} target="_blank" rel="noopener noreferrer">
+                                {s.name}
+                            </a>
+                            {i < x.meta.sources.length - 1 && ", "}
+                        </span>
+                    );
+                })}
+            </div>
+        );
+        headers.push(label);
+        console.log(x);
+        return [label, `${countryCount} / ${COUNTRIES_TOTAL}`, currency, sources];
     });
 
+    const headersForCountryTable = headers.concat([
+        "Confirmed cases, cumulative",
+        "Deaths, cumulative",
+        "Death rate",
+    ]);
     const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
-        const arr = [x.Country, "Region"];
+        const region = regionLookup?.find(r => r["ISO-alpha3 Code"] === x["Alpha-3 code"]);
+        const country = countryData && countryData[x["Alpha-3 code"]];
+        const arr = [x.Country, region["Region Name"] || ""];
         question.indicators.forEach(ind => {
-            arr.push(x[ind.dataKey]);
+            arr.push(Math.round(x[ind.dataKey] * 10) / 10);
         });
+        if (country) {
+            arr.push(country.Cumulative_cases);
+            arr.push(country.Cumulative_deaths);
+            arr.push(`${Math.round(country.test_death_rate * 10) / 10}%`);
+        }
         return arr;
     });
 
@@ -50,7 +80,7 @@ const Question = props => {
                     headings={["Indicators", "Country coverage", "Currency", "Data source"]}
                     rows={rowsForOverviewTable}
                     fixedColumns={1}
-                    fixedColumnsWidth={40}
+                    fixedColumnsWidth={30}
                 />
             </div>
             <div className={styles.countryTable} data-visible={isPreviewShown}>
@@ -58,7 +88,7 @@ const Question = props => {
                     headings={headersForCountryTable}
                     rows={rowsForCountryTable || []}
                     fixedColumns={2}
-                    fixedColumnsWidth={20}
+                    fixedColumnsWidth={15}
                     withBorders={true}
                     footer={
                         <div className={styles.summary}>
@@ -73,11 +103,17 @@ const Question = props => {
 };
 
 const Questions = props => {
-    const { activePillar, datasets } = props;
+    const { activePillar, datasets, regionLookup, countryData } = props;
     return (
         <>
             {activePillar.questions.map(x => (
-                <Question key={x.labelShort} question={x} dataset={datasets[x.sheet]} />
+                <Question
+                    key={x.labelShort}
+                    question={x}
+                    dataset={datasets[x.sheet]}
+                    regionLookup={regionLookup}
+                    countryData={countryData}
+                />
             ))}
         </>
     );
