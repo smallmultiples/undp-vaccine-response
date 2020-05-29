@@ -98,16 +98,8 @@ const MapVis = props => {
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
-                getFillColor: [
-                    normalizedData,
-                    currentIndicators.bivariateX,
-                    currentIndicators.bivariateY,
-                ],
-                getLineColor: [
-                    normalizedData,
-                    currentIndicators.bivariateX,
-                    currentIndicators.bivariateY,
-                ],
+                getFillColor: [normalizedData, currentIndicators],
+                getLineColor: [normalizedData, currentIndicators],
             },
         }),
     ];
