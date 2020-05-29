@@ -190,7 +190,6 @@ const Map = props => {
     React.useEffect(() => {
         if (!activePillar) return;
         // Whenever active pillar changes, set the pillar indicator to the first avail.
-        console.log(activePillar);
         setCurrentIndicators(d => ({
             ...d,
             bivariateX: activePillar.questions[0].indicators[0],
