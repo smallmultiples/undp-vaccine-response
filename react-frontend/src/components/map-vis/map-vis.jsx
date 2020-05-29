@@ -5,9 +5,6 @@ import axios from "axios";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
 
-// TODO: clean this up
-const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
-const NULL_SHAPE_STROKE = [233, 236, 246]; // #E9ECF6
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
 
@@ -34,7 +31,7 @@ const useGeoData = () => {
 };
 
 const MapVis = props => {
-    const { normalizedData, countryDataLoading, scales, displaySettings } = props;
+    const { normalizedData, countryDataLoading, scales, currentIndicators } = props;
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
     const [tooltip, setTooltip] = React.useState(null);
@@ -88,33 +85,19 @@ const MapVis = props => {
             filled: true,
             getFillColor: shape => {
                 const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
-                if (!row) {
-                    return NULL_SHAPE_FILL;
-                }
                 return scales.color(row);
             },
             stroked: true,
             getLineColor: shape => {
                 const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
-                if (!row) {
-                    return NULL_SHAPE_STROKE;
-                }
                 return scales.stroke(row);
             },
             lineWidthMinPixels: 0.5,
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
-                getFillColor: [
-                    normalizedData,
-                    displaySettings.bivariateEnableX,
-                    displaySettings.bivariateEnableY,
-                ],
-                getLineColor: [
-                    normalizedData,
-                    displaySettings.bivariateEnableX,
-                    displaySettings.bivariateEnableY,
-                ],
+                getFillColor: [normalizedData],
+                getLineColor: [normalizedData],
             },
         }),
     ];
@@ -135,13 +118,13 @@ const MapVis = props => {
                         viewport={viewport}
                         scales={scales}
                         normalizedData={normalizedData}
-                        displaySettings={displaySettings}
+                        currentIndicators={currentIndicators}
                     />
                 )}
                 <MapTooltip
                     tooltip={tooltip}
                     normalizedData={normalizedData}
-                    displaySettings={displaySettings}
+                    currentIndicators={currentIndicators}
                 />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -152,10 +135,14 @@ const MapVis = props => {
     );
 };
 
+// TODO: module these
 const formatNumTemp = number => (number === undefined ? "" : number.toFixed(1));
+const getRowIndicatorValue = (row, indicator) => {
+    return row[indicator.dataKey];
+};
 
 const MapTooltip = props => {
-    const { tooltip, normalizedData, displaySettings } = props;
+    const { tooltip, normalizedData, currentIndicators } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -178,15 +165,19 @@ const MapTooltip = props => {
             <div className={styles.tooltipBody}>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(data[displaySettings.variateXColumn])}
+                        {formatNumTemp(getRowIndicatorValue(data, currentIndicators.bivariateX))}
                     </div>
-                    <div className={styles.tooltipDatumLabel}>{displaySettings.variateXColumn}</div>
+                    <div className={styles.tooltipDatumLabel}>
+                        {currentIndicators.bivariateX.label}
+                    </div>
                 </div>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(data[displaySettings.variateYColumn])}
+                        {formatNumTemp(getRowIndicatorValue(data, currentIndicators.bivariateY))}
                     </div>
-                    <div className={styles.tooltipDatumLabel}>{displaySettings.variateYColumn}</div>
+                    <div className={styles.tooltipDatumLabel}>
+                        {currentIndicators.bivariateY.label}
+                    </div>
                 </div>
             </div>
         </div>
@@ -194,15 +185,15 @@ const MapTooltip = props => {
 };
 
 const CircleVis = props => {
-    const { viewport, scales, normalizedData, displaySettings } = props;
+    const { viewport, scales, normalizedData, currentIndicators } = props;
 
-    if (!displaySettings.circleRadiusColumn) return null;
+    if (!currentIndicators.radiusEnabled) return null;
 
     const circles = Object.values(normalizedData).map(row => {
-        if (row.circleValue === null || row.circleValue === undefined) return null;
         if ([row["Longitude (average)"], row["Latitude (average)"]].some(d => !d)) return null;
         const [x, y] = viewport.project([row["Longitude (average)"], row["Latitude (average)"]]);
-        const r = scales.radius(row.circleValue);
+        const r = scales.radius(row);
+        if (isNaN(r)) return null;
         return <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />;
     });
 

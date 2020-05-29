@@ -15,28 +15,34 @@ const GEO_SHAPE_ID = "ISO3";
 // If true, pink is left, if false pink is right
 const FLIP_COLOURS_HORIZONTALLY = true;
 
-const useDomains = (countryData, displaySettings) => {
+const useDomains = (countryData, currentIndicators) => {
     return React.useMemo(() => {
-        const valuesX = countryData
+        const ready =
+            countryData &&
+            currentIndicators.bivariateX &&
+            currentIndicators.bivariateY &&
+            currentIndicators.radius;
+
+        const valuesX = ready
             ? Object.values(countryData)
-                  .map(raw => raw[displaySettings.variateXColumn])
+                  .map(raw => raw[currentIndicators.bivariateX.dataKey])
                   .filter(d => d !== undefined)
             : [];
-        const valuesY = countryData
+        const valuesY = ready
             ? Object.values(countryData)
-                  .map(raw => raw[displaySettings.variateYColumn])
+                  .map(raw => raw[currentIndicators.bivariateY.dataKey])
                   .filter(d => d !== undefined)
             : [];
-        const valuesCircle = countryData
+        const valuesRadius = ready
             ? Object.values(countryData)
-                  .map(raw => raw[displaySettings.circleRadiusColumn])
+                  .map(raw => raw[currentIndicators.radius.dataKey])
                   .filter(d => d !== undefined)
             : [];
 
         let jenksX = [],
             jenksY = [];
 
-        if (countryData) {
+        if (ready) {
             const geostatsX = new Geostats(valuesX);
             const geostatsY = new Geostats(valuesY);
 
@@ -48,17 +54,17 @@ const useDomains = (countryData, displaySettings) => {
             values: {
                 x: valuesX,
                 y: valuesY,
-                circle: valuesCircle,
+                radius: valuesRadius,
             },
             extents: {
-                circle: extent(valuesCircle),
+                radius: extent(valuesRadius),
             },
-            jenks: {
+            categories: {
                 x: jenksX,
                 y: jenksY,
             },
         };
-    }, [countryData, displaySettings]);
+    }, [countryData, currentIndicators]);
 };
 
 function hexToRgb(hex) {
@@ -78,59 +84,8 @@ const bivariateColourMatrix = bivariateColourMatrixHex.map(row =>
     row.map(colour => hexToRgb(colour))
 );
 
-const useScales = (domains, displaySettings) => {
-    return React.useMemo(() => {
-        const circleRadiusScale = scaleLog().range([0, 16]).domain(domains.extents.circle);
-
-        const bivariateColourScale = row => {
-            // Nulls based on enabled variates
-            if (displaySettings.variateXEnable && displaySettings.variateYEnable) {
-                if (row.variateX === null || row.variateY === null) return NULL_SHAPE_FILL;
-            }
-            if (displaySettings.variateXEnable && !displaySettings.variateYEnable) {
-                if (row.variateX === null) return NULL_SHAPE_FILL;
-            }
-            if (!displaySettings.variateXEnable && displaySettings.variateYEnable) {
-                if (row.variateY === null) return NULL_SHAPE_FILL;
-            }
-
-            const maxIndex = bivariateColourMatrix.length - 1;
-
-            // Default to bottom/left cell
-            let xIndex = 0;
-            let yIndex = maxIndex;
-
-            if (displaySettings.variateXEnable) {
-                xIndex = Math.floor(row.variateX * maxIndex);
-            }
-            if (displaySettings.variateYEnable) {
-                // input colours are from top to bottom, not bottom to top so we deduct
-                yIndex = maxIndex - Math.floor(row.variateY * maxIndex);
-            }
-
-            return bivariateColourMatrix[yIndex][xIndex];
-        };
-
-        const strokeScale = row => {
-            if (displaySettings.variateXEnable && displaySettings.variateYEnable) {
-                if (row.variateX === null || row.variateY === null) return NULL_SHAPE_STROKE;
-            }
-            if (displaySettings.variateXEnable && !displaySettings.variateYEnable) {
-                if (row.variateX === null) return NULL_SHAPE_STROKE;
-            }
-            if (!displaySettings.variateXEnable && displaySettings.variateYEnable) {
-                if (row.variateY === null) return NULL_SHAPE_STROKE;
-            }
-            return GOOD_SHAPE_STROKE;
-        };
-
-        return {
-            radius: circleRadiusScale,
-            color: bivariateColourScale,
-            stroke: strokeScale,
-            colorMatrix: bivariateColourMatrixHex,
-        };
-    }, [domains, displaySettings.variateXEnable, displaySettings.variateYEnable]);
+const getRowIndicatorValue = (row, indicator) => {
+    return row[indicator.dataKey];
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
@@ -145,71 +100,142 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - v : v;
 };
 
-const useNormalizedData = (countryData, domains, displaySettings) => {
+const useScales = (domains, currentIndicators) => {
     return React.useMemo(() => {
-        if (!countryData) return {};
+        const circleScale = scaleLog().range([0, 16]).domain(domains.extents.radius);
+        const circleRadiusScale = row =>
+            circleScale(getRowIndicatorValue(row, currentIndicators.radius));
 
-        let ret = {};
-        Object.values(countryData).forEach(raw => {
-            ret[raw[SHEET_ROW_ID]] = {
-                ...raw,
-                variateX: getNormalFromJenks(
-                    domains.jenks.x,
-                    raw[displaySettings.variateXColumn],
-                    displaySettings.variateXFlip
-                ),
-                variateY: getNormalFromJenks(
-                    domains.jenks.y,
-                    raw[displaySettings.variateYColumn],
-                    displaySettings.variateYFlip
-                ),
-                circleValue: raw[displaySettings.circleRadiusColumn],
-            };
-        });
-        return ret;
-    }, [
-        countryData,
-        displaySettings.variateXColumn,
-        displaySettings.variateYColumn,
-        displaySettings.circleRadiusColumn,
-    ]);
+        const bivariateColourScale = row => {
+            if (!row) return NULL_SHAPE_FILL;
+            const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
+            const valY = getRowIndicatorValue(row, currentIndicators.bivariateY);
+
+            // Nulls based on enabled variates
+            if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
+                if (valX === null || valY === null) return NULL_SHAPE_FILL;
+            }
+            if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
+                if (valX === null) return NULL_SHAPE_FILL;
+            }
+            if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
+                if (valY === null) return NULL_SHAPE_FILL;
+            }
+
+            const maxIndex = bivariateColourMatrix.length - 1;
+
+            const normX = getNormalFromJenks(
+                domains.categories.x,
+                valX,
+                currentIndicators.bivariateX.flipped
+            );
+            const normY = getNormalFromJenks(
+                domains.categories.y,
+                valY,
+                currentIndicators.bivariateY.flipped
+            );
+
+            // Default to bottom/left cell
+            let xIndex = 0;
+            let yIndex = maxIndex;
+
+            if (currentIndicators.bivariateXEnabled) {
+                xIndex = Math.floor(normX * maxIndex);
+            }
+            if (currentIndicators.bivariateYEnabled) {
+                // input colours are from top to bottom, not bottom to top so we deduct
+                yIndex = maxIndex - Math.floor(normY * maxIndex);
+            }
+
+            return bivariateColourMatrix[yIndex][xIndex];
+        };
+
+        const strokeScale = row => {
+            if (!row) return NULL_SHAPE_STROKE;
+            const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
+            const valY = getRowIndicatorValue(row, currentIndicators.bivariateY);
+            if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
+                if (valX === null || valY === null) return NULL_SHAPE_STROKE;
+            }
+            if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
+                if (valX === null) return NULL_SHAPE_STROKE;
+            }
+            if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
+                if (valY === null) return NULL_SHAPE_STROKE;
+            }
+            return GOOD_SHAPE_STROKE;
+        };
+
+        return {
+            radius: circleRadiusScale,
+            color: bivariateColourScale,
+            stroke: strokeScale,
+            colorMatrix: bivariateColourMatrixHex,
+        };
+    }, [domains, currentIndicators]);
 };
 
 const Map = props => {
-    const { countryData } = props;
-    const [bivariateEnableX, setBivariateEnableX] = React.useState(true);
-    const [bivariateEnableY, setBivariateEnableY] = React.useState(true);
+    const { countryData, pillars, activePillar } = props;
 
-    const displaySettings = React.useMemo(
-        () => ({
-            variateXColumn: "Hospital beds",
-            variateXFlip: false,
-            variateXEnable: bivariateEnableX,
-            variateYColumn: "test_death_rate",
-            variateYFlip: false,
-            variateYEnable: bivariateEnableY,
-            circleRadiusColumn: "Cumulative_cases", // TODO: refactor better.
-        }),
-        [bivariateEnableX, bivariateEnableY]
-    );
-    const domains = useDomains(countryData, displaySettings);
-    const scales = useScales(domains, displaySettings);
-    const normalizedData = useNormalizedData(countryData, domains, displaySettings);
+    const [currentIndicators, setCurrentIndicators] = React.useState({
+        // Pillar indicataor is the X axis
+        bivariateX: null,
+        bivariateXEnabled: true,
+        // COVID indicator is the Y axis
+        bivariateY: null,
+        bivariateYEnabled: true,
+        // Radius indicator is the circle radius
+        radius: null,
+        radiusEnabled: true,
+    });
+
+    React.useEffect(() => {
+        if (!activePillar || currentIndicators.bivariateX) return;
+        // Whenever active pillar changes, set the pillar indicator to the first avail.
+        setCurrentIndicators(d => ({
+            ...d,
+            bivariateX: activePillar.questions[0].indicators[1],
+        }));
+    }, [activePillar, currentIndicators.bivariateX]);
+
+    React.useEffect(() => {
+        // Set the initial covid/radius pillars.
+        if (!pillars || currentIndicators.bivariateY) return;
+        const covidPillar = pillars.find(d => d.covid);
+        setCurrentIndicators(d => ({
+            ...d,
+            bivariateY: covidPillar.questions[0].indicators[1],
+            radius: covidPillar.questions[0].indicators[0],
+        }));
+    }, [pillars, currentIndicators.bivariateY]);
+
+    const domains = useDomains(countryData, currentIndicators);
+    const scales = useScales(domains, currentIndicators);
+
+    if (
+        !currentIndicators.bivariateX ||
+        !currentIndicators.bivariateY ||
+        !currentIndicators.radius
+    ) {
+        return null;
+    }
+
     return (
         <div>
             {scales && (
                 <MapFiltersLegends
                     domains={domains}
                     scales={scales}
-                    displaySettings={displaySettings}
+                    currentIndicators={currentIndicators}
                 />
             )}
             <MapVis
                 {...props}
                 domains={domains}
                 scales={scales}
-                normalizedData={normalizedData}
-                displaySettings={displaySettings}
+                normalizedData={countryData}
+                currentIndicators={currentIndicators}
             />
         </div>
     );

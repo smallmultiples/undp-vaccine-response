@@ -26,6 +26,7 @@ const parseMetaSheet = raw => {
                 labelShort: currentPillar,
                 questions: {},
                 visible: currentPillar !== "ALL",
+                covid: currentPillar === "ALL",
             };
         }
         // -----------
@@ -50,6 +51,8 @@ const parseMetaSheet = raw => {
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 dataKey: row["Data Key"],
+                flipped: false, // TODO:
+                format: null, // TODO:
             };
         }
 
@@ -156,6 +159,7 @@ function App() {
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
+                    pillars={pillars}
                 />
             </div>
         </div>
