@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./questions.module.scss";
 import Table from "./table";
 import { Chevron } from "../icons/icons";
+import Badge from "./badge";
 
 const COUNTRIES_TOTAL = 216;
 
@@ -14,6 +15,12 @@ const Question = props => {
     const rowsForOverviewTable = question.indicators.map(x => {
         const label = x.label;
         const countryCount = x.meta ? x.meta.countryCount : "";
+
+        const cc = <div className={styles.countryCount}>
+            <Badge percentage={countryCount * 100 / COUNTRIES_TOTAL} />
+            <div className={styles.label}>{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
+        </div>
+
         const currency = x.meta ? x.meta.currency : "";
         const sources = (
             <div>
@@ -30,8 +37,7 @@ const Question = props => {
             </div>
         );
         headers.push(label);
-        console.log(x);
-        return [label, `${countryCount} / ${COUNTRIES_TOTAL}`, currency, sources];
+        return [label, cc, currency, sources];
     });
 
     const headersForCountryTable = headers.concat([
@@ -79,7 +85,7 @@ const Question = props => {
                 <Table
                     headings={["Indicators", "Country coverage", "Currency", "Data source"]}
                     rows={rowsForOverviewTable}
-                    fixedColumns={1}
+                    fixedColumns={2}
                     fixedColumnsWidth={30}
                 />
             </div>
