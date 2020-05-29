@@ -10,6 +10,7 @@ const MapFiltersLegends = props => {
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
+            <RadiusIndicatorSelection {...props} />
         </div>
     );
 };
@@ -22,11 +23,11 @@ const isOptionSelected = (item, selections) => {
 };
 
 // TODO: component
-const Toggle = props => {
+const Checkbox = props => {
     const { value, onChange } = props;
     return (
         <button
-            className={styles.toggle}
+            className={styles.checkbox}
             data-selected={value === true}
             onClick={d => onChange(!value)}
         >
@@ -54,7 +55,7 @@ const BivariateIndicatorSelection = props => {
     return (
         <div className={styles.bivariateIndicatorSelection}>
             <div className={styles.bivariateIndicatorItem} data-y>
-                <Toggle
+                <Checkbox
                     value={currentIndicators.bivariateYEnabled}
                     onChange={v =>
                         setCurrentIndicators(d => ({
@@ -78,7 +79,7 @@ const BivariateIndicatorSelection = props => {
                 </div>
             </div>
             <div className={styles.bivariateIndicatorItem} data-x>
-                <Toggle
+                <Checkbox
                     value={currentIndicators.bivariateXEnabled}
                     onChange={v =>
                         setCurrentIndicators(d => ({
@@ -101,6 +102,64 @@ const BivariateIndicatorSelection = props => {
                     />
                 </div>
             </div>
+        </div>
+    );
+};
+
+const Toggle = props => {
+    const optWidth = 100 / props.options.length;
+    const options = props.options.map(option => {
+        return (
+            <button
+                key={option.label}
+                className={styles.toggleOption}
+                style={{ width: optWidth + "%" }}
+                onClick={() => props.onChange(option)}
+                data-active={option === props.value}
+            >
+                {option.label}
+            </button>
+        );
+    });
+    const slideLeft = props.options.indexOf(props.value) * optWidth;
+    const bgSlide = (
+        <div
+            className={styles.toggleSlide}
+            style={{ width: optWidth + "%", left: slideLeft + "%" }}
+        />
+    );
+    return (
+        <div className={styles.toggle}>
+            {bgSlide}
+            {options}
+        </div>
+    );
+};
+
+const RadiusIndicatorSelection = props => {
+    const { activePillar, covidPillar, setCurrentIndicators, currentIndicators } = props;
+    const radiusOptions = flatten(covidPillar.questions.map(d => d.indicators));
+    return (
+        <div className={styles.radiusIndicatorSelection}>
+            <Checkbox
+                value={currentIndicators.radiusEnabled}
+                onChange={v =>
+                    setCurrentIndicators(d => ({
+                        ...d,
+                        radiusEnabled: v,
+                    }))
+                }
+            />
+            <Toggle
+                options={radiusOptions}
+                value={currentIndicators.radius}
+                onChange={v =>
+                    setCurrentIndicators(d => ({
+                        ...d,
+                        radius: v,
+                    }))
+                }
+            />
         </div>
     );
 };
