@@ -135,12 +135,10 @@ function App() {
     const { pillars, datasets, countryData, loading } = usePillarData();
 
     const [activePillar, setActivePillar] = React.useState(null);
-    const [activeIndicator, setActiveIndicator] = React.useState(null);
 
     React.useEffect(() => {
         if (activePillar || !pillars) return;
         setActivePillar(pillars.find(d => d.visible));
-        setActiveIndicator("Cumulative_cases"); // TODO
     }, [pillars, activePillar]);
 
     if (!pillars || !activePillar) return null; // TODO loader
@@ -152,8 +150,6 @@ function App() {
                 <Pillars
                     activePillar={activePillar}
                     setActivePillar={setActivePillar}
-                    activeIndicator={activeIndicator}
-                    setActiveIndicator={setActiveIndicator}
                     pillars={pillars}
                 />
                 <Map

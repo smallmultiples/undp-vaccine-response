@@ -32,27 +32,13 @@ const PillarControl = props => {
 };
 
 const PillarInfo = props => {
-    const { activePillar, activeIndicator, setActiveIndicator } = props;
+    const { activePillar } = props;
 
     return (
         <div className={styles.pillarInfo}>
             <div className={styles.pillarInfoText}>
                 <div className={styles.pillarHeading}>{activePillar.label}</div>
                 <p className={styles.pillarDescription}>{activePillar.description}</p>
-            </div>
-            <div className={styles.pillarIndicators}>
-                <span style={{ textAlign: "center" }}>
-                    Currently selected indicator:
-                    <br />
-                    Cases, cumulative (log scale)
-                </span>
-                <button
-                    className={styles.indicatorTest}
-                    data-enabled={Boolean(activeIndicator)}
-                    onClick={() => setActiveIndicator(s => (s ? null : "Cumulative_cases"))}
-                >
-                    {activeIndicator ? "Disable" : "Enable"} indicator circles
-                </button>
             </div>
         </div>
     );
