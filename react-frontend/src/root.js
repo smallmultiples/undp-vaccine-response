@@ -5,6 +5,7 @@ import styles from "./root.module.scss";
 import Header from "./components/header/header";
 import Pillars from "./components/pillars/pillars";
 import Questions from "./components/questions/questions";
+import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
 
 const SHEET_ID =
@@ -210,7 +211,7 @@ function App() {
                     covidPillar={covidPillar}
                     pillars={pillars}
                 />
-                {/* <Filters /> */}
+                <DataFilters />
                 <Questions
                     activePillar={activePillar}
                     datasets={datasets}

@@ -30,7 +30,6 @@ const Question = props => {
             </div>
         );
         headers.push(label);
-        console.log(x);
         return [label, `${countryCount} / ${COUNTRIES_TOTAL}`, currency, sources];
     });
 
