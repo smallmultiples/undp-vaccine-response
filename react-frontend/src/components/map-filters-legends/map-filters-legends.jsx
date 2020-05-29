@@ -28,19 +28,6 @@ const BivariateIndicatorSelection = props => {
 
     return (
         <div className={styles.bivariateIndicatorSelection}>
-            <div className={styles.bivariateIndicatorItem} data-x>
-                <div className={styles.bivariateIndicatorDropdownWrap}>
-                    <Select
-                        options={bivariateXOptions}
-                        onChange={indicator =>
-                            setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
-                        }
-                        value={currentIndicators.bivariateX}
-                        style={dropdownStyle}
-                        isOptionSelected={isOptionSelected}
-                    />
-                </div>
-            </div>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <Select
@@ -49,6 +36,19 @@ const BivariateIndicatorSelection = props => {
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
                         value={currentIndicators.bivariateY}
+                        style={dropdownStyle}
+                        isOptionSelected={isOptionSelected}
+                    />
+                </div>
+            </div>
+            <div className={styles.bivariateIndicatorItem} data-x>
+                <div className={styles.bivariateIndicatorDropdownWrap}>
+                    <Select
+                        options={bivariateXOptions}
+                        onChange={indicator =>
+                            setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
+                        }
+                        value={currentIndicators.bivariateX}
                         style={dropdownStyle}
                         isOptionSelected={isOptionSelected}
                     />
