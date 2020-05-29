@@ -13,6 +13,7 @@
     .bivariateIndicatorItem {
         display: flex;
         flex-direction: row;
+        align-items: center;
 
         &:not(:last-child) {
             margin-bottom: 16px;
@@ -20,7 +21,34 @@
 
         .bivariateIndicatorDropdownWrap {
             width: 320px;
+            margin-left: 8px;
         }
+    }
+}
+
+// ----
+
+.toggle {
+    width: 14px;
+    height: 14px;
+    border: 2px solid $color-blue-bg;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 0.2s, border-color 0.2s;
+
+    &[data-selected="true"] {
+        background: $color-navy;
+        border-color: $color-navy;
+    }
+
+    svg {
+        min-width: 11px;
     }
 }
 
