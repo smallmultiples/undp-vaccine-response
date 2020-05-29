@@ -96,8 +96,8 @@ const MapVis = props => {
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
-                getFillColor: [normalizedData],
-                getLineColor: [normalizedData],
+                getFillColor: [currentIndicators.bivariateX, currentIndicators.bivariateY],
+                getLineColor: [currentIndicators.bivariateX, currentIndicators.bivariateY],
             },
         }),
     ];
@@ -147,7 +147,7 @@ const MapTooltip = props => {
     const data = React.useMemo(() => {
         if (!tooltip) return null;
         return normalizedData[tooltip.object.properties[GEO_SHAPE_ID]];
-    }, [tooltip]);
+    }, [tooltip, normalizedData]);
 
     if (!data) return null;
 

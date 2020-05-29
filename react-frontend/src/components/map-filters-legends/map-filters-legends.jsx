@@ -1,11 +1,59 @@
 import React from "react";
 import styles from "./map-filters-legends.module.scss";
 import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../icons/icons";
+import Select from "react-select";
+import dropdownStyle from "../../modules/dropdown.style";
+import { flatten } from "lodash";
 
 const MapFiltersLegends = props => {
     return (
-        <div>
+        <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
+            <BivariateIndicatorSelection {...props} />
+        </div>
+    );
+};
+
+const isOptionSelected = (item, selections) => {
+    const selection = selections[0];
+    if (item.label === selection.label) return true;
+
+    return false;
+};
+
+const BivariateIndicatorSelection = props => {
+    const { activePillar, covidPillar, setCurrentIndicators, currentIndicators } = props;
+    const bivariateXOptions = flatten(activePillar.questions.map(d => d.indicators));
+    const bivariateYOptions = flatten(covidPillar.questions.map(d => d.indicators));
+
+    return (
+        <div className={styles.bivariateIndicatorSelection}>
+            <div className={styles.bivariateIndicatorItem} data-x>
+                <div className={styles.bivariateIndicatorDropdownWrap}>
+                    <Select
+                        options={bivariateXOptions}
+                        onChange={indicator =>
+                            setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
+                        }
+                        value={currentIndicators.bivariateX}
+                        style={dropdownStyle}
+                        isOptionSelected={isOptionSelected}
+                    />
+                </div>
+            </div>
+            <div className={styles.bivariateIndicatorItem} data-y>
+                <div className={styles.bivariateIndicatorDropdownWrap}>
+                    <Select
+                        options={bivariateYOptions}
+                        onChange={indicator =>
+                            setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
+                        }
+                        value={currentIndicators.bivariateY}
+                        style={dropdownStyle}
+                        isOptionSelected={isOptionSelected}
+                    />
+                </div>
+            </div>
         </div>
     );
 };

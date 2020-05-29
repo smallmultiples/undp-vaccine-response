@@ -144,6 +144,11 @@ function App() {
         setActivePillar(pillars.find(d => d.visible));
     }, [pillars, activePillar]);
 
+    const covidPillar = React.useMemo(() => {
+        if (!pillars) return null;
+        return pillars.find(d => d.covid);
+    }, [pillars]);
+
     if (!pillars || !activePillar) return null; // TODO loader
 
     return (
@@ -152,6 +157,7 @@ function App() {
                 <Header />
                 <Pillars
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     setActivePillar={setActivePillar}
                     pillars={pillars}
                 />
@@ -159,6 +165,7 @@ function App() {
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     pillars={pillars}
                 />
             </div>
