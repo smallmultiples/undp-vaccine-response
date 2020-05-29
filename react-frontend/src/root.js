@@ -179,7 +179,6 @@ const usePillarData = () => {
 
 function App() {
     const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
-
     const [activePillar, setActivePillar] = React.useState(null);
 
     React.useEffect(() => {
@@ -212,7 +211,12 @@ function App() {
                     pillars={pillars}
                 />
                 {/* <Filters /> */}
-                <Questions activePillar={activePillar} />
+                <Questions
+                    activePillar={activePillar}
+                    datasets={datasets}
+                    regionLookup={regionLookup}
+                    countryData={countryData}
+                />
             </div>
         </div>
     );
