@@ -185,14 +185,19 @@ const BivariateLegend = props => {
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>
-                <div className={styles.legendColourSpan} data-y>
-                    <div className={styles.legendColourSpanValue} data-y>
-                        <IconArrowUp />
-                        <span>{currentIndicators.bivariateY.flipped ? y1 : y0}</span>
+                <div className={styles.legendYLabelContainer}>
+                    <div className={styles.bivariateAxisLabelY}>
+                        {currentIndicators.bivariateY.label}
                     </div>
-                    <div className={styles.legendColourSpanValue} data-y>
-                        <span>{currentIndicators.bivariateY.flipped ? y0 : y1}</span>
-                        <IconArrowDown />
+                    <div className={styles.legendColourSpan} data-y>
+                        <div className={styles.legendColourSpanValue} data-y>
+                            <IconArrowUp />
+                            <span>{currentIndicators.bivariateY.flipped ? y1 : y0}</span>
+                        </div>
+                        <div className={styles.legendColourSpanValue} data-y>
+                            <span>{currentIndicators.bivariateY.flipped ? y0 : y1}</span>
+                            <IconArrowDown />
+                        </div>
                     </div>
                 </div>
 
@@ -260,6 +265,9 @@ const BivariateLegend = props => {
                         <span>{currentIndicators.bivariateX.flipped ? x0 : x1}</span>
                         <IconArrowRight />
                     </div>
+                </div>
+                <div className={styles.bivariateAxisLabelX}>
+                    {currentIndicators.bivariateX.label}
                 </div>
             </div>
         </div>

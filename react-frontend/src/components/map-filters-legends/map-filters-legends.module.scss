@@ -124,7 +124,8 @@ $bottomPadding: 27px;
 
 .bivariateLegendBottom {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: flex-end;
     justify-content: flex-end;
 }
 
@@ -189,4 +190,27 @@ $lc-w: $l-w / 3;
             margin-left: 8px;
         }
     }
+}
+
+.legendYLabelContainer {
+    position: relative;
+}
+
+.bivariateAxisLabelX,
+.bivariateAxisLabelY {
+    @include buttonFont(center);
+    font-size: 12px;
+    line-height: 10px;
+    max-width: $l-w;
+}
+
+.bivariateAxisLabelX {
+}
+
+.bivariateAxisLabelY {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform-origin: center center;
+    transform: translateX(-100%) rotate(-90deg);
 }
