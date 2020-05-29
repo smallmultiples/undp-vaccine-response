@@ -1,0 +1,22 @@
+@import "../../variables.scss";
+
+.question {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+      "qText overview overview"
+      "country country country";
+}
+
+.questionText {
+    grid-area: qText;
+}
+
+.overviewTable {
+    grid-area: overview;
+}
+
+.countryTable {
+    grid-area: country;
+}

@@ -5,6 +5,7 @@ import styles from "./root.module.scss";
 import Header from "./components/header/header";
 import PILLARS from "./config/pillars";
 import Pillars from "./components/pillars/pillars";
+import Questions from "./components/questions/questions";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
@@ -69,12 +70,14 @@ function App() {
                     activeIndicator={activeIndicator}
                     setActiveIndicator={setActiveIndicator}
                 />
-                <Map
+                {/* <Map
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
                     activeIndicator={activeIndicator}
-                />
+                /> */}
+                {/* <Filters /> */}
+                <Questions />
             </div>
         </div>
     );
