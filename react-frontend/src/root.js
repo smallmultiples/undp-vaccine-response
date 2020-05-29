@@ -111,8 +111,18 @@ const parseMetaSheet = raw => {
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
+    const [regionLookup, setRegionLookup] = React.useState(null);
     const [datasets, setDatasets] = React.useState({});
     const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        (async () => {
+            const regions = await axios(
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:K`
+            ).then(d => d.data);
+            setRegionLookup(regions);
+        })();
+    }, []);
 
     React.useEffect(() => {
         (async () => {
@@ -163,11 +173,12 @@ const usePillarData = () => {
         loading,
         datasets,
         pillars,
+        regionLookup,
     };
 };
 
 function App() {
-    const { pillars, datasets, countryData, loading } = usePillarData();
+    const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
 
     const [activePillar, setActivePillar] = React.useState(null);
 
@@ -181,7 +192,7 @@ function App() {
         return pillars.find(d => d.covid);
     }, [pillars]);
 
-    if (!pillars || !activePillar) return null; // TODO loader
+    if (!pillars || !activePillar || !regionLookup) return null; // TODO loader
 
     return (
         <div className={styles.root}>
