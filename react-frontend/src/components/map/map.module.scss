@@ -4,6 +4,21 @@
 
 .bivariateLegend {
     position: relative;
+    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.bivariateLegendTop {
+    display: flex;
+    align-items: center;
+}
+
+.bivariateLegendBottom {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
 }
 
 $l-w: 120px;
@@ -27,66 +42,42 @@ $lc-w: $l-w / 3;
         opacity: 0;
     }
 }
-
-.legendColourLabel {
-    background: $color-navy;
-    color: white;
-    @include buttonFont(center);
-    font-size: 14px;
-    border-radius: 24000px;
-    padding: 8px 16px;
-    position: absolute;
-    transform-origin: center center;
-    white-space: nowrap;
-    border: 2px solid $color-navy;
-    user-select: none;
-    cursor: pointer;
-
-    &[data-x="true"] {
-        bottom: 0;
-        left: 50%;
-        transform: translate(-50%, 100%) translateY(32px);
-    }
-    &[data-y="true"] {
-        top: 50%;
-        left: 0;
-        transform: translate(-50%, -50%) rotate(-90deg) translateY(-48px);
-    }
-
-    transition: opacity 0.2s, background 0.2s, color 0.2s;
-    &[data-enabled="false"] {
-        opacity: 0.25;
-        color: $color-navy;
-        background: none;
-    }
-}
-
 .legendColourSpan {
     display: flex;
     justify-content: space-between;
-    position: absolute;
-    width: $l-w;
 
-    &[data-x="true"] {
-        bottom: 0;
-        left: 0;
-        transform: translateY(calc(100% + 8px));
-    }
     &[data-y="true"] {
-        top: 50%;
-        left: 0;
-        transform: translate(-50%, -50%) rotate(-90deg) translateY(-16px);
+        flex-direction: column;
+        margin-right: 8px;
+        height: $l-w;
+    }
+    &[data-x="true"] {
+        width: $l-w;
+        margin-top: 8px;
     }
 }
 
 .legendColourSpanValue {
     @include bodySmall();
     font-weight: bold;
+    display: flex;
 
-    svg:first-child {
-        margin-right: 8px;
+    &[data-y="true"] {
+        flex-direction: column;
+        align-items: center;
+        svg:first-child {
+            margin-bottom: 8px;
+        }
+        svg:last-child {
+            margin-top: 8px;
+        }
     }
-    svg:last-child {
-        margin-left: 8px;
+    &[data-x="true"] {
+        svg:first-child {
+            margin-right: 8px;
+        }
+        svg:last-child {
+            margin-left: 8px;
+        }
     }
 }

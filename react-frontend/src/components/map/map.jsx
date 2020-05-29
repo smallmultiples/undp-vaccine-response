@@ -1,13 +1,9 @@
 import React from "react";
-import DeckGL, { GeoJsonLayer, Viewport, WebMercatorViewport } from "deck.gl";
-import useDimensions from "../../hooks/use-dimensions";
-import axios from "axios";
-import { feature as topojsonParse } from "topojson-client";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
 import { scaleLinear, scaleLog } from "d3-scale";
 import Geostats from "geostats";
-import { IconArrowLeft, IconArrowRight } from "../icons/icons";
+import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../icons/icons";
 import MapVis from "../map-vis/map-vis";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
@@ -233,84 +229,82 @@ const BivariateLegend = props => {
     const y1 = formatNumTemp(jenks.y[jenks.y.length - 1]);
     return (
         <div className={styles.bivariateLegend}>
-            <div className={styles.legendColourLabel} data-x={true} data-enabled={variateXEnable}>
-                {displaySettings.variateXColumn}
-            </div>
-            <div className={styles.legendColourLabel} data-y={true} data-enabled={variateYEnable}>
-                {displaySettings.variateYColumn}
-            </div>
-            <div className={styles.legendColourSpan} data-x={true}>
-                <div className={styles.legendColourSpanValue}>
-                    <IconArrowLeft />
-                    <span>{displaySettings.variateXFlip ? x1 : x0}</span>
+            <div className={styles.bivariateLegendTop}>
+                <div className={styles.legendColourSpan} data-y>
+                    <div className={styles.legendColourSpanValue} data-y>
+                        <IconArrowUp />
+                        <span>{displaySettings.variateYFlip ? y1 : y0}</span>
+                    </div>
+                    <div className={styles.legendColourSpanValue} data-y>
+                        <span>{displaySettings.variateYFlip ? y0 : y1}</span>
+                        <IconArrowDown />
+                    </div>
                 </div>
-                <div className={styles.legendColourSpanValue}>
-                    <span>{displaySettings.variateXFlip ? x0 : x1}</span>
-                    <IconArrowRight />
-                </div>
-            </div>
-            <div className={styles.legendColourSpan} data-y={true}>
-                <div className={styles.legendColourSpanValue}>
-                    <IconArrowLeft />
-                    <span>{displaySettings.variateYFlip ? y1 : y0}</span>
-                </div>
-                <div className={styles.legendColourSpanValue}>
-                    <span>{displaySettings.variateYFlip ? y0 : y1}</span>
-                    <IconArrowRight />
-                </div>
-            </div>
 
-            <div className={styles.legendColour}>
-                <div className={styles.legendColourRow}>
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[0][0] }}
-                        data-disabled={bothDisabled || yOnlyDisabled}
-                    />
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[0][2] }}
-                        data-disabled={eitherDisabled}
-                    />
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[0][4] }}
-                        data-disabled={eitherDisabled}
-                    />
+                <div className={styles.legendColour}>
+                    <div className={styles.legendColourRow}>
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[0][0] }}
+                            data-disabled={bothDisabled || yOnlyDisabled}
+                        />
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[0][2] }}
+                            data-disabled={eitherDisabled}
+                        />
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[0][4] }}
+                            data-disabled={eitherDisabled}
+                        />
+                    </div>
+                    <div className={styles.legendColourRow}>
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[2][0] }}
+                            data-disabled={bothDisabled || yOnlyDisabled}
+                        />
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[2][2] }}
+                            data-disabled={eitherDisabled}
+                        />
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[2][4] }}
+                            data-disabled={eitherDisabled}
+                        />
+                    </div>
+                    <div className={styles.legendColourRow}>
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[4][0] }}
+                            data-disabled={false}
+                        />
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[4][2] }}
+                            data-disabled={bothDisabled || xOnlyDisabled}
+                        />
+                        <div
+                            className={styles.legendColourCell}
+                            style={{ background: bivariateColourMatrixHex[4][4] }}
+                            data-disabled={bothDisabled || xOnlyDisabled}
+                        />
+                    </div>
                 </div>
-                <div className={styles.legendColourRow}>
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[2][0] }}
-                        data-disabled={bothDisabled || yOnlyDisabled}
-                    />
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[2][2] }}
-                        data-disabled={eitherDisabled}
-                    />
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[2][4] }}
-                        data-disabled={eitherDisabled}
-                    />
-                </div>
-                <div className={styles.legendColourRow}>
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[4][0] }}
-                        data-disabled={false}
-                    />
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[4][2] }}
-                        data-disabled={bothDisabled || xOnlyDisabled}
-                    />
-                    <div
-                        className={styles.legendColourCell}
-                        style={{ background: bivariateColourMatrixHex[4][4] }}
-                        data-disabled={bothDisabled || xOnlyDisabled}
-                    />
+            </div>
+            <div className={styles.bivariateLegendBottom}>
+                <div className={styles.legendColourSpan} data-x={true}>
+                    <div className={styles.legendColourSpanValue} data-x>
+                        <IconArrowLeft />
+                        <span>{displaySettings.variateXFlip ? x1 : x0}</span>
+                    </div>
+                    <div className={styles.legendColourSpanValue} data-x>
+                        <span>{displaySettings.variateXFlip ? x0 : x1}</span>
+                        <IconArrowRight />
+                    </div>
                 </div>
             </div>
         </div>
