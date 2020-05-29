@@ -50,7 +50,12 @@ const parseMetaSheet = raw => {
         const ind = row["Indicator"];
         if (ind) {
             let meta = null;
-            if (row["Time period"]) {
+            if (
+                row["Time period"] ||
+                row["Data source name"] ||
+                row["Data source link"] ||
+                row["Number of Countries"]
+            ) {
                 const names = row["Data source name"].split(";").map(d => d.trim());
                 const urls = row["Data source link"].split(";").map(d => d.trim());
                 const sources = names.map((name, i) => {
