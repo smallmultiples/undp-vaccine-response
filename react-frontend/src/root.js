@@ -6,59 +6,143 @@ import Header from "./components/header/header";
 import PILLARS from "./config/pillars";
 import Pillars from "./components/pillars/pillars";
 import Questions from "./components/questions/questions";
+import { flatten, uniq, last } from "lodash";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
-const SHEET_RANGE = "COHESION-COVID19"; // TODO: just map sheet
 
-const useCountryData = () => {
-    const [countryData, setCountryData] = React.useState(null);
+const META_SHEET_ID =
+    process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
+
+const parseMetaSheet = raw => {
+    const out = {};
+    let currentPillar = null;
+    let currentQuestion = null;
+    for (let row of raw) {
+        // Pillar
+
+        if (row.col0) {
+            currentPillar = last(row.col0.split(" "));
+            out[currentPillar] = {
+                label: currentPillar,
+                labelShort: currentPillar,
+                questions: {},
+            };
+        }
+        // -----------
+
+        // Question
+        const qs = row["Question short"];
+        if (qs) {
+            currentQuestion = qs;
+            out[currentPillar].questions[qs] = {
+                labelShort: qs,
+                label: row["Question"],
+                sheet: row["Sheet"],
+                indicators: {},
+                hidden: qs === "-",
+            };
+        }
+        // ------------
+
+        // Indicator
+        const ind = row["Indicator"];
+        if (ind) {
+            out[currentPillar].questions[currentQuestion].indicators[ind] = {
+                label: ind,
+                dataKey: row["Data Key"],
+            };
+        }
+
+        // ---------
+    }
+
+    const asArrays = Object.values(out).map(pillar => {
+        const questions = Object.values(pillar.questions).map(question => {
+            const indicators = Object.values(question.indicators);
+            return {
+                ...question,
+                indicators,
+            };
+        });
+
+        return {
+            ...pillar,
+            questions,
+        };
+    });
+
+    return asArrays;
+};
+
+const usePillarData = () => {
+    const [pillars, setPillars] = React.useState(null);
+    const [datasets, setDatasets] = React.useState({});
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         (async () => {
-            const datasets = await Promise.all(
-                [
-                    axios(
-                        `https://holy-sheet.visualise.today/sheet/${SHEET_ID}?range=COHESION-COVID19`
-                    ),
-                    axios(
-                        `https://holy-sheet.visualise.today/sheet/${SHEET_ID}?range=HEALTH-BEDS-DOCS-NURSES`
-                    ),
-                ].map(d => d.then(x => x.data))
+            const pillars = await axios(
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
+            ).then(d => parseMetaSheet(d.data));
+            setPillars(pillars);
+
+            const sheetsToFetch = uniq(
+                flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
             );
 
-            let data = {};
+            let newSets = {};
+            await Promise.all(
+                sheetsToFetch.map(async sheet => {
+                    const res = await axios(
+                        `https://holy-sheet.visualise.today/sheet/${SHEET_ID}?range=${sheet}`
+                    );
+                    newSets[sheet] = res.data;
+                })
+            );
 
-            datasets.forEach(dataset => {
-                dataset.forEach(row => {
-                    const rowKey = row["Alpha-3 code"];
-                    data[rowKey] = data[rowKey] || {};
-
-                    Object.entries(row).forEach(([key, value]) => {
-                        data[rowKey][key] = value;
-                    });
-                });
-            });
-
-            setCountryData(data);
+            setDatasets(newSets);
+            setLoading(false);
         })();
     }, []);
 
-    const loading = React.useMemo(() => {
-        return !countryData;
-    }, [countryData]);
+    // Countrydata is just a merge of all the datasets
+    const countryData = React.useMemo(() => {
+        if (loading) return null;
+
+        let data = {};
+        Object.values(datasets).forEach(dataset => {
+            dataset.forEach(row => {
+                const rowKey = row["Alpha-3 code"];
+                data[rowKey] = data[rowKey] || {};
+
+                Object.entries(row).forEach(([key, value]) => {
+                    data[rowKey][key] = value;
+                });
+            });
+        });
+        return data;
+    }, [datasets, loading]);
 
     return {
         countryData,
         loading,
+        datasets,
+        pillars,
     };
 };
 
 function App() {
-    const { countryData, loading } = useCountryData();
+    const { pillars, datasets, countryData, loading } = usePillarData();
 
     const [activePillar, setActivePillar] = React.useState(PILLARS.Health);
     const [activeIndicator, setActiveIndicator] = React.useState("Cumulative_cases");
+
+    console.log({
+        datasets,
+        countryData,
+        pillars,
+    });
 
     return (
         <div className={styles.root}>
