@@ -2,28 +2,54 @@ const PILLARS = {
     Health: {
         label: "Health",
         labelShort: "Health",
-        sheets: {
-            bedsDocsNurses: "HEALTH-BEDS-DOCS-NURSES",
-        },
+        questions: [
+            {
+                key: "severity",
+                label: "What is the severity of Covid?",
+                hidden: true, // we may or may not show this in the tables. doesn't appear on map.
+                sheet: "COHESION-COVID19", // why is this labelled cohesion?
+            },
+            {
+                key: "gaps",
+                label: "What are the gaps in health system capacity preparedness?",
+                sheet: "HEALTH-BEDS-DOCS-NURSES",
+            },
+        ],
         description:
             "Gaps in the health sector... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum condimentum tortor gravida condimentum. Sed finibus lacus ipsum, ac feugiat nunc elementum sed. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur.",
     },
     Protect: {
         label: "Protect",
         labelShort: "Protect",
-        sheets: {
-            hdi: "PROTECT-HDI",
-            stringency: "PROTECT-STRINGENCY-INDEX",
-        },
+        questions: [
+            {
+                key: "gaps",
+                label: "What are countries’ response measures over Covid timeline?",
+                sheet: "PROTECT-STRINGENCY-INDEX",
+            },
+            {
+                key: "gaps",
+                label: "Which countries are vulnerable to income, health and education shocks? ",
+                sheet: "PROTECT-HDI",
+            },
+        ],
         description:
             "Gaps in the protect sector... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum condimentum tortor gravida condimentum. Sed finibus lacus ipsum, ac feugiat nunc elementum sed. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur.",
     },
     Economy: {
         label: "Economy",
         labelShort: "Economy",
-        sheets: {
-            msmeGovSupport: "ECONOMIC-MSME-GOV-SUPPORT",
-        },
+        questions: [
+            {
+                key: "msme-impact",
+                label: "What is the impact of COVID-19 on MSMEs?",
+            },
+            {
+                key: "msme-support",
+                label: "How are governments supporting MSMEs in short/med/longer-term?",
+                sheet: "ECONOMIC-MSME-GOV-SUPPORT",
+            },
+        ],
         description:
             "Gaps in the economy... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum condimentum tortor gravida condimentum. Sed finibus lacus ipsum, ac feugiat nunc elementum sed. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur.",
     },
@@ -70,11 +96,15 @@ const PILLARS = {
     Cohesion: {
         label: "Cohesion",
         labelShort: "Cohesion",
-        sheets: {
-            covid19: "COHESION-COVID19",
-            politicalViolence: "COHESION-POLITICAL-VIOLENCE",
-            pressFreedom: "COHESION-PRESS-FREEDOM",
-        },
+        questions: [
+            {
+                key: "cohesion",
+                label:
+                    "How is COVID-19 affecting State-society relations, including the accountability of and trust in State institutions?",
+                sheet: "COHESION-POLITICAL-VIOLENCE",
+                // TODO: add COHESION-PRESS-FREEDOM ? structural change for jack.
+            },
+        ],
         description:
             "Gaps in the cohesion sector... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum condimentum tortor gravida condimentum. Sed finibus lacus ipsum, ac feugiat nunc elementum sed. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur.",
     },
