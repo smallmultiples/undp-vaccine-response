@@ -161,7 +161,7 @@ function App() {
                     activeIndicator={activeIndicator}
                 /> */}
                 {/* <Filters /> */}
-                <Questions />
+                <Questions activePillar={activePillar} />
             </div>
         </div>
     );

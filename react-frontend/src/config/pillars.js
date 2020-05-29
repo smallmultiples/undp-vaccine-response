@@ -37,7 +37,7 @@ const PILLARS = {
         labelShort: "Protect",
         questions: [
             {
-                key: "gaps",
+                key: "measures",
                 label: "What are countries’ response measures over Covid timeline?",
                 sheet: "PROTECT-STRINGENCY-INDEX",
                 indicators: [
@@ -49,7 +49,7 @@ const PILLARS = {
                 ],
             },
             {
-                key: "gaps",
+                key: "vulnerablity",
                 label: "Which countries are vulnerable to income, health and education shocks? ",
                 sheet: "PROTECT-HDI",
                 indicators: [
