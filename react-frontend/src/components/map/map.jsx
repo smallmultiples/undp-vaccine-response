@@ -9,9 +9,13 @@ import { scaleLinear, scaleLog } from "d3-scale";
 import Geostats from "geostats";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 
-const DEFAULT_COLOUR = [242, 242, 242]; // #F2F2F2
+const GOOD_SHAPE_STROKE = [255, 255, 255];
+const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
+const NULL_SHAPE_STROKE = [242, 242, 242]; // #F2F2F2
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
+// If true, pink is left, if false pink is right
+const FLIP_COLOURS_HORIZONTALLY = true;
 
 const useDomains = (countryData, displaySettings) => {
     return React.useMemo(() => {
@@ -63,13 +67,14 @@ function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? result.slice(1, 4).map(n => parseInt(n, 16)) : null;
 }
+
 const bivariateColourMatrixHex = [
     ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
     ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
     ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
     ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
     ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#F2F2F3"],
-].map(d => d.reverse());
+].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
 const bivariateColourMatrix = bivariateColourMatrixHex.map(row =>
     row.map(colour => hexToRgb(colour))
@@ -80,8 +85,15 @@ const useScales = (domains, displaySettings) => {
         const circleRadiusScale = scaleLog().range([0, 16]).domain(domains.extents.circle);
 
         const bivariateColourScale = row => {
-            if (row.variateX === null && row.variateY === null) {
-                return DEFAULT_COLOUR;
+            // Nulls based on enabled variates
+            if (displaySettings.variateXEnable && displaySettings.variateYEnable) {
+                if (row.variateX === null || row.variateY === null) return NULL_SHAPE_FILL;
+            }
+            if (displaySettings.variateXEnable && !displaySettings.variateYEnable) {
+                if (row.variateX === null) return NULL_SHAPE_FILL;
+            }
+            if (!displaySettings.variateXEnable && displaySettings.variateYEnable) {
+                if (row.variateY === null) return NULL_SHAPE_FILL;
             }
 
             const maxIndex = bivariateColourMatrix.length - 1;
@@ -101,9 +113,23 @@ const useScales = (domains, displaySettings) => {
             return bivariateColourMatrix[yIndex][xIndex];
         };
 
+        const strokeScale = row => {
+            if (displaySettings.variateXEnable && displaySettings.variateYEnable) {
+                if (row.variateX === null || row.variateY === null) return NULL_SHAPE_STROKE;
+            }
+            if (displaySettings.variateXEnable && !displaySettings.variateYEnable) {
+                if (row.variateX === null) return NULL_SHAPE_STROKE;
+            }
+            if (!displaySettings.variateXEnable && displaySettings.variateYEnable) {
+                if (row.variateY === null) return NULL_SHAPE_STROKE;
+            }
+            return GOOD_SHAPE_STROKE;
+        };
+
         return {
             radius: circleRadiusScale,
             color: bivariateColourScale,
+            stroke: strokeScale,
         };
     }, [domains, displaySettings.variateXEnable, displaySettings.variateYEnable]);
 };
@@ -253,17 +279,24 @@ const MapVis = props => {
             getFillColor: shape => {
                 const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
                 if (!row) {
-                    return DEFAULT_COLOUR;
+                    return NULL_SHAPE_FILL;
                 }
                 return scales.color(row);
             },
             stroked: true,
-            getLineColor: [255, 255, 255],
+            getLineColor: shape => {
+                const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
+                if (!row) {
+                    return NULL_SHAPE_STROKE;
+                }
+                return scales.stroke(row);
+            },
             lineWidthMinPixels: 0.5,
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
                 getFillColor: [normalizedData, bivariateEnableX, bivariateEnableY],
+                getLineColor: [normalizedData, bivariateEnableX, bivariateEnableY],
             },
         }),
     ];
