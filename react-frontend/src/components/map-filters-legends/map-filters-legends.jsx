@@ -122,10 +122,11 @@ const Toggle = props => {
         );
     });
     const slideLeft = props.options.indexOf(props.value) * optWidth;
+
     const bgSlide = (
         <div
             className={styles.toggleSlide}
-            style={{ width: optWidth + "%", left: slideLeft + "%" }}
+            style={{ width: `calc(${optWidth}% - 4px)`, left: `calc(${slideLeft}% + 2px)` }}
         />
     );
     return (
@@ -137,7 +138,7 @@ const Toggle = props => {
 };
 
 const RadiusIndicatorSelection = props => {
-    const { activePillar, covidPillar, setCurrentIndicators, currentIndicators } = props;
+    const { covidPillar, setCurrentIndicators, currentIndicators } = props;
     const radiusOptions = flatten(covidPillar.questions.map(d => d.indicators));
     return (
         <div className={styles.radiusIndicatorSelection}>
