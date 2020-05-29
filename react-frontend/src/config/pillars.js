@@ -13,6 +13,20 @@ const PILLARS = {
                 key: "gaps",
                 label: "What are the gaps in health system capacity preparedness?",
                 sheet: "HEALTH-BEDS-DOCS-NURSES",
+                indicators: [
+                    {
+                        label: "Number of hospital beds per 10000 people",
+                        dataKey: "Hospital beds",
+                    },
+                    {
+                        label: "Physicians per 10000 people",
+                        dataKey: "Physicians",
+                    },
+                    {
+                        label: "Nurses and midwives per 10000 people",
+                        dataKey: "Nurses and midwifes",
+                    },
+                ],
             },
         ],
         description:
@@ -26,11 +40,24 @@ const PILLARS = {
                 key: "gaps",
                 label: "What are countries’ response measures over Covid timeline?",
                 sheet: "PROTECT-STRINGENCY-INDEX",
+                indicators: [
+                    {
+                        label: "Stringency index",
+                        dataKey:
+                            "Government Response Stringency Index ((0 to 100, 100 = strictest))",
+                    },
+                ],
             },
             {
                 key: "gaps",
                 label: "Which countries are vulnerable to income, health and education shocks? ",
                 sheet: "PROTECT-HDI",
+                indicators: [
+                    {
+                        label: "HDI",
+                        dataKey: "Human Development Index",
+                    },
+                ],
             },
         ],
         description:
@@ -43,11 +70,30 @@ const PILLARS = {
             {
                 key: "msme-impact",
                 label: "What is the impact of COVID-19 on MSMEs?",
+                // TODO: sheet missing
+                indicators: [
+                    {
+                        label: "Number of businesses that closed due to COVID-19",
+                        dataKey: "UNKNOWN", // TODO: UNKNOWN where this data is.
+                    },
+                ],
             },
             {
                 key: "msme-support",
                 label: "How are governments supporting MSMEs in short/med/longer-term?",
                 sheet: "ECONOMIC-MSME-GOV-SUPPORT",
+                indicators: [
+                    {
+                        label:
+                            "MSME support measures by govt (possibly categorize into financial / non-financial)",
+                        dataKey: "Type of Support", // TODO: categorical :( what do
+                    },
+                    {
+                        label:
+                            "Flag for whether govt offers support for informal workers and informal/non-registered enterprises",
+                        dataKey: "UNKNOWN", // TODO: find this data
+                    },
+                ],
             },
         ],
         description:
@@ -64,7 +110,7 @@ const PILLARS = {
                 indicators: [
                     {
                         label: "Date of border closure and government action/announcement",
-                        dataKey: "",
+                        dataKey: "UNKNOWN", // TODO: what to visualise here
                     },
                 ],
             },
