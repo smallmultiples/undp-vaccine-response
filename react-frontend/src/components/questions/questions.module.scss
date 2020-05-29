@@ -53,7 +53,8 @@
     grid-area: country;
     opacity: 0;
     max-height: 0;
-    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
 
     .summary {
         display: flex;
