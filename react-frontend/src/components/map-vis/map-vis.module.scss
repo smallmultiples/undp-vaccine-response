@@ -1,0 +1,99 @@
+@import "../../variables.scss";
+
+.mapContainer {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 560px;
+    position: relative;
+}
+
+// ----
+
+.tooltip {
+    position: absolute;
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    width: 225px;
+    box-sizing: content-box;
+
+    .tooltipHeader {
+        background: $color-yellow;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 16px 20px;
+        .tooltipHeading {
+            @include h3();
+        }
+    }
+
+    .tooltipBody {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px;
+
+        .tooltipDatum {
+            &:not(:last-child) {
+                margin-bottom: 26px;
+            }
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            .tooltipDatumValue {
+                @include h2();
+                margin-right: 12px;
+            }
+
+            .tooltipDatumLabel {
+                // TODO
+                @include buttonFont();
+            }
+        }
+    }
+}
+
+// ----------
+
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(50px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: opacity 0.2s;
+    &[data-visible="false"] {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.circleVis {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+
+    .visCircle {
+        fill: none;
+        stroke: $color-navy;
+        stroke-width: 2px;
+    }
+}
+
+// ------

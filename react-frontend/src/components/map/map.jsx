@@ -8,6 +8,7 @@ import { extent } from "d3-array";
 import { scaleLinear, scaleLog } from "d3-scale";
 import Geostats from "geostats";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
+import MapVis from "../map-vis/map-vis";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -176,81 +177,10 @@ const useNormalizedData = (countryData, domains, displaySettings) => {
     ]);
 };
 
-const useGeoData = () => {
-    const [shapeData, setShapeData] = React.useState(null);
-
-    React.useEffect(() => {
-        // Only load shapes once.
-        (async () => {
-            const res = await axios(`${process.env.PUBLIC_URL}/data/world.topojson`);
-            const fc = topojsonParse(res.data, "world");
-            setShapeData(fc);
-        })();
-    }, []);
-
-    const loading = React.useMemo(() => {
-        return [shapeData].some(d => !d);
-    }, [shapeData]);
-
-    return {
-        shapeData,
-        loading,
-    };
-};
-
 const Map = props => {
-    return (
-        <div>
-            <MapVis {...props} />
-        </div>
-    );
-};
-
-const MapVis = props => {
     const { countryData, countryDataLoading, activeIndicator } = props;
-    const [mapContainerRef, mapContainerDimensions] = useDimensions();
-    const [viewport, setViewport] = React.useState(null);
-    const [tooltip, setTooltip] = React.useState(null);
     const [bivariateEnableX, setBivariateEnableX] = React.useState(true);
     const [bivariateEnableY, setBivariateEnableY] = React.useState(true);
-
-    React.useEffect(() => {
-        if (viewport) return;
-        if (!mapContainerDimensions) return;
-        setViewport(
-            new WebMercatorViewport({
-                longitude: 0,
-                latitude: 0,
-                zoom: 1,
-                pitch: 0,
-                bearing: 0,
-                width: mapContainerDimensions.width,
-                height: mapContainerDimensions.height,
-            }).fitBounds(
-                // Bounds we zoom to on load.
-                // North west lng lat
-                // South east lng lat
-                [
-                    [-180, 76],
-                    [180, -60],
-                ],
-                {
-                    // Pixel padding around the bounds
-                    padding: 8,
-                }
-            )
-        );
-    }, [mapContainerDimensions, viewport]);
-
-    const handleViewStateChange = React.useCallback(newState => {
-        setViewport(
-            v =>
-                new WebMercatorViewport({
-                    ...v,
-                    ...newState.viewState,
-                })
-        );
-    }, []);
 
     const displaySettings = React.useMemo(
         () => ({
@@ -264,142 +194,38 @@ const MapVis = props => {
         }),
         [bivariateEnableX, bivariateEnableY, activeIndicator]
     );
-    const { shapeData, loading: geoLoading } = useGeoData();
     const domains = useDomains(countryData, displaySettings);
     const scales = useScales(domains, displaySettings);
     const normalizedData = useNormalizedData(countryData, domains, displaySettings);
 
-    const loading = [geoLoading, countryDataLoading].some(d => d);
-
-    const layers = [
-        new GeoJsonLayer({
-            id: "world",
-            data: shapeData,
-            filled: true,
-            getFillColor: shape => {
-                const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
-                if (!row) {
-                    return NULL_SHAPE_FILL;
-                }
-                return scales.color(row);
-            },
-            stroked: true,
-            getLineColor: shape => {
-                const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
-                if (!row) {
-                    return NULL_SHAPE_STROKE;
-                }
-                return scales.stroke(row);
-            },
-            lineWidthMinPixels: 0.5,
-            pickable: true,
-            onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
-            updateTriggers: {
-                getFillColor: [normalizedData, bivariateEnableX, bivariateEnableY],
-                getLineColor: [normalizedData, bivariateEnableX, bivariateEnableY],
-            },
-        }),
-    ];
-
     return (
         <div>
-            <div className={styles.mapContainer} ref={mapContainerRef}>
-                {viewport && (
-                    <DeckGL
-                        viewState={viewport}
-                        controller
-                        layers={layers}
-                        onViewStateChange={handleViewStateChange}
-                    />
-                )}
-                {viewport && !loading && (
-                    <CircleVis
-                        viewport={viewport}
-                        scales={scales}
-                        normalizedData={normalizedData}
-                        displaySettings={displaySettings}
-                    />
-                )}
-                <BivariateLegendOverlay
-                    displaySettings={displaySettings}
-                    domains={domains}
-                    {...{
-                        bivariateEnableX,
-                        bivariateEnableY,
-                        setBivariateEnableX,
-                        setBivariateEnableY,
-                    }}
-                />
-                <MapTooltip
-                    tooltip={tooltip}
-                    normalizedData={normalizedData}
-                    displaySettings={displaySettings}
-                />
-                <div className={styles.loader} data-visible={loading}>
-                    {/* todo: nicer loader */}
-                    <h4>Loading...</h4>
-                </div>
+            <div>
+                <BivariateLegend displaySettings={displaySettings} domains={domains} />
             </div>
+            <MapVis
+                {...props}
+                domains={domains}
+                scales={scales}
+                normalizedData={normalizedData}
+                displaySettings={displaySettings}
+            />
         </div>
     );
 };
 
 const formatNumTemp = number => (number === undefined ? "" : number.toFixed(1));
-
-const MapTooltip = props => {
-    const { tooltip, normalizedData, displaySettings } = props;
-
-    const data = React.useMemo(() => {
-        if (!tooltip) return null;
-        return normalizedData[tooltip.object.properties[GEO_SHAPE_ID]];
-    }, [tooltip]);
-
-    if (!data) return null;
-
-    return (
-        <div
-            className={styles.tooltip}
-            style={{
-                left: tooltip.x,
-                top: tooltip.y,
-            }}
-        >
-            <div className={styles.tooltipHeader}>
-                <div className={styles.tooltipHeading}>{data.Country}</div>
-            </div>
-            <div className={styles.tooltipBody}>
-                <div className={styles.tooltipDatum}>
-                    <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(data[displaySettings.variateXColumn])}
-                    </div>
-                    <div className={styles.tooltipDatumLabel}>{displaySettings.variateXColumn}</div>
-                </div>
-                <div className={styles.tooltipDatum}>
-                    <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(data[displaySettings.variateYColumn])}
-                    </div>
-                    <div className={styles.tooltipDatumLabel}>{displaySettings.variateYColumn}</div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const BivariateLegendOverlay = props => {
-    const {
-        displaySettings,
-        bivariateEnableX,
-        bivariateEnableY,
-        setBivariateEnableX,
-        setBivariateEnableY,
-    } = props;
+const BivariateLegend = props => {
+    const { displaySettings } = props;
     const { jenks } = props.domains;
+    const { variateXEnable, variateYEnable } = displaySettings;
+
     // TODO: format properly
 
-    const xOnlyDisabled = !bivariateEnableX && bivariateEnableY;
-    const yOnlyDisabled = !bivariateEnableY && bivariateEnableX;
-    const bothDisabled = !bivariateEnableX && !bivariateEnableY;
-    const eitherDisabled = !bivariateEnableX || !bivariateEnableY;
+    const xOnlyDisabled = !variateXEnable && variateYEnable;
+    const yOnlyDisabled = !variateYEnable && variateXEnable;
+    const bothDisabled = !variateXEnable && !variateYEnable;
+    const eitherDisabled = !variateXEnable || !variateYEnable;
 
     const x0 = formatNumTemp(jenks.x[0]);
     const x1 = formatNumTemp(jenks.x[jenks.x.length - 1]);
@@ -407,20 +233,10 @@ const BivariateLegendOverlay = props => {
     const y1 = formatNumTemp(jenks.y[jenks.y.length - 1]);
     return (
         <div className={styles.bivariateLegend}>
-            <div
-                className={styles.legendColourLabel}
-                data-x={true}
-                data-enabled={bivariateEnableX}
-                onClick={() => setBivariateEnableX(d => !d)}
-            >
+            <div className={styles.legendColourLabel} data-x={true} data-enabled={variateXEnable}>
                 {displaySettings.variateXColumn}
             </div>
-            <div
-                className={styles.legendColourLabel}
-                data-y={true}
-                data-enabled={bivariateEnableY}
-                onClick={() => setBivariateEnableY(d => !d)}
-            >
+            <div className={styles.legendColourLabel} data-y={true} data-enabled={variateYEnable}>
                 {displaySettings.variateYColumn}
             </div>
             <div className={styles.legendColourSpan} data-x={true}>
@@ -498,25 +314,6 @@ const BivariateLegendOverlay = props => {
                 </div>
             </div>
         </div>
-    );
-};
-
-const CircleVis = props => {
-    const { viewport, scales, normalizedData, displaySettings } = props;
-
-    if (!displaySettings.circleRadiusColumn) return null;
-
-    const circles = Object.values(normalizedData).map(row => {
-        if ([row["Longitude (average)"], row["Latitude (average)"]].some(d => !d)) return null;
-        const [x, y] = viewport.project([row["Longitude (average)"], row["Latitude (average)"]]);
-        const r = scales.radius(row.circleValue);
-        return <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />;
-    });
-
-    return (
-        <svg className={styles.circleVis}>
-            <g>{circles}</g>
-        </svg>
     );
 };
 
