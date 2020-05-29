@@ -11,7 +11,7 @@ import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
-const NULL_SHAPE_STROKE = [242, 242, 242]; // #F2F2F2
+const NULL_SHAPE_STROKE = [233, 236, 246]; // #E9ECF6
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
 // If true, pink is left, if false pink is right
