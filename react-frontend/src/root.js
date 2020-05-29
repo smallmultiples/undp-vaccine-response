@@ -4,6 +4,7 @@ import axios from "axios";
 import styles from "./root.module.scss";
 import Header from "./components/header/header";
 import Pillars from "./components/pillars/pillars";
+import Questions from "./components/questions/questions";
 import { flatten, uniq, last } from "lodash";
 
 const SHEET_ID =
@@ -168,6 +169,8 @@ function App() {
                     covidPillar={covidPillar}
                     pillars={pillars}
                 />
+                {/* <Filters /> */}
+                <Questions activePillar={activePillar} />
             </div>
         </div>
     );

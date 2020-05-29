@@ -70,3 +70,39 @@ $container-width: 1166px;
     font-size: 18px;
     line-height: 18px;
 }
+
+@mixin button($bg-color: "", $font-color: "") {
+    background: $color-navy;
+    color: white;
+    border: 2px solid $color-navy;
+    @if $bg-color != "" {
+        background: $bg-color;
+        border-color: $bg-color;
+    }
+    @if $font-color != "" {
+        color: $font-color;
+    }
+    @include buttonFont(center);
+    font-size: 14px;
+    border-radius: 24000px;
+    padding: 8px 16px;
+    transform-origin: center center;
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+
+    transition: background 0.2s, color 0.2s;
+    &[data-enabled="false"] {
+        color: $color-navy;
+        background: none;
+        @if $bg-color != "" {
+            background: $font-color;
+        }
+        @if $font-color != "" {
+            color: $bg-color;
+        }
+    }
+    &:focus {
+        outline: none;
+    }
+}
