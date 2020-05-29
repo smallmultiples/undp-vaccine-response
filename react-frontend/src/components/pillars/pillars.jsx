@@ -1,9 +1,8 @@
 import React from "react";
 import styles from "./pillars.module.scss";
-import PILLARS from "../../config/pillars";
 
 const PillarControl = props => {
-    const { activePillar, setActivePillar } = props;
+    const { pillars, activePillar, setActivePillar } = props;
     // This component is the selector for the pillar just under the header.
     return (
         <div className={styles.pillarControl}>
@@ -12,19 +11,21 @@ const PillarControl = props => {
                 areas:
             </p>
             <div className={styles.pillarButtons}>
-                {Object.values(PILLARS).map(pillar => {
-                    const selected = pillar === activePillar;
-                    return (
-                        <button
-                            key={pillar.labelShort}
-                            className={styles.pillarButton}
-                            onClick={() => setActivePillar(pillar)}
-                            data-selected={selected}
-                        >
-                            {pillar.labelShort}
-                        </button>
-                    );
-                })}
+                {pillars
+                    .filter(d => d.visible)
+                    .map(pillar => {
+                        const selected = pillar === activePillar;
+                        return (
+                            <button
+                                key={pillar.labelShort}
+                                className={styles.pillarButton}
+                                onClick={() => setActivePillar(pillar)}
+                                data-selected={selected}
+                            >
+                                {pillar.labelShort}
+                            </button>
+                        );
+                    })}
             </div>
         </div>
     );

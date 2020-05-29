@@ -3,7 +3,6 @@ import Map from "./components/map/map";
 import axios from "axios";
 import styles from "./root.module.scss";
 import Header from "./components/header/header";
-import PILLARS from "./config/pillars";
 import Pillars from "./components/pillars/pillars";
 import { flatten, uniq, last } from "lodash";
 
@@ -26,6 +25,7 @@ const parseMetaSheet = raw => {
                 label: currentPillar,
                 labelShort: currentPillar,
                 questions: {},
+                visible: currentPillar !== "ALL",
             };
         }
         // -----------
@@ -134,14 +134,16 @@ const usePillarData = () => {
 function App() {
     const { pillars, datasets, countryData, loading } = usePillarData();
 
-    const [activePillar, setActivePillar] = React.useState(PILLARS.Health);
-    const [activeIndicator, setActiveIndicator] = React.useState("Cumulative_cases");
+    const [activePillar, setActivePillar] = React.useState(null);
+    const [activeIndicator, setActiveIndicator] = React.useState(null);
 
-    console.log({
-        datasets,
-        countryData,
-        pillars,
-    });
+    React.useEffect(() => {
+        if (activePillar || !pillars) return;
+        setActivePillar(pillars.find(d => d.visible));
+        setActiveIndicator("Cumulative_cases"); // TODO
+    }, [pillars, activePillar]);
+
+    if (!pillars || !activePillar) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -152,6 +154,7 @@ function App() {
                     setActivePillar={setActivePillar}
                     activeIndicator={activeIndicator}
                     setActiveIndicator={setActiveIndicator}
+                    pillars={pillars}
                 />
                 <Map
                     countryData={countryData}
