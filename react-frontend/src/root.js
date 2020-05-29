@@ -5,21 +5,89 @@ import styles from "./root.module.scss";
 import Header from "./components/header/header";
 import PILLARS from "./config/pillars";
 import Pillars from "./components/pillars/pillars";
-import { flatten, uniq } from "lodash";
+import { flatten, uniq, last } from "lodash";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
 
+const META_SHEET_ID =
+    process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
+
+const parseMetaSheet = raw => {
+    const out = {};
+    let currentPillar = null;
+    let currentQuestion = null;
+    for (let row of raw) {
+        // Pillar
+
+        if (row.col0) {
+            currentPillar = last(row.col0.split(" "));
+            out[currentPillar] = {
+                label: currentPillar,
+                labelShort: currentPillar,
+                questions: {},
+            };
+        }
+        // -----------
+
+        // Question
+        const qs = row["Question short"];
+        if (qs) {
+            currentQuestion = qs;
+            out[currentPillar].questions[qs] = {
+                labelShort: qs,
+                label: row["Question"],
+                sheet: row["Sheet"],
+                indicators: {},
+                hidden: qs === "-",
+            };
+        }
+        // ------------
+
+        // Indicator
+        const ind = row["Indicator"];
+        if (ind) {
+            out[currentPillar].questions[currentQuestion].indicators[ind] = {
+                label: ind,
+                dataKey: row["Data Key"],
+            };
+        }
+
+        // ---------
+    }
+
+    const asArrays = Object.values(out).map(pillar => {
+        const questions = Object.values(pillar.questions).map(question => {
+            const indicators = Object.values(question.indicators);
+            return {
+                ...question,
+                indicators,
+            };
+        });
+
+        return {
+            ...pillar,
+            questions,
+        };
+    });
+
+    return asArrays;
+};
+
 const usePillarData = () => {
+    const [pillars, setPillars] = React.useState(null);
     const [datasets, setDatasets] = React.useState({});
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         (async () => {
+            const pillars = await axios(
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
+            ).then(d => parseMetaSheet(d.data));
+            setPillars(pillars);
+
             const sheetsToFetch = uniq(
-                flatten(Object.values(PILLARS).map(p => p.questions.map(q => q.sheet))).filter(
-                    Boolean
-                )
+                flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
             );
 
             let newSets = {};
@@ -31,6 +99,7 @@ const usePillarData = () => {
                     newSets[sheet] = res.data;
                 })
             );
+
             setDatasets(newSets);
             setLoading(false);
         })();
@@ -58,11 +127,12 @@ const usePillarData = () => {
         countryData,
         loading,
         datasets,
+        pillars,
     };
 };
 
 function App() {
-    const { datasets, countryData, loading } = usePillarData();
+    const { pillars, datasets, countryData, loading } = usePillarData();
 
     const [activePillar, setActivePillar] = React.useState(PILLARS.Health);
     const [activeIndicator, setActiveIndicator] = React.useState("Cumulative_cases");
@@ -70,6 +140,7 @@ function App() {
     console.log({
         datasets,
         countryData,
+        pillars,
     });
 
     return (
