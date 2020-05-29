@@ -1,5 +1,7 @@
 @import "../../variables.scss";
 
+$bottomPadding: 27px;
+
 .mapFiltersLegends {
     display: flex;
     flex-direction: row;
@@ -10,7 +12,7 @@
 .bivariateIndicatorSelection {
     display: flex;
     flex-direction: column;
-    padding-bottom: 27px;
+    padding-bottom: $bottomPadding;
 
     .bivariateIndicatorItem {
         display: flex;
@@ -18,7 +20,7 @@
         align-items: center;
 
         &:not(:last-child) {
-            margin-bottom: 16px;
+            margin-bottom: 24px;
         }
 
         .bivariateIndicatorDropdownWrap {
@@ -60,7 +62,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: 32px;
+    margin-left: 48px;
+    padding-bottom: $bottomPadding;
 }
 
 .toggle {
@@ -110,7 +113,7 @@
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 24px;
+    margin-right: 48px;
 }
 
 .bivariateLegendTop {
