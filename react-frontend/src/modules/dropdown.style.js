@@ -3,10 +3,10 @@ const navy = "#110848";
 export default {
     control: (provided, state) => ({
         ...provided,
-        border: "none",
         borderRadius: state.menuIsOpen ? "22px 22px 0 0 " : 22,
         // boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
-        background: lightBlue,
+        background: state.isDisabled ? "white" : lightBlue,
+        border: state.isDisabled ? `2px solid ${lightBlue}` : "none",
         padding: "0",
         boxSizing: "border-box",
         fontFamily: "anonymous-pro",
@@ -21,23 +21,25 @@ export default {
         boxSizing: "border-box",
         fontSize: "14px",
         letterSpacing: "0.4px",
-        color: "black",
+        color: navy,
     }),
 
     singleValue: (provided, state) => ({
         ...provided,
-        color: "black",
+        color: navy,
+        opacity: state.isDisabled ? 0.25 : 1,
         transform: "translateY(-50%) translateY(2px)",
     }),
 
     dropdownIndicator: (provided, state) => ({
         ...provided,
-        color: "black",
+        color: navy,
     }),
 
     indicatorsContainer: (provided, state) => ({
         ...provided,
         paddingRight: 8,
+        opacity: state.isDisabled ? 0.25 : 1,
         "> div": {
             paddingLeft: 4,
         },
@@ -73,10 +75,10 @@ export default {
         ...provided,
         padding: "12px 6px 12px 22px",
         background: "none",
-        color: "black",
+        color: navy,
         ":hover": {
             background: lightBlue,
-            color: "black",
+            color: navy,
         },
     }),
 };

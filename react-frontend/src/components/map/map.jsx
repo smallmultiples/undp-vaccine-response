@@ -181,7 +181,7 @@ const Map = props => {
         bivariateXEnabled: true,
         // COVID indicator is the Y axis
         bivariateY: covidPillar.questions[0].indicators[1],
-        bivariateYEnabled: true,
+        bivariateYEnabled: false,
         // Radius indicator is the circle radius
         radius: covidPillar.questions[0].indicators[0],
         radiusEnabled: true,
