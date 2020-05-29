@@ -1,9 +1,8 @@
 import React from "react";
 import styles from "./pillars.module.scss";
-import PILLARS from "../../config/pillars";
 
 const PillarControl = props => {
-    const { activePillar, setActivePillar } = props;
+    const { pillars, activePillar, setActivePillar } = props;
     // This component is the selector for the pillar just under the header.
     return (
         <div className={styles.pillarControl}>
@@ -12,46 +11,34 @@ const PillarControl = props => {
                 areas:
             </p>
             <div className={styles.pillarButtons}>
-                {Object.values(PILLARS).map(pillar => {
-                    const selected = pillar === activePillar;
-                    return (
-                        <button
-                            key={pillar.labelShort}
-                            className={styles.pillarButton}
-                            onClick={() => setActivePillar(pillar)}
-                            data-selected={selected}
-                        >
-                            {pillar.labelShort}
-                        </button>
-                    );
-                })}
+                {pillars
+                    .filter(d => d.visible)
+                    .map(pillar => {
+                        const selected = pillar === activePillar;
+                        return (
+                            <button
+                                key={pillar.labelShort}
+                                className={styles.pillarButton}
+                                onClick={() => setActivePillar(pillar)}
+                                data-selected={selected}
+                            >
+                                {pillar.labelShort}
+                            </button>
+                        );
+                    })}
             </div>
         </div>
     );
 };
 
 const PillarInfo = props => {
-    const { activePillar, activeIndicator, setActiveIndicator } = props;
+    const { activePillar } = props;
 
     return (
         <div className={styles.pillarInfo}>
             <div className={styles.pillarInfoText}>
                 <div className={styles.pillarHeading}>{activePillar.label}</div>
                 <p className={styles.pillarDescription}>{activePillar.description}</p>
-            </div>
-            <div className={styles.pillarIndicators}>
-                <span style={{ textAlign: "center" }}>
-                    Currently selected indicator:
-                    <br />
-                    Cases, cumulative (log scale)
-                </span>
-                <button
-                    className={styles.indicatorTest}
-                    data-enabled={Boolean(activeIndicator)}
-                    onClick={() => setActiveIndicator(s => (s ? null : "Cumulative_cases"))}
-                >
-                    {activeIndicator ? "Disable" : "Enable"} indicator circles
-                </button>
             </div>
         </div>
     );

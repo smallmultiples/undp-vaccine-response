@@ -50,21 +50,4 @@
             margin-bottom: 0;
         }
     }
-
-    .pillarIndicators {
-        width: 323px;
-        min-width: 323px;
-        height: 125px;
-        background: $color-blue-bg;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        margin-left: 36px;
-
-        .indicatorTest {
-            margin-top: 16px;
-            @include button();
-        }
-    }
 }

@@ -3,7 +3,6 @@ import Map from "./components/map/map";
 import axios from "axios";
 import styles from "./root.module.scss";
 import Header from "./components/header/header";
-import PILLARS from "./config/pillars";
 import Pillars from "./components/pillars/pillars";
 import Questions from "./components/questions/questions";
 import { flatten, uniq, last } from "lodash";
@@ -27,6 +26,8 @@ const parseMetaSheet = raw => {
                 label: currentPillar,
                 labelShort: currentPillar,
                 questions: {},
+                visible: currentPillar !== "ALL",
+                covid: currentPillar === "ALL",
             };
         }
         // -----------
@@ -51,6 +52,8 @@ const parseMetaSheet = raw => {
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 dataKey: row["Data Key"],
+                flipped: false, // TODO:
+                format: null, // TODO:
             };
         }
 
@@ -135,14 +138,14 @@ const usePillarData = () => {
 function App() {
     const { pillars, datasets, countryData, loading } = usePillarData();
 
-    const [activePillar, setActivePillar] = React.useState(PILLARS.Health);
-    const [activeIndicator, setActiveIndicator] = React.useState("Cumulative_cases");
+    const [activePillar, setActivePillar] = React.useState(null);
 
-    console.log({
-        datasets,
-        countryData,
-        pillars,
-    });
+    React.useEffect(() => {
+        if (activePillar || !pillars) return;
+        setActivePillar(pillars.find(d => d.visible));
+    }, [pillars, activePillar]);
+
+    if (!pillars || !activePillar) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -151,15 +154,14 @@ function App() {
                 <Pillars
                     activePillar={activePillar}
                     setActivePillar={setActivePillar}
-                    activeIndicator={activeIndicator}
-                    setActiveIndicator={setActiveIndicator}
+                    pillars={pillars}
                 />
-                {/* <Map
+                <Map
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
-                    activeIndicator={activeIndicator}
-                /> */}
+                    pillars={pillars}
+                />
                 {/* <Filters /> */}
                 <Questions activePillar={activePillar} />
             </div>
