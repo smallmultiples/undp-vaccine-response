@@ -30,11 +30,16 @@ const useGeoData = () => {
     };
 };
 
-const MapVis = props => {
-    const { normalizedData, countryDataLoading, scales, currentIndicators } = props;
+// Bounds we zoom to on load.
+// North west lng lat
+// South east lng lat
+const INITIAL_BOUNDS = [
+    [-180, 76],
+    [180, -60],
+];
+const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
-    const [tooltip, setTooltip] = React.useState(null);
 
     React.useEffect(() => {
         if (viewport) return;
@@ -48,19 +53,9 @@ const MapVis = props => {
                 bearing: 0,
                 width: mapContainerDimensions.width,
                 height: mapContainerDimensions.height,
-            }).fitBounds(
-                // Bounds we zoom to on load.
-                // North west lng lat
-                // South east lng lat
-                [
-                    [-180, 76],
-                    [180, -60],
-                ],
-                {
-                    // Pixel padding around the bounds
-                    padding: 8,
-                }
-            )
+            }).fitBounds(initialBounds, {
+                padding,
+            })
         );
     }, [mapContainerDimensions, viewport]);
 
@@ -74,6 +69,13 @@ const MapVis = props => {
         );
     }, []);
 
+    return [mapContainerRef, viewport, handleViewStateChange];
+};
+
+const MapVis = props => {
+    const { normalizedData, countryDataLoading, scales, currentIndicators } = props;
+    const [mapContainerRef, viewport, handleViewStateChange] = useDeckViewport();
+    const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
 
     const loading = [geoLoading, countryDataLoading].some(d => d);
@@ -84,20 +86,28 @@ const MapVis = props => {
             data: shapeData,
             filled: true,
             getFillColor: shape => {
-                const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
+                const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.color(row);
             },
             stroked: true,
             getLineColor: shape => {
-                const row = normalizedData[shape.properties[GEO_SHAPE_ID]];
+                const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
             lineWidthMinPixels: 0.5,
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
-                getFillColor: [normalizedData],
-                getLineColor: [normalizedData],
+                getFillColor: [
+                    normalizedData,
+                    currentIndicators.bivariateX,
+                    currentIndicators.bivariateY,
+                ],
+                getLineColor: [
+                    normalizedData,
+                    currentIndicators.bivariateX,
+                    currentIndicators.bivariateY,
+                ],
             },
         }),
     ];
@@ -147,7 +157,7 @@ const MapTooltip = props => {
     const data = React.useMemo(() => {
         if (!tooltip) return null;
         return normalizedData[tooltip.object.properties[GEO_SHAPE_ID]];
-    }, [tooltip]);
+    }, [tooltip, normalizedData]);
 
     if (!data) return null;
 

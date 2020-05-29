@@ -1,17 +1,14 @@
 import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleLinear, scaleLog } from "d3-scale";
+import { scaleLog } from "d3-scale";
 import Geostats from "geostats";
-import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../icons/icons";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
 const NULL_SHAPE_STROKE = [233, 236, 246]; // #E9ECF6
-const SHEET_ROW_ID = "Alpha-3 code";
-const GEO_SHAPE_ID = "ISO3";
 // If true, pink is left, if false pink is right
 const FLIP_COLOURS_HORIZONTALLY = true;
 
@@ -176,50 +173,31 @@ const useScales = (domains, currentIndicators) => {
 };
 
 const Map = props => {
-    const { countryData, pillars, activePillar } = props;
+    const { countryData, covidPillar, activePillar } = props;
 
     const [currentIndicators, setCurrentIndicators] = React.useState({
         // Pillar indicataor is the X axis
-        bivariateX: null,
+        bivariateX: activePillar.questions[0].indicators[1],
         bivariateXEnabled: true,
         // COVID indicator is the Y axis
-        bivariateY: null,
+        bivariateY: covidPillar.questions[0].indicators[1],
         bivariateYEnabled: true,
         // Radius indicator is the circle radius
-        radius: null,
+        radius: covidPillar.questions[0].indicators[0],
         radiusEnabled: true,
     });
 
     React.useEffect(() => {
-        if (!activePillar || currentIndicators.bivariateX) return;
+        if (!activePillar) return;
         // Whenever active pillar changes, set the pillar indicator to the first avail.
         setCurrentIndicators(d => ({
             ...d,
-            bivariateX: activePillar.questions[0].indicators[1],
+            bivariateX: activePillar.questions[0].indicators[0],
         }));
-    }, [activePillar, currentIndicators.bivariateX]);
-
-    React.useEffect(() => {
-        // Set the initial covid/radius pillars.
-        if (!pillars || currentIndicators.bivariateY) return;
-        const covidPillar = pillars.find(d => d.covid);
-        setCurrentIndicators(d => ({
-            ...d,
-            bivariateY: covidPillar.questions[0].indicators[1],
-            radius: covidPillar.questions[0].indicators[0],
-        }));
-    }, [pillars, currentIndicators.bivariateY]);
+    }, [activePillar]);
 
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators);
-
-    if (
-        !currentIndicators.bivariateX ||
-        !currentIndicators.bivariateY ||
-        !currentIndicators.radius
-    ) {
-        return null;
-    }
 
     return (
         <div>
@@ -228,6 +206,8 @@ const Map = props => {
                     domains={domains}
                     scales={scales}
                     currentIndicators={currentIndicators}
+                    setCurrentIndicators={setCurrentIndicators}
+                    {...props}
                 />
             )}
             <MapVis

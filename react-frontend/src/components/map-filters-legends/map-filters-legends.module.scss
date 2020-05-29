@@ -1,5 +1,59 @@
 @import "../../variables.scss";
 
+.mapFiltersLegends {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+// ------
+
+.bivariateIndicatorSelection {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 27px;
+
+    .bivariateIndicatorItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        &:not(:last-child) {
+            margin-bottom: 16px;
+        }
+
+        .bivariateIndicatorDropdownWrap {
+            width: 320px;
+            margin-left: 8px;
+        }
+    }
+}
+
+// ----
+
+.toggle {
+    width: 14px;
+    height: 14px;
+    border: 2px solid $color-blue-bg;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 0.2s, border-color 0.2s;
+
+    &[data-selected="true"] {
+        background: $color-navy;
+        border-color: $color-navy;
+    }
+
+    svg {
+        min-width: 11px;
+    }
+}
+
 // ------
 
 .bivariateLegend {
@@ -8,6 +62,7 @@
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
+    margin-right: 24px;
 }
 
 .bivariateLegendTop {
@@ -37,9 +92,11 @@ $lc-w: $l-w / 3;
 .legendColourCell {
     width: $lc-w;
     height: $lc-w;
-    transition: opacity 0.2s;
+    transition: border 0.2s;
+    border: 1px solid $color-blue-bg;
+    transition: background 0.2s;
     &[data-disabled="true"] {
-        opacity: 0;
+        background: none !important;
     }
 }
 .legendColourSpan {

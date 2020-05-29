@@ -49,11 +49,42 @@ const parseMetaSheet = raw => {
         // Indicator
         const ind = row["Indicator"];
         if (ind) {
+            let meta = null;
+            if (
+                row["Time period"] ||
+                row["Data source name"] ||
+                row["Data source link"] ||
+                row["Number of Countries"]
+            ) {
+                const names = row["Data source name"].split(";").map(d => d.trim());
+                const urls = row["Data source link"].split(";").map(d => d.trim());
+                const sources = names.map((name, i) => {
+                    return {
+                        name,
+                        url: urls[i],
+                    };
+                });
+                const countryCount = row["Number of Countries"];
+                meta = {
+                    currency: row["Time period"],
+                    sources,
+                    countryCount,
+                };
+            } else {
+                const lastQuestionIndicator = last(
+                    out[currentPillar].questions[currentQuestion].indicators
+                );
+                if (lastQuestionIndicator) {
+                    // Copy the previous meta
+                    meta = lastQuestionIndicator.meta;
+                }
+            }
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 dataKey: row["Data Key"],
                 flipped: false, // TODO:
                 format: null, // TODO:
+                meta,
             };
         }
 
@@ -80,8 +111,18 @@ const parseMetaSheet = raw => {
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
+    const [regionLookup, setRegionLookup] = React.useState(null);
     const [datasets, setDatasets] = React.useState({});
     const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        (async () => {
+            const regions = await axios(
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:K`
+            ).then(d => d.data);
+            setRegionLookup(regions);
+        })();
+    }, []);
 
     React.useEffect(() => {
         (async () => {
@@ -132,11 +173,13 @@ const usePillarData = () => {
         loading,
         datasets,
         pillars,
+        regionLookup,
     };
 };
 
 function App() {
-    const { pillars, datasets, countryData, loading } = usePillarData();
+    const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
+
     const [activePillar, setActivePillar] = React.useState(null);
 
     React.useEffect(() => {
@@ -144,7 +187,12 @@ function App() {
         setActivePillar(pillars.find(d => d.visible));
     }, [pillars, activePillar]);
 
-    if (!pillars || !activePillar) return null; // TODO loader
+    const covidPillar = React.useMemo(() => {
+        if (!pillars) return null;
+        return pillars.find(d => d.covid);
+    }, [pillars]);
+
+    if (!pillars || !activePillar || !regionLookup) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -152,6 +200,7 @@ function App() {
                 <Header />
                 <Pillars
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     setActivePillar={setActivePillar}
                     pillars={pillars}
                 />
@@ -159,6 +208,7 @@ function App() {
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     pillars={pillars}
                 />
                 {/* <Filters /> */}
