@@ -49,11 +49,37 @@ const parseMetaSheet = raw => {
         // Indicator
         const ind = row["Indicator"];
         if (ind) {
+            let meta = null;
+            if (row["Time period"]) {
+                const names = row["Data source name"].split(";").map(d => d.trim());
+                const urls = row["Data source link"].split(";").map(d => d.trim());
+                const sources = names.map((name, i) => {
+                    return {
+                        name,
+                        url: urls[i],
+                    };
+                });
+                const countryCount = row["Number of Countries"];
+                meta = {
+                    currency: row["Time period"],
+                    sources,
+                    countryCount,
+                };
+            } else {
+                const lastQuestionIndicator = last(
+                    out[currentPillar].questions[currentQuestion].indicators
+                );
+                if (lastQuestionIndicator) {
+                    // Copy the previous meta
+                    meta = lastQuestionIndicator.meta;
+                }
+            }
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 dataKey: row["Data Key"],
                 flipped: false, // TODO:
                 format: null, // TODO:
+                meta,
             };
         }
 
