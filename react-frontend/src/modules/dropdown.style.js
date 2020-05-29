@@ -1,4 +1,5 @@
 const lightBlue = "#E9ECF6";
+const navy = "#110848";
 export default {
     control: (provided, state) => ({
         ...provided,
@@ -39,6 +40,9 @@ export default {
         paddingRight: 8,
         "> div": {
             paddingLeft: 4,
+        },
+        svg: {
+            color: navy,
         },
     }),
 
