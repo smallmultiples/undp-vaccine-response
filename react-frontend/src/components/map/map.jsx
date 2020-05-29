@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleLog } from "d3-scale";
+import { scaleSymlog, scaleLinear } from "d3-scale";
 import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
@@ -99,7 +99,7 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
 
 const useScales = (domains, currentIndicators) => {
     return React.useMemo(() => {
-        const circleScale = scaleLog().range([0, 16]).domain(domains.extents.radius);
+        const circleScale = scaleSymlog().range([0, 16]).domain(domains.extents.radius);
         const circleRadiusScale = row =>
             circleScale(getRowIndicatorValue(row, currentIndicators.radius));
 
