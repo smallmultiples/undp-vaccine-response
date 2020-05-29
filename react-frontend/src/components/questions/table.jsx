@@ -7,28 +7,31 @@ const Table = props => {
         <div className={styles.tableContainer}>
             <table className={styles.table} data-with-borders={withBorders}>
                 <thead className={styles.header}>
-                    {headings.map((h, i) => (
-                        <th
-                            className={styles.headerCell}
-                            style={{
-                                width:
-                                    i < fixedColumns
-                                        ? `${fixedColumnsWidth}%`
-                                        : `calc((100% - ${fixedColumnsWidth * fixedColumns}%) / ${
-                                              headings.length - fixedColumns
-                                          })`,
-                            }}
-                        >
-                            {h}
-                        </th>
-                    ))}
+                    <tr>
+                        {headings.map((h, i) => (
+                            <th
+                                key={`heading_${i}`}
+                                className={styles.headerCell}
+                                style={{
+                                    width:
+                                        i < fixedColumns
+                                            ? `${fixedColumnsWidth}%`
+                                            : `calc((100% - ${
+                                                  fixedColumnsWidth * fixedColumns
+                                              }%) / ${headings.length - fixedColumns})`,
+                                }}
+                            >
+                                {h}
+                            </th>
+                        ))}
+                    </tr>
                 </thead>
                 <tbody>
-                    {rows.map(r => {
+                    {rows.map((r, i) => {
                         return (
-                            <tr className={styles.row}>
-                                {r.map(cell => (
-                                    <td className={styles.cell}>{cell}</td>
+                            <tr className={styles.row} key={`row_${i}`}>
+                                {r.map((cell, i) => (
+                                    <td key={`cell_${i}`} className={styles.cell}>{cell}</td>
                                 ))}
                             </tr>
                         );

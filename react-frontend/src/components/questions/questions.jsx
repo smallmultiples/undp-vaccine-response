@@ -3,9 +3,27 @@ import styles from "./questions.module.scss";
 import Table from "./table";
 import { Chevron } from "../icons/icons";
 
+const COUNTRIES_TOTAL = 216;
+
 const Question = props => {
-    const { question } = props;
+    const { question, dataset } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(true);
+
+    const headersForCountryTable = ["Country", "Region"];
+
+    const rowsForOverviewTable = question.indicators.map(x => {
+        headersForCountryTable.push(x.label);
+        return [x.label, "one", "two", "three"];
+    });
+
+    const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
+        const arr = [x.Country, "Region"];
+        question.indicators.forEach(ind => {
+            arr.push(x[ind.dataKey]);
+        });
+        return arr;
+    });
+
     return (
         <div className={styles.question}>
             <div className={styles.questionText}>
@@ -30,26 +48,15 @@ const Question = props => {
             <div className={styles.overviewTable}>
                 <Table
                     headings={["Indicators", "Country coverage", "Currency", "Data source"]}
-                    rows={[
-                        ["one", "two", "three", "four"],
-                        ["one", "two", "three", "four"],
-                    ]}
+                    rows={rowsForOverviewTable}
                     fixedColumns={1}
                     fixedColumnsWidth={40}
                 />
             </div>
             <div className={styles.countryTable} data-visible={isPreviewShown}>
                 <Table
-                    headings={[
-                        "Country",
-                        "Region",
-                        "Number of hospital beds per 1,000 people",
-                        "Physicians per 1,000 people",
-                    ]}
-                    rows={[
-                        ["one", "two", "three", "four"],
-                        ["one", "two", "three", "four"],
-                    ]}
+                    headings={headersForCountryTable}
+                    rows={rowsForCountryTable || []}
                     fixedColumns={2}
                     fixedColumnsWidth={20}
                     withBorders={true}
@@ -66,13 +73,11 @@ const Question = props => {
 };
 
 const Questions = props => {
-    const { activePillar } = props;
-    console.log(activePillar);
-
+    const { activePillar, datasets } = props;
     return (
         <>
             {activePillar.questions.map(x => (
-                <Question key={x.key} question={x} />
+                <Question key={x.labelShort} question={x} dataset={datasets[x.sheet]} />
             ))}
         </>
     );
