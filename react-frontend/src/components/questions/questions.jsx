@@ -6,20 +6,24 @@ import Badge from "./badge";
 
 const COUNTRIES_TOTAL = 216;
 
-const Question = props => {
+const Question = (props) => {
     const { question, dataset, regionLookup, countryData } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(true);
 
     const headers = ["Country", "Region"];
 
-    const rowsForOverviewTable = question.indicators.map(x => {
+    const rowsForOverviewTable = question.indicators.map((x) => {
         const label = x.label;
         const countryCount = x.meta ? x.meta.countryCount : "";
 
-        const cc = <div className={styles.countryCount}>
-            <Badge percentage={countryCount * 100 / COUNTRIES_TOTAL} />
-            <div className={styles.label}>{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
-        </div>
+        const cc = (
+            <div className={styles.countryCount}>
+                <Badge percentage={(countryCount * 100) / COUNTRIES_TOTAL} />
+                <div
+                    className={styles.label}
+                >{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
+            </div>
+        );
 
         const currency = x.meta ? x.meta.currency : "";
         const sources = (
@@ -27,7 +31,11 @@ const Question = props => {
                 {x.meta?.sources.map((s, i) => {
                     return (
                         <span key={`link_${i}`}>
-                            <a href={s.url} target="_blank" rel="noopener noreferrer">
+                            <a
+                                href={s.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 {s.name}
                             </a>
                             {i < x.meta.sources.length - 1 && ", "}
@@ -45,11 +53,13 @@ const Question = props => {
         "Deaths, cumulative",
         "Death rate",
     ]);
-    const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
-        const region = regionLookup?.find(r => r["ISO-alpha3 Code"] === x["Alpha-3 code"]);
+    const rowsForCountryTable = dataset?.slice(0, 5).map((x) => {
+        const region = regionLookup?.find(
+            (r) => r["ISO-alpha3 Code"] === x["Alpha-3 code"]
+        );
         const country = countryData && countryData[x["Alpha-3 code"]];
         const arr = [x.Country, region["Region Name"] || ""];
-        question.indicators.forEach(ind => {
+        question.indicators.forEach((ind) => {
             arr.push(Math.round(x[ind.dataKey] * 10) / 10);
         });
         if (country) {
@@ -64,17 +74,12 @@ const Question = props => {
         <div className={styles.question}>
             <div className={styles.questionText}>
                 <div className={styles.label}>{question.label}</div>
-                <div className={styles.explanation}>
-                    Data coverage ranges from 90% to 100% of countries. Historical data is from 2010
-                    - 2018, with COVID-19 related data last updated 25 May 2020, sourced from World
-                    Bank and WHO.
-                </div>
                 <button className={styles.downloadButton}>Download CSV</button>
                 <button
                     className={styles.hideButton}
                     onClick={() => setIsPreviewShown(!isPreviewShown)}
                 >
-                    {isPreviewShown ? "Hide data peview" : "Show data preview"}
+                    {isPreviewShown ? "Hide data preview" : "Show data preview"}
                     <Chevron
                         className={styles.chevron}
                         data-direction={isPreviewShown ? "up" : "down"}
@@ -83,7 +88,12 @@ const Question = props => {
             </div>
             <div className={styles.overviewTable}>
                 <Table
-                    headings={["Indicators", "Country coverage", "Currency", "Data source"]}
+                    headings={[
+                        "Indicators",
+                        "Country coverage",
+                        "Currency",
+                        "Data source",
+                    ]}
                     rows={rowsForOverviewTable}
                     fixedColumns={2}
                     fixedColumnsWidth={30}
@@ -99,7 +109,9 @@ const Question = props => {
                     footer={
                         <div className={styles.summary}>
                             <div>201 more rows</div>
-                            <button className={styles.downloadButton}>Download CSV</button>
+                            <button className={styles.downloadButton}>
+                                Download CSV
+                            </button>
                         </div>
                     }
                 />
@@ -108,11 +120,11 @@ const Question = props => {
     );
 };
 
-const Questions = props => {
+const Questions = (props) => {
     const { activePillar, datasets, regionLookup, countryData } = props;
     return (
         <>
-            {activePillar.questions.map(x => (
+            {activePillar.questions.map((x) => (
                 <Question
                     key={x.labelShort}
                     question={x}
