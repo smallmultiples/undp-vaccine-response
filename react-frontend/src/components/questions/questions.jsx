@@ -53,12 +53,13 @@ const Question = (props) => {
         "Deaths, cumulative",
         "Death rate",
     ]);
+
     const rowsForCountryTable = dataset?.slice(0, 5).map((x) => {
         const region = regionLookup?.find(
             (r) => r["ISO-alpha3 Code"] === x["Alpha-3 code"]
         );
         const country = countryData && countryData[x["Alpha-3 code"]];
-        const arr = [x.Country, region["Region Name"] || ""];
+        const arr = [x["Country or Area"], region["Region Name"] || ""];
         question.indicators.forEach((ind) => {
             arr.push(Math.round(x[ind.dataKey] * 10) / 10);
         });

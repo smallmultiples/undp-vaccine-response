@@ -179,7 +179,9 @@ const MapTooltip = (props) => {
             }}
         >
             <div className={styles.tooltipHeader}>
-                <div className={styles.tooltipHeading}>{data.Country}</div>
+                <div className={styles.tooltipHeading}>
+                    {data["Country or Area"]}
+                </div>
             </div>
             <div className={styles.tooltipBody}>
                 <div className={styles.tooltipDatum}>
