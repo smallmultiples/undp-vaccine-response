@@ -155,7 +155,7 @@ const MapVis = (props) => {
 
 // TODO: module these
 const formatNumTemp = (number) =>
-    number === undefined ? "" : number.toFixed(3);
+    number === undefined || number === "" ? "" : number.toFixed(3);
 const getRowIndicatorValue = (row, indicator) => {
     return row[indicator.dataKey];
 };
