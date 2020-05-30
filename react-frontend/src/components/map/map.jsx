@@ -69,7 +69,7 @@ function hexToRgb(hex) {
     return result ? result.slice(1, 4).map((n) => parseInt(n, 16)) : null;
 }
 
-const bivariateColourMatrixHex = [
+const blueLightColourMatrixHex = [
     ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
     ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
     ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
@@ -77,12 +77,36 @@ const bivariateColourMatrixHex = [
     ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#F2F2F3"],
 ].map((d) => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
-const protectColourMatrixHex = [
-    ["#008F36", "#069172", "#0A919B", "#1192C3", "#1793EB"],
-    ["#00A036", "#17A472", "#24A69B", "#36A8C3", "#46AAEB"],
-    ["#00B136", "#24B772", "#40BB9B", "#24B772", "#00B136"],
-    ["#00C236", "#35CB72", "#59CF9B", "#7DD4C3", "#F6C5D4"],
-    ["#00D336", "#45DE72", "#73E49B", "#A0EAC3", "#CEF0EB"],
+const blueMidColourMatrixHex = [
+    ["#002656", "#3D3664", "#794471", "#B6527F", "#F4618D"],
+    ["#003665", "#3D4875", "#7B5B85", "#B96F95", "#F782A5"],
+    ["#004072", "#3E5884", "#7C7096", "#BA87A8", "#F99FBA"],
+    ["#005082", "#3C6D97", "#7A8BAB", "#B8A8C0", "#F6C5D4"],
+    ["#006295", "#3C86AD", "#78AAC4", "#B5CEDC", "#F2F2F3"],
+].map((d) => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
+
+const blueDarkMatrixHex = [
+    ["#161A3A", "#502C50", "#853E64", "#BD5078", "#F4618D"],
+    ["#162344", "#503D5D", "#875375", "#BF6B8D", "#F782A5"],
+    ["#162C4D", "#514969", "#886684", "#C1829F", "#F99FBA"],
+    ["#163758", "#505B77", "#877E96", "#BFA2B5", "#F6C5D4"],
+    ["#164465", "#4E6F89", "#849BAC", "#BBC7CF", "#F2F2F3"],
+].map((d) => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
+
+const greenColourMatrixHex = [
+    ["#524916", "#7B5036", "#A35552", "#CB5B6F", "#F4618D"],
+    ["#53611A", "#7C6A3E", "#A57260", "#CE7A82", "#F782A5"],
+    ["#53771E", "#7D8146", "#A68B6C", "#CF9593", "#F99FBA"],
+    ["#529422", "#7CA050", "#A4AD7B", "#CDB9A7", "#F6C5D4"],
+    ["#51B627", "#7AC55C", "#A2D48D", "#CAE3C0", "#F2F2F3"],
+].map((d) => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
+
+const yellowColourMatrixHex = [
+    ["#F14A02", "#F25027", "#F35549", "#F45B6B", "#F4618D"],
+    ["#F46303", "#F56B2E", "#F67256", "#F77A7D", "#F782A5"],
+    ["#F67904", "#F78336", "#F88C61", "#F9958D", "#F99FBA"],
+    ["#F39605", "#F4A33D", "#F5AD6E", "#F6B9A1", "#F6C5D4"],
+    ["#EFB906", "#F0C844", "#F1D57E", "#F2E3B8", "#F2F2F3"],
 ].map((d) => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
 const HDIColourMatrixHex = [
@@ -93,7 +117,7 @@ const HDIColourMatrixHex = [
     ["#F16821", "#F3D516", "#CBE350", "#2EB872", "#2EB872"],
 ];
 
-const bivariateColourMatrix = bivariateColourMatrixHex.map((row) =>
+const blueLightColourMatrix = blueLightColourMatrixHex.map((row) =>
     row.map((colour) => hexToRgb(colour))
 );
 
@@ -101,26 +125,38 @@ const HDIColourMatrix = HDIColourMatrixHex.map((row) =>
     row.map((colour) => hexToRgb(colour))
 );
 
-const protectColourMatrix = protectColourMatrixHex.map((row) =>
+const blueMidColourMatrix = blueMidColourMatrixHex.map((row) =>
+    row.map((colour) => hexToRgb(colour))
+);
+
+const blueDarkMatrix = blueDarkMatrixHex.map((row) =>
+    row.map((colour) => hexToRgb(colour))
+);
+
+const greenColourMatrix = greenColourMatrixHex.map((row) =>
+    row.map((colour) => hexToRgb(colour))
+);
+
+const yellowColourMatrix = yellowColourMatrixHex.map((row) =>
     row.map((colour) => hexToRgb(colour))
 );
 
 const colourMatrices = {
-    Health: bivariateColourMatrix,
-    Protect: protectColourMatrix,
+    Health: blueLightColourMatrix,
+    Protect: blueMidColourMatrix,
     "Human Development Index": HDIColourMatrix,
-    Economic: bivariateColourMatrix,
-    Macro: bivariateColourMatrix,
-    Cohesion: bivariateColourMatrix,
+    Economic: yellowColourMatrix,
+    Macro: greenColourMatrix,
+    Cohesion: blueDarkMatrix,
 };
 
 const colourMatricesHex = {
-    Health: bivariateColourMatrixHex,
-    Protect: protectColourMatrixHex,
+    Health: blueLightColourMatrixHex,
+    Protect: blueMidColourMatrixHex,
     "Human Development Index": HDIColourMatrixHex,
-    Economic: bivariateColourMatrixHex,
-    Macro: bivariateColourMatrixHex,
-    Cohesion: bivariateColourMatrixHex,
+    Economic: yellowColourMatrixHex,
+    Macro: greenColourMatrixHex,
+    Cohesion: blueDarkMatrixHex,
 };
 
 const getRowIndicatorValue = (row, indicator) => {
