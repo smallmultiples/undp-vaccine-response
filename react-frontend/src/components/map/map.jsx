@@ -268,7 +268,7 @@ const useScales = (domains, currentIndicators, activePillar) => {
             stroke: strokeScale,
             colorMatrix: uniqueColourMatrixHex, // hack for friday
         };
-    }, [domains, currentIndicators]);
+    }, [domains, currentIndicators, activePillar]);
 };
 
 const Map = props => {
