@@ -31,7 +31,9 @@ const Table = props => {
                         return (
                             <tr className={styles.row} key={`row_${i}`}>
                                 {r.map((cell, i) => (
-                                    <td key={`cell_${i}`} className={styles.cell}>{cell}</td>
+                                    <td key={`cell_${i}`} className={styles.cell}>
+                                        {cell}
+                                    </td>
                                 ))}
                             </tr>
                         );

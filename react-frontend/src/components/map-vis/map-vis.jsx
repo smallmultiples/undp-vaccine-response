@@ -14,16 +14,14 @@ const useGeoData = () => {
     React.useEffect(() => {
         // Only load shapes once.
         (async () => {
-            const res = await axios(
-                `${process.env.PUBLIC_URL}/data/world.topojson`
-            );
+            const res = await axios(`${process.env.PUBLIC_URL}/data/world.topojson`);
             const fc = topojsonParse(res.data, "world");
             setShapeData(fc);
         })();
     }, []);
 
     const loading = React.useMemo(() => {
-        return [shapeData].some((d) => !d);
+        return [shapeData].some(d => !d);
     }, [shapeData]);
 
     return {
@@ -61,9 +59,9 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
         );
     }, [mapContainerDimensions, viewport]);
 
-    const handleViewStateChange = React.useCallback((newState) => {
+    const handleViewStateChange = React.useCallback(newState => {
         setViewport(
-            (v) =>
+            v =>
                 new WebMercatorViewport({
                     ...v,
                     ...newState.viewState,
@@ -74,45 +72,31 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
     return [mapContainerRef, viewport, handleViewStateChange];
 };
 
-const MapVis = (props) => {
-    const {
-        normalizedData,
-        countryDataLoading,
-        scales,
-        currentIndicators,
-    } = props;
-    const [
-        mapContainerRef,
-        viewport,
-        handleViewStateChange,
-    ] = useDeckViewport();
+const MapVis = props => {
+    const { normalizedData, countryDataLoading, scales, currentIndicators } = props;
+    const [mapContainerRef, viewport, handleViewStateChange] = useDeckViewport();
     const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
 
-    const loading = [geoLoading, countryDataLoading].some((d) => d);
+    const loading = [geoLoading, countryDataLoading].some(d => d);
 
     const layers = [
         new GeoJsonLayer({
             id: "world",
             data: shapeData,
             filled: true,
-            getFillColor: (shape) => {
-                const row =
-                    normalizedData &&
-                    normalizedData[shape.properties[GEO_SHAPE_ID]];
+            getFillColor: shape => {
+                const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.color(row);
             },
             stroked: true,
-            getLineColor: (shape) => {
-                const row =
-                    normalizedData &&
-                    normalizedData[shape.properties[GEO_SHAPE_ID]];
+            getLineColor: shape => {
+                const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
             lineWidthMinPixels: 0.5,
             pickable: true,
-            onHover: (info) =>
-                info.object ? setTooltip(info) : setTooltip(null),
+            onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
                 getLineColor: [normalizedData, currentIndicators],
@@ -154,13 +138,12 @@ const MapVis = (props) => {
 };
 
 // TODO: module these
-const formatNumTemp = (number) =>
-    number === undefined || number === "" ? "" : number.toFixed(3);
+const formatNumTemp = number => (number === undefined || number === "" ? "" : number.toFixed(3));
 const getRowIndicatorValue = (row, indicator) => {
     return row[indicator.dataKey];
 };
 
-const MapTooltip = (props) => {
+const MapTooltip = props => {
     const { tooltip, normalizedData, currentIndicators } = props;
 
     const data = React.useMemo(() => {
@@ -179,19 +162,12 @@ const MapTooltip = (props) => {
             }}
         >
             <div className={styles.tooltipHeader}>
-                <div className={styles.tooltipHeading}>
-                    {data["Country or Area"]}
-                </div>
+                <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(
-                            getRowIndicatorValue(
-                                data,
-                                currentIndicators.bivariateX
-                            )
-                        )}
+                        {formatNumTemp(getRowIndicatorValue(data, currentIndicators.bivariateX))}
                     </div>
                     <div className={styles.tooltipDatumLabel}>
                         {currentIndicators.bivariateX.label}
@@ -199,12 +175,7 @@ const MapTooltip = (props) => {
                 </div>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(
-                            getRowIndicatorValue(
-                                data,
-                                currentIndicators.bivariateY
-                            )
-                        )}
+                        {formatNumTemp(getRowIndicatorValue(data, currentIndicators.bivariateY))}
                     </div>
                     <div className={styles.tooltipDatumLabel}>
                         {currentIndicators.bivariateY.label}
@@ -215,33 +186,17 @@ const MapTooltip = (props) => {
     );
 };
 
-const CircleVis = (props) => {
+const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators } = props;
 
     if (!currentIndicators.radiusEnabled) return null;
 
-    const circles = Object.values(normalizedData).map((row) => {
-        if (
-            [row["Longitude (average)"], row["Latitude (average)"]].some(
-                (d) => !d
-            )
-        )
-            return null;
-        const [x, y] = viewport.project([
-            row["Longitude (average)"],
-            row["Latitude (average)"],
-        ]);
+    const circles = Object.values(normalizedData).map(row => {
+        if ([row["Longitude (average)"], row["Latitude (average)"]].some(d => !d)) return null;
+        const [x, y] = viewport.project([row["Longitude (average)"], row["Latitude (average)"]]);
         const r = scales.radius(row);
         if (isNaN(r)) return null;
-        return (
-            <circle
-                key={row[SHEET_ROW_ID]}
-                className={styles.visCircle}
-                cx={x}
-                cy={y}
-                r={r}
-            />
-        );
+        return <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />;
     });
 
     return (

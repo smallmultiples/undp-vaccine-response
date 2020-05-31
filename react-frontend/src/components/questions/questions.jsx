@@ -6,13 +6,13 @@ import Badge from "./badge";
 
 const COUNTRIES_TOTAL = 249;
 
-const Question = (props) => {
+const Question = props => {
     const { question, dataset, regionLookup, countryData } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(true);
 
     const headers = ["Country", "Region"];
 
-    const rowsForOverviewTable = question.indicators.map((x) => {
+    const rowsForOverviewTable = question.indicators.map(x => {
         const label = x.label;
         const countryCount = x.meta ? x.meta.countryCount : "";
 
@@ -31,11 +31,7 @@ const Question = (props) => {
                 {x.meta?.sources.map((s, i) => {
                     return (
                         <span key={`link_${i}`}>
-                            <a
-                                href={s.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                            <a href={s.url} target="_blank" rel="noopener noreferrer">
                                 {s.name}
                             </a>
                             {i < x.meta.sources.length - 1 && ", "}
@@ -54,13 +50,11 @@ const Question = (props) => {
         "Death rate",
     ]);
 
-    const rowsForCountryTable = dataset?.slice(0, 5).map((x) => {
-        const region = regionLookup?.find(
-            (r) => r["ISO-alpha3 Code"] === x["Alpha-3 code"]
-        );
+    const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
+        const region = regionLookup?.find(r => r["ISO-alpha3 Code"] === x["Alpha-3 code"]);
         const country = countryData && countryData[x["Alpha-3 code"]];
         const arr = [x["Country or Area"], region["Region Name"] || ""];
-        question.indicators.forEach((ind) => {
+        question.indicators.forEach(ind => {
             arr.push(Math.round(x[ind.dataKey] * 10) / 10);
         });
         if (country) {
@@ -89,12 +83,7 @@ const Question = (props) => {
             </div>
             <div className={styles.overviewTable}>
                 <Table
-                    headings={[
-                        "Indicators",
-                        "Coverage",
-                        "Currency",
-                        "Data source",
-                    ]}
+                    headings={["Indicators", "Coverage", "Currency", "Data source"]}
                     rows={rowsForOverviewTable}
                     fixedColumns={2}
                     fixedColumnsWidth={30}
@@ -110,9 +99,7 @@ const Question = (props) => {
                     footer={
                         <div className={styles.summary}>
                             <div>201 more rows</div>
-                            <button className={styles.downloadButton}>
-                                Download CSV
-                            </button>
+                            <button className={styles.downloadButton}>Download CSV</button>
                         </div>
                     }
                 />
@@ -121,11 +108,11 @@ const Question = (props) => {
     );
 };
 
-const Questions = (props) => {
+const Questions = props => {
     const { activePillar, datasets, regionLookup, countryData } = props;
     return (
         <>
-            {activePillar.questions.map((x) => (
+            {activePillar.questions.map(x => (
                 <Question
                     key={x.labelShort}
                     question={x}

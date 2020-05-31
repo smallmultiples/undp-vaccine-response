@@ -4,9 +4,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
-    grid-template-areas: 
-      "qText overview overview"
-      "country country country";
+    grid-template-areas:
+        "qText overview overview"
+        "country country country";
     margin: 36px auto;
 }
 

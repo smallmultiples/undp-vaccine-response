@@ -31,9 +31,7 @@ const Badge = props => {
                 <path className={styles.pathFill} d={path} />
             </svg>
             <div className={styles.textOverlay}>
-                <span className={styles.valueText}>
-                    {Math.round(percentage)}%
-                </span>
+                <span className={styles.valueText}>{Math.round(percentage)}%</span>
             </div>
         </div>
     );
