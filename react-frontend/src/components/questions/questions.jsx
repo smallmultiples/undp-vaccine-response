@@ -4,7 +4,7 @@ import Table from "./table";
 import { Chevron } from "../icons/icons";
 import Badge from "./badge";
 
-const COUNTRIES_TOTAL = 216;
+const COUNTRIES_TOTAL = 249;
 
 const Question = (props) => {
     const { question, dataset, regionLookup, countryData } = props;
@@ -21,7 +21,7 @@ const Question = (props) => {
                 <Badge percentage={(countryCount * 100) / COUNTRIES_TOTAL} />
                 <div
                     className={styles.label}
-                >{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
+                >{`${countryCount} / ${COUNTRIES_TOTAL} countries and areas`}</div>
             </div>
         );
 
@@ -91,7 +91,7 @@ const Question = (props) => {
                 <Table
                     headings={[
                         "Indicators",
-                        "Country coverage",
+                        "Coverage",
                         "Currency",
                         "Data source",
                     ]}
