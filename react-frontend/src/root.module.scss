@@ -1,0 +1,13 @@
+@import "./variables.scss";
+
+.root {
+    font-family: $font-neuzeit;
+    color: $color-navy;
+}
+
+.container {
+    width: 100vw;
+    max-width: $container-width;
+    padding-bottom: 400px;
+    margin: 0 auto;
+}

@@ -1,0 +1,216 @@
+@import "../../variables.scss";
+
+$bottomPadding: 27px;
+
+.mapFiltersLegends {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+// ------
+
+.bivariateIndicatorSelection {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: $bottomPadding;
+
+    .bivariateIndicatorItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        &:not(:last-child) {
+            margin-bottom: 24px;
+        }
+
+        .bivariateIndicatorDropdownWrap {
+            width: 320px;
+            margin-left: 8px;
+        }
+    }
+}
+
+// ----
+
+.checkbox {
+    width: 14px;
+    height: 14px;
+    border: 2px solid $color-blue-bg;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 0.2s, border-color 0.2s;
+
+    &[data-selected="true"] {
+        background: $color-navy;
+        border-color: $color-navy;
+    }
+
+    svg {
+        min-width: 11px;
+    }
+}
+
+// -----
+
+.radiusIndicatorSelection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 48px;
+    padding-bottom: $bottomPadding;
+}
+
+.toggle {
+    position: relative;
+    border: 2px solid $color-blue-bg;
+    height: 36px;
+    border-radius: 18px;
+    width: 290px;
+    overflow: hidden;
+    margin-left: 16px;
+
+    .toggleOption {
+        background: none;
+        border: none;
+        outline: none;
+        height: 36px;
+        padding: 0 16px;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: $font-anonymous;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 14px;
+        opacity: 0.25;
+        transition: opacity 0.2s;
+        &[data-active="true"] {
+            opacity: 1;
+        }
+    }
+
+    .toggleSlide {
+        position: absolute;
+        top: 2px;
+        bottom: 2px;
+        transition: left 0.2s;
+        background: $color-blue-bg;
+        z-index: -1;
+        border-radius: 18px;
+    }
+}
+
+// ------
+
+.bivariateLegend {
+    position: relative;
+    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 48px;
+}
+
+.bivariateLegendTop {
+    display: flex;
+    align-items: center;
+}
+
+.bivariateLegendBottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+$l-w: 120px;
+$lc-w: $l-w / 3;
+.legendColour {
+    display: flex;
+    flex-direction: column;
+    width: $l-w;
+}
+
+.legendColourRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.legendColourCell {
+    width: $lc-w;
+    height: $lc-w;
+    transition: border 0.2s;
+    border: 1px solid $color-blue-bg;
+    transition: background 0.2s;
+    &[data-disabled="true"] {
+        background: none !important;
+    }
+}
+.legendColourSpan {
+    display: flex;
+    justify-content: space-between;
+
+    &[data-y="true"] {
+        flex-direction: column;
+        margin-right: 8px;
+        height: $l-w;
+    }
+    &[data-x="true"] {
+        width: $l-w;
+        margin-top: 8px;
+    }
+}
+
+.legendColourSpanValue {
+    @include bodySmall();
+    font-weight: bold;
+    display: flex;
+
+    &[data-y="true"] {
+        flex-direction: column;
+        align-items: center;
+        svg:first-child {
+            margin-bottom: 8px;
+        }
+        svg:last-child {
+            margin-top: 8px;
+        }
+    }
+    &[data-x="true"] {
+        svg:first-child {
+            margin-right: 8px;
+        }
+        svg:last-child {
+            margin-left: 8px;
+        }
+    }
+}
+
+.legendYLabelContainer {
+    position: relative;
+}
+
+.bivariateAxisLabelX,
+.bivariateAxisLabelY {
+    @include buttonFont(center);
+    font-size: 12px;
+    line-height: 10px;
+    max-width: $l-w;
+}
+
+.bivariateAxisLabelX {
+}
+
+.bivariateAxisLabelY {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform-origin: center center;
+    transform: translateX(-100%) rotate(-90deg);
+}

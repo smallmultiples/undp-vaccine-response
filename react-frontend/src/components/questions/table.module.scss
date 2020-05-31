@@ -1,0 +1,49 @@
+@import "../../variables.scss";
+
+.tableContainer {
+    width: 100%;
+    position: relative;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    &[data-with-borders="true"] {
+        border: 3px solid $color-blue-bg;
+        .header {
+            border-bottom: 3px solid $color-blue-bg;
+        }
+    }
+    .header {
+        border-bottom: 2px solid $color-navy;
+    }
+}
+
+.headerCell {
+    text-align: start;
+    vertical-align: top;
+    padding: 12px 24px;
+}
+
+.row {
+    border-bottom: 1px solid $color-blue-bg;
+    font-family: $font-anonymous;
+}
+
+.cell {
+    padding: 12px 24px;
+
+    &:first-of-type {
+        font-weight: bold;
+    }
+}
+
+.footer {
+    width: 100%;
+    display: table;
+    background: $color-blue-bg;
+    border: 3px solid $color-blue-bg;
+    padding: 12px 24px;
+    box-sizing: border-box;
+    margin-top: -2px;
+}

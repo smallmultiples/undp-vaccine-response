@@ -1,0 +1,53 @@
+@import "../../variables.scss";
+
+// -----
+
+.pillarControl {
+    margin-bottom: 24px;
+
+    .pillarLabel {
+        @include body();
+        font-weight: bold;
+    }
+
+    .pillarButtons {
+        display: flex;
+        flex-direction: row;
+        .pillarButton {
+            background: none;
+            outline: none;
+            cursor: pointer;
+            border: 2px solid $color-navy;
+            padding: 12px 16px;
+            @include buttonFont();
+
+            &[data-selected="true"] {
+                background: $color-yellow;
+            }
+            &:not(:last-child) {
+                margin-right: 24px;
+            }
+        }
+    }
+}
+// ----
+
+.pillarInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+
+    .pillarInfoText {
+        flex-grow: 1;
+        .pillarHeading {
+            @include h1();
+        }
+
+        .pillarDescription {
+            @include body();
+            margin-bottom: 0;
+        }
+    }
+}
