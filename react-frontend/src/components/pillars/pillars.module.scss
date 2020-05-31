@@ -47,7 +47,8 @@
 
         .pillarDescription {
             @include body();
-            margin-bottom: 0;
+            margin-bottom: 8px;
+            max-width: 800px;
         }
     }
 }

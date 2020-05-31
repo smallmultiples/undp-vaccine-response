@@ -26,6 +26,7 @@ const parseMetaSheet = raw => {
             out[currentPillar] = {
                 label: currentPillar,
                 labelShort: currentPillar,
+                description: row["Pillar Description"],
                 questions: {},
                 visible: currentPillar !== "ALL",
                 covid: currentPillar === "ALL",
