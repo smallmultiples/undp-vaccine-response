@@ -141,7 +141,7 @@ const MapVis = props => {
 // TODO: module these
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipKey || indicator.dataKey];
-    if (isNil(val) || val === "") return null;
+    if (isNil(val) || val === "") return "-";
     return indicator.format(val);
 };
 
