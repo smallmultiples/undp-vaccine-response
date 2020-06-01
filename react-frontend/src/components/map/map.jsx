@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleSymlog } from "d3-scale";
+import { scaleSymlog, scaleLinear } from "d3-scale";
 import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
@@ -47,55 +47,17 @@ const useDomains = (countryData, currentIndicators) => {
             if (xHdi) {
                 jenksX = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                const geostatsX = new Geostats(valuesX);
-                const xUnique = geostatsX.getUniqueValues().sort((a, b) => a - b);
-
-                if (false && xUnique.length >= 5) {
-                    jenksX = geostatsX.getJenks2(5).sort((a, b) => a - b);
-                } else {
-                    if (xUnique.length === 1) {
-                        return [
-                            xUnique[0],
-                            xUnique[0],
-                            xUnique[0],
-                            xUnique[0],
-                            xUnique[0],
-                            xUnique[0],
-                        ];
-                    } else {
-                        // Linear buckets.
-                        const first = xUnique[0];
-                        const last = xUnique[xUnique.length - 1];
-
-                        jenksX = range(first, last, (last - first) / 5).concat(last);
-                    }
-                }
+                const extents = extent(valuesX);
+                const scale = scaleLinear().range(extents).domain([0, 1]);
+                jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
             }
 
             if (yHdi) {
                 jenksY = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                const geostatsY = new Geostats(valuesY);
-                const yUnique = geostatsY.getUniqueValues().sort((a, b) => a - b);
-                if (false && yUnique.length >= 5) {
-                    jenksY = geostatsY.getJenks2(5).sort((a, b) => a - b);
-                } else {
-                    if (yUnique.length === 1) {
-                        return [
-                            yUnique[0],
-                            yUnique[0],
-                            yUnique[0],
-                            yUnique[0],
-                            yUnique[0],
-                            yUnique[0],
-                        ];
-                    } else {
-                        // Linear buckets.
-                        const first = yUnique[0];
-                        const last = yUnique[yUnique.length - 1];
-                        jenksY = range(first, last, (last - first) / 5).concat(last);
-                    }
-                }
+                const extents = extent(valuesY);
+                const scale = scaleLinear().range(extents).domain([0, 1]);
+                jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
             }
         }
 
