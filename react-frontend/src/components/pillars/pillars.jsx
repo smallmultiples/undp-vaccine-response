@@ -17,12 +17,12 @@ const PillarControl = props => {
                         const selected = pillar === activePillar;
                         return (
                             <button
-                                key={pillar.labelShort}
+                                key={pillar.labelLong}
                                 className={styles.pillarButton}
                                 onClick={() => setActivePillar(pillar)}
                                 data-selected={selected}
                             >
-                                {pillar.labelShort}
+                                {pillar.labelLong}
                             </button>
                         );
                     })}
@@ -37,7 +37,7 @@ const PillarInfo = props => {
     return (
         <div className={styles.pillarInfo}>
             <div className={styles.pillarInfoText}>
-                <div className={styles.pillarHeading}>{activePillar.label}</div>
+                <div className={styles.pillarHeading}>{activePillar.labelLong}</div>
                 <p className={styles.pillarDescription}>{activePillar.description}</p>
             </div>
         </div>

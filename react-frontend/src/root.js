@@ -26,7 +26,8 @@ const parseMetaSheet = raw => {
             currentPillar = last(row.col0.split(" "));
             out[currentPillar] = {
                 label: currentPillar,
-                labelShort: currentPillar,
+                labelLong: row["Pillar long"],
+                tagline: row["Pillar tagline"],
                 description: row["Pillar Description"],
                 questions: {},
                 visible: currentPillar !== "ALL",
