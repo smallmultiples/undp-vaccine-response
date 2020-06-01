@@ -190,13 +190,11 @@ const useScales = (domains, currentIndicators, activePillar) => {
                 if (valY === null) return NULL_SHAPE_FILL;
             }
 
-            // hack for friday
-            const uniqueColourMatrix = colourMatrices[currentIndicators.bivariateX.dataKey]
-                ? colourMatrices[currentIndicators.bivariateX.dataKey]
-                : colourMatrices[activePillar.label];
+            const uniqueColourMatrix =
+                colourMatrices[currentIndicators.bivariateX.dataKey] ||
+                colourMatrices[activePillar.label];
 
             const maxIndex = uniqueColourMatrix.length - 1;
-            // end hack for friday
 
             const normX = getNormalFromJenks(
                 domains.categories.x,
