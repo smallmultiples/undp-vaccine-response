@@ -221,15 +221,8 @@ const RadiusIndicatorSelection = props => {
 };
 
 const BivariateLegend = props => {
-    const { scales, currentIndicators } = props;
+    const { currentIndicators } = props;
     const { categories } = props.domains;
-    const { bivariateXEnabled, bivariateYEnabled } = currentIndicators;
-    const bivariateColourMatrixHex = scales.colorMatrix;
-
-    const xOnlyDisabled = !bivariateXEnabled && bivariateYEnabled;
-    const yOnlyDisabled = !bivariateYEnabled && bivariateXEnabled;
-    const bothDisabled = !bivariateXEnabled && !bivariateYEnabled;
-    const eitherDisabled = !bivariateXEnabled || !bivariateYEnabled;
 
     const formatX = currentIndicators.bivariateX.format;
     const formatY = currentIndicators.bivariateY.format;
@@ -258,59 +251,7 @@ const BivariateLegend = props => {
                     </div>
                 </div>
 
-                <div className={styles.legendColour}>
-                    <div className={styles.legendColourRow}>
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[0][0] }}
-                            data-disabled={bothDisabled || yOnlyDisabled}
-                        />
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[0][2] }}
-                            data-disabled={eitherDisabled}
-                        />
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[0][4] }}
-                            data-disabled={eitherDisabled}
-                        />
-                    </div>
-                    <div className={styles.legendColourRow}>
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[2][0] }}
-                            data-disabled={bothDisabled || yOnlyDisabled}
-                        />
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[2][2] }}
-                            data-disabled={eitherDisabled}
-                        />
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[2][4] }}
-                            data-disabled={eitherDisabled}
-                        />
-                    </div>
-                    <div className={styles.legendColourRow}>
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[4][0] }}
-                            data-disabled={false}
-                        />
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[4][2] }}
-                            data-disabled={bothDisabled || xOnlyDisabled}
-                        />
-                        <div
-                            className={styles.legendColourCell}
-                            style={{ background: bivariateColourMatrixHex[4][4] }}
-                            data-disabled={bothDisabled || xOnlyDisabled}
-                        />
-                    </div>
-                </div>
+                <BivariateLegendGrid {...props} />
             </div>
             <div className={styles.bivariateLegendBottom}>
                 <div className={styles.legendColourSpan} data-x={true}>
@@ -329,6 +270,50 @@ const BivariateLegend = props => {
             </div>
         </div>
     );
+};
+
+const BivariateLegendGrid = props => {
+    const { scales, currentIndicators } = props;
+    const { bivariateXEnabled, bivariateYEnabled } = currentIndicators;
+    const bivariateColourMatrixHex = scales.colorMatrix;
+
+    const xDisabled = !bivariateXEnabled;
+    const yDisabled = !bivariateYEnabled;
+
+    const rows = bivariateColourMatrixHex.map((colHexes, rowIndex) => {
+        const cols = colHexes.map((hex, colIndex) => {
+            let disabled = false;
+
+            // Only bot left if both disabled
+            if (xDisabled && yDisabled) {
+                if (rowIndex > 0 || colIndex > 0) disabled = true;
+            }
+
+            if (xDisabled) {
+                if (colIndex > 0) disabled = true;
+            }
+
+            if (yDisabled) {
+                if (rowIndex < bivariateColourMatrixHex.length - 1) disabled = true;
+            }
+
+            return (
+                <div
+                    key={colIndex}
+                    className={styles.legendColourCell}
+                    style={{ background: hex }}
+                    data-disabled={disabled}
+                />
+            );
+        });
+        return (
+            <div key={rowIndex} className={styles.legendColourRow}>
+                {cols}
+            </div>
+        );
+    });
+
+    return <div className={styles.legendColour}>{rows}</div>;
 };
 
 export default MapFiltersLegends;

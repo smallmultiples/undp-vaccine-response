@@ -201,8 +201,8 @@ $bottomPadding: 27px;
     justify-content: flex-end;
 }
 
-$l-w: 120px;
-$lc-w: $l-w / 3;
+$l-w: 105px;
+$lc-w: $l-w / 5;
 .legendColour {
     display: flex;
     flex-direction: column;
@@ -217,8 +217,6 @@ $lc-w: $l-w / 3;
 .legendColourCell {
     width: $lc-w;
     height: $lc-w;
-    transition: border 0.2s;
-    border: 1px solid $color-blue-bg;
     transition: background 0.2s;
     &[data-disabled="true"] {
         background: none !important;
