@@ -2,11 +2,11 @@
 
 .question {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: auto;
     grid-template-areas:
-        "qText overview overview"
-        "country country country";
+        "qText overview overview overview"
+        "country country country country";
     margin: 36px auto;
 }
 
@@ -46,7 +46,7 @@
 
 .overviewTable {
     grid-area: overview;
-    padding-left: 48px;
+    padding-left: 24px;
     margin-bottom: 24px;
 
     .countryCount {

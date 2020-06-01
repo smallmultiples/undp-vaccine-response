@@ -3,6 +3,7 @@ $font-proxima: "proxima-nova", "Helvetica Neue", "serif";
 $color-blue-bg: #e9ecf6;
 $color-navy: #110848;
 $color-yellow: #e9ce2c;
+$color-dark-grey: #383838;
 
 $container-width: 1166px;
 
@@ -68,6 +69,17 @@ $container-width: 1166px;
     font-weight: normal;
     font-size: 16px;
     line-height: 19px;
+}
+
+@mixin bodyXSmall($text-align: "") {
+    @if $text-align != "" {
+        text-align: $text-align;
+    }
+    font-family: $font-proxima;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
 }
 
 @mixin buttonFont($text-align: "") {

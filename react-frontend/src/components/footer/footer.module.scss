@@ -1,0 +1,38 @@
+@import "../../variables.scss";
+
+.container {
+    background: #383838;
+    padding: 50px 20px 20px 20px;
+    font-size: 0.8rem;
+    -webkit-box-shadow: inset 0px 150px 100px -110px rgba(0, 0, 0, 0.71);
+    box-shadow: inset 0px 150px 100px -110px rgba(0, 0, 0, 0.71);
+}
+
+.logo {
+    width: 64px;
+    margin: auto;
+    display: block;
+}
+
+.nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+.nav a {
+    display: block;
+    margin: 10px 5px;
+    padding: 10px 5px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.copyright {
+    text-align: center;
+    color: #dbdbdb;
+}

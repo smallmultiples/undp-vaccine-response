@@ -7,6 +7,7 @@ import Pillars from "./components/pillars/pillars";
 import Questions from "./components/questions/questions";
 import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
+import Footer from "./components/footer/footer";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
@@ -199,8 +200,8 @@ function App() {
 
     return (
         <div className={styles.root}>
+            <Header />
             <div className={styles.container}>
-                <Header />
                 <Pillars
                     activePillar={activePillar}
                     covidPillar={covidPillar}
@@ -222,6 +223,7 @@ function App() {
                     countryData={countryData}
                 />
             </div>
+            <Footer />
         </div>
     );
 }
