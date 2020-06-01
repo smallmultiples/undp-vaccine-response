@@ -75,8 +75,8 @@ const useDomains = (countryData, currentIndicators) => {
                 jenksY = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
                 const geostatsY = new Geostats(valuesY);
-
                 const yUnique = geostatsY.getUniqueValues();
+                console.log({ yUnique });
 
                 if (yUnique.length >= 5) {
                     jenksY = geostatsY.getJenks2(5);
@@ -195,11 +195,11 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - v : v;
 };
 
-const hdiColors = ["#2EB872", "#CBE350", "#F3D516", "#F16821"];
+const hdiColors = ["#2EB872", "#CBE350", "#F3D516", "#F16821"].reverse();
 const getColorMatrices = (activePillar, xHdi, yHdi) => {
     let colorMatrixHex = colourMatricesHex[activePillar.label];
 
-    const saturations = [0, 0.5, 1, 1.5, 2];
+    const saturations = [0, 0.5, 1, 1.5, 4];
 
     if (xHdi || (xHdi && yHdi)) {
         // Adjust colour scale.
@@ -233,8 +233,8 @@ const useScales = (domains, currentIndicators, activePillar) => {
         circleRadiusScale.range = circleScale.range;
         circleRadiusScale.domain = circleScale.domain;
 
-        const xHdi = currentIndicators.bivariateX.hdi;
-        const yHdi = currentIndicators.bivariateY.hdi;
+        const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
+        const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
 
         let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, xHdi, yHdi);
 
@@ -254,7 +254,8 @@ const useScales = (domains, currentIndicators, activePillar) => {
                 if (valY === null) return NULL_SHAPE_FILL;
             }
 
-            const maxIndex = colorMatrix.length - 1;
+            const maxIndexX = colorMatrix[0].length - 1;
+            const maxIndexY = colorMatrix.length - 1;
 
             const normX = getNormalFromJenks(
                 domains.categories.x,
@@ -269,18 +270,30 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
             // Default to bottom/left cell
             let xIndex = 0;
-            let yIndex = maxIndex;
+            let yIndex = maxIndexY;
 
             if (currentIndicators.bivariateXEnabled) {
-                xIndex = Math.floor(normX * maxIndex);
+                xIndex = Math.floor(normX * maxIndexX);
             }
             if (currentIndicators.bivariateYEnabled) {
                 // input colours are from top to bottom, not bottom to top so we deduct
-                yIndex = maxIndex - Math.floor(normY * maxIndex);
+                yIndex = maxIndexY - Math.floor(normY * maxIndexY);
             }
 
             if (currentIndicators.bivariateX.hdi) {
-                console.log({ valX, valY, normX, normY, xIndex, yIndex });
+                if (!currentIndicators.bivariateYEnabled) {
+                    // Always go full saturation if on X and no y
+                    yIndex = 0;
+                }
+                console.log({
+                    country: row["Country or Area"],
+                    valX,
+                    valY,
+                    normX,
+                    normY,
+                    xIndex,
+                    yIndex,
+                });
             }
 
             return colorMatrix[yIndex][xIndex];
