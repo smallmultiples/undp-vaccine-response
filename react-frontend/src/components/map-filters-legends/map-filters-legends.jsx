@@ -11,8 +11,10 @@ const MapFiltersLegends = props => {
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            <RadiusLegend {...props} />
-            <RadiusIndicatorSelection {...props} />
+            <div className={styles.radiusControls}>
+                <RadiusLegend {...props} />
+                <RadiusIndicatorSelection {...props} />
+            </div>
         </div>
     );
 };

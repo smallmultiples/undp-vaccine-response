@@ -5,6 +5,7 @@ $color-navy: #110848;
 $color-yellow: #e9ce2c;
 
 $container-width: 1166px;
+$width-mobile: 700px;
 
 @mixin h1($text-align: "") {
     @if $text-align != "" {
@@ -114,5 +115,11 @@ $container-width: 1166px;
     }
     &:focus {
         outline: none;
+    }
+}
+
+@mixin mobileOnly {
+    @media (max-width: $width-mobile) {
+        @content;
     }
 }
