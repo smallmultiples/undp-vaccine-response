@@ -24,6 +24,7 @@ export default {
         fontSize: "14px",
         letterSpacing: "0.4px",
         color: navy,
+        marginBottom: 5,
     }),
 
     singleValue: (provided, state) => ({
@@ -31,6 +32,7 @@ export default {
         color: navy,
         opacity: state.isDisabled ? 0.25 : 1,
         transform: "translateY(-50%) translateY(2px)",
+        paddingLeft: 18,
     }),
 
     dropdownIndicator: (provided, state) => ({
