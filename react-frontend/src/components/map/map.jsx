@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleSymlog, scaleLinear } from "d3-scale";
+import { scaleSymlog } from "d3-scale";
 import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
@@ -301,7 +301,7 @@ const Map = props => {
     const scales = useScales(domains, currentIndicators, activePillar);
 
     return (
-        <div>
+        <div className={styles.map}>
             {scales && (
                 <MapFiltersLegends
                     domains={domains}

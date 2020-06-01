@@ -4,7 +4,6 @@ import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
-import { formats } from "../../modules/format";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -58,7 +57,7 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
                 padding,
             })
         );
-    }, [mapContainerDimensions, viewport]);
+    }, [mapContainerDimensions, viewport, initialBounds, padding]);
 
     const handleViewStateChange = React.useCallback(newState => {
         setViewport(
@@ -141,7 +140,7 @@ const MapVis = props => {
 // TODO: module these
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipKey || indicator.dataKey];
-    if (val == undefined || val === "") return null;
+    if (val === undefined || val === "") return null;
     return indicator.format(val);
 };
 

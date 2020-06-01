@@ -4,7 +4,6 @@ import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../ic
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import { flatten } from "lodash";
-import { formats } from "../../modules/format";
 
 const MapFiltersLegends = props => {
     return (
