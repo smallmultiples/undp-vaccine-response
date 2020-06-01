@@ -1,6 +1,10 @@
 // from https://stackoverflow.com/questions/9461621/format-a-number-as-2-5k-if-a-thousand-or-more-otherwise-900
 // modified
+
+const isDef = num => !isNaN(num);
+
 export const formatSI = (decimals = 2) => num => {
+    if (!isDef(num)) return undefined;
     var si = [
         { value: 1, symbol: "" },
         { value: 1e3, symbol: "K" },
@@ -22,15 +26,28 @@ export const formatSI = (decimals = 2) => num => {
     );
 };
 
-export const formatPercent = (decimals = 2) => raw => formatComma(raw, decimals) + "%";
+export const formatPercent = (decimals = 2) => raw => {
+    if (!isDef(raw)) return "";
+    return formatComma(raw, decimals) + "%";
+};
 
-export const formatDecimal = (decimals = 2) => raw =>
-    raw.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: 0 });
+export const formatDecimal = (decimals = 2) => raw => {
+    if (!isDef(raw)) return "";
+    return raw.toLocaleString(undefined, {
+        maximumFractionDigits: decimals,
+        minimumFractionDigits: 0,
+    });
+};
 
-export const formatComma = (decimals = 0) => raw =>
-    raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
+export const formatComma = (decimals = 0) => raw => {
+    if (!isDef(raw)) return "";
+    return raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
+};
 
-export const formatUSD = decimals => num => "$" + formatSI(num, decimals) + " USD";
+export const formatUSD = decimals => raw => {
+    if (!isDef(raw)) return "";
+    return "$" + formatSI(raw, decimals) + " USD";
+};
 
 export const formats = {
     SI: formatSI,
