@@ -216,6 +216,13 @@ const getColorMatrices = (activePillar, xHdi, yHdi) => {
         colorMatrixHex = saturations.map(sat =>
             hdiColors.map(d => chroma(d).desaturate(sat).hex())
         );
+        colorMatrixHex = [
+            ["#60B579", "#D1E16A", "#EFD54D", "#E07038"],
+            ["#7FC293", "#D6E480", "#F0DA69", "#E49066"],
+            ["#98CDA8", "#DDE79C", "#F0DF87", "#E7A584"],
+            ["#B2D7BE", "#E4EBB9", "#F1E5AB", "#EBBCA5"],
+            ["#CBE2D2", "#EAEED3", "#F1EBC8", "#EDD0C1"],
+        ].reverse();
     } else if (yHdi) {
         // One ROW for each colour
         // Saturation goes up as you go right
