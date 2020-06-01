@@ -248,7 +248,7 @@ $lc-w-hdi: $l-w / 4;
 }
 
 .legendColourSpanValue {
-    @include bodySmall();
+    @include body();
     font-weight: bold;
     display: flex;
 
