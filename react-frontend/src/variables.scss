@@ -37,6 +37,17 @@ $container-width: 1166px;
     line-height: 29px;
 }
 
+@mixin h4($text-align: "") {
+    @if $text-align != "" {
+        text-align: $text-align;
+    }
+    font-family: $font-proxima;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 18px;
+}
+
 @mixin body($text-align: "") {
     @if $text-align != "" {
         text-align: $text-align;

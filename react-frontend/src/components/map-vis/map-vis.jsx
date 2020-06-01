@@ -139,7 +139,6 @@ const MapVis = props => {
 };
 
 // TODO: module these
-const formatNumTemp = number => (number === undefined || number === "" ? "" : number.toFixed(3));
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipKey || indicator.dataKey];
     if (val == undefined || val === "") return null;
@@ -171,21 +170,27 @@ const MapTooltip = props => {
             <div className={styles.tooltipBody}>
                 {currentIndicators.bivariateXEnabled && (
                     <div className={styles.tooltipDatum}>
-                        <div className={styles.tooltipDatumValue}>
-                            {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
-                        </div>
-                        <div className={styles.tooltipDatumLabel}>
-                            {currentIndicators.bivariateX.label}
+                        <div className={styles.tooltipDatumIcon} data-bivariate />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateX.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
+                            </div>
                         </div>
                     </div>
                 )}
                 {currentIndicators.bivariateYEnabled && (
                     <div className={styles.tooltipDatum}>
-                        <div className={styles.tooltipDatumValue}>
-                            {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
-                        </div>
-                        <div className={styles.tooltipDatumLabel}>
-                            {currentIndicators.bivariateY.label}
+                        <div className={styles.tooltipDatumIcon} data-bivariate />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateY.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
+                            </div>
                         </div>
                     </div>
                 )}
