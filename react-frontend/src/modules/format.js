@@ -44,9 +44,12 @@ export const formatComma = (decimals = 0) => raw => {
     return raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
 };
 
-export const formatUSD = decimals => raw => {
-    if (!isDef(raw)) return "";
-    return "$" + formatSI(raw, decimals) + " USD";
+export const formatUSD = decimals => {
+    const si = formatSI(decimals);
+    return raw => {
+        if (!isDef(raw)) return "";
+        return "$" + si(raw) + " USD";
+    };
 };
 
 export const formats = {
