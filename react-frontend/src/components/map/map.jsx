@@ -4,7 +4,7 @@ import { extent } from "d3-array";
 import { scaleSymlog, scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
-import { flatten } from "lodash";
+import { flatten, isNil } from "lodash";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -143,7 +143,7 @@ const getRowIndicatorValue = (row, indicator) => {
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
-    if (value === undefined) return null;
+    if (isNil(value)) return null;
     const index = jenks.findIndex((j, i) => {
         const low = j;
         const top = jenks[i + 1];
@@ -195,13 +195,13 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
             // Nulls based on enabled variates
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valX === null || valY === null) return NULL_SHAPE_FILL;
+                if (isNil(valX) || isNil(valY)) return NULL_SHAPE_FILL;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
-                if (valX === null) return NULL_SHAPE_FILL;
+                if (isNil(valX)) return NULL_SHAPE_FILL;
             }
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valY === null) return NULL_SHAPE_FILL;
+                if (isNil(valY)) return NULL_SHAPE_FILL;
             }
 
             const maxIndexX = colorMatrix[0].length - 1;
@@ -238,13 +238,13 @@ const useScales = (domains, currentIndicators, activePillar) => {
             const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
             const valY = getRowIndicatorValue(row, currentIndicators.bivariateY);
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valX === null || valY === null) return NULL_SHAPE_STROKE;
+                if (isNil(valX) || isNil(valY)) return NULL_SHAPE_STROKE;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
-                if (valX === null) return NULL_SHAPE_STROKE;
+                if (isNil(valX)) return NULL_SHAPE_STROKE;
             }
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valY === null) return NULL_SHAPE_STROKE;
+                if (isNil(valY)) return NULL_SHAPE_STROKE;
             }
             return GOOD_SHAPE_STROKE;
         };

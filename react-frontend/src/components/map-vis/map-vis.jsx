@@ -2,6 +2,7 @@ import React from "react";
 import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
 import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
+import { isNil } from "lodash";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
 
@@ -140,7 +141,7 @@ const MapVis = props => {
 // TODO: module these
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipKey || indicator.dataKey];
-    if (val === undefined || val === "") return null;
+    if (isNil(val) || val === "") return null;
     return indicator.format(val);
 };
 
