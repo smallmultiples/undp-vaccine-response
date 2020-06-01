@@ -7,6 +7,7 @@ import Pillars from "./components/pillars/pillars";
 import Questions from "./components/questions/questions";
 import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
+import Footer from "./components/footer/footer";
 import { formats } from "./modules/format";
 
 const SHEET_ID =
@@ -200,8 +201,8 @@ function App() {
 
     return (
         <div className={styles.root}>
+            <Header />
             <div className={styles.container}>
-                <Header />
                 <Pillars
                     activePillar={activePillar}
                     covidPillar={covidPillar}
@@ -223,6 +224,7 @@ function App() {
                     countryData={countryData}
                 />
             </div>
+            <Footer />
         </div>
     );
 }
