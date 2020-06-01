@@ -5,7 +5,7 @@ import { scaleSymlog } from "d3-scale";
 import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
-import { flatten } from "lodash";
+import { range, flatten } from "lodash";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -41,36 +41,33 @@ const useDomains = (countryData, currentIndicators) => {
             jenksY = [];
 
         if (ready) {
-            const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
-            const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
+            const xHdi = currentIndicators.bivariateX.hdi;
+            const yHdi = currentIndicators.bivariateY.hdi;
 
             if (xHdi) {
                 jenksX = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
                 const geostatsX = new Geostats(valuesX);
-                const xUnique = geostatsX.getUniqueValues();
+                const xUnique = geostatsX.getUniqueValues().sort((a, b) => a - b);
 
-                if (xUnique.length >= 5) {
-                    jenksX = geostatsX.getJenks(5);
+                if (false && xUnique.length >= 5) {
+                    jenksX = geostatsX.getJenks2(5).sort((a, b) => a - b);
                 } else {
-                    if (xUnique.length >= 5) {
-                        jenksX = geostatsX.getJenks2(5);
+                    if (xUnique.length === 1) {
+                        return [
+                            xUnique[0],
+                            xUnique[0],
+                            xUnique[0],
+                            xUnique[0],
+                            xUnique[0],
+                            xUnique[0],
+                        ];
                     } else {
-                        if (xUnique.length === 1) {
-                            return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
-                        } else {
-                            // Linear buckets.
-                            const first = xUnique[0];
-                            const last = xUnique[xUnique.length - 1];
-                            const range = last - first;
-                            jenksX = [
-                                first,
-                                first + range / 3,
-                                first + range * 0.5,
-                                last - range / 3,
-                                last,
-                            ];
-                        }
+                        // Linear buckets.
+                        const first = xUnique[0];
+                        const last = xUnique[xUnique.length - 1];
+
+                        jenksX = range(first, last, (last - first) / 5).concat(last);
                     }
                 }
             }
@@ -79,29 +76,24 @@ const useDomains = (countryData, currentIndicators) => {
                 jenksY = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
                 const geostatsY = new Geostats(valuesY);
-                const yUnique = geostatsY.getUniqueValues();
-
-                if (yUnique.length >= 5) {
-                    jenksY = geostatsY.getJenks(5);
+                const yUnique = geostatsY.getUniqueValues().sort((a, b) => a - b);
+                if (false && yUnique.length >= 5) {
+                    jenksY = geostatsY.getJenks2(5).sort((a, b) => a - b);
                 } else {
-                    if (yUnique.length >= 5) {
-                        jenksY = geostatsY.getJenks2(5);
+                    if (yUnique.length === 1) {
+                        return [
+                            yUnique[0],
+                            yUnique[0],
+                            yUnique[0],
+                            yUnique[0],
+                            yUnique[0],
+                            yUnique[0],
+                        ];
                     } else {
-                        if (yUnique.length === 1) {
-                            return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
-                        } else {
-                            // Linear buckets.
-                            const first = yUnique[0];
-                            const last = yUnique[yUnique.length - 1];
-                            const range = last - first;
-                            jenksY = [
-                                first[0],
-                                first[0] + range / 3,
-                                first[0] + range * 0.5,
-                                last[1] - range / 3,
-                                last[1],
-                            ];
-                        }
+                        // Linear buckets.
+                        const first = yUnique[0];
+                        const last = yUnique[yUnique.length - 1];
+                        jenksY = range(first, last, (last - first) / 5).concat(last);
                     }
                 }
             }
@@ -213,17 +205,8 @@ const getColorMatrices = (activePillar, currentIndicators) => {
     } else if (yHdi) {
         // Transpose the matrix and reverse.
         colorMatrixHex = hdiColorMatrixHex[0]
-            .map((x, i) => hdiColorMatrixHex.map(x => x[i]))
+            .map((x, i) => hdiColorMatrixHex.map(x => x[i]).reverse())
             .reverse();
-
-        // If only showing on Y, make it full saturation.
-        if (!currentIndicators.bivariateXEnabled) {
-            colorMatrixHex = colorMatrixHex.map(row => {
-                let newRow = [...row];
-                newRow[0] = row[row.length - 1];
-                return newRow;
-            });
-        }
     }
 
     const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
@@ -288,16 +271,6 @@ const useScales = (domains, currentIndicators, activePillar) => {
                 // input colours are from top to bottom, not bottom to top so we deduct
                 yIndex = maxIndexY - Math.floor(normY * maxIndexY);
             }
-
-            // console.log({
-            //     country: row["Country or Area"],
-            //     valX,
-            //     valY,
-            //     normX,
-            //     normY,
-            //     xIndex,
-            //     yIndex,
-            // });
 
             return colorMatrix[yIndex][xIndex];
         };
