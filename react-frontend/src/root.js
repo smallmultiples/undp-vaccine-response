@@ -198,6 +198,12 @@ function App() {
         return pillars.find(d => d.covid);
     }, [pillars]);
 
+    const hdiIndicator = React.useMemo(() => {
+        if (!pillars) return null;
+        const indicators = flatten(pillars.map(p => flatten(p.questions.map(q => q.indicators))));
+        return indicators.find(d => d.hdi);
+    }, [pillars]);
+
     if (!pillars || !activePillar || !regionLookup) return null; // TODO loader
 
     return (
@@ -223,6 +229,7 @@ function App() {
                     datasets={datasets}
                     regionLookup={regionLookup}
                     countryData={countryData}
+                    hdiIndicator={hdiIndicator}
                 />
             </div>
             <Footer />
