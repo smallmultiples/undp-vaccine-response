@@ -1,5 +1,7 @@
 const lightBlue = "#E9ECF6";
 const navy = "#110848";
+const font = `"proxima-nova"`;
+
 export default {
     control: (provided, state) => ({
         ...provided,
@@ -9,7 +11,7 @@ export default {
         border: state.isDisabled ? `2px solid ${lightBlue}` : "none",
         padding: "0",
         boxSizing: "border-box",
-        fontFamily: "anonymous-pro",
+        fontFamily: font,
         fontWeight: "bold",
         transition: "border-radius 200ms",
         zIndex: state.menuIsOpen ? 10 : 8,
@@ -62,7 +64,7 @@ export default {
         boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
         padding: "0",
         boxSizing: "border-box",
-        fontFamily: "anonymous-pro",
+        fontFamily: font,
         fontWeight: "bold",
         overflow: "hidden",
         marginTop: 0,

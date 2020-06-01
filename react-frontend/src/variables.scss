@@ -1,5 +1,4 @@
-$font-neuzeit: "neuzeit-grotesk", "Neuzeit Grotesk", "Helvetica Neue", "serif";
-$font-anonymous: anonymous-pro, monospace;
+$font-proxima: "proxima-nova", "Helvetica Neue", "serif";
 
 $color-blue-bg: #e9ecf6;
 $color-navy: #110848;
@@ -11,7 +10,7 @@ $container-width: 1166px;
     @if $text-align != "" {
         text-align: $text-align;
     }
-    font-family: $font-neuzeit;
+    font-family: $font-proxima;
     font-style: normal;
     font-weight: bold;
     font-size: 120px;
@@ -21,7 +20,7 @@ $container-width: 1166px;
     @if $text-align != "" {
         text-align: $text-align;
     }
-    font-family: $font-neuzeit;
+    font-family: $font-proxima;
     font-style: normal;
     font-weight: bold;
     font-size: 36px;
@@ -31,7 +30,7 @@ $container-width: 1166px;
     @if $text-align != "" {
         text-align: $text-align;
     }
-    font-family: $font-neuzeit;
+    font-family: $font-proxima;
     font-style: normal;
     font-weight: bold;
     font-size: 24px;
@@ -42,7 +41,7 @@ $container-width: 1166px;
     @if $text-align != "" {
         text-align: $text-align;
     }
-    font-family: $font-neuzeit;
+    font-family: $font-proxima;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
@@ -53,7 +52,7 @@ $container-width: 1166px;
     @if $text-align != "" {
         text-align: $text-align;
     }
-    font-family: $font-neuzeit;
+    font-family: $font-proxima;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -64,7 +63,7 @@ $container-width: 1166px;
     @if $text-align != "" {
         text-align: $text-align;
     }
-    font-family: $font-anonymous;
+    font-family: $font-proxima;
     font-style: normal;
     font-weight: bold;
     font-size: 18px;
