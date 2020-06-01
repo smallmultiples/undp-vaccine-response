@@ -42,31 +42,36 @@ const useDomains = (countryData, currentIndicators) => {
             jenksY = [];
 
         if (ready) {
-            const xHdi = currentIndicators.bivariateX.hdi;
-            const yHdi = currentIndicators.bivariateY.hdi;
+            const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
+            const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
 
             if (xHdi) {
                 jenksX = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
                 const geostatsX = new Geostats(valuesX);
                 const xUnique = geostatsX.getUniqueValues();
+
                 if (xUnique.length >= 5) {
-                    jenksX = geostatsX.getJenks2(5);
+                    jenksX = geostatsX.getJenks(5);
                 } else {
-                    if (xUnique.length === 1) {
-                        return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
+                    if (xUnique.length >= 5) {
+                        jenksX = geostatsX.getJenks2(5);
                     } else {
-                        // Linear buckets.
-                        const first = xUnique[0];
-                        const last = xUnique[xUnique.length - 1];
-                        const range = last - first;
-                        jenksX = [
-                            first,
-                            first + range / 3,
-                            first + range * 0.5,
-                            last - range / 3,
-                            last,
-                        ];
+                        if (xUnique.length === 1) {
+                            return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
+                        } else {
+                            // Linear buckets.
+                            const first = xUnique[0];
+                            const last = xUnique[xUnique.length - 1];
+                            const range = last - first;
+                            jenksX = [
+                                first,
+                                first + range / 3,
+                                first + range * 0.5,
+                                last - range / 3,
+                                last,
+                            ];
+                        }
                     }
                 }
             }
@@ -76,25 +81,28 @@ const useDomains = (countryData, currentIndicators) => {
             } else {
                 const geostatsY = new Geostats(valuesY);
                 const yUnique = geostatsY.getUniqueValues();
-                console.log({ yUnique });
 
                 if (yUnique.length >= 5) {
-                    jenksY = geostatsY.getJenks2(5);
+                    jenksY = geostatsY.getJenks(5);
                 } else {
-                    if (yUnique.length === 1) {
-                        return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
+                    if (yUnique.length >= 5) {
+                        jenksY = geostatsY.getJenks2(5);
                     } else {
-                        // Linear buckets.
-                        const first = yUnique[0];
-                        const last = yUnique[yUnique.length - 1];
-                        const range = last - first;
-                        jenksY = [
-                            first[0],
-                            first[0] + range / 3,
-                            first[0] + range * 0.5,
-                            last[1] - range / 3,
-                            last[1],
-                        ];
+                        if (yUnique.length === 1) {
+                            return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
+                        } else {
+                            // Linear buckets.
+                            const first = yUnique[0];
+                            const last = yUnique[yUnique.length - 1];
+                            const range = last - first;
+                            jenksY = [
+                                first[0],
+                                first[0] + range / 3,
+                                first[0] + range * 0.5,
+                                last[1] - range / 3,
+                                last[1],
+                            ];
+                        }
                     }
                 }
             }
@@ -192,7 +200,8 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     });
 
     const v = index / (jenks.length - 2);
-    return flip ? 1 - v : v;
+    const clamped = Math.min(Math.max(v, 0), 1);
+    return flip ? 1 - clamped : clamped;
 };
 
 const hdiColors = ["#2EB872", "#CBE350", "#F3D516", "#F16821"].reverse();
