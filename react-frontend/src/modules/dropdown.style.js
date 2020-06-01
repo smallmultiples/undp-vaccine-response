@@ -8,7 +8,7 @@ export default {
         borderRadius: state.menuIsOpen ? "22px 22px 0 0 " : 22,
         // boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
         background: state.isDisabled ? "white" : lightBlue,
-        border: state.isDisabled ? `2px solid ${lightBlue}` : "none",
+        border: state.isDisabled ? `2px solid ${lightBlue}` : "2px solid transparent",
         padding: "0",
         boxSizing: "border-box",
         fontFamily: font,
