@@ -140,9 +140,6 @@ const RadiusLegend = props => {
         .map(d => d.join(","))
         .join(" ");
 
-    const format = formats[currentIndicators.radius.format];
-    const decimals = currentIndicators.radius.decimals;
-
     return (
         <div className={styles.radiusLegend}>
             <svg className={styles.legendSvg}>
@@ -151,8 +148,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{format(domain[0], decimals)}</span>
-                <span>{format(domain[1], decimals)}</span>
+                <span>{currentIndicators.radius.format(domain[0])}</span>
+                <span>{currentIndicators.radius.format(domain[1])}</span>
             </div>
         </div>
     );
@@ -217,7 +214,6 @@ const RadiusIndicatorSelection = props => {
     );
 };
 
-const formatNumTemp = number => (number === undefined ? "" : number.toFixed(1));
 const BivariateLegend = props => {
     const { scales, currentIndicators } = props;
     const { categories } = props.domains;
@@ -230,10 +226,14 @@ const BivariateLegend = props => {
     const bothDisabled = !bivariateXEnabled && !bivariateYEnabled;
     const eitherDisabled = !bivariateXEnabled || !bivariateYEnabled;
 
-    const x0 = formatNumTemp(categories.x[0]);
-    const x1 = formatNumTemp(categories.x[categories.x.length - 1]);
-    const y0 = formatNumTemp(categories.y[0]);
-    const y1 = formatNumTemp(categories.y[categories.y.length - 1]);
+    const formatX = currentIndicators.bivariateX.format;
+    const formatY = currentIndicators.bivariateY.format;
+
+    const x0 = formatX(categories.x[0]);
+    const x1 = formatX(categories.x[categories.x.length - 1]);
+    const y0 = formatY(categories.y[0]);
+    const y1 = formatY(categories.y[categories.y.length - 1]);
+
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>

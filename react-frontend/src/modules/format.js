@@ -1,7 +1,6 @@
 // from https://stackoverflow.com/questions/9461621/format-a-number-as-2-5k-if-a-thousand-or-more-otherwise-900
 // modified
-export function formatSI(num, decimals = 2) {
-    console.log("SI", decimals);
+export const formatSI = (decimals = 2) => num => {
     var si = [
         { value: 1, symbol: "" },
         { value: 1e3, symbol: "K" },
@@ -21,20 +20,17 @@ export function formatSI(num, decimals = 2) {
             .toLocaleString(undefined, { maximumFractionDigits: decimals })
             .replace(rx, "$1") + si[i].symbol
     );
-}
+};
 
-export const formatPercent = (v, decimals = 2) => formatComma(v, decimals) + "%";
+export const formatPercent = (decimals = 2) => raw => formatComma(raw, decimals) + "%";
 
-export const formatDecimal = (raw, decimals = 2) =>
+export const formatDecimal = (decimals = 2) => raw =>
+    raw.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: 0 });
+
+export const formatComma = (decimals = 0) => raw =>
     raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
 
-export const formatComma = (raw, decimals = 0) =>
-    raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
-
-export const formatCurrency = currency => (raw, decimals = 2) =>
-    raw.toLocaleString(undefined, { style: "currency", currency, maximumFractionDigits: decimals });
-
-export const formatUSD = (num, decimals) => "$" + formatSI(num, decimals) + " USD";
+export const formatUSD = decimals => num => "$" + formatSI(num, decimals) + " USD";
 
 export const formats = {
     SI: formatSI,

@@ -142,8 +142,7 @@ const MapVis = props => {
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipKey || indicator.dataKey];
     if (val == undefined || val === "") return null;
-    const formatFn = formats[indicator.format];
-    return formatFn(val, indicator.decimals);
+    return indicator.format(val);
 };
 
 const MapTooltip = props => {
