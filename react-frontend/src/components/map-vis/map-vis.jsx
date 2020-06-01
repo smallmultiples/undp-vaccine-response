@@ -172,7 +172,7 @@ const MapTooltip = props => {
                         <div className={styles.tooltipDatumIcon} data-radius />
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.bivariateY.label}
+                                {currentIndicators.radius.label}
                             </div>
                             <div className={styles.tooltipDatumValue}>
                                 {getFormattedTooltipValue(data, currentIndicators.radius)}
