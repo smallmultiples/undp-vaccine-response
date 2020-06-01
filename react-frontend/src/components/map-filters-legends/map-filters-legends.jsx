@@ -4,6 +4,7 @@ import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../ic
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import { flatten } from "lodash";
+import { formats } from "../../modules/format";
 
 const MapFiltersLegends = props => {
     return (
@@ -108,6 +109,7 @@ const BivariateIndicatorSelection = props => {
 };
 
 const RadiusLegend = props => {
+    const { currentIndicators } = props;
     if (!props.scales.radius) return null;
     const domain = props.scales.radius.domain();
     const range = props.scales.radius.range();
@@ -138,6 +140,9 @@ const RadiusLegend = props => {
         .map(d => d.join(","))
         .join(" ");
 
+    const format = formats[currentIndicators.radius.format];
+    const decimals = currentIndicators.radius.decimals;
+
     return (
         <div className={styles.radiusLegend}>
             <svg className={styles.legendSvg}>
@@ -146,8 +151,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{domain[0]}</span>
-                <span>{domain[1]}</span>
+                <span>{format(domain[0], decimals)}</span>
+                <span>{format(domain[1], decimals)}</span>
             </div>
         </div>
     );
