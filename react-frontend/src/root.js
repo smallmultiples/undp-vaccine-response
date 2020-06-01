@@ -89,7 +89,9 @@ const parseMetaSheet = raw => {
                 dataKey: row["Data Key"],
                 tooltipKey: row["Tooltip Key"],
                 flipped: row["Invert Scale"],
-                format: formats[row["Data Format"]](row["Decimal Places"]),
+                format: formats[row["Data Format"]]
+                    ? formats[row["Data Format"]](row["Decimal Places"])
+                    : formats.decimal(row["Decimal Places"]),
                 hdi: ind === "HDI",
                 meta,
             };
