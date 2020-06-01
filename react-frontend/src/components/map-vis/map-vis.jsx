@@ -139,8 +139,8 @@ const MapVis = props => {
 
 // TODO: module these
 const formatNumTemp = number => (number === undefined || number === "" ? "" : number.toFixed(3));
-const getRowIndicatorValue = (row, indicator) => {
-    return row[indicator.dataKey];
+const getRowIndicatorTooltipValue = (row, indicator) => {
+    return row[indicator.tooltipKey || indicator.dataKey];
 };
 
 const MapTooltip = props => {
@@ -167,7 +167,9 @@ const MapTooltip = props => {
             <div className={styles.tooltipBody}>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(getRowIndicatorValue(data, currentIndicators.bivariateX))}
+                        {formatNumTemp(
+                            getRowIndicatorTooltipValue(data, currentIndicators.bivariateX)
+                        )}
                     </div>
                     <div className={styles.tooltipDatumLabel}>
                         {currentIndicators.bivariateX.label}
@@ -175,7 +177,9 @@ const MapTooltip = props => {
                 </div>
                 <div className={styles.tooltipDatum}>
                     <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(getRowIndicatorValue(data, currentIndicators.bivariateY))}
+                        {formatNumTemp(
+                            getRowIndicatorTooltipValue(data, currentIndicators.bivariateY)
+                        )}
                     </div>
                     <div className={styles.tooltipDatumLabel}>
                         {currentIndicators.bivariateY.label}
