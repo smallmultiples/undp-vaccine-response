@@ -2,10 +2,9 @@ import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
 import { scaleSymlog, scaleLinear } from "d3-scale";
-import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
-import { range, flatten } from "lodash";
+import { flatten } from "lodash";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -186,9 +185,6 @@ const useScales = (domains, currentIndicators, activePillar) => {
             circleScale(getRowIndicatorValue(row, currentIndicators.radius));
         circleRadiusScale.range = circleScale.range;
         circleRadiusScale.domain = circleScale.domain;
-
-        const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
-        const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
 
         let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, currentIndicators);
 
