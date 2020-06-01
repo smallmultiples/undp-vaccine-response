@@ -6,7 +6,6 @@ import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
 import { flatten } from "lodash";
-import chroma from "chroma-js";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -170,18 +169,17 @@ const yellowColourMatrixHex = [
     ["#EFB906", "#F0C844", "#F1D57E", "#F2E3B8", "#F2F2F3"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
-const HDIColourMatrixHex = [
-    ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
-    ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
-    ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
-    ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
-    ["#F16821", "#F3D516", "#CBE350", "#2EB872", "#2EB872"],
+const hdiColorMatrixHex = [
+    ["#EDD0C1", "#F1EBC8", "#EAEED3", "#CBE2D2"],
+    ["#EBBCA5", "#F1E5AB", "#E4EBB9", "#B2D7BE"],
+    ["#E7A584", "#F0DF87", "#DDE79C", "#98CDA8"],
+    ["#E49066", "#F0DA69", "#D6E480", "#7FC293"],
+    ["#E07038", "#EFD54D", "#D1E16A", "#60B579"],
 ];
 
 const colourMatricesHex = {
     Health: blueLightColourMatrixHex,
     Protect: blueMidColourMatrixHex,
-    "Human Development Index": HDIColourMatrixHex,
     Economic: yellowColourMatrixHex,
     Macro: greenColourMatrixHex,
     Cohesion: blueDarkMatrixHex,
@@ -204,33 +202,28 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - clamped : clamped;
 };
 
-const hdiColors = ["#2EB872", "#CBE350", "#F3D516", "#F16821"].reverse();
-const getColorMatrices = (activePillar, xHdi, yHdi) => {
+const getColorMatrices = (activePillar, currentIndicators) => {
+    const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
+    const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
+
     let colorMatrixHex = colourMatricesHex[activePillar.label];
 
-    const saturations = [0, 0.5, 1, 1.5, 2];
-
     if (xHdi || (xHdi && yHdi)) {
-        // Adjust colour scale.
-        // One COLUMN for each colour. Sat goes down as you go down.
-        colorMatrixHex = saturations.map(sat =>
-            hdiColors.map(d => chroma(d).desaturate(sat).hex())
-        );
-        colorMatrixHex = [
-            ["#60B579", "#D1E16A", "#EFD54D", "#E07038"],
-            ["#7FC293", "#D6E480", "#F0DA69", "#E49066"],
-            ["#98CDA8", "#DDE79C", "#F0DF87", "#E7A584"],
-            ["#B2D7BE", "#E4EBB9", "#F1E5AB", "#EBBCA5"],
-            ["#CBE2D2", "#EAEED3", "#F1EBC8", "#EDD0C1"],
-        ].reverse();
+        colorMatrixHex = hdiColorMatrixHex;
     } else if (yHdi) {
-        // One ROW for each colour
-        // Saturation goes up as you go right
-        colorMatrixHex = hdiColors.map(rowColor => {
-            return saturations.map(sat => {
-                return chroma(rowColor).desaturate(sat).hex();
+        // Transpose the matrix and reverse.
+        colorMatrixHex = hdiColorMatrixHex[0]
+            .map((x, i) => hdiColorMatrixHex.map(x => x[i]))
+            .reverse();
+
+        // If only showing on Y, make it full saturation.
+        if (!currentIndicators.bivariateXEnabled) {
+            colorMatrixHex = colorMatrixHex.map(row => {
+                let newRow = [...row];
+                newRow[0] = row[row.length - 1];
+                return newRow;
             });
-        });
+        }
     }
 
     const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
@@ -252,7 +245,7 @@ const useScales = (domains, currentIndicators, activePillar) => {
         const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
         const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
 
-        let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, xHdi, yHdi);
+        let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, currentIndicators);
 
         const bivariateColourScale = row => {
             if (!row) return NULL_SHAPE_FILL;
@@ -296,21 +289,15 @@ const useScales = (domains, currentIndicators, activePillar) => {
                 yIndex = maxIndexY - Math.floor(normY * maxIndexY);
             }
 
-            if (currentIndicators.bivariateX.hdi) {
-                if (!currentIndicators.bivariateYEnabled) {
-                    // Always go full saturation if on X and no y
-                    yIndex = 0;
-                }
-                console.log({
-                    country: row["Country or Area"],
-                    valX,
-                    valY,
-                    normX,
-                    normY,
-                    xIndex,
-                    yIndex,
-                });
-            }
+            // console.log({
+            //     country: row["Country or Area"],
+            //     valX,
+            //     valY,
+            //     normX,
+            //     normY,
+            //     xIndex,
+            //     yIndex,
+            // });
 
             return colorMatrix[yIndex][xIndex];
         };
