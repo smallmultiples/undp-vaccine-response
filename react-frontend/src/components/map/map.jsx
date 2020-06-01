@@ -199,7 +199,7 @@ const hdiColors = ["#2EB872", "#CBE350", "#F3D516", "#F16821"].reverse();
 const getColorMatrices = (activePillar, xHdi, yHdi) => {
     let colorMatrixHex = colourMatricesHex[activePillar.label];
 
-    const saturations = [0, 0.5, 1, 1.5, 4];
+    const saturations = [0, 0.5, 1, 1.5, 2];
 
     if (xHdi || (xHdi && yHdi)) {
         // Adjust colour scale.
