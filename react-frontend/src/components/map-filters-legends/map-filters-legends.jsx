@@ -219,7 +219,6 @@ const BivariateLegend = props => {
     const { categories } = props.domains;
     const { bivariateXEnabled, bivariateYEnabled } = currentIndicators;
     const bivariateColourMatrixHex = scales.colorMatrix;
-    // TODO: format properly
 
     const xOnlyDisabled = !bivariateXEnabled && bivariateYEnabled;
     const yOnlyDisabled = !bivariateYEnabled && bivariateXEnabled;
@@ -244,10 +243,10 @@ const BivariateLegend = props => {
                     <div className={styles.legendColourSpan} data-y>
                         <div className={styles.legendColourSpanValue} data-y>
                             <IconArrowUp />
-                            <span>{currentIndicators.bivariateY.flipped ? y1 : y0}</span>
+                            <span>{currentIndicators.bivariateY.flipped ? y0 : y1}</span>
                         </div>
                         <div className={styles.legendColourSpanValue} data-y>
-                            <span>{currentIndicators.bivariateY.flipped ? y0 : y1}</span>
+                            <span>{currentIndicators.bivariateY.flipped ? y1 : y0}</span>
                             <IconArrowDown />
                         </div>
                     </div>
