@@ -6,12 +6,14 @@ $bottomPadding: 27px;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    flex-wrap: wrap;
 }
 // ------
 
 .bivariateIndicatorSelection {
     display: flex;
     flex-direction: column;
+    padding-top: 16px;
 
     .bivariateIndicatorItem {
         display: flex;
@@ -56,6 +58,23 @@ $bottomPadding: 27px;
 }
 
 // -----
+
+.radiusControls {
+    padding-top: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    @media (max-width: 490px) {
+        flex-direction: column;
+
+        .radiusLegend {
+            margin-bottom: 12px;
+        }
+    }
+}
+
 .radiusLegend {
     display: flex;
     flex-direction: column;
@@ -140,6 +159,7 @@ $bottomPadding: 27px;
     flex-direction: column;
     align-items: flex-end;
     margin-right: 48px;
+    padding-top: 16px;
 }
 
 .bivariateLegendTop {

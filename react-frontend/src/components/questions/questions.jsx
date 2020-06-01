@@ -114,7 +114,7 @@ const Questions = props => {
         <>
             {activePillar.questions.map(x => (
                 <Question
-                    key={x.labelShort}
+                    key={x.labelLong}
                     question={x}
                     dataset={datasets[x.sheet]}
                     regionLookup={regionLookup}

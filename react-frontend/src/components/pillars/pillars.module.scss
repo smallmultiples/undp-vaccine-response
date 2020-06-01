@@ -3,16 +3,19 @@
 // -----
 
 .pillarControl {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 
     .pillarLabel {
         @include body();
         font-weight: bold;
+        margin-bottom: 0;
     }
 
     .pillarButtons {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        margin-left: -12px;
         .pillarButton {
             background: none;
             outline: none;
@@ -24,9 +27,7 @@
             &[data-selected="true"] {
                 background: $color-yellow;
             }
-            &:not(:last-child) {
-                margin-right: 24px;
-            }
+            margin: 12px;
         }
     }
 }
@@ -37,7 +38,6 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: flex-end;
-    margin-bottom: 18px;
 
     .pillarInfoText {
         flex-grow: 1;

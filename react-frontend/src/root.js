@@ -8,6 +8,7 @@ import Questions from "./components/questions/questions";
 import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
 import Footer from "./components/footer/footer";
+import { formats } from "./modules/format";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
@@ -26,7 +27,8 @@ const parseMetaSheet = raw => {
             currentPillar = last(row.col0.split(" "));
             out[currentPillar] = {
                 label: currentPillar,
-                labelShort: currentPillar,
+                labelLong: row["Pillar long"],
+                tagline: row["Pillar tagline"],
                 description: row["Pillar Description"],
                 questions: {},
                 visible: currentPillar !== "ALL",
@@ -87,8 +89,7 @@ const parseMetaSheet = raw => {
                 dataKey: row["Data Key"],
                 tooltipKey: row["Tooltip Key"],
                 flipped: false, // TODO: do we even need this?
-                format: row["Data Format"],
-                decimals: row["Decimal Places"],
+                format: formats[row["Data Format"]](row["Decimal Places"]),
                 meta,
             };
         }

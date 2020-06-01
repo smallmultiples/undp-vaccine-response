@@ -4,14 +4,17 @@ import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../ic
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import { flatten } from "lodash";
+import { formats } from "../../modules/format";
 
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            <RadiusLegend {...props} />
-            <RadiusIndicatorSelection {...props} />
+            <div className={styles.radiusControls}>
+                <RadiusLegend {...props} />
+                <RadiusIndicatorSelection {...props} />
+            </div>
         </div>
     );
 };
@@ -108,6 +111,7 @@ const BivariateIndicatorSelection = props => {
 };
 
 const RadiusLegend = props => {
+    const { currentIndicators } = props;
     if (!props.scales.radius) return null;
     const domain = props.scales.radius.domain();
     const range = props.scales.radius.range();
@@ -146,8 +150,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{domain[0]}</span>
-                <span>{domain[1]}</span>
+                <span>{currentIndicators.radius.format(domain[0])}</span>
+                <span>{currentIndicators.radius.format(domain[1])}</span>
             </div>
         </div>
     );
@@ -212,23 +216,25 @@ const RadiusIndicatorSelection = props => {
     );
 };
 
-const formatNumTemp = number => (number === undefined ? "" : number.toFixed(1));
 const BivariateLegend = props => {
     const { scales, currentIndicators } = props;
     const { categories } = props.domains;
     const { bivariateXEnabled, bivariateYEnabled } = currentIndicators;
     const bivariateColourMatrixHex = scales.colorMatrix;
-    // TODO: format properly
 
     const xOnlyDisabled = !bivariateXEnabled && bivariateYEnabled;
     const yOnlyDisabled = !bivariateYEnabled && bivariateXEnabled;
     const bothDisabled = !bivariateXEnabled && !bivariateYEnabled;
     const eitherDisabled = !bivariateXEnabled || !bivariateYEnabled;
 
-    const x0 = formatNumTemp(categories.x[0]);
-    const x1 = formatNumTemp(categories.x[categories.x.length - 1]);
-    const y0 = formatNumTemp(categories.y[0]);
-    const y1 = formatNumTemp(categories.y[categories.y.length - 1]);
+    const formatX = currentIndicators.bivariateX.format;
+    const formatY = currentIndicators.bivariateY.format;
+
+    const x0 = formatX(categories.x[0]);
+    const x1 = formatX(categories.x[categories.x.length - 1]);
+    const y0 = formatY(categories.y[0]);
+    const y1 = formatY(categories.y[categories.y.length - 1]);
+
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>
@@ -239,10 +245,10 @@ const BivariateLegend = props => {
                     <div className={styles.legendColourSpan} data-y>
                         <div className={styles.legendColourSpanValue} data-y>
                             <IconArrowUp />
-                            <span>{currentIndicators.bivariateY.flipped ? y1 : y0}</span>
+                            <span>{currentIndicators.bivariateY.flipped ? y0 : y1}</span>
                         </div>
                         <div className={styles.legendColourSpanValue} data-y>
-                            <span>{currentIndicators.bivariateY.flipped ? y0 : y1}</span>
+                            <span>{currentIndicators.bivariateY.flipped ? y1 : y0}</span>
                             <IconArrowDown />
                         </div>
                     </div>
