@@ -48,7 +48,7 @@ const useDomains = (countryData, currentIndicators) => {
             const yUnique = geostatsY.getUniqueValues();
 
             if (xUnique.length >= 5) {
-                jenksX = geostatsX.getJenks2(5);
+                jenksX = geostatsX.getJenks(5);
             } else {
                 if (xUnique.length === 1) {
                     return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
@@ -68,7 +68,7 @@ const useDomains = (countryData, currentIndicators) => {
             }
 
             if (yUnique.length >= 5) {
-                jenksY = geostatsY.getJenks2(5);
+                jenksY = geostatsY.getJenks(5);
             } else {
                 if (yUnique.length === 1) {
                     return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
@@ -203,7 +203,8 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     });
 
     const v = index / (jenks.length - 2);
-    return flip ? 1 - v : v;
+    const clamped = Math.min(Math.max(v, 0), 1);
+    return flip ? 1 - clamped : clamped;
 };
 
 const useScales = (domains, currentIndicators, activePillar) => {
