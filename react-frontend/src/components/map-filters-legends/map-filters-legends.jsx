@@ -27,12 +27,13 @@ const isOptionSelected = (item, selections) => {
 
 // TODO: component
 const Checkbox = props => {
-    const { value, onChange } = props;
+    const { value, onChange, disabled } = props;
     return (
         <button
             className={styles.checkbox}
             data-selected={value === true}
             onClick={d => onChange(!value)}
+            disabled={disabled}
         >
             <svg
                 width="11"
@@ -51,9 +52,12 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { activePillar, covidPillar, setCurrentIndicators, currentIndicators } = props;
+    const { activePillar, setCurrentIndicators, currentIndicators } = props;
     const bivariateXOptions = flatten(activePillar.questions.map(d => d.indicators));
-    const bivariateYOptions = flatten(covidPillar.questions.map(d => d.indicators));
+    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators));
+
+    // Disable Y axis if there is only one indicator.
+    const disableY = bivariateXOptions.length === 1;
 
     return (
         <div className={styles.bivariateIndicatorSelection}>
@@ -66,6 +70,7 @@ const BivariateIndicatorSelection = props => {
                             bivariateYEnabled: v,
                         }))
                     }
+                    disabled={disableY}
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <Select
@@ -76,7 +81,7 @@ const BivariateIndicatorSelection = props => {
                         value={currentIndicators.bivariateY}
                         styles={dropdownStyle}
                         isOptionSelected={isOptionSelected}
-                        isDisabled={!currentIndicators.bivariateYEnabled}
+                        isDisabled={disableY || !currentIndicators.bivariateYEnabled}
                         isSearchable={false}
                     />
                 </div>

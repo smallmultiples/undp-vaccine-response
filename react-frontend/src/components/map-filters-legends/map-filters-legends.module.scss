@@ -77,6 +77,11 @@ $bottomPadding: 27px;
         left: 50%;
         transform: translate(-50%, -50%);
     }
+
+    &:disabled {
+        opacity: 0.25;
+        cursor: not-allowed;
+    }
 }
 
 // -----

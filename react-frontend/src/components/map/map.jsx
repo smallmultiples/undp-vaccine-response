@@ -5,6 +5,7 @@ import { scaleSymlog } from "d3-scale";
 import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
+import { flatten } from "lodash";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -273,27 +274,38 @@ const useScales = (domains, currentIndicators, activePillar) => {
     }, [domains, currentIndicators, activePillar]);
 };
 
-const Map = props => {
-    const { countryData, covidPillar, activePillar } = props;
+const getDefaultIndicatorState = (activePillar, covidPillar) => {
+    const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators));
 
-    const [currentIndicators, setCurrentIndicators] = React.useState({
+    return {
         // Pillar indicataor is the X axis
-        bivariateX: activePillar.questions[0].indicators[1],
+        bivariateX: bivariateOptions[0],
         bivariateXEnabled: true,
         // COVID indicator is the Y axis
-        bivariateY: covidPillar.questions[0].indicators[1],
+        bivariateY: bivariateOptions.length > 1 ? bivariateOptions[1] : bivariateOptions[0],
         bivariateYEnabled: false,
         // Radius indicator is the circle radius
         radius: covidPillar.questions[0].indicators[0],
         radiusEnabled: true,
-    });
+    };
+};
+
+const Map = props => {
+    const { countryData, covidPillar, activePillar } = props;
+
+    const [currentIndicators, setCurrentIndicators] = React.useState(
+        getDefaultIndicatorState(activePillar, covidPillar)
+    );
 
     React.useEffect(() => {
         if (!activePillar) return;
         // Whenever active pillar changes, set the pillar indicator to the first avail.
+        const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators));
         setCurrentIndicators(d => ({
             ...d,
-            bivariateX: activePillar.questions[0].indicators[0],
+            bivariateX: bivariateOptions[0],
+            bivariateY: bivariateOptions.length > 1 ? bivariateOptions[1] : bivariateOptions[0],
+            bivariateYEnabled: d.bivariateYEnabled && bivariateOptions.length > 1,
         }));
     }, [activePillar]);
 
