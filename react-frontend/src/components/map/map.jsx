@@ -24,17 +24,17 @@ const useDomains = (countryData, currentIndicators) => {
         const valuesX = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.bivariateX.dataKey])
-                  .filter(d => d !== undefined)
+                  .filter(d => d !== undefined && d !== "")
             : [];
         const valuesY = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.bivariateY.dataKey])
-                  .filter(d => d !== undefined)
+                  .filter(d => d !== undefined && d !== "")
             : [];
         const valuesRadius = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.radius.dataKey])
-                  .filter(d => d !== undefined)
+                  .filter(d => d !== undefined && d !== "")
             : [];
 
         let jenksX = [],
