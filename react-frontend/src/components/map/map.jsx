@@ -44,8 +44,48 @@ const useDomains = (countryData, currentIndicators) => {
             const geostatsX = new Geostats(valuesX);
             const geostatsY = new Geostats(valuesY);
 
-            jenksX = geostatsX.getClassJenks(5);
-            jenksY = geostatsY.getClassJenks(5);
+            const xUnique = geostatsX.getUniqueValues();
+            const yUnique = geostatsY.getUniqueValues();
+
+            if (xUnique.length >= 5) {
+                jenksX = geostatsX.getJenks2(5);
+            } else {
+                if (xUnique.length === 1) {
+                    return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
+                } else {
+                    // Linear buckets.
+                    const first = xUnique[0];
+                    const last = xUnique[xUnique.length - 1];
+                    const range = last - first;
+                    jenksX = [
+                        first,
+                        first + range / 3,
+                        first + range * 0.5,
+                        last - range / 3,
+                        last,
+                    ];
+                }
+            }
+
+            if (yUnique.length >= 5) {
+                jenksY = geostatsY.getJenks2(5);
+            } else {
+                if (yUnique.length === 1) {
+                    return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
+                } else {
+                    // Linear buckets.
+                    const first = yUnique[0];
+                    const last = yUnique[yUnique.length - 1];
+                    const range = last - first;
+                    jenksY = [
+                        first[0],
+                        first[0] + range / 3,
+                        first[0] + range * 0.5,
+                        last[1] - range / 3,
+                        last[1],
+                    ];
+                }
+            }
         }
 
         return {
