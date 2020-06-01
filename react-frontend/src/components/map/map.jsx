@@ -6,6 +6,7 @@ import Geostats from "geostats";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
 import { flatten } from "lodash";
+import chroma from "chroma-js";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -41,49 +42,60 @@ const useDomains = (countryData, currentIndicators) => {
             jenksY = [];
 
         if (ready) {
-            const geostatsX = new Geostats(valuesX);
-            const geostatsY = new Geostats(valuesY);
+            const xHdi = currentIndicators.bivariateX.hdi;
+            const yHdi = currentIndicators.bivariateY.hdi;
 
-            const xUnique = geostatsX.getUniqueValues();
-            const yUnique = geostatsY.getUniqueValues();
-
-            if (xUnique.length >= 5) {
-                jenksX = geostatsX.getJenks2(5);
+            if (xHdi) {
+                jenksX = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                if (xUnique.length === 1) {
-                    return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
+                const geostatsX = new Geostats(valuesX);
+                const xUnique = geostatsX.getUniqueValues();
+                if (xUnique.length >= 5) {
+                    jenksX = geostatsX.getJenks2(5);
                 } else {
-                    // Linear buckets.
-                    const first = xUnique[0];
-                    const last = xUnique[xUnique.length - 1];
-                    const range = last - first;
-                    jenksX = [
-                        first,
-                        first + range / 3,
-                        first + range * 0.5,
-                        last - range / 3,
-                        last,
-                    ];
+                    if (xUnique.length === 1) {
+                        return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
+                    } else {
+                        // Linear buckets.
+                        const first = xUnique[0];
+                        const last = xUnique[xUnique.length - 1];
+                        const range = last - first;
+                        jenksX = [
+                            first,
+                            first + range / 3,
+                            first + range * 0.5,
+                            last - range / 3,
+                            last,
+                        ];
+                    }
                 }
             }
 
-            if (yUnique.length >= 5) {
-                jenksY = geostatsY.getJenks2(5);
+            if (yHdi) {
+                jenksY = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                if (yUnique.length === 1) {
-                    return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
+                const geostatsY = new Geostats(valuesY);
+
+                const yUnique = geostatsY.getUniqueValues();
+
+                if (yUnique.length >= 5) {
+                    jenksY = geostatsY.getJenks2(5);
                 } else {
-                    // Linear buckets.
-                    const first = yUnique[0];
-                    const last = yUnique[yUnique.length - 1];
-                    const range = last - first;
-                    jenksY = [
-                        first[0],
-                        first[0] + range / 3,
-                        first[0] + range * 0.5,
-                        last[1] - range / 3,
-                        last[1],
-                    ];
+                    if (yUnique.length === 1) {
+                        return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
+                    } else {
+                        // Linear buckets.
+                        const first = yUnique[0];
+                        const last = yUnique[yUnique.length - 1];
+                        const range = last - first;
+                        jenksY = [
+                            first[0],
+                            first[0] + range / 3,
+                            first[0] + range * 0.5,
+                            last[1] - range / 3,
+                            last[1],
+                        ];
+                    }
                 }
             }
         }
@@ -158,29 +170,6 @@ const HDIColourMatrixHex = [
     ["#F16821", "#F3D516", "#CBE350", "#2EB872", "#2EB872"],
 ];
 
-const blueLightColourMatrix = blueLightColourMatrixHex.map(row =>
-    row.map(colour => hexToRgb(colour))
-);
-
-const HDIColourMatrix = HDIColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const blueMidColourMatrix = blueMidColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const blueDarkMatrix = blueDarkMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const greenColourMatrix = greenColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const yellowColourMatrix = yellowColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const colourMatrices = {
-    Health: blueLightColourMatrix,
-    Protect: blueMidColourMatrix,
-    "Human Development Index": HDIColourMatrix,
-    Economic: yellowColourMatrix,
-    Macro: greenColourMatrix,
-    Cohesion: blueDarkMatrix,
-};
-
 const colourMatricesHex = {
     Health: blueLightColourMatrixHex,
     Protect: blueMidColourMatrixHex,
@@ -206,6 +195,36 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - v : v;
 };
 
+const hdiColors = ["#2EB872", "#CBE350", "#F3D516", "#F16821"];
+const getColorMatrices = (activePillar, xHdi, yHdi) => {
+    let colorMatrixHex = colourMatricesHex[activePillar.label];
+
+    const saturations = [0, 0.5, 1, 1.5, 2];
+
+    if (xHdi || (xHdi && yHdi)) {
+        // Adjust colour scale.
+        // One COLUMN for each colour. Sat goes down as you go down.
+        colorMatrixHex = saturations.map(sat =>
+            hdiColors.map(d => chroma(d).desaturate(sat).hex())
+        );
+    } else if (yHdi) {
+        // One ROW for each colour
+        // Saturation goes up as you go right
+        colorMatrixHex = hdiColors.map(rowColor => {
+            return saturations.map(sat => {
+                return chroma(rowColor).desaturate(sat).hex();
+            });
+        });
+    }
+
+    const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
+
+    return {
+        colorMatrix,
+        colorMatrixHex,
+    };
+};
+
 const useScales = (domains, currentIndicators, activePillar) => {
     return React.useMemo(() => {
         const circleScale = scaleSymlog().range([4, 16]).domain(domains.extents.radius);
@@ -213,6 +232,11 @@ const useScales = (domains, currentIndicators, activePillar) => {
             circleScale(getRowIndicatorValue(row, currentIndicators.radius));
         circleRadiusScale.range = circleScale.range;
         circleRadiusScale.domain = circleScale.domain;
+
+        const xHdi = currentIndicators.bivariateX.hdi;
+        const yHdi = currentIndicators.bivariateY.hdi;
+
+        let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, xHdi, yHdi);
 
         const bivariateColourScale = row => {
             if (!row) return NULL_SHAPE_FILL;
@@ -230,11 +254,7 @@ const useScales = (domains, currentIndicators, activePillar) => {
                 if (valY === null) return NULL_SHAPE_FILL;
             }
 
-            const uniqueColourMatrix =
-                colourMatrices[currentIndicators.bivariateX.dataKey] ||
-                colourMatrices[activePillar.label];
-
-            const maxIndex = uniqueColourMatrix.length - 1;
+            const maxIndex = colorMatrix.length - 1;
 
             const normX = getNormalFromJenks(
                 domains.categories.x,
@@ -259,27 +279,11 @@ const useScales = (domains, currentIndicators, activePillar) => {
                 yIndex = maxIndex - Math.floor(normY * maxIndex);
             }
 
-            // hack for friday
-            if (currentIndicators.bivariateX.dataKey === "Human Development Index") {
-                if (valX < 0.55) {
-                    yIndex = 4;
-                    xIndex = 0;
-                } else if (valX < 0.7) {
-                    yIndex = 4;
-                    xIndex = 1;
-                } else if (valX < 0.8) {
-                    yIndex = 4;
-                    xIndex = 2;
-                } else {
-                    yIndex = 4;
-                    xIndex = 3;
-                }
-
-                return HDIColourMatrix[yIndex][xIndex];
+            if (currentIndicators.bivariateX.hdi) {
+                console.log({ valX, valY, normX, normY, xIndex, yIndex });
             }
-            // end hack for friday
 
-            return uniqueColourMatrix[yIndex][xIndex]; // hack for friday
+            return colorMatrix[yIndex][xIndex];
         };
 
         const strokeScale = row => {
@@ -298,16 +302,11 @@ const useScales = (domains, currentIndicators, activePillar) => {
             return GOOD_SHAPE_STROKE;
         };
 
-        // hack for friday
-        const uniqueColourMatrixHex = colourMatricesHex[currentIndicators.bivariateX.dataKey]
-            ? colourMatricesHex[currentIndicators.bivariateX.dataKey]
-            : colourMatricesHex[activePillar.label];
-
         return {
             radius: circleRadiusScale,
             color: bivariateColourScale,
             stroke: strokeScale,
-            colorMatrix: uniqueColourMatrixHex, // hack for friday
+            colorMatrix: colorMatrixHex,
         };
     }, [domains, currentIndicators, activePillar]);
 };
