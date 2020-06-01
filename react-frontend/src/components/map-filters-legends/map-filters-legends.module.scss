@@ -203,6 +203,7 @@ $bottomPadding: 27px;
 
 $l-w: 105px;
 $lc-w: $l-w / 5;
+$lc-w-hdi: $l-w / 4;
 .legendColour {
     display: flex;
     flex-direction: column;
@@ -223,6 +224,12 @@ $lc-w: $l-w / 5;
     &[data-disabled="true"] {
         background: none !important;
         border-color: rgba($color-blue-bg, 0.5);
+    }
+    &[data-xHdi="true"] {
+        width: $lc-w-hdi;
+    }
+    &[data-yHdi="true"] {
+        height: $lc-w-hdi;
     }
 }
 .legendColourSpan {

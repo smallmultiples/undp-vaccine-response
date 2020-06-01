@@ -280,6 +280,10 @@ const BivariateLegendGrid = props => {
     const xDisabled = !bivariateXEnabled;
     const yDisabled = !bivariateYEnabled;
 
+    // TODO: need to module this
+    const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
+    const yHdi = !xHdi && currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
+
     const rows = bivariateColourMatrixHex.map((colHexes, rowIndex) => {
         const cols = colHexes.map((hex, colIndex) => {
             let disabled = false;
@@ -303,6 +307,8 @@ const BivariateLegendGrid = props => {
                     className={styles.legendColourCell}
                     style={{ background: hex }}
                     data-disabled={disabled}
+                    data-xHdi={xHdi}
+                    data-yHdi={yHdi}
                 />
             );
         });
