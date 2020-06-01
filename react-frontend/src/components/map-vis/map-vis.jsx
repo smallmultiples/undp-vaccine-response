@@ -4,6 +4,7 @@ import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
+import { formats } from "../../modules/format";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -139,8 +140,11 @@ const MapVis = props => {
 
 // TODO: module these
 const formatNumTemp = number => (number === undefined || number === "" ? "" : number.toFixed(3));
-const getRowIndicatorTooltipValue = (row, indicator) => {
-    return row[indicator.tooltipKey || indicator.dataKey];
+const getFormattedTooltipValue = (row, indicator) => {
+    const val = row[indicator.tooltipKey || indicator.dataKey];
+    if (val == undefined || val === "") return null;
+    const formatFn = formats[indicator.format];
+    return formatFn(val, indicator.decimals);
 };
 
 const MapTooltip = props => {
@@ -165,26 +169,26 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                <div className={styles.tooltipDatum}>
-                    <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(
-                            getRowIndicatorTooltipValue(data, currentIndicators.bivariateX)
-                        )}
+                {currentIndicators.bivariateXEnabled && (
+                    <div className={styles.tooltipDatum}>
+                        <div className={styles.tooltipDatumValue}>
+                            {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
+                        </div>
+                        <div className={styles.tooltipDatumLabel}>
+                            {currentIndicators.bivariateX.label}
+                        </div>
                     </div>
-                    <div className={styles.tooltipDatumLabel}>
-                        {currentIndicators.bivariateX.label}
+                )}
+                {currentIndicators.bivariateYEnabled && (
+                    <div className={styles.tooltipDatum}>
+                        <div className={styles.tooltipDatumValue}>
+                            {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
+                        </div>
+                        <div className={styles.tooltipDatumLabel}>
+                            {currentIndicators.bivariateY.label}
+                        </div>
                     </div>
-                </div>
-                <div className={styles.tooltipDatum}>
-                    <div className={styles.tooltipDatumValue}>
-                        {formatNumTemp(
-                            getRowIndicatorTooltipValue(data, currentIndicators.bivariateY)
-                        )}
-                    </div>
-                    <div className={styles.tooltipDatumLabel}>
-                        {currentIndicators.bivariateY.label}
-                    </div>
-                </div>
+                )}
             </div>
         </div>
     );
