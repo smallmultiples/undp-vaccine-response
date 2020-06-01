@@ -217,9 +217,12 @@ $lc-w: $l-w / 5;
 .legendColourCell {
     width: $lc-w;
     height: $lc-w;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
+    box-sizing: border-box;
+    border: 1px solid transparent;
     &[data-disabled="true"] {
         background: none !important;
+        border-color: rgba($color-blue-bg, 0.5);
     }
 }
 .legendColourSpan {
