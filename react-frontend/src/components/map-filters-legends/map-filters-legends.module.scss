@@ -5,14 +5,13 @@ $bottomPadding: 27px;
 .mapFiltersLegends {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
 }
 // ------
 
 .bivariateIndicatorSelection {
     display: flex;
     flex-direction: column;
-    padding-bottom: $bottomPadding;
 
     .bivariateIndicatorItem {
         display: flex;
@@ -57,12 +56,38 @@ $bottomPadding: 27px;
 }
 
 // -----
+.radiusLegend {
+    display: flex;
+    flex-direction: column;
+    margin-left: 36px;
+
+    .legendSvg {
+        width: 105px;
+        height: 40px;
+    }
+
+    .legendPoly {
+        fill: $color-blue-bg;
+    }
+
+    .legendCircle {
+        stroke: $color-navy;
+        fill: white;
+        stroke-width: 2;
+    }
+
+    .legendLabels {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+// -----
 
 .radiusIndicatorSelection {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: 48px;
+    margin-left: 24px;
     padding-bottom: $bottomPadding;
 }
 

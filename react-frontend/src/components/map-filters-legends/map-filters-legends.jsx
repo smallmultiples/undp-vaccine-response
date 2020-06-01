@@ -10,6 +10,7 @@ const MapFiltersLegends = props => {
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
+            <RadiusLegend {...props} />
             <RadiusIndicatorSelection {...props} />
         </div>
     );
@@ -101,6 +102,52 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
+            </div>
+        </div>
+    );
+};
+
+const RadiusLegend = props => {
+    if (!props.scales.radius) return null;
+    const domain = props.scales.radius.domain();
+    const range = props.scales.radius.range();
+
+    const stroke = 2;
+    const hs = stroke / 2;
+    const width = 105;
+    const height = 40;
+    const ar = range[0];
+    const ax = ar + hs;
+
+    const br = range[1];
+    const bx = width - br - hs;
+
+    const cy = height / 2;
+
+    const aTop = cy - ar;
+    const aBot = cy + ar;
+    const bTop = cy - br;
+    const bBot = cy + br;
+
+    const polyPoints = [
+        [ax, aTop],
+        [bx, bTop],
+        [bx, bBot],
+        [ax, aBot],
+    ]
+        .map(d => d.join(","))
+        .join(" ");
+
+    return (
+        <div className={styles.radiusLegend}>
+            <svg className={styles.legendSvg}>
+                <polygon className={styles.legendPoly} points={polyPoints} />
+                <circle className={styles.legendCircle} cx={ax} r={ar} cy={cy} />
+                <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
+            </svg>
+            <div className={styles.legendLabels}>
+                <span>{domain[0]}</span>
+                <span>{domain[1]}</span>
             </div>
         </div>
     );

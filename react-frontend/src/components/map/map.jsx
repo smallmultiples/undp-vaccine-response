@@ -167,9 +167,11 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
 
 const useScales = (domains, currentIndicators, activePillar) => {
     return React.useMemo(() => {
-        const circleScale = scaleSymlog().range([0, 16]).domain(domains.extents.radius);
+        const circleScale = scaleSymlog().range([4, 16]).domain(domains.extents.radius);
         const circleRadiusScale = row =>
             circleScale(getRowIndicatorValue(row, currentIndicators.radius));
+        circleRadiusScale.range = circleScale.range;
+        circleRadiusScale.domain = circleScale.domain;
 
         const bivariateColourScale = row => {
             if (!row) return NULL_SHAPE_FILL;
