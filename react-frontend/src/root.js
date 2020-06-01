@@ -87,7 +87,7 @@ const parseMetaSheet = raw => {
                 label: ind,
                 dataKey: row["Data Key"],
                 tooltipKey: row["Tooltip Key"],
-                flipped: false, // TODO: do we even need this?
+                flipped: row["Invert Scale"],
                 format: formats[row["Data Format"]](row["Decimal Places"]),
                 meta,
             };
