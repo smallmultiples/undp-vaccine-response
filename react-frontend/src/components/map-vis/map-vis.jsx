@@ -168,6 +168,19 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
+                {currentIndicators.radiusEnabled && (
+                    <div className={styles.tooltipDatum}>
+                        <div className={styles.tooltipDatumIcon} data-radius />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateY.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedTooltipValue(data, currentIndicators.radius)}
+                            </div>
+                        </div>
+                    </div>
+                )}
                 {currentIndicators.bivariateXEnabled && (
                     <div className={styles.tooltipDatum}>
                         <div className={styles.tooltipDatumIcon} data-bivariate />
