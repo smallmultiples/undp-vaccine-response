@@ -8,7 +8,7 @@
 
 .title {
     width: 20%;
-    padding: 12px;
+    padding: 0 12px;
     @include h4();
 }
 
@@ -20,6 +20,7 @@
 .ticks {
     width: 24px;
     @include bodyXSmall();
+    font-weight: bold;
 }
 
 .line {
@@ -33,16 +34,18 @@
 // ----
 
 .bar {
-    fill: $color-navy;
+    fill: $color-blue-bg;
 
-    // &[data-below="true"] {
-    //     fill: $color-red;
-    // }
-    // &[data-target="true"] {
-    //     fill: $color-green;
-    // }
-     // &[data-portfolio="true"] {
-    //     fill: $color-cyan;
-    //     opacity: 1;
-    // }
+    &[data-low="true"] {
+        fill: $color-red-data;
+    }
+    &[data-medium="true"] {
+        fill: $color-yellow-data;
+    }
+    &[data-high="true"] {
+        fill: $color-lime-data;
+    }
+    &[data-very-high="true"] {
+        fill: $color-green-data;
+    }
 }

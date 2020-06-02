@@ -12,11 +12,11 @@ const padding = {
 };
 
 const useDomains = data => {
-    const x = range(0, Object.values(data).length + 1);
-    const maxVal = extent(Object.values(data));
+    const x = range(0, data.length + 1);
+    const yRange = extent(data);
     return {
         x,
-        y: maxVal,
+        y: yRange,
     };
 };
 
@@ -42,7 +42,6 @@ const useScales = (dimensions, domains) => {
         .paddingInner(0.5);
 
     const y = scaleLinear().domain(domains.y).rangeRound([frame.bottom, frame.top]).nice();
-
     return {
         frame,
         x,
@@ -53,24 +52,24 @@ const useScales = (dimensions, domains) => {
 const Chart = props => {
     const { indicator, data } = props;
     const [ref, dimensions] = useDimensions();
-    const domains = useDomains(data);
+    const indicatorData = data.map(x => x.data);
+    const domains = useDomains(indicatorData);
     const scales = useScales(dimensions, domains);
 
     const chartProps = {
-        ...props,
+        data: indicatorData,
+        rawData: data,
         dimensions,
         domains,
         scales,
     };
 
-    console.log(data);
-
-    const ticks = scales && data && (
+    const ticks = scales && data.length !== 0 && (
         <>
             <Ticks {...chartProps} />
         </>
     );
-    const chartContent = scales && data && (
+    const chartContent = scales && data.length !== 0 && (
         <>
             <Data {...chartProps} />
         </>
@@ -88,9 +87,9 @@ const Chart = props => {
 };
 
 const Data = props => {
-    const { scales, data } = props;
-    const rects = Object.values(data)
-        .sort((j, k) => j - k)
+    const { scales, data, rawData } = props;
+    const rects = rawData
+        .sort((j, k) => j.data - k.data)
         .map((d, i) => {
             const left = scales.x(i);
             const width = scales.x.bandwidth();
@@ -100,27 +99,21 @@ const Data = props => {
                     className={styles.bar}
                     x={left}
                     width={width}
-                    y={scales.y(d)}
-                    height={250 - scales.y(d)}
-                    data-portfolio={d.portfolio || false}
-                    data-target={d.target || false}
-                    data-below={d.value >= 0}
+                    y={scales.y(d.data)}
+                    height={scales.y(0) - scales.y(d.data)}
+                    data-low={d.hdi < 0.55}
+                    data-medium={d.hdi >= 0.55 && d.hdi < 0.7}
+                    data-low={d.hdi >= 0.7 && d.hdi < 0.8}
+                    data-high={d.hdi >= 0.8}
                 />
             );
         });
 
-    const maxVal = Math.max(...Object.values(data));
+    const maxVal = Math.max(...data);
     const midVal = maxVal / 2;
     return (
         <g>
             <g>
-                <rect
-                    className={styles.line}
-                    x={0}
-                    width={scales.frame.width}
-                    y={scales.y(0) - 2}
-                    height={2}
-                />
                 <rect
                     className={styles.thinLine}
                     x={0}
@@ -137,13 +130,22 @@ const Data = props => {
                 />
             </g>
             <g>{rects}</g>
+            <g>
+                <rect
+                    className={styles.line}
+                    x={0}
+                    width={scales.frame.width}
+                    y={scales.y(0) - 2}
+                    height={2}
+                />
+            </g>
         </g>
     );
 };
 
 const Ticks = props => {
     const { scales, data } = props;
-    const maxVal = Math.max(...Object.values(data));
+    const maxVal = Math.max(...data);
     const midVal = maxVal / 2;
     return (
         <div className={styles.ticks}>

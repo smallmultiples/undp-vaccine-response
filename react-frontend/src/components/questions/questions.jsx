@@ -8,7 +8,7 @@ import Chart from "./chart";
 const COUNTRIES_TOTAL = 249;
 
 const Question = props => {
-    const { question, dataset, regionLookup, countryData } = props;
+    const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
 
     const headers = ["Country", "Region"];
@@ -67,9 +67,14 @@ const Question = props => {
     });
 
     const chartData = question.indicators.map(x => {
-        const tmp = {};
+        const tmp = [];
         for (const d of dataset || []) {
             tmp[d["Country or Area"]] = d[x.dataKey];
+            tmp.push({
+                country: d["Country or Area"],
+                data: d[x.dataKey],
+                hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator.dataKey]
+            })
         }
         return {
             indicator: x.label,
@@ -119,7 +124,7 @@ const Question = props => {
                 </div>
             </div>
             <div className={styles.chartsContainer}>
-                {chartData.map(x => {
+                {chartData && chartData.map(x => {
                     return <Chart key={x.indicator} indicator={x.indicator} data={x.data} />;
                 })}
             </div>
@@ -128,7 +133,7 @@ const Question = props => {
 };
 
 const Questions = props => {
-    const { activePillar, datasets, regionLookup, countryData } = props;
+    const { activePillar, datasets, regionLookup, countryData, hdiIndicator } = props;
     return (
         <>
             {activePillar.questions.map((x, i) => (
@@ -138,6 +143,7 @@ const Questions = props => {
                     dataset={datasets[x.sheet]}
                     regionLookup={regionLookup}
                     countryData={countryData}
+                    hdiIndicator={hdiIndicator}
                 />
             ))}
         </>
