@@ -3,6 +3,7 @@ import styles from "./questions.module.scss";
 import Table from "./table";
 import { Chevron } from "../icons/icons";
 import Badge from "./badge";
+import Chart from "./chart";
 
 const COUNTRIES_TOTAL = 249;
 
@@ -65,46 +66,64 @@ const Question = props => {
         return arr;
     });
 
+    const chartData = question.indicators.map(x => {
+        const tmp = {};
+        for (const d of dataset || []) {
+            tmp[d["Country or Area"]] = d[x.dataKey];
+        }
+        return {
+            indicator: x.label,
+            data: tmp,
+        };
+    });
+
     return (
-        <div className={styles.question}>
-            <div className={styles.questionText}>
-                <div className={styles.label}>{question.label}</div>
-                <button className={styles.downloadButton}>Download CSV</button>
-                <button
-                    className={styles.hideButton}
-                    onClick={() => setIsPreviewShown(!isPreviewShown)}
-                >
-                    {isPreviewShown ? "Hide data preview" : "Show data preview"}
-                    <Chevron
-                        className={styles.chevron}
-                        data-direction={isPreviewShown ? "up" : "down"}
+        <>
+            <div className={styles.question}>
+                <div className={styles.questionText}>
+                    <div className={styles.label}>{question.label}</div>
+                    <button className={styles.downloadButton}>Download CSV</button>
+                    <button
+                        className={styles.hideButton}
+                        onClick={() => setIsPreviewShown(!isPreviewShown)}
+                    >
+                        {isPreviewShown ? "Hide data preview" : "Show data preview"}
+                        <Chevron
+                            className={styles.chevron}
+                            data-direction={isPreviewShown ? "up" : "down"}
+                        />
+                    </button>
+                </div>
+                <div className={styles.overviewTable}>
+                    <Table
+                        headings={["Indicators", "Coverage", "Currency", "Data source"]}
+                        rows={rowsForOverviewTable}
+                        fixedColumns={2}
+                        fixedColumnsWidth={30}
                     />
-                </button>
+                </div>
+                <div className={styles.countryTable} data-visible={isPreviewShown}>
+                    <Table
+                        headings={headersForCountryTable}
+                        rows={rowsForCountryTable || []}
+                        fixedColumns={2}
+                        fixedColumnsWidth={15}
+                        withBorders={true}
+                        footer={
+                            <div className={styles.summary}>
+                                <div>201 more rows</div>
+                                <button className={styles.downloadButton}>Download CSV</button>
+                            </div>
+                        }
+                    />
+                </div>
             </div>
-            <div className={styles.overviewTable}>
-                <Table
-                    headings={["Indicators", "Coverage", "Currency", "Data source"]}
-                    rows={rowsForOverviewTable}
-                    fixedColumns={2}
-                    fixedColumnsWidth={30}
-                />
+            <div className={styles.chartsContainer}>
+                {chartData.map(x => {
+                    return <Chart key={x.indicator} indicator={x.indicator} data={x.data} />;
+                })}
             </div>
-            <div className={styles.countryTable} data-visible={isPreviewShown}>
-                <Table
-                    headings={headersForCountryTable}
-                    rows={rowsForCountryTable || []}
-                    fixedColumns={2}
-                    fixedColumnsWidth={15}
-                    withBorders={true}
-                    footer={
-                        <div className={styles.summary}>
-                            <div>201 more rows</div>
-                            <button className={styles.downloadButton}>Download CSV</button>
-                        </div>
-                    }
-                />
-            </div>
-        </div>
+        </>
     );
 };
 
@@ -112,9 +131,9 @@ const Questions = props => {
     const { activePillar, datasets, regionLookup, countryData } = props;
     return (
         <>
-            {activePillar.questions.map(x => (
+            {activePillar.questions.map((x, i) => (
                 <Question
-                    key={x.labelLong}
+                    key={`${x.labelLong}_${i}`}
                     question={x}
                     dataset={datasets[x.sheet]}
                     regionLookup={regionLookup}

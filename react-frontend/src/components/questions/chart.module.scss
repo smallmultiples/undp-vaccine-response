@@ -1,0 +1,48 @@
+@import "../../variables.scss";
+
+.container {
+    display: flex;
+    position: relative;
+    margin-bottom: 48px;
+}
+
+.title {
+    width: 20%;
+    padding: 12px;
+    @include h4();
+}
+
+.svg {
+    width: 80%;
+    height: 150px;
+}
+
+.ticks {
+    width: 24px;
+    @include bodyXSmall();
+}
+
+.line {
+    fill: black;
+}
+
+.thinLine {
+    fill: $color-blue-bg;
+}
+
+// ----
+
+.bar {
+    fill: $color-navy;
+
+    // &[data-below="true"] {
+    //     fill: $color-red;
+    // }
+    // &[data-target="true"] {
+    //     fill: $color-green;
+    // }
+     // &[data-portfolio="true"] {
+    //     fill: $color-cyan;
+    //     opacity: 1;
+    // }
+}
