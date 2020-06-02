@@ -87,3 +87,48 @@
 .chartsContainer {
     margin-bottom: 24px;
 }
+
+.legendContainer {
+    height: 48px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+
+    .legendTitle {
+        @include body();
+        font-weight: bold;
+        margin-right: 24px;
+    }
+
+    .legend {
+        display: flex;
+
+        .legendItem {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .box {
+                width: 54px;
+                height: 10px;
+                margin-right: 2px;
+                &[data-low="true"] {
+                    background: $color-red-data;
+                }
+                &[data-medium="true"] {
+                    background: $color-yellow-data;
+                }
+                &[data-high="true"] {
+                    background: $color-lime-data;
+                }
+                &[data-very-high="true"] {
+                    background: $color-green-data;
+                }
+            }
+            span {
+                @include bodyXSmall();
+                font-weight: bold;
+            }
+        }
+    }
+}

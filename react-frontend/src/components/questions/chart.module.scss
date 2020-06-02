@@ -2,6 +2,7 @@
 
 .container {
     display: flex;
+    justify-content: space-between;
     position: relative;
     margin-bottom: 48px;
 }
@@ -39,7 +40,7 @@
 // ----
 
 .bar {
-    fill: $color-blue-bg;
+    fill: $color-grey;
 
     &[data-low="true"] {
         fill: $color-red-data;

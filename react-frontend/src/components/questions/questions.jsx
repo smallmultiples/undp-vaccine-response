@@ -54,9 +54,13 @@ const Question = props => {
     const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
         const region = regionLookup?.find(r => r["ISO-alpha3 Code"] === x["Alpha-3 code"]);
         const country = countryData && countryData[x["Alpha-3 code"]];
-        const arr = [x["Country or Area"], region["Region Name"] || ""];
+        const arr = [x["Country or Area"], region?.["Region Name"] || ""];
         question.indicators.forEach(ind => {
-            arr.push(Math.round(x[ind.dataKey] * 10) / 10);
+            arr.push(
+                typeof x[ind.dataKey] === "number"
+                    ? Math.round(x[ind.dataKey] * 10) / 10
+                    : x[ind.dataKey]
+            );
         });
         if (country) {
             arr.push(country.Cumulative_cases);
@@ -66,21 +70,25 @@ const Question = props => {
         return arr;
     });
 
-    const chartData = question.indicators.map(x => {
-        const tmp = [];
-        for (const d of dataset || []) {
-            tmp[d["Country or Area"]] = d[x.dataKey];
-            tmp.push({
-                country: d["Country or Area"],
-                data: d[x.dataKey],
-                hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator.dataKey]
-            })
-        }
-        return {
-            indicator: x.label,
-            data: tmp,
-        };
-    });
+    const chartData = question.indicators
+        .map(x => {
+            const tmp = [];
+            for (const d of dataset || []) {
+                tmp.push({
+                    country: d["Country or Area"],
+                    data: d[x.dataKey],
+                    hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator.dataKey],
+                });
+            }
+            const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");
+            if (tmp.length > 0 && isNumericData) {
+                return {
+                    indicator: x.label,
+                    data: tmp,
+                };
+            }
+        })
+        .filter(a => a !== undefined);
 
     return (
         <>
@@ -124,11 +132,39 @@ const Question = props => {
                 </div>
             </div>
             <div className={styles.chartsContainer}>
-                {chartData && chartData.map(x => {
-                    return <Chart key={x.indicator} indicator={x.indicator} data={x.data} />;
-                })}
+                {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
+                {chartData &&
+                    chartData.map(x => {
+                        return <Chart key={x.indicator} indicator={x.indicator} data={x.data} />;
+                    })}
             </div>
         </>
+    );
+};
+
+const Legend = props => {
+    return (
+        <div className={styles.legendContainer}>
+            <div className={styles.legendTitle}>{props.hdiIndicator.dataKey}</div>
+            <div className={styles.legend}>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-low={true} />
+                    <span>Low</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-medium={true} />
+                    <span>Medium</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-high={true} />
+                    <span>High</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-very-high={true} />
+                    <span>Very high</span>
+                </div>
+            </div>
+        </div>
     );
 };
 
