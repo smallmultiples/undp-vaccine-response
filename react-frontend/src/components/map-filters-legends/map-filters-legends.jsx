@@ -163,13 +163,14 @@ const RadiusLegend = props => {
 };
 
 const Toggle = props => {
-    const optWidth = 100 / props.options.length;
+    const totalLength = props.options.reduce((a, b) => a + b.label.length, 0);
+
     const options = props.options.map(option => {
         return (
             <button
                 key={option.label}
                 className={styles.toggleOption}
-                style={{ width: optWidth + "%" }}
+                style={{ width: (option.label.length / totalLength) * 100 + "%" }}
                 onClick={() => props.onChange(option)}
                 data-active={option === props.value}
             >
@@ -177,12 +178,21 @@ const Toggle = props => {
             </button>
         );
     });
-    const slideLeft = props.options.indexOf(props.value) * optWidth;
+    // TODO: someone needs to fix this gross code sorry
+    const optWidth =
+        (props.options[props.options.indexOf(props.value)].label.length / totalLength) * 100;
+    let slideLeft = props.options.reduce((a, b, i) => {
+        if (i < props.options.indexOf(props.value)) {
+            return a + b.label.length;
+        }
+        return a;
+    }, 0);
+    slideLeft = (slideLeft / totalLength) * 100;
 
     const bgSlide = (
         <div
             className={styles.toggleSlide}
-            style={{ width: `calc(${optWidth}% - 4px)`, left: `calc(${slideLeft}% + 2px)` }}
+            style={{ width: `calc(${optWidth}% - 2px)`, left: `calc(${slideLeft}% + 1px)` }}
         />
     );
     return (
