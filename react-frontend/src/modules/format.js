@@ -28,7 +28,7 @@ export const formatSI = (decimals = 2) => num => {
 
 export const formatPercent = (decimals = 2) => raw => {
     if (!isDef(raw)) return "-";
-    return formatComma(raw, decimals) + "%";
+    return raw.toLocaleString(undefined, { maximumFractionDigits: decimals }) + "%";
 };
 
 export const formatDecimal = (decimals = 2) => raw => {
@@ -53,10 +53,7 @@ export const formatUSD = decimals => {
 };
 
 export const formatCategory = () => raw => {
-    if (isNil(raw)) return "-";
-    const split = raw.split(";").map(d => d.trim());
-    if (split.length === 1) return split;
-    return split.slice(0, -1).join(", ") + " and " + last(split);
+    return "-";
 };
 
 export const formats = {

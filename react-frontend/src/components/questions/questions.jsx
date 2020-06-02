@@ -149,6 +149,10 @@ const Legend = props => {
             <div className={styles.legendTitle}>{props.hdiIndicator?.dataKey}</div>
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
+                    <div className={styles.box} data-na={true} />
+                    <span>N/A</span>
+                </div>
+                <div className={styles.legendItem}>
                     <div className={styles.box} data-low={true} />
                     <span>Low</span>
                 </div>

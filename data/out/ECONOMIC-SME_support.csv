@@ -1,76 +1,77 @@
 ﻿Country or Area,Alpha-2 code,Alpha-3 code,Dummy,Supports,Latitude (average),Longitude (average)
-Angola,AO,AGO,74.58114972,Tax;Business costs,-12.5,18.5
-Uruguay,UY,URY,91.03361826,Business costs,-33,-56
-Iran (Islamic Republic of),IR,IRN,8.374067081,Tax;Business costs,32,53
-Cabo Verde,CV,CPV,81.54687487,Business costs,16,-24
-Switzerland,CH,CHE,26.56179074,Tax;Business costs,47,8
-Mongolia,MN,MNG,27.52672453,Tax;Business costs,46,105
-France,FR,FRA,88.21514921,Tax;Business costs;Business advice,46,2
-Ecuador,EC,ECU,97.29303631,Business costs,-2,-77.5
-Papua New Guinea,PG,PNG,58.74614199,Business costs,-6,147
-Panama,PA,PAN,37.63650542,Business costs,9,-80
-Hungary,HU,HUN,80.45506869,Business costs,47,20
-United Kingdom of Great Britain and Northern Ireland,GB,GBR,80.92421703,Tax;Business costs,54,-2
-China,CN,CHN,44.69738868,Tax;Business costs;Business advice,35,105
-Jamaica,JM,JAM,60.72233128,Business costs,18.25,-77.5
-Slovakia,SK,SVK,34.84167733,Tax;Business costs,48.6667,19.5
-Guatemala,GT,GTM,8.417278978,Business costs,15.5,-90.25
-Croatia,HR,HRV,62.90712225,Business costs,45.1667,15.5
-Argentina,AR,ARG,14.1961814,Tax;Business costs,-34,-64
-Colombia,CO,COL,5.754076241,Tax;Business costs,4,-72
-Italy,IT,ITA,93.33445415,Business costs,42.8333,12.8333
-Egypt,EG,EGY,10.61481572,Business costs,27,30
-Turkey,TR,TUR,66.85052601,Business costs,39,35
-Senegal,SN,SEN,56.36822137,Business costs,14,-14
-Jordan,JO,JOR,1.305693173,Tax;Business costs,31,36
-Malaysia,MY,MYS,95.1898994,Tax;Business costs;Business advice,2.5,112.5
-Uganda,UG,UGA,72.949841,Business costs,1,32
-South Africa,ZA,ZAF,89.49002535,Business costs,-29,24
-Cambodia,KH,KHM,31.23321852,Business costs,13,105
-Saudi Arabia,SA,SAU,81.54476195,Tax;Business costs;Business advice,25,45
-Indonesia,ID,IDN,3.824282738,Tax;Business costs,-5,120
-United States of America,US,USA,27.53693935,Business costs,38,-97
-Poland,PL,POL,38.55880544,Business costs,52,20
-Nepal,NP,NPL,29.32497503,Tax;Business costs,28,84
-Chile,CL,CHL,97.05337768,Business costs,-30,-71
-Paraguay,PY,PRY,85.40656414,Business costs,-23,-58
-Russian Federation,RU,RUS,81.713706,Business costs,60,100
-Costa Rica,CR,CRI,14.87122176,Tax;Business costs,10,-84
-Lithuania,LT,LTU,1.037868936,Business costs,56,24
-Tunisia,TN,TUN,97.57703407,Business costs,34,9
-Ukraine,UA,UKR,82.5197081,Tax;Business costs,49,32
-Morocco,MA,MAR,84.97433103,Tax;Business costs,32,-5
-Bulgaria,BG,BGR,62.40784074,Business costs,43,25
-Ireland,IE,IRL,29.30736973,Business costs,53,-8
 Viet Nam,VN,VNM,50.98031512,Tax;Business costs,16,106
-Thailand,TH,THA,47.92590985,Tax;Business costs,15,100
-Belgium,BE,BEL,18.14899915,Business costs,50.8333,4
-Sweden,SE,SWE,26.24915332,Tax;Business costs,62,15
-Luxembourg,LU,LUX,78.10546783,Business costs,49.75,6.1667
-Portugal,PT,PRT,84.14304858,Tax;Business costs,39.5,-8
-Slovenia,SI,SVN,94.21365982,Tax;Business costs,46,15
-India,IN,IND,94.00308039,Business costs,20,77
-New Zealand,NZ,NZL,27.79358855,Tax;Business costs;Business advice,-41,174
-Japan,JP,JPN,89.35796926,Business costs,36,138
-Kazakhstan,KZ,KAZ,62.79587065,Business costs,48,68
-Algeria,DZ,DZA,89.8941279,Tax;Business costs,28,3
-Spain,ES,ESP,97.52915881,Tax;Business costs,40,-4
-Republic of Korea,KR,KOR,97.48893957,Tax;Business costs;Business advice,37,127.5
-El Salvador,SV,SLV,53.06951503,Tax;Business costs,13.8333,-88.9167
-Singapore,SG,SGP,19.83752471,Tax;Business costs;Business advice,1.3667,103.8
-"China, Hong Kong Special Administrative Region",HK,HKG,76.60010764,Business costs,22.25,114.1667
-Canada,CA,CAN,44.40363464,Business costs,60,-95
-Greece,GR,GRC,85.70655751,Tax;Business costs;Business advice,39,22
-Kuwait,KW,KWT,60.20701123,Business costs,29.3375,47.6581
-Honduras,HN,HND,34.57126864,Business costs,15,-86.5
-Bolivia (Plurinational State of),BO,BOL,33.90201278,Business costs,-17,-65
-Iceland,IS,ISL,65.93137163,Business costs,65,-18
-Fiji,FJ,FJI,3.378101825,Business costs,-18,175
-Peru,PE,PER,59.06329725,Business costs,-10,-76
-Denmark,DK,DNK,36.40493583,Business costs,56,10
-Myanmar,MM,MMR,46.64685043,Business costs,22,98
-Trinidad and Tobago,TT,TTO,49.63243107,Business costs,11,-61
-Dominican Republic,DO,DOM,41.7204559,Business costs,19,-70.6667
-Brazil,BR,BRA,41.92259919,Tax;Business costs,-10,-55
-Australia,AU,AUS,6.356130979,Business costs,-27,133
+Mongolia,MN,MNG,27.52672453,Tax;Business costs,46,105
 Czechia,CZ,CZE,2.387596927,Business costs,49.75,15.5
+Thailand,TH,THA,47.92590985,Tax;Business costs,15,100
+Egypt,EG,EGY,10.61481572,Business costs,27,30
+Costa Rica,CR,CRI,14.87122176,Tax;Business costs,10,-84
+Ecuador,EC,ECU,97.29303631,Business costs,-2,-77.5
+Brazil,BR,BRA,41.92259919,Tax;Business costs,-10,-55
+Bolivia (Plurinational State of),BO,BOL,33.90201278,Business costs,-17,-65
+Switzerland,CH,CHE,26.56179074,Tax;Business costs,47,8
+Kuwait,KW,KWT,60.20701123,Business costs,29.3375,47.6581
+Morocco,MA,MAR,84.97433103,Tax;Business costs,32,-5
+Honduras,HN,HND,34.57126864,Business costs,15,-86.5
+Senegal,SN,SEN,56.36822137,Business costs,14,-14
+Ukraine,UA,UKR,82.5197081,Tax;Business costs,49,32
+Belgium,BE,BEL,18.14899915,Business costs,50.8333,4
+Denmark,DK,DNK,36.40493583,Business costs,56,10
+Hungary,HU,HUN,80.45506869,Business costs,47,20
+Poland,PL,POL,38.55880544,Business costs,52,20
+Japan,JP,JPN,89.35796926,Business costs,36,138
+Indonesia,ID,IDN,3.824282738,Tax;Business costs,-5,120
+Tunisia,TN,TUN,97.57703407,Business costs,34,9
+China,CN,CHN,44.69738868,Tax;Business costs;Business advice,35,105
+Jordan,JO,JOR,1.305693173,Tax;Business costs,31,36
+Uruguay,UY,URY,91.03361826,Business costs,-33,-56
+Jamaica,JM,JAM,60.72233128,Business costs,18.25,-77.5
+Republic of Korea,KR,KOR,97.48893957,Tax;Business costs;Business advice,37,127.5
+Kazakhstan,KZ,KAZ,62.79587065,Business costs,48,68
+United States of America,US,USA,27.53693935,Business costs,38,-97
+Argentina,AR,ARG,14.1961814,Tax;Business costs,-34,-64
+Guatemala,GT,GTM,8.417278978,Business costs,15.5,-90.25
+Algeria,DZ,DZA,89.8941279,Tax;Business costs,28,3
+Dominican Republic,DO,DOM,41.7204559,Business costs,19,-70.6667
+Spain,ES,ESP,97.52915881,Tax;Business costs,40,-4
+Turkey,TR,TUR,66.85052601,Business costs,39,35
+Saudi Arabia,SA,SAU,81.54476195,Tax;Business costs;Business advice,25,45
+Nepal,NP,NPL,29.32497503,Tax;Business costs,28,84
+Portugal,PT,PRT,84.14304858,Tax;Business costs,39.5,-8
+Malaysia,MY,MYS,95.1898994,Tax;Business costs;Business advice,2.5,112.5
+"China, Hong Kong Special Administrative Region",HK,HKG,76.60010764,Business costs,22.25,114.1667
+Russian Federation,RU,RUS,81.713706,Business costs,60,100
+Panama,PA,PAN,37.63650542,Business costs,9,-80
+Slovakia,SK,SVK,34.84167733,Tax;Business costs,48.6667,19.5
+Peru,PE,PER,59.06329725,Business costs,-10,-76
+El Salvador,SV,SLV,53.06951503,Tax;Business costs,13.8333,-88.9167
+Sweden,SE,SWE,26.24915332,Tax;Business costs,62,15
+Croatia,HR,HRV,62.90712225,Business costs,45.1667,15.5
+Slovenia,SI,SVN,94.21365982,Tax;Business costs,46,15
+Canada,CA,CAN,44.40363464,Business costs,60,-95
+Luxembourg,LU,LUX,78.10546783,Business costs,49.75,6.1667
+Ireland,IE,IRL,29.30736973,Business costs,53,-8
+South Africa,ZA,ZAF,89.49002535,Business costs,-29,24
+India,IN,IND,94.00308039,Business costs,20,77
+Romania,RO,ROU,34.47387933,Tax;Business costs,46,25
+Lithuania,LT,LTU,1.037868936,Business costs,56,24
+Singapore,SG,SGP,19.83752471,Tax;Business costs;Business advice,1.3667,103.8
+Italy,IT,ITA,93.33445415,Business costs,42.8333,12.8333
+Paraguay,PY,PRY,85.40656414,Business costs,-23,-58
+Cambodia,KH,KHM,31.23321852,Business costs,13,105
+Chile,CL,CHL,97.05337768,Business costs,-30,-71
+France,FR,FRA,88.21514921,Tax;Business costs;Business advice,46,2
+Colombia,CO,COL,5.754076241,Tax;Business costs,4,-72
+United Kingdom of Great Britain and Northern Ireland,GB,GBR,80.92421703,Tax;Business costs,54,-2
+Fiji,FJ,FJI,3.378101825,Business costs,-18,175
+Bulgaria,BG,BGR,62.40784074,Business costs,43,25
+New Zealand,NZ,NZL,27.79358855,Tax;Business costs;Business advice,-41,174
+Iceland,IS,ISL,65.93137163,Business costs,65,-18
+Trinidad and Tobago,TT,TTO,49.63243107,Business costs,11,-61
+Angola,AO,AGO,74.58114972,Tax;Business costs,-12.5,18.5
+Iran (Islamic Republic of),IR,IRN,8.374067081,Tax;Business costs,32,53
+Greece,GR,GRC,85.70655751,Tax;Business costs;Business advice,39,22
+Papua New Guinea,PG,PNG,58.74614199,Business costs,-6,147
+Australia,AU,AUS,6.356130979,Business costs,-27,133
+Cabo Verde,CV,CPV,81.54687487,Business costs,16,-24
+Uganda,UG,UGA,72.949841,Business costs,1,32
+Myanmar,MM,MMR,46.64685043,Business costs,22,98

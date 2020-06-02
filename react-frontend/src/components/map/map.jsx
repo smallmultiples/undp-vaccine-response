@@ -99,27 +99,27 @@ const blueMidColourMatrixHex = [
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
 const blueDarkMatrixHex = [
-    ["#161A3A", "#502C50", "#853E64", "#BD5078", "#F4618D"],
-    ["#162344", "#503D5D", "#875375", "#BF6B8D", "#F782A5"],
-    ["#162C4D", "#514969", "#886684", "#C1829F", "#F99FBA"],
-    ["#163758", "#505B77", "#877E96", "#BFA2B5", "#F6C5D4"],
-    ["#164465", "#4E6F89", "#849BAC", "#BBC7CF", "#F2F2F3"],
+    ["#9001FE", "#A919E1", "#C130C7", "#D947AC", "#F4618D"],
+    ["#7E09FF", "#8935E9", "#AB4DD5", "#CC6AC2", "#F782A5"],
+    ["#6316FF", "#7547EF", "#9965E0", "#C383D1", "#F99FBA"],
+    ["#3D29FF", "#5B5EF5", "#887BEB", "#B7A2E4", "#F6C5D4"],
+    ["#0247FF", "#4175FC", "#7298F9", "#ACC0F7", "#F2F2F3"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
 const greenColourMatrixHex = [
-    ["#524916", "#7B5036", "#A35552", "#CB5B6F", "#F4618D"],
-    ["#53611A", "#7C6A3E", "#A57260", "#CE7A82", "#F782A5"],
-    ["#53771E", "#7D8146", "#A68B6C", "#CF9593", "#F99FBA"],
-    ["#529422", "#7CA050", "#A4AD7B", "#CDB9A7", "#F6C5D4"],
-    ["#51B627", "#7AC55C", "#A2D48D", "#CAE3C0", "#F2F2F3"],
+    ["#007892", "#50739E", "#7C70A5", "#AB6A9C", "#F4618D"],
+    ["#11878D", "#4A889B", "#8589AB", "#B185A9", "#F782A5"],
+    ["#219588", "#579B9B", "#8EA1B0", "#B8A3B7", "#F99FBA"],
+    ["#32A483", "#62AD9B", "#96B7B5", "#C0C4C7", "#F6C5D4"],
+    ["#43B37E", "#70C39B", "#A0D4BC", "#C7E3D6", "#F2F2F3"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
 const yellowColourMatrixHex = [
-    ["#F14A02", "#F25027", "#F35549", "#F45B6B", "#F4618D"],
-    ["#F46303", "#F56B2E", "#F67256", "#F77A7D", "#F782A5"],
-    ["#F67904", "#F78336", "#F88C61", "#F9958D", "#F99FBA"],
-    ["#F39605", "#F4A33D", "#F5AD6E", "#F6B9A1", "#F6C5D4"],
-    ["#EFB906", "#F0C844", "#F1D57E", "#F2E3B8", "#F2F2F3"],
+    ["#F0B110", "#F19935", "#F2894F", "#F37967", "#F4618D"],
+    ["#E9BE0F", "#ECAE3F", "#EEA35F", "#F1957C", "#F782A5"],
+    ["#E1CE0E", "#E7C349", "#EBBB6E", "#EFB290", "#F99FBA"],
+    ["#D9DF0D", "#E1DA54", "#E7D27D", "#ECD1A7", "#F6C5D4"],
+    ["#D0F00C", "#DCF15F", "#E3F190", "#EAF2BF", "#F2F2F3"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
 const hdiColorMatrixHex = [

@@ -99,7 +99,7 @@ const parseMetaSheet = raw => {
                 format: formats[row["Data Format"]]
                     ? formats[row["Data Format"]](row["Decimal Places"])
                     : formats.decimal(row["Decimal Places"]),
-                hdi: ind === "HDI",
+                hdi: ind === "Human Development Index",
                 meta,
             };
         }
