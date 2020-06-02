@@ -1,0 +1,57 @@
+@import "../../variables.scss";
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 48px;
+}
+
+.title {
+    width: 20%;
+    padding: 0 12px;
+    @include h4();
+}
+
+.svg {
+    width: 800px;
+    height: 150px;
+}
+
+.ticks {
+    width: 48px;
+    @include bodyXSmall();
+    font-weight: bold;
+    .tick {
+        position: absolute;
+        text-align: end;
+        width: 36px;
+    }
+}
+
+.line {
+    fill: black;
+}
+
+.thinLine {
+    fill: $color-blue-bg;
+}
+
+// ----
+
+.bar {
+    fill: $color-grey;
+
+    &[data-low="true"] {
+        fill: $color-red-data;
+    }
+    &[data-medium="true"] {
+        fill: $color-yellow-data;
+    }
+    &[data-high="true"] {
+        fill: $color-lime-data;
+    }
+    &[data-very-high="true"] {
+        fill: $color-green-data;
+    }
+}
