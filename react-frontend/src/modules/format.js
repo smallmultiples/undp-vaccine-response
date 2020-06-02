@@ -1,6 +1,6 @@
+import { last, isNil } from "lodash";
 // from https://stackoverflow.com/questions/9461621/format-a-number-as-2-5k-if-a-thousand-or-more-otherwise-900
 // modified
-
 const isDef = num => !isNaN(num);
 
 export const formatSI = (decimals = 2) => num => {
@@ -27,12 +27,12 @@ export const formatSI = (decimals = 2) => num => {
 };
 
 export const formatPercent = (decimals = 2) => raw => {
-    if (!isDef(raw)) return "";
+    if (!isDef(raw)) return "-";
     return formatComma(raw, decimals) + "%";
 };
 
 export const formatDecimal = (decimals = 2) => raw => {
-    if (!isDef(raw)) return "";
+    if (!isDef(raw)) return "-";
     return raw.toLocaleString(undefined, {
         maximumFractionDigits: decimals,
         minimumFractionDigits: 0,
@@ -40,16 +40,23 @@ export const formatDecimal = (decimals = 2) => raw => {
 };
 
 export const formatComma = (decimals = 0) => raw => {
-    if (!isDef(raw)) return "";
+    if (!isDef(raw)) return "-";
     return raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
 };
 
 export const formatUSD = decimals => {
     const si = formatSI(decimals);
     return raw => {
-        if (!isDef(raw)) return "";
+        if (!isDef(raw)) return "-";
         return "$" + si(raw) + " USD";
     };
+};
+
+export const formatCategory = () => raw => {
+    if (isNil(raw)) return "-";
+    const split = raw.split(";").map(d => d.trim());
+    if (split.length === 1) return split;
+    return split.slice(0, -1).join(", ") + " and " + last(split);
 };
 
 export const formats = {
@@ -58,4 +65,5 @@ export const formats = {
     decimal: formatDecimal,
     comma: formatComma,
     usd: formatUSD,
+    category: formatCategory,
 };

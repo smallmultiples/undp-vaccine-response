@@ -2,7 +2,7 @@ import React from "react";
 import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
 import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
-import { isNil } from "lodash";
+import { isNil, flatten, uniq } from "lodash";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
 
@@ -211,24 +211,89 @@ const MapTooltip = props => {
     );
 };
 
+const categorySplit = val => val.split(";").map(d => d.trim());
+
+const groupRadius = 7;
+
 const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators } = props;
 
+    const rowXY = row => {
+        const [lng, lat] = [row["Longitude (average)"], row["Latitude (average)"]];
+        if ([lng, lat].some(d => !d)) return null;
+        return viewport.project([lng, lat]);
+    };
+
     if (!currentIndicators.radiusEnabled) return null;
 
-    const circles = Object.values(normalizedData).map(row => {
-        if ([row["Longitude (average)"], row["Latitude (average)"]].some(d => !d)) return null;
-        const [x, y] = viewport.project([row["Longitude (average)"], row["Latitude (average)"]]);
-        const r = scales.radius(row);
-        if (isNaN(r)) return null;
-        return <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />;
-    });
+    let content = null;
 
-    return (
-        <svg className={styles.circleVis}>
-            <g>{circles}</g>
-        </svg>
-    );
+    if (currentIndicators.bivariateX.categorical) {
+        const uniqueVals = uniq(
+            flatten(
+                Object.values(normalizedData)
+                    .map(d => {
+                        const val = d[currentIndicators.bivariateX.dataKey];
+                        if (isNil(val)) return null;
+                        return categorySplit(val);
+                    })
+                    .filter(d => d)
+            )
+        );
+
+        const angleEach = 360 / uniqueVals.length;
+
+        const groups = Object.values(normalizedData).map(row => {
+            const val = row[currentIndicators.bivariateX.dataKey];
+            if (isNil(val)) return null;
+            const cats = categorySplit(val);
+            const xy = rowXY(row);
+            if (!xy) return null;
+            const r = 4;
+
+            const groupCircles = uniqueVals.map((cat, i) => {
+                const a = i * angleEach - 90;
+                const active = cats.includes(cat);
+                return (
+                    <circle
+                        key={row[SHEET_ROW_ID] + cat}
+                        className={styles.visCategoryCircle}
+                        data-i={i}
+                        data-active={active}
+                        r={r}
+                        style={{
+                            transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
+                        }}
+                    />
+                );
+            });
+
+            return (
+                <g
+                    style={{
+                        transform: `translate(${xy[0]}px, ${xy[1]}px)`,
+                    }}
+                >
+                    {groupCircles}
+                </g>
+            );
+        });
+        content = <g>{groups}</g>;
+    } else {
+        const circles = Object.values(normalizedData).map(row => {
+            const xy = rowXY(row);
+            if (!xy) return null;
+            const [x, y] = xy;
+            const r = scales.radius(row);
+            if (isNaN(r)) return null;
+            return (
+                <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />
+            );
+        });
+        content = <g>{circles}</g>;
+    }
+
+    return <svg className={styles.circleVis}>{content}</svg>;
 };
 
 export default MapVis;

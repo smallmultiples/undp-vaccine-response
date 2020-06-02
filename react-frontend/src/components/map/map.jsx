@@ -259,6 +259,7 @@ const useScales = (domains, currentIndicators, activePillar) => {
 };
 
 const getDefaultIndicatorState = (activePillar, covidPillar) => {
+    // TODO: module
     const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators));
 
     return {
