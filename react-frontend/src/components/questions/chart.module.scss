@@ -13,14 +13,19 @@
 }
 
 .svg {
-    width: 80%;
+    width: 800px;
     height: 150px;
 }
 
 .ticks {
-    width: 24px;
+    width: 48px;
     @include bodyXSmall();
     font-weight: bold;
+    .tick {
+        position: absolute;
+        text-align: end;
+        width: 36px;
+    }
 }
 
 .line {

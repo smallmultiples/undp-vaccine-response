@@ -1,6 +1,6 @@
 import React from "react";
 import { scaleLinear, scaleBand } from "d3-scale";
-import { range, extent } from "d3-array";
+import { range, max, extent } from "d3-array";
 import styles from "./chart.module.scss";
 import useDimensions from "../../hooks/use-dimensions";
 
@@ -11,12 +11,12 @@ const padding = {
     right: 0,
 };
 
-const useDomains = data => {
-    const x = range(0, data.length + 1);
-    const yRange = extent(data);
+const useDomains = (data, isOnlyPositive) => {
+    const x = range(0, data.length);
+    const maxVal = max(data, d => Math.abs(d));
     return {
         x,
-        y: yRange,
+        y: isOnlyPositive ? [0, maxVal] : [-maxVal, maxVal],
     };
 };
 
@@ -32,14 +32,7 @@ const useScales = (dimensions, domains) => {
         height: dimensions.height - padding.top - padding.bottom,
     };
 
-    // Horrible hack to get bands to spread properly. Combined with the + 1 on the domain.
-    const bandEndOffset = frame.width / domains.x.length;
-
-    const x = scaleBand()
-        .domain(domains.x)
-        .range([frame.left, frame.right + bandEndOffset])
-        .paddingOuter(0)
-        .paddingInner(0.5);
+    const x = scaleBand().domain(domains.x).range([frame.left, frame.right]).paddingInner(0.5);
 
     const y = scaleLinear().domain(domains.y).rangeRound([frame.bottom, frame.top]).nice();
     return {
@@ -53,12 +46,14 @@ const Chart = props => {
     const { indicator, data } = props;
     const [ref, dimensions] = useDimensions();
     const indicatorData = data.map(x => x.data);
-    const domains = useDomains(indicatorData);
+    const isOnlyPositive = indicatorData.every(x => x >= 0);
+    const domains = useDomains(indicatorData, isOnlyPositive);
     const scales = useScales(dimensions, domains);
 
     const chartProps = {
         data: indicatorData,
         rawData: data,
+        isOnlyPositive,
         dimensions,
         domains,
         scales,
@@ -87,7 +82,7 @@ const Chart = props => {
 };
 
 const Data = props => {
-    const { scales, data, rawData } = props;
+    const { scales, data, rawData, isOnlyPositive } = props;
     const rects = rawData
         .sort((j, k) => j.data - k.data)
         .map((d, i) => {
@@ -99,18 +94,20 @@ const Data = props => {
                     className={styles.bar}
                     x={left}
                     width={width}
-                    y={scales.y(d.data)}
-                    height={scales.y(0) - scales.y(d.data)}
+                    y={d.data >= 0 ? scales.y(d.data) : scales.y(0)}
+                    height={Math.abs(scales.y(0) - scales.y(d.data))}
                     data-low={d.hdi < 0.55}
                     data-medium={d.hdi >= 0.55 && d.hdi < 0.7}
-                    data-low={d.hdi >= 0.7 && d.hdi < 0.8}
-                    data-high={d.hdi >= 0.8}
+                    data-high={d.hdi >= 0.7 && d.hdi < 0.8}
+                    data-very-high={d.hdi >= 0.8}
                 />
             );
         });
 
     const maxVal = Math.max(...data);
-    const midVal = maxVal / 2;
+    const minVal = Math.min(...data);
+    const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
+    const midVal = absMaxVal / 2;
     return (
         <g>
             <g>
@@ -125,9 +122,27 @@ const Data = props => {
                     className={styles.thinLine}
                     x={0}
                     width={scales.frame.width}
-                    y={scales.y(maxVal)}
+                    y={scales.y(absMaxVal)}
                     height={1}
                 />
+                {!isOnlyPositive && (
+                    <>
+                        <rect
+                            className={styles.thinLine}
+                            x={0}
+                            width={scales.frame.width}
+                            y={scales.y(-midVal)}
+                            height={1}
+                        />
+                        <rect
+                            className={styles.thinLine}
+                            x={0}
+                            width={scales.frame.width}
+                            y={scales.y(-absMaxVal)}
+                            height={1}
+                        />
+                    </>
+                )}
             </g>
             <g>{rects}</g>
             <g>
@@ -144,37 +159,76 @@ const Data = props => {
 };
 
 const Ticks = props => {
-    const { scales, data } = props;
+    const { scales, data, isOnlyPositive } = props;
     const maxVal = Math.max(...data);
-    const midVal = maxVal / 2;
+    const minVal = Math.min(...data);
+    const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
+    const midVal = absMaxVal / 2;
     return (
         <div className={styles.ticks}>
             <div
+                className={styles.tick}
                 style={{
-                    top: scales.y(maxVal) - 8,
-                    position: "absolute",
+                    top: scales.y(absMaxVal) - 8,
                 }}
             >
-                {Math.round(maxVal)}
+                {formatLabel(absMaxVal)}
             </div>
             <div
+                className={styles.tick}
                 style={{
                     top: scales.y(midVal) - 8,
-                    position: "absolute",
                 }}
             >
-                {Math.round(midVal)}
+                {formatLabel(midVal)}
             </div>
             <div
+                className={styles.tick}
                 style={{
                     top: scales.y(0) - 8,
-                    position: "absolute",
                 }}
             >
                 0
             </div>
+            {!isOnlyPositive && (
+                <>
+                    <div
+                        className={styles.tick}
+                        style={{
+                            top: scales.y(-midVal) - 8,
+                        }}
+                    >
+                        {formatLabel(-midVal)}
+                    </div>
+                    <div
+                        className={styles.tick}
+                        style={{
+                            top: scales.y(-absMaxVal) - 8,
+                        }}
+                    >
+                        {formatLabel(-absMaxVal)}
+                    </div>
+                </>
+            )}
         </div>
     );
+};
+
+const formatLabel = number => {
+    if (!number) {
+        return;
+    }
+    const abs = Math.abs(number);
+    const sign = number >= 0 ? "" : "-";
+    let formattedNumber;
+    if (abs <= 1) {
+        formattedNumber = Math.round(abs * 10) / 10;
+    } else if (abs < 1000) {
+        formattedNumber = Math.round(abs);
+    } else if (abs >= 1000) {
+        formattedNumber = abs.toString().slice(0, 3) + " k";
+    }
+    return sign + formattedNumber.toString();
 };
 
 export default Chart;
