@@ -1,11 +1,10 @@
 import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleSymlog } from "d3-scale";
-import Geostats from "geostats";
+import { scaleSymlog, scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
-import { flatten } from "lodash";
+import { flatten, isNil } from "lodash";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -24,67 +23,40 @@ const useDomains = (countryData, currentIndicators) => {
         const valuesX = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.bivariateX.dataKey])
-                  .filter(d => d !== undefined)
+                  .filter(d => d !== undefined && d !== "")
             : [];
         const valuesY = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.bivariateY.dataKey])
-                  .filter(d => d !== undefined)
+                  .filter(d => d !== undefined && d !== "")
             : [];
         const valuesRadius = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.radius.dataKey])
-                  .filter(d => d !== undefined)
+                  .filter(d => d !== undefined && d !== "")
             : [];
 
         let jenksX = [],
             jenksY = [];
 
         if (ready) {
-            const geostatsX = new Geostats(valuesX);
-            const geostatsY = new Geostats(valuesY);
+            const xHdi = currentIndicators.bivariateX.hdi;
+            const yHdi = currentIndicators.bivariateY.hdi;
 
-            const xUnique = geostatsX.getUniqueValues();
-            const yUnique = geostatsY.getUniqueValues();
-
-            if (xUnique.length >= 5) {
-                jenksX = geostatsX.getJenks2(5);
+            if (xHdi) {
+                jenksX = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                if (xUnique.length === 1) {
-                    return [xUnique[0], xUnique[0], xUnique[0], xUnique[0], xUnique[0]];
-                } else {
-                    // Linear buckets.
-                    const first = xUnique[0];
-                    const last = xUnique[xUnique.length - 1];
-                    const range = last - first;
-                    jenksX = [
-                        first,
-                        first + range / 3,
-                        first + range * 0.5,
-                        last - range / 3,
-                        last,
-                    ];
-                }
+                const extents = extent(valuesX);
+                const scale = scaleLinear().range(extents).domain([0, 1]);
+                jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
             }
 
-            if (yUnique.length >= 5) {
-                jenksY = geostatsY.getJenks2(5);
+            if (yHdi) {
+                jenksY = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                if (yUnique.length === 1) {
-                    return [yUnique[0], yUnique[0], yUnique[0], yUnique[0], yUnique[0]];
-                } else {
-                    // Linear buckets.
-                    const first = yUnique[0];
-                    const last = yUnique[yUnique.length - 1];
-                    const range = last - first;
-                    jenksY = [
-                        first[0],
-                        first[0] + range / 3,
-                        first[0] + range * 0.5,
-                        last[1] - range / 3,
-                        last[1],
-                    ];
-                }
+                const extents = extent(valuesY);
+                const scale = scaleLinear().range(extents).domain([0, 1]);
+                jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
             }
         }
 
@@ -150,41 +122,17 @@ const yellowColourMatrixHex = [
     ["#EFB906", "#F0C844", "#F1D57E", "#F2E3B8", "#F2F2F3"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
-const HDIColourMatrixHex = [
-    ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
-    ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
-    ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
-    ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
-    ["#F16821", "#F3D516", "#CBE350", "#2EB872", "#2EB872"],
+const hdiColorMatrixHex = [
+    ["#EDD0C1", "#F1EBC8", "#EAEED3", "#CBE2D2"],
+    ["#EBBCA5", "#F1E5AB", "#E4EBB9", "#B2D7BE"],
+    ["#E7A584", "#F0DF87", "#DDE79C", "#98CDA8"],
+    ["#E49066", "#F0DA69", "#D6E480", "#7FC293"],
+    ["#E07038", "#EFD54D", "#D1E16A", "#60B579"],
 ];
-
-const blueLightColourMatrix = blueLightColourMatrixHex.map(row =>
-    row.map(colour => hexToRgb(colour))
-);
-
-const HDIColourMatrix = HDIColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const blueMidColourMatrix = blueMidColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const blueDarkMatrix = blueDarkMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const greenColourMatrix = greenColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const yellowColourMatrix = yellowColourMatrixHex.map(row => row.map(colour => hexToRgb(colour)));
-
-const colourMatrices = {
-    Health: blueLightColourMatrix,
-    Protect: blueMidColourMatrix,
-    "Human Development Index": HDIColourMatrix,
-    Economic: yellowColourMatrix,
-    Macro: greenColourMatrix,
-    Cohesion: blueDarkMatrix,
-};
 
 const colourMatricesHex = {
     Health: blueLightColourMatrixHex,
     Protect: blueMidColourMatrixHex,
-    "Human Development Index": HDIColourMatrixHex,
     Economic: yellowColourMatrixHex,
     Macro: greenColourMatrixHex,
     Cohesion: blueDarkMatrixHex,
@@ -195,7 +143,7 @@ const getRowIndicatorValue = (row, indicator) => {
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
-    if (value === undefined) return null;
+    if (isNil(value)) return null;
     const index = jenks.findIndex((j, i) => {
         const low = j;
         const top = jenks[i + 1];
@@ -203,7 +151,31 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     });
 
     const v = index / (jenks.length - 2);
-    return flip ? 1 - v : v;
+    const clamped = Math.min(Math.max(v, 0), 1);
+    return flip ? 1 - clamped : clamped;
+};
+
+const getColorMatrices = (activePillar, currentIndicators) => {
+    const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
+    const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
+
+    let colorMatrixHex = colourMatricesHex[activePillar.label];
+
+    if (xHdi || (xHdi && yHdi)) {
+        colorMatrixHex = hdiColorMatrixHex;
+    } else if (yHdi) {
+        // Transpose the matrix and reverse.
+        colorMatrixHex = hdiColorMatrixHex[0]
+            .map((x, i) => hdiColorMatrixHex.map(x => x[i]).reverse())
+            .reverse();
+    }
+
+    const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
+
+    return {
+        colorMatrix,
+        colorMatrixHex,
+    };
 };
 
 const useScales = (domains, currentIndicators, activePillar) => {
@@ -214,6 +186,8 @@ const useScales = (domains, currentIndicators, activePillar) => {
         circleRadiusScale.range = circleScale.range;
         circleRadiusScale.domain = circleScale.domain;
 
+        let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, currentIndicators);
+
         const bivariateColourScale = row => {
             if (!row) return NULL_SHAPE_FILL;
             const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
@@ -221,20 +195,17 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
             // Nulls based on enabled variates
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valX === null || valY === null) return NULL_SHAPE_FILL;
+                if (isNil(valX) || isNil(valY)) return NULL_SHAPE_FILL;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
-                if (valX === null) return NULL_SHAPE_FILL;
+                if (isNil(valX)) return NULL_SHAPE_FILL;
             }
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valY === null) return NULL_SHAPE_FILL;
+                if (isNil(valY)) return NULL_SHAPE_FILL;
             }
 
-            const uniqueColourMatrix =
-                colourMatrices[currentIndicators.bivariateX.dataKey] ||
-                colourMatrices[activePillar.label];
-
-            const maxIndex = uniqueColourMatrix.length - 1;
+            const maxIndexX = colorMatrix[0].length - 1;
+            const maxIndexY = colorMatrix.length - 1;
 
             const normX = getNormalFromJenks(
                 domains.categories.x,
@@ -249,37 +220,17 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
             // Default to bottom/left cell
             let xIndex = 0;
-            let yIndex = maxIndex;
+            let yIndex = maxIndexY;
 
             if (currentIndicators.bivariateXEnabled) {
-                xIndex = Math.floor(normX * maxIndex);
+                xIndex = Math.floor(normX * maxIndexX);
             }
             if (currentIndicators.bivariateYEnabled) {
                 // input colours are from top to bottom, not bottom to top so we deduct
-                yIndex = maxIndex - Math.floor(normY * maxIndex);
+                yIndex = maxIndexY - Math.floor(normY * maxIndexY);
             }
 
-            // hack for friday
-            if (currentIndicators.bivariateX.dataKey === "Human Development Index") {
-                if (valX < 0.55) {
-                    yIndex = 4;
-                    xIndex = 0;
-                } else if (valX < 0.7) {
-                    yIndex = 4;
-                    xIndex = 1;
-                } else if (valX < 0.8) {
-                    yIndex = 4;
-                    xIndex = 2;
-                } else {
-                    yIndex = 4;
-                    xIndex = 3;
-                }
-
-                return HDIColourMatrix[yIndex][xIndex];
-            }
-            // end hack for friday
-
-            return uniqueColourMatrix[yIndex][xIndex]; // hack for friday
+            return colorMatrix[yIndex][xIndex];
         };
 
         const strokeScale = row => {
@@ -287,27 +238,22 @@ const useScales = (domains, currentIndicators, activePillar) => {
             const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
             const valY = getRowIndicatorValue(row, currentIndicators.bivariateY);
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valX === null || valY === null) return NULL_SHAPE_STROKE;
+                if (isNil(valX) || isNil(valY)) return NULL_SHAPE_STROKE;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
-                if (valX === null) return NULL_SHAPE_STROKE;
+                if (isNil(valX)) return NULL_SHAPE_STROKE;
             }
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (valY === null) return NULL_SHAPE_STROKE;
+                if (isNil(valY)) return NULL_SHAPE_STROKE;
             }
             return GOOD_SHAPE_STROKE;
         };
-
-        // hack for friday
-        const uniqueColourMatrixHex = colourMatricesHex[currentIndicators.bivariateX.dataKey]
-            ? colourMatricesHex[currentIndicators.bivariateX.dataKey]
-            : colourMatricesHex[activePillar.label];
 
         return {
             radius: circleRadiusScale,
             color: bivariateColourScale,
             stroke: strokeScale,
-            colorMatrix: uniqueColourMatrixHex, // hack for friday
+            colorMatrix: colorMatrixHex,
         };
     }, [domains, currentIndicators, activePillar]);
 };

@@ -62,13 +62,13 @@
                 display: flex;
                 flex-direction: column;
                 .tooltipDatumLabel {
-                    @include bodySmall();
+                    @include body();
                     font-size: 12px;
                     line-height: 12px;
                     margin-bottom: 6px;
                 }
                 .tooltipDatumValue {
-                    @include bodySmall();
+                    @include body();
                     font-weight: bold;
                 }
             }

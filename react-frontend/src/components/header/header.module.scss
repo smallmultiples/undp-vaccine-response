@@ -59,7 +59,7 @@
         align-items: center;
         justify-content: center;
         .betaTag {
-            @include bodySmall();
+            @include body();
             font-weight: bold;
             background: $color-blue-bg;
             padding: 6px 12px;
