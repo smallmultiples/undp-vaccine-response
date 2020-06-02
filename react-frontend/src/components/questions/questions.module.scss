@@ -112,6 +112,9 @@
                 width: 54px;
                 height: 10px;
                 margin-right: 2px;
+                &[data-na="true"] {
+                    background: $color-grey;
+                }
                 &[data-low="true"] {
                     background: $color-red-data;
                 }
