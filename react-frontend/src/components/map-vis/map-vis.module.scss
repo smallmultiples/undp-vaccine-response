@@ -115,20 +115,31 @@
 
     .visCategoryCircle {
         fill: white;
-        stroke: $color-blue-bg;
+        stroke: $color-navy;
         stroke-width: 2px;
+        &[data-i="0"] {
+            stroke: $color-navy;
+        }
+
+        &[data-i="1"] {
+            stroke: $color-yellow;
+        }
+
+        &[data-i="2"] {
+            stroke: red;
+        }
 
         &[data-active="true"] {
             &[data-i="0"] {
-                stroke: $color-navy;
+                fill: $color-navy;
             }
 
             &[data-i="1"] {
-                stroke: $color-yellow;
+                fill: $color-yellow;
             }
 
             &[data-i="2"] {
-                stroke: red;
+                fill: red;
             }
         }
     }
