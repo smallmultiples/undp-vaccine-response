@@ -114,7 +114,7 @@
     }
 
     .visCategoryCircle {
-        fill: white;
+        fill: none;
         stroke: $color-navy;
         stroke-width: 2px;
         &[data-i="0"] {
