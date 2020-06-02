@@ -225,13 +225,13 @@ function App() {
                     setActivePillar={setActivePillar}
                     pillars={pillars}
                 />
-                <Map
+                {/* <Map
                     countryData={countryData}
                     countryDataLoading={loading}
                     activePillar={activePillar}
                     covidPillar={covidPillar}
                     pillars={pillars}
-                />
+                /> */}
                 <DataFilters />
                 <Questions
                     activePillar={activePillar}

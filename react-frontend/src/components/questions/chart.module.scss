@@ -41,6 +41,7 @@
 
 .bar {
     fill: $color-grey;
+    opacity: 0.8;
 
     &[data-low="true"] {
         fill: $color-red-data;
@@ -54,4 +55,36 @@
     &[data-very-high="true"] {
         fill: $color-green-data;
     }
+    &[data-hovered="true"] {
+        opacity: 1;
+    }
+}
+
+.hoverableBar {
+    fill: rgba(0,0,0,0);
+    pointer-events: painted;
+}
+
+.tooltip {
+    width: 150px;
+    height: 48px;
+    fill: #fff;
+    stroke-width: 2;
+    stroke: $color-blue-bg;
+}
+
+.tooltipTextWrapper {
+    width: 150px;
+    height: 48px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 6px;
+    box-sizing: border-box;
+}
+.tooltipText {
+    white-space: break-spaces;
+    @include bodyXSmall();
+    line-height: 12px;
+    font-weight: bold;
 }

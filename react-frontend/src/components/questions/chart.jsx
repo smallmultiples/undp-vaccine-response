@@ -50,6 +50,8 @@ const Chart = props => {
     const domains = useDomains(indicatorData, isOnlyPositive);
     const scales = useScales(dimensions, domains);
 
+    const [hoveredData, setHoveredData] = React.useState(undefined);
+
     const chartProps = {
         data: indicatorData,
         rawData: data,
@@ -59,15 +61,9 @@ const Chart = props => {
         scales,
     };
 
-    const ticks = scales && data.length !== 0 && (
-        <>
-            <Ticks {...chartProps} />
-        </>
-    );
+    const ticks = scales && data.length !== 0 && <Ticks {...chartProps} />;
     const chartContent = scales && data.length !== 0 && (
-        <>
-            <Data {...chartProps} />
-        </>
+        <Data {...chartProps} hoveredData={hoveredData} setHoveredData={setHoveredData} />
     );
 
     return (
@@ -82,32 +78,45 @@ const Chart = props => {
 };
 
 const Data = props => {
-    const { scales, data, rawData, isOnlyPositive } = props;
+    const { scales, data, rawData, isOnlyPositive, hoveredData, setHoveredData } = props;
+    const maxVal = Math.max(...data);
+    const minVal = Math.min(...data);
+    const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
+    const midVal = absMaxVal / 2;
+
     const rects = rawData
         .sort((j, k) => j.data - k.data)
         .map((d, i) => {
             const left = scales.x(i);
             const width = scales.x.bandwidth();
+            const top = d.data >= 0 ? scales.y(d.data) : scales.y(0);
+            const height = Math.abs(scales.y(0) - scales.y(d.data));
+            const isHovered = hoveredData && hoveredData.country === d.country;
             return (
-                <rect
-                    key={i}
-                    className={styles.bar}
-                    x={left}
-                    width={width}
-                    y={d.data >= 0 ? scales.y(d.data) : scales.y(0)}
-                    height={Math.abs(scales.y(0) - scales.y(d.data))}
-                    data-low={d.hdi < 0.55}
-                    data-medium={d.hdi >= 0.55 && d.hdi < 0.7}
-                    data-high={d.hdi >= 0.7 && d.hdi < 0.8}
-                    data-very-high={d.hdi >= 0.8}
-                />
+                <g key={i}>
+                    <rect
+                        className={styles.bar}
+                        x={isHovered ? left - 1 : left}
+                        width={isHovered ? width + 2 : width}
+                        y={isHovered ? top - 5 : top}
+                        height={isHovered ? height + 5 : height}
+                        data-low={d.hdi < 0.55}
+                        data-medium={d.hdi >= 0.55 && d.hdi < 0.7}
+                        data-high={d.hdi >= 0.7 && d.hdi < 0.8}
+                        data-very-high={d.hdi >= 0.8}
+                        data-hovered={isHovered}
+                    />
+                    <rect
+                        className={styles.hoverableBar}
+                        x={left}
+                        width={width}
+                        y={0}
+                        height={150}
+                        onMouseEnter={e => setHoveredData({ country: d, left, top })}
+                    />
+                </g>
             );
         });
-
-    const maxVal = Math.max(...data);
-    const minVal = Math.min(...data);
-    const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
-    const midVal = absMaxVal / 2;
     return (
         <g>
             <g>
@@ -154,6 +163,17 @@ const Data = props => {
                     height={2}
                 />
             </g>
+            {hoveredData && (
+                        <>
+                            <rect x={hoveredData.left - 40} y={40} className={styles.tooltip} />
+                            <foreignObject x={hoveredData.left - 40} y={40} width={150} height={48}>
+                                <div className={styles.tooltipTextWrapper}>
+                                    <div className={styles.tooltipText}>{hoveredData.country.country}</div>
+                                    <div className={styles.tooltipData}>{hoveredData.country.data}</div>
+                                </div>
+                            </foreignObject>
+                        </>
+                    )}
         </g>
     );
 };

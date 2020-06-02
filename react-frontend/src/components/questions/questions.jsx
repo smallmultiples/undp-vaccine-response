@@ -9,6 +9,7 @@ const COUNTRIES_TOTAL = 249;
 
 const Question = props => {
     const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
+    console.log(hdiIndicator);
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
 
     const headers = ["Country", "Region"];
@@ -77,7 +78,7 @@ const Question = props => {
                 tmp.push({
                     country: d["Country or Area"],
                     data: d[x.dataKey],
-                    hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator.dataKey],
+                    hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator?.dataKey],
                 });
             }
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");
@@ -145,7 +146,7 @@ const Question = props => {
 const Legend = props => {
     return (
         <div className={styles.legendContainer}>
-            <div className={styles.legendTitle}>{props.hdiIndicator.dataKey}</div>
+            <div className={styles.legendTitle}>{props.hdiIndicator?.dataKey}</div>
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
                     <div className={styles.box} data-low={true} />
