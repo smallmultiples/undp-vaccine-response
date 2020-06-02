@@ -112,6 +112,37 @@
         stroke: $color-navy;
         stroke-width: 2px;
     }
+
+    .visCategoryCircle {
+        fill: white;
+        stroke: $color-navy;
+        stroke-width: 2px;
+        &[data-i="0"] {
+            stroke: $color-navy;
+        }
+
+        &[data-i="1"] {
+            stroke: $color-yellow;
+        }
+
+        &[data-i="2"] {
+            stroke: red;
+        }
+
+        &[data-active="true"] {
+            &[data-i="0"] {
+                fill: $color-navy;
+            }
+
+            &[data-i="1"] {
+                fill: $color-yellow;
+            }
+
+            &[data-i="2"] {
+                fill: red;
+            }
+        }
+    }
 }
 
 // ------
