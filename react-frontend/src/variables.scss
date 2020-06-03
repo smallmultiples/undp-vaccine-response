@@ -91,6 +91,7 @@ $weight-semi: 600;
 }
 
 @mixin button($bg-color: "", $font-color: "") {
+    @include buttonFont(center);
     background: $color-navy;
     color: white;
     border: 2px solid $color-navy;
@@ -101,7 +102,6 @@ $weight-semi: 600;
     @if $font-color != "" {
         color: $font-color;
     }
-    @include buttonFont(center);
     font-size: 14px;
     border-radius: 24000px;
     padding: 8px 16px;
