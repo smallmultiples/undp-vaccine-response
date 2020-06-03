@@ -355,12 +355,15 @@ const Map = props => {
                 ...d,
                 bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
                 bivariateXEnabled: false,
+                bivariateYEnabled: false,
             }));
         } else {
             // Whenever active QUESTION changes, set the pillar indicator to the first for the question
             setCurrentIndicators(d => ({
                 ...d,
                 bivariateX: activeQuestion.indicators[0],
+                bivariateXEnabled: true,
+                bivariateYEnabled: false,
             }));
         }
     }, [activeQuestion]);
