@@ -9,7 +9,6 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        margin-left: -12px;
     }
 }
 // ----
@@ -81,6 +80,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 0;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
 
     .pillarDropdownButtonLabel {
         margin-right: 8px;
@@ -88,7 +92,7 @@
         padding: 5px 0;
         font-size: 16px;
         letter-spacing: 0.04em;
-        font-weight: $weight-semi;
+        font-weight: $weight-medium;
     }
 
     &[data-selected="true"] {
@@ -143,19 +147,60 @@
 .selectOption {
     padding: 8px 20px;
     cursor: pointer;
-    font-weight: $weight-semi;
+    font-weight: $weight-medium;
     font-size: 14px;
-    line-height: 14px;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
     width: 100vw;
     max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
 
     &:hover {
         &[data-soon="false"] {
             background: $color-yellow;
         }
     }
+    &[data-selected="true"] {
+        background: rgba($color-yellow, 0.8);
+        font-weight: $weight-semi;
+    }
     &[data-soon="true"] {
         cursor: not-allowed;
         pointer-events: none;
+        color: rgba($color-navy, 0.5);
     }
+}
+
+.comingSoonItem {
+    position: relative;
+    width: 100%;
+    padding: 16px 20px;
+    &:before {
+        content: "";
+        position: absolute;
+        height: 1px;
+        top: 50%;
+        left: 0;
+        right: 0;
+        background: $color-blue-bg;
+        z-index: 23;
+    }
+}
+
+.comingSoonBadge {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: $color-blue-bg;
+    padding: 6px 12px;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+    z-index: 24;
 }

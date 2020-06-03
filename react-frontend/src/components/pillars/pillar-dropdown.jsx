@@ -16,19 +16,32 @@ const PillarDropdown = props => {
         setIsOpen(false);
     }, []);
 
-    const optionEls = options.map(opt => {
-        const selected = opt === value;
-        return (
-            <li
-                className={styles.selectOption}
-                onClick={() => handleChange(opt)}
-                data-selected={selected}
-                data-soon={opt.comingSoon}
-            >
-                {opt.label}
-            </li>
-        );
-    });
+    const optionEls = options
+        .filter(d => !d.comingSoon)
+        .map(opt => {
+            const selected = opt === value;
+
+            return (
+                <li
+                    className={styles.selectOption}
+                    onClick={() => handleChange(opt)}
+                    data-selected={selected}
+                    data-soon={false}
+                >
+                    <div className={styles.selectOptionLabel}>{opt.label}</div>
+                </li>
+            );
+        });
+
+    const comingSoonEls = options
+        .filter(d => d.comingSoon)
+        .map(opt => {
+            return (
+                <li className={styles.selectOption} data-soon>
+                    <div className={styles.selectOptionLabel}>{opt.label}</div>
+                </li>
+            );
+        });
 
     return (
         <Dropdown
@@ -45,7 +58,15 @@ const PillarDropdown = props => {
                 </button>
             }
         >
-            <ul className={styles.selectMenu}>{optionEls}</ul>
+            <ul className={styles.selectMenu}>
+                {optionEls}
+                {comingSoonEls.length > 0 && (
+                    <li className={styles.comingSoonItem}>
+                        <div className={styles.comingSoonBadge}>Coming soon</div>
+                    </li>
+                )}
+                {comingSoonEls}
+            </ul>
         </Dropdown>
     );
 };
