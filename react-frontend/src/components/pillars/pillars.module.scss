@@ -24,6 +24,7 @@
 
         @include mobileOnly() {
             flex-direction: column;
+            align-items: flex-start;
         }
 
         &:before {

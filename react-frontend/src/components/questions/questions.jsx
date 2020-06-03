@@ -11,7 +11,7 @@ const COUNTRIES_TOTAL = 249;
 const Question = props => {
     const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
-    const isMobile = useMediaQuery();
+    const { isMobile } = useMediaQuery();
 
     const headers = ["Country", "Region"];
 
