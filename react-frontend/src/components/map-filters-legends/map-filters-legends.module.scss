@@ -73,6 +73,7 @@ $covidToggleWidth: 220px;
     display: flex;
     flex-direction: column;
     padding-top: 16px;
+    margin-right: 24px;
 
     .bivariateIndicatorItem {
         display: flex;
@@ -97,7 +98,7 @@ $covidToggleWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 360px;
+            width: 280px;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -152,17 +153,14 @@ $covidToggleWidth: 220px;
 .categoryList {
     list-style: none;
     padding: 0;
-    margin-left: 24px;
     padding-top: 12px;
 
     .categoryItemRow {
         .categoryItemCell {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
             margin-right: 8px;
         }
         .categoryIcon {
+            display: inline-block;
             max-width: 9px;
             max-height: 9px;
             min-width: 9px;
@@ -201,6 +199,10 @@ $covidToggleWidth: 220px;
         .categoryText {
             @include body();
             font-weight: bold;
+            font-size: 12px;
+            padding-bottom: 4px;
+            display: inline-block;
+            transform: translateY(-2px);
         }
     }
 }
@@ -213,7 +215,6 @@ $covidToggleWidth: 220px;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 24px;
 }
 
 .radiusLegend {
@@ -237,8 +238,23 @@ $covidToggleWidth: 220px;
     }
 
     .legendLabels {
+        width: 100%;
         display: flex;
         justify-content: space-between;
+        font-size: 12px;
+        font-weight: bold;
+        position: relative;
+        height: 15px;
+        span:first-child {
+            position: absolute;
+            left: 0;
+            transform: translateX(2px);
+        }
+        span:last-child {
+            position: absolute;
+            right: 0;
+            transform: translate(-8px);
+        }
     }
 }
 // -----
@@ -263,7 +279,7 @@ $covidToggleWidth: 220px;
     position: relative;
     border: 2px solid $color-blue-bg;
     height: 36px;
-    border-radius: 18px;
+    border-radius: 32px;
     width: $covidToggleWidth;
     overflow: hidden;
     margin-left: 16px;
@@ -341,6 +357,7 @@ $lc-w-hdi: $l-w / 4;
     transition: background 0.2s, border-color 0.2s;
     box-sizing: border-box;
     border: 1px solid transparent;
+    position: relative;
     &[data-disabled="true"] {
         background: none !important;
         border-color: rgba($color-blue-bg, 0.5);
@@ -350,6 +367,51 @@ $lc-w-hdi: $l-w / 4;
     }
     &[data-hdi-y="true"] {
         height: $lc-w-hdi;
+    }
+    &[data-hovered="true"] {
+        border: 2px solid $color-navy;
+    }
+
+    .legendColourTooltip {
+        pointer-events: none;
+        position: absolute;
+        top: calc(100% + 2px);
+        left: calc(100% + 2px);
+        background: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 16px 9px 16px 16px;
+        z-index: 23;
+
+        .legendColourTooltipEntry {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            &:not(:last-child) {
+                margin-bottom: 24px;
+            }
+
+            .legendColourTooltipIcon {
+                min-width: 12px;
+                min-height: 12px;
+                margin-right: 12px;
+            }
+
+            .legendColourTooltipText {
+                display: flex;
+                flex-direction: column;
+                font-size: 14px;
+                line-height: 14px;
+                white-space: nowrap;
+                .legendColourTooltipLabel {
+                    font-weight: bold;
+                }
+
+                .legendColourTooltipValue {
+                    margin-top: 6px;
+                }
+            }
+        }
     }
 }
 .legendColourSpan {
@@ -378,22 +440,22 @@ $lc-w-hdi: $l-w / 4;
         flex-direction: column;
         align-items: center;
         svg:first-child {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         svg:last-child {
-            margin-top: 8px;
+            margin-top: 4px;
         }
     }
     &[data-x="true"] {
         align-items: center;
         svg {
-            margin-bottom: 2px;
+            margin-top: 4px;
         }
         svg:first-child {
-            margin-right: 8px;
+            margin-right: 4px;
         }
         svg:last-child {
-            margin-left: 8px;
+            margin-left: 4px;
         }
     }
 }

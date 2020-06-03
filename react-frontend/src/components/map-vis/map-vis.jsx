@@ -239,7 +239,7 @@ const MapTooltip = props => {
                         </div>
                     </div>
                 )}
-                {currentIndicators.bivariateX.tooltipExtra && (
+                {currentIndicators.bivariateXEnabled && currentIndicators.bivariateX.tooltipExtra && (
                     <div className={styles.tooltipDatum}>
                         <div
                             className={styles.tooltipDatumIcon}
