@@ -138,12 +138,7 @@ const usePillarData = () => {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
-        (async () => {
-            const regions = await axios(
-                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:K`
-            ).then(d => d.data);
-            setRegionLookup(regions);
-        })();
+        (async () => {})();
     }, []);
 
     React.useEffect(() => {
@@ -152,6 +147,12 @@ const usePillarData = () => {
                 `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
             ).then(d => parseMetaSheet(d.data));
             setPillars(pillars);
+
+            const regionsPromise = await axios(
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:L`
+            )
+                .then(d => d.data)
+                .then(setRegionLookup);
 
             // TODO: remove concat when questions fixed
             const sheetsToFetch = uniq(
@@ -171,6 +172,7 @@ const usePillarData = () => {
                     newSets[sheet] = res.data;
                 })
             );
+            await regionsPromise;
 
             setDatasets(newSets);
             setLoading(false);
@@ -181,7 +183,7 @@ const usePillarData = () => {
     const countryData = React.useMemo(() => {
         if (loading) return null;
 
-        let data = {};
+        let data = Object.values(regionLookup);
         Object.values(datasets).forEach(dataset => {
             dataset.forEach(row => {
                 const rowKey = row["Alpha-3 code"];
@@ -193,7 +195,7 @@ const usePillarData = () => {
             });
         });
         return data;
-    }, [datasets, loading]);
+    }, [datasets, loading, regionLookup]);
 
     return {
         countryData,
@@ -204,6 +206,7 @@ const usePillarData = () => {
     };
 };
 
+// TODO: don't use regionLookup and instead use info from countryData
 function App() {
     const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
