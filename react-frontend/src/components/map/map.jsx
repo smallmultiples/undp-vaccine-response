@@ -189,6 +189,8 @@ const useScales = (domains, currentIndicators, activePillar) => {
         circleRadiusScale.domain = circleScale.domain;
 
         let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, currentIndicators);
+        const maxIndexX = colorMatrix[0].length - 1;
+        const maxIndexY = colorMatrix.length - 1;
 
         const bivariateColourScale = row => {
             if (!row) return NULL_SHAPE_FILL;
@@ -205,9 +207,6 @@ const useScales = (domains, currentIndicators, activePillar) => {
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
                 if (nullValue(valY)) return NULL_SHAPE_FILL;
             }
-
-            const maxIndexX = colorMatrix[0].length - 1;
-            const maxIndexY = colorMatrix.length - 1;
 
             const normX = getNormalFromJenks(
                 domains.categories.x,
@@ -235,6 +234,50 @@ const useScales = (domains, currentIndicators, activePillar) => {
             return colorMatrix[yIndex][xIndex];
         };
 
+        const xColourScale = row => {
+            if (!row) return NULL_SHAPE_FILL;
+            const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
+            if (nullValue(valX)) return NULL_SHAPE_FILL;
+
+            const normX = getNormalFromJenks(
+                domains.categories.x,
+                valX,
+                currentIndicators.bivariateX.flipped
+            );
+
+            // Default to bottom/left cell
+            let xIndex = 0;
+            let yIndex = maxIndexY;
+
+            if (currentIndicators.bivariateXEnabled) {
+                xIndex = Math.floor(normX * maxIndexX);
+            }
+            return colorMatrixHex[yIndex][xIndex];
+        };
+
+        const yColourScale = row => {
+            if (!row) return NULL_SHAPE_FILL;
+            const valY = getRowIndicatorValue(row, currentIndicators.bivariateY);
+
+            if (nullValue(valY)) return NULL_SHAPE_FILL;
+
+            const normY = getNormalFromJenks(
+                domains.categories.y,
+                valY,
+                currentIndicators.bivariateY.flipped
+            );
+
+            // Default to bottom/left cell
+            let xIndex = 0;
+            let yIndex = maxIndexY;
+            if (currentIndicators.bivariateYEnabled) {
+                // input colours are from top to bottom, not bottom to top so we deduct
+                yIndex = maxIndexY - Math.floor(normY * maxIndexY);
+            }
+
+            return colorMatrixHex[yIndex][xIndex];
+        };
+
         const strokeScale = row => {
             if (!row) return NULL_SHAPE_STROKE;
             const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
@@ -256,6 +299,8 @@ const useScales = (domains, currentIndicators, activePillar) => {
             color: bivariateColourScale,
             stroke: strokeScale,
             colorMatrix: colorMatrixHex,
+            colorX: xColourScale,
+            colorY: yColourScale,
         };
     }, [domains, currentIndicators, activePillar]);
 };
