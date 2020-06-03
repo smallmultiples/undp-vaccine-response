@@ -73,6 +73,7 @@ $covidToggleWidth: 220px;
     display: flex;
     flex-direction: column;
     padding-top: 16px;
+    margin-right: 24px;
 
     .bivariateIndicatorItem {
         display: flex;
@@ -97,7 +98,7 @@ $covidToggleWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 360px;
+            width: 280px;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -152,17 +153,14 @@ $covidToggleWidth: 220px;
 .categoryList {
     list-style: none;
     padding: 0;
-    margin-left: 24px;
     padding-top: 12px;
 
     .categoryItemRow {
         .categoryItemCell {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
             margin-right: 8px;
         }
         .categoryIcon {
+            display: inline-block;
             max-width: 9px;
             max-height: 9px;
             min-width: 9px;
@@ -201,6 +199,10 @@ $covidToggleWidth: 220px;
         .categoryText {
             @include body();
             font-weight: bold;
+            font-size: 12px;
+            padding-bottom: 4px;
+            display: inline-block;
+            transform: translateY(-2px);
         }
     }
 }
@@ -213,7 +215,6 @@ $covidToggleWidth: 220px;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 24px;
 }
 
 .radiusLegend {
