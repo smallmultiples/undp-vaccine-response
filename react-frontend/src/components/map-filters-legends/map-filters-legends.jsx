@@ -252,8 +252,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.radius.format(domain[0])}</span>
-                <span>{currentIndicators.radius.format(domain[1])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[0])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[1])}</span>
             </div>
         </div>
     );
@@ -333,8 +333,8 @@ const BivariateLegend = props => {
     const { currentIndicators } = props;
     const { categories } = props.domains;
 
-    const formatX = currentIndicators.bivariateX.format;
-    const formatY = currentIndicators.bivariateY.format;
+    const formatX = currentIndicators.bivariateX.formatLegend;
+    const formatY = currentIndicators.bivariateY.formatLegend;
 
     const x0 = formatX(categories.x[0]);
     const x1 = formatX(categories.x[categories.x.length - 1]);
