@@ -334,7 +334,7 @@ $lc-w-hdi: $l-w / 4;
 .bivariateAxisLabelY {
     @include buttonFont(center);
     font-size: 12px;
-    line-height: 10px;
+    line-height: 12px;
     min-width: $l-w;
     max-width: $l-w;
 }
