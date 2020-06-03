@@ -162,7 +162,7 @@ const MapTooltip = props => {
         const categoricalIndicator = activeQuestion.indicators.find(d => d.categorical);
         category = (
             <div className={styles.tooltipDatum}>
-                <div className={styles.tooltipDatumIcon} data-bivariate />
+                <div className={styles.tooltipDatumIcon} data-category />
                 <div className={styles.tooltipDatumText}>
                     <div className={styles.tooltipDatumLabel}>{categoricalIndicator.label}</div>
                     <div className={styles.tooltipDatumValue}>
