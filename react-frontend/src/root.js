@@ -258,7 +258,6 @@ function App() {
                     pillars={pillars}
                     activeQuestion={activeQuestion}
                 />
-                <DataFilters />
                 <Questions
                     activePillar={activePillar}
                     datasets={datasets}

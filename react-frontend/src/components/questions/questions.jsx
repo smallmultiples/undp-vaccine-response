@@ -102,16 +102,18 @@ const Question = props => {
                 <div className={styles.questionText}>
                     <div className={styles.label}>{question.label}</div>
                     <button className={styles.downloadButton}>Download CSV</button>
-                    {!isMobile && <button
-                        className={styles.hideButton}
-                        onClick={() => setIsPreviewShown(!isPreviewShown)}
-                    >
-                        {isPreviewShown ? "Hide data preview" : "Show data preview"}
-                        <Chevron
-                            className={styles.chevron}
-                            data-direction={isPreviewShown ? "up" : "down"}
-                        />
-                    </button>}
+                    {!isMobile && (
+                        <button
+                            className={styles.hideButton}
+                            onClick={() => setIsPreviewShown(!isPreviewShown)}
+                        >
+                            {isPreviewShown ? "Hide data preview" : "Show data preview"}
+                            <Chevron
+                                className={styles.chevron}
+                                data-direction={isPreviewShown ? "up" : "down"}
+                            />
+                        </button>
+                    )}
                 </div>
                 <div className={styles.overviewTable}>
                     <Table
@@ -121,21 +123,23 @@ const Question = props => {
                         fixedColumnsWidth={30}
                     />
                 </div>
-                {!!isMobile && <div className={styles.countryTable} data-visible={isPreviewShown}>
-                    <Table
-                        headings={headersForCountryTable}
-                        rows={rowsForCountryTable || []}
-                        fixedColumns={2}
-                        fixedColumnsWidth={15}
-                        withBorders={true}
-                        footer={
-                            <div className={styles.summary}>
-                                <div>201 more rows</div>
-                                <button className={styles.downloadButton}>Download CSV</button>
-                            </div>
-                        }
-                    />
-                </div>}
+                {!!isMobile && (
+                    <div className={styles.countryTable} data-visible={isPreviewShown}>
+                        <Table
+                            headings={headersForCountryTable}
+                            rows={rowsForCountryTable || []}
+                            fixedColumns={2}
+                            fixedColumnsWidth={15}
+                            withBorders={true}
+                            footer={
+                                <div className={styles.summary}>
+                                    <div>201 more rows</div>
+                                    <button className={styles.downloadButton}>Download CSV</button>
+                                </div>
+                            }
+                        />
+                    </div>
+                )}
             </div>
             <div className={styles.chartsContainer}>
                 {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
@@ -182,6 +186,7 @@ const Questions = props => {
     const { activePillar, datasets, regionLookup, countryData, hdiIndicator } = props;
     return (
         <>
+            <h2>Explore indicators for {activePillar.label}</h2>
             {activePillar.questions.map((x, i) => (
                 <Question
                     key={`${x.labelLong}_${i}`}
