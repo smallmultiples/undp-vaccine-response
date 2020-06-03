@@ -176,16 +176,27 @@ const CategoricalLegend = props => {
 
     if (!categoryIndicator) return null;
 
+    // TODO: "support" is hardcoded in here.
     const items = uniqueVals.map((val, index) => {
         return (
-            <li className={styles.categoryItem} key={val}>
-                <div className={styles.categoryIcon} data-i={index} />
-                <span className={styles.categoryText}>{val}</span>
-            </li>
+            <tr className={styles.categoryItemRow} key={val}>
+                <td className={styles.categoryItemCell}>
+                    <div className={styles.categoryIcon} data-i={index} />
+                    <span className={styles.categoryText}>No {val} support</span>
+                </td>
+                <td className={styles.categoryItemCell}>
+                    <div className={styles.categoryIcon} data-i={index} data-selected />
+                    <span className={styles.categoryText}>{val} support</span>
+                </td>
+            </tr>
         );
     });
 
-    return <ul className={styles.categoryList}>{items}</ul>;
+    return (
+        <table className={styles.categoryList}>
+            <tbody>{items}</tbody>
+        </table>
+    );
 };
 
 const RadiusControls = props => {
