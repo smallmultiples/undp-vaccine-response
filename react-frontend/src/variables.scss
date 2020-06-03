@@ -12,6 +12,8 @@ $color-green-data: #2eb872;
 
 $container-width: 1166px;
 $width-mobile: 700px;
+$weight-medium: 500;
+$weight-semi: 600;
 
 @mixin h1($text-align: "") {
     @if $text-align != "" {
@@ -40,8 +42,8 @@ $width-mobile: 700px;
     font-family: $font-proxima;
     font-style: normal;
     font-weight: bold;
-    font-size: 24px;
-    line-height: 29px;
+    font-size: 21px;
+    line-height: 1.25;
 }
 
 @mixin h4($text-align: "") {
@@ -85,9 +87,11 @@ $width-mobile: 700px;
     font-style: normal;
     font-size: 14px;
     line-height: 14px;
+    color: $color-navy;
 }
 
 @mixin button($bg-color: "", $font-color: "") {
+    @include buttonFont(center);
     background: $color-navy;
     color: white;
     border: 2px solid $color-navy;
@@ -98,7 +102,6 @@ $width-mobile: 700px;
     @if $font-color != "" {
         color: $font-color;
     }
-    @include buttonFont(center);
     font-size: 14px;
     border-radius: 24000px;
     padding: 8px 16px;

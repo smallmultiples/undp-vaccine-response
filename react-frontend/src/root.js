@@ -46,12 +46,13 @@ const parseMetaSheet = raw => {
         if (qs) {
             currentQuestion = qs;
             out[currentPillar].questions[qs] = {
-                labelShort: row["Question short"],
                 label: qs,
                 sheet: row["Sheet"],
+                description: row["Question description"],
                 indicators: {},
                 hidden: qs === "-",
                 categorical: false,
+                comingSoon: row["Question coming soon"],
             };
         }
         // ------------
@@ -96,6 +97,7 @@ const parseMetaSheet = raw => {
 
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
+                sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
                 tooltipKey: row["Tooltip Key"],
                 flipped: row["Invert Scale"],
@@ -147,12 +149,17 @@ const usePillarData = () => {
     React.useEffect(() => {
         (async () => {
             const pillars = await axios(
-                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators2`
             ).then(d => parseMetaSheet(d.data));
             setPillars(pillars);
 
+            // TODO: remove concat when questions fixed
             const sheetsToFetch = uniq(
                 flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
+            ).concat(
+                flatten(
+                    pillars.map(p => flatten(p.questions.map(q => q.indicators.map(i => i.sheet))))
+                ).filter(Boolean)
             );
 
             let newSets = {};
@@ -200,11 +207,18 @@ const usePillarData = () => {
 function App() {
     const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
+    const [activeQuestion, setActiveQuestion] = React.useState(null);
 
     React.useEffect(() => {
         if (activePillar || !pillars) return;
         setActivePillar(pillars.find(d => d.visible));
     }, [pillars, activePillar]);
+
+    React.useEffect(() => {
+        if (!activePillar) return;
+        console.log("set question");
+        setActiveQuestion(activePillar.questions[0]);
+    }, [activePillar]);
 
     const covidPillar = React.useMemo(() => {
         if (!pillars) return null;
@@ -217,7 +231,7 @@ function App() {
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
-    if (!pillars || !activePillar || !regionLookup) return null; // TODO loader
+    if (!pillars || !activePillar || !regionLookup || !activeQuestion) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -228,6 +242,8 @@ function App() {
                     covidPillar={covidPillar}
                     setActivePillar={setActivePillar}
                     pillars={pillars}
+                    activeQuestion={activeQuestion}
+                    setActiveQuestion={setActiveQuestion}
                 />
                 <Map
                     countryData={countryData}
@@ -235,6 +251,7 @@ function App() {
                     activePillar={activePillar}
                     covidPillar={covidPillar}
                     pillars={pillars}
+                    activeQuestion={activeQuestion}
                 />
                 <DataFilters />
                 <Questions

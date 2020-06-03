@@ -258,16 +258,16 @@ const useScales = (domains, currentIndicators, activePillar) => {
     }, [domains, currentIndicators, activePillar]);
 };
 
-const getDefaultIndicatorState = (activePillar, covidPillar) => {
+const getDefaultIndicatorState = (activePillar, activeQuestion, covidPillar) => {
     // TODO: module
-    const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators));
+    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators));
 
     return {
-        // Pillar indicataor is the X axis
-        bivariateX: bivariateOptions[0],
+        // Question indicator is the X axis
+        bivariateX: activeQuestion.indicators[0],
         bivariateXEnabled: true,
-        // COVID indicator is the Y axis
-        bivariateY: bivariateOptions.length > 1 ? bivariateOptions[1] : bivariateOptions[0],
+        // Any indicator for the pillar on the Y axis
+        bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
         bivariateYEnabled: false,
         // Radius indicator is the circle radius
         radius: covidPillar.questions[0].indicators[0],
@@ -276,23 +276,40 @@ const getDefaultIndicatorState = (activePillar, covidPillar) => {
 };
 
 const Map = props => {
-    const { countryData, covidPillar, activePillar } = props;
+    const { countryData, covidPillar, activePillar, activeQuestion } = props;
 
     const [currentIndicators, setCurrentIndicators] = React.useState(
-        getDefaultIndicatorState(activePillar, covidPillar)
+        getDefaultIndicatorState(activePillar, activeQuestion, covidPillar)
     );
 
     React.useEffect(() => {
         if (!activePillar) return;
-        // Whenever active pillar changes, set the pillar indicator to the first avail.
-        const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators));
+        // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
+        const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
+            d => !d.categorical
+        );
         setCurrentIndicators(d => ({
             ...d,
-            bivariateX: bivariateOptions[0],
-            bivariateY: bivariateOptions.length > 1 ? bivariateOptions[1] : bivariateOptions[0],
-            bivariateYEnabled: d.bivariateYEnabled && bivariateOptions.length > 1,
+            bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
         }));
     }, [activePillar]);
+
+    React.useEffect(() => {
+        if (!activeQuestion) return;
+        if (activeQuestion.categorical) {
+            setCurrentIndicators(d => ({
+                ...d,
+                bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
+                bivariateXEnabled: false,
+            }));
+        } else {
+            // Whenever active QUESTION changes, set the pillar indicator to the first for the question
+            setCurrentIndicators(d => ({
+                ...d,
+                bivariateX: activeQuestion.indicators[0],
+            }));
+        }
+    }, [activeQuestion]);
 
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, activePillar);
@@ -314,6 +331,7 @@ const Map = props => {
                 scales={scales}
                 normalizedData={countryData}
                 currentIndicators={currentIndicators}
+                activeQuestion={activeQuestion}
             />
         </div>
     );

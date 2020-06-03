@@ -2,7 +2,7 @@
 
 .question {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
     grid-template-areas:
         "qText overview overview overview"
@@ -68,6 +68,10 @@
             max-width: 100px;
         }
     }
+
+    @media (max-width: $width-mobile) {
+        padding-left: 0;
+    }
 }
 
 .countryTable {
@@ -91,6 +95,10 @@
     &[data-visible="true"] {
         opacity: 1;
         max-height: 500px;
+    }
+
+    @media (max-width: $width-mobile) {
+        overflow: scroll;
     }
 }
 
