@@ -431,9 +431,13 @@ const BivariateLegendGrid = props => {
                 const yMax = currentIndicators.bivariateY.flipped
                     ? domains.categories.y[rowIndex]
                     : domains.categories.y[yIndexMax - rowIndex];
+
+                // If both axes are HDI then we hide the y tooltip because it is borked.
+                const hideY = currentIndicators.bivariateY.hdi && currentIndicators.bivariateX.hdi;
+
                 tooltip = (
                     <div className={styles.legendColourTooltip}>
-                        {bivariateYEnabled && (
+                        {bivariateYEnabled && !hideY && (
                             <div className={styles.legendColourTooltipEntry}>
                                 <div
                                     className={styles.legendColourTooltipIcon}
