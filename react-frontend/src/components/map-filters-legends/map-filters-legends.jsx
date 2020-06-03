@@ -289,7 +289,7 @@ const Toggle = props => {
     const bgSlide = (
         <div
             className={styles.toggleSlide}
-            style={{ width: `calc(${optWidth}% - 2px)`, left: `calc(${slideLeft}% + 1px)` }}
+            style={{ width: `calc(${optWidth}% - 4px)`, left: `calc(${slideLeft}% + 2px)` }}
         />
     );
     return (
