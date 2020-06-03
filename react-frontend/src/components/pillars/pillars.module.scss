@@ -79,3 +79,68 @@
         }
     }
 }
+
+// -------
+// Dropdown
+.locationDropdown {
+    position: relative;
+    width: 100%;
+}
+
+.filterHeading {
+    @include h4();
+    margin: 0;
+    padding: 12px 0 4px 11px;
+}
+
+.locationDropdownButton {
+    border: none;
+    background: white;
+    outline: none;
+    border-radius: 22px;
+    padding: 13px 22px;
+    padding-bottom: 9px;
+    @include buttonFont();
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    transition: border-radius 0.2s;
+
+    &[data-selected="true"] {
+        border-radius: 22px 22px 0 0;
+        z-index: 13;
+    }
+}
+
+.blanket {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 11;
+}
+
+.dropdownIcon {
+    width: 12px;
+}
+
+.dropdownContent {
+    position: relative;
+    height: 0;
+    display: block;
+    &[data-open="false"] {
+        display: none;
+    }
+}
+
+.selectContainer {
+    position: relative;
+    // width: 100%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+}

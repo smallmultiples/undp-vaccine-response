@@ -46,7 +46,6 @@ const parseMetaSheet = raw => {
         if (qs) {
             currentQuestion = qs;
             out[currentPillar].questions[qs] = {
-                labelShort: row["Question short"],
                 label: qs,
                 sheet: row["Sheet"],
                 indicators: {},
