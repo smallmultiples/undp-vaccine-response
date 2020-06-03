@@ -183,7 +183,10 @@ const usePillarData = () => {
     const countryData = React.useMemo(() => {
         if (loading) return null;
 
-        let data = Object.values(regionLookup);
+        let data = {};
+        Object.values(regionLookup).forEach(region => {
+            data[region["ISO-alpha3 Code"]] = region;
+        });
         Object.values(datasets).forEach(dataset => {
             dataset.forEach(row => {
                 const rowKey = row["Alpha-3 code"];
