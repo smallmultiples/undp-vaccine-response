@@ -129,6 +129,7 @@ const MapVis = props => {
                     tooltip={tooltip}
                     normalizedData={normalizedData}
                     currentIndicators={currentIndicators}
+                    activeQuestion={activeQuestion}
                 />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -147,7 +148,7 @@ const getFormattedTooltipValue = (row, indicator) => {
 };
 
 const MapTooltip = props => {
-    const { tooltip, normalizedData, currentIndicators } = props;
+    const { tooltip, normalizedData, currentIndicators, activeQuestion } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -155,6 +156,22 @@ const MapTooltip = props => {
     }, [tooltip, normalizedData]);
 
     if (!data) return null;
+
+    let category = null;
+    if (activeQuestion.categorical) {
+        const categoricalIndicator = activeQuestion.indicators.find(d => d.categorical);
+        category = (
+            <div className={styles.tooltipDatum}>
+                <div className={styles.tooltipDatumIcon} data-bivariate />
+                <div className={styles.tooltipDatumText}>
+                    <div className={styles.tooltipDatumLabel}>{categoricalIndicator.label}</div>
+                    <div className={styles.tooltipDatumValue}>
+                        {getFormattedTooltipValue(data, categoricalIndicator)}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div
@@ -168,7 +185,7 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                {currentIndicators.radiusEnabled && (
+                {!activeQuestion.categorical && currentIndicators.radiusEnabled && (
                     <div className={styles.tooltipDatum}>
                         <div className={styles.tooltipDatumIcon} data-radius />
                         <div className={styles.tooltipDatumText}>
@@ -181,6 +198,7 @@ const MapTooltip = props => {
                         </div>
                     </div>
                 )}
+                {category}
                 {currentIndicators.bivariateXEnabled && (
                     <div className={styles.tooltipDatum}>
                         <div className={styles.tooltipDatumIcon} data-bivariate />
@@ -219,6 +237,24 @@ const groupRadius = 7;
 const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators, activeQuestion } = props;
 
+    const categoryIndicator = React.useMemo(
+        () => activeQuestion.indicators.find(d => d.categorical),
+        [activeQuestion]
+    );
+
+    const uniqueVals = React.useMemo(() => {
+        if (!categoryIndicator) return null;
+        return uniq(
+            flatten(
+                Object.values(normalizedData).map(d => {
+                    const val = d[categoryIndicator.dataKey];
+                    if (isNil(val)) return null;
+                    return categorySplit(val);
+                })
+            ).filter(d => d && d.length)
+        );
+    }, [normalizedData, categoryIndicator]);
+
     const rowXY = row => {
         const [lng, lat] = [row["Longitude (average)"], row["Latitude (average)"]];
         if ([lng, lat].some(d => !d)) return null;
@@ -231,19 +267,6 @@ const CircleVis = props => {
 
     if (activeQuestion.categorical) {
         // TODO: this is assuming one categorical per question. will need code later.
-        const categoryIndicator = activeQuestion.indicators.find(d => d.categorical);
-        const uniqueVals = uniq(
-            flatten(
-                Object.values(normalizedData)
-                    .map(d => {
-                        const val = d[categoryIndicator.dataKey];
-                        if (isNil(val)) return null;
-                        return categorySplit(val);
-                    })
-                    .filter(d => d)
-            )
-        );
-
         const angleEach = 360 / uniqueVals.length;
 
         const groups = Object.values(normalizedData).map(row => {
