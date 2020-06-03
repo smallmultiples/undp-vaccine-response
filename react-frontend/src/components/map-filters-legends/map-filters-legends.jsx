@@ -52,13 +52,14 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { activePillar, setCurrentIndicators, currentIndicators } = props;
-    const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
+    const { activePillar, activeQuestion, setCurrentIndicators, currentIndicators } = props;
+    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
         d => !d.categorical
     );
+    const bivariateXOptions = activeQuestion.indicators.filter(d => !d.categorical);
 
     // Disable Y axis if there is only one indicator.
-    const disableY = bivariateOptions.length === 1;
+    const disableY = bivariateYOptions.length === 1;
 
     return (
         <div className={styles.bivariateIndicatorSelection}>
@@ -75,7 +76,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <Select
-                        options={bivariateOptions}
+                        options={bivariateYOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
@@ -99,7 +100,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <Select
-                        options={bivariateOptions}
+                        options={bivariateXOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }
