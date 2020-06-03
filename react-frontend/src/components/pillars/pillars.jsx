@@ -38,7 +38,11 @@ const PillarInfo = props => {
         <div className={styles.pillarInfo}>
             <div className={styles.pillarInfoText}>
                 <div className={styles.pillarHeading}>{activePillar.labelLong}</div>
-                <p className={styles.pillarDescription}>{activePillar.description}</p>
+
+                <p className={styles.pillarDescription}>
+                    <em>{activePillar.tagline}</em>
+                    {activePillar.description}
+                </p>
             </div>
         </div>
     );
