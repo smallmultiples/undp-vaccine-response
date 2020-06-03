@@ -13,6 +13,8 @@ const Question = props => {
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
     const { isMobile } = useMediaQuery();
 
+    if (question.comingSoon) return null;
+
     const headers = ["Country", "Region"];
 
     const rowsForOverviewTable = question.indicators.map(x => {
