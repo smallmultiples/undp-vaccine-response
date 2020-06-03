@@ -194,6 +194,9 @@ const RadiusControls = props => {
         <div className={styles.radiusControls}>
             <RadiusIndicatorSelection {...props} />
             <RadiusLegend {...props} />
+            <div className={styles.radiusIndicatorFineprint}>
+                <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
+            </div>
         </div>
     );
 };
