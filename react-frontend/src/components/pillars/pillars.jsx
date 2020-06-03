@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./pillars.module.scss";
-import LocationDropdown from "./pillar-dropdown";
+import PillarDropdown from "./pillar-dropdown";
 
 const isOptionSelected = (item, selections) => {
     const selection = selections[0];
@@ -21,7 +21,7 @@ const PillarControl = props => {
                     .map(pillar => {
                         const selected = pillar === activePillar;
                         return (
-                            <LocationDropdown
+                            <PillarDropdown
                                 options={pillar.questions}
                                 label={pillar.labelLong}
                                 pillarSelected={selected}
