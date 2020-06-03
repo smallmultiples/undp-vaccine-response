@@ -105,7 +105,10 @@ const parseMetaSheet = raw => {
                 label: ind,
                 sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
-                tooltipKey: row["Tooltip Key"],
+                tooltipExtra: row["Tooltip Key"] && {
+                    key: row["Tooltip Key"],
+                    label: row["Tooltip Label"] || row["Tooltip Key"],
+                },
                 flipped: row["Invert Scale"],
                 categorical: categorical,
                 format: formats[row["Data Format"]]
