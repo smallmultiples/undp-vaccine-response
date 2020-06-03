@@ -1,6 +1,7 @@
 @import "../../variables.scss";
 
 $bottomPadding: 27px;
+$covidToggleWidth: 220px;
 
 .mapFiltersLegends {
     display: flex;
@@ -96,7 +97,7 @@ $bottomPadding: 27px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 220px;
+            width: 360px;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -184,7 +185,16 @@ $bottomPadding: 27px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-bottom: $bottomPadding;
+    padding-bottom: 10px;
+}
+
+.radiusIndicatorFineprint {
+    p {
+        font-size: 12px;
+        width: $covidToggleWidth;
+        margin: 0 0 0 30px;
+        padding: 0;
+    }
 }
 
 .toggle {
@@ -192,7 +202,7 @@ $bottomPadding: 27px;
     border: 2px solid $color-blue-bg;
     height: 36px;
     border-radius: 18px;
-    width: 350px;
+    width: $covidToggleWidth;
     overflow: hidden;
     margin-left: 16px;
 
