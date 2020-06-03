@@ -130,6 +130,7 @@ const MapVis = props => {
                     normalizedData={normalizedData}
                     currentIndicators={currentIndicators}
                     activeQuestion={activeQuestion}
+                    scales={scales}
                 />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -148,7 +149,7 @@ const getFormattedTooltipValue = (row, indicator) => {
 };
 
 const MapTooltip = props => {
-    const { tooltip, normalizedData, currentIndicators, activeQuestion } = props;
+    const { tooltip, normalizedData, currentIndicators, activeQuestion, scales } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -201,7 +202,13 @@ const MapTooltip = props => {
                 {category}
                 {currentIndicators.bivariateXEnabled && (
                     <div className={styles.tooltipDatum}>
-                        <div className={styles.tooltipDatumIcon} data-bivariate />
+                        <div
+                            className={styles.tooltipDatumIcon}
+                            data-bivariate
+                            style={{
+                                background: scales.colorX(data),
+                            }}
+                        />
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
                                 {currentIndicators.bivariateX.label}
@@ -214,7 +221,13 @@ const MapTooltip = props => {
                 )}
                 {currentIndicators.bivariateYEnabled && (
                     <div className={styles.tooltipDatum}>
-                        <div className={styles.tooltipDatumIcon} data-bivariate />
+                        <div
+                            className={styles.tooltipDatumIcon}
+                            data-bivariate
+                            style={{
+                                background: scales.colorY(data),
+                            }}
+                        />
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
                                 {currentIndicators.bivariateY.label}

@@ -149,12 +149,18 @@ $covidToggleWidth: 220px;
     list-style: none;
     padding: 0;
     margin-left: 24px;
+    padding-top: 12px;
 
-    .categoryItem {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+    .categoryItemRow {
+        .categoryItemCell {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-right: 8px;
+        }
         .categoryIcon {
+            max-width: 9px;
+            max-height: 9px;
             min-width: 9px;
             min-height: 9px;
             border-radius: 50%;
@@ -172,9 +178,25 @@ $covidToggleWidth: 220px;
             &[data-i="2"] {
                 border-color: $color-red;
             }
+
+            &[data-selected="true"] {
+                &[data-i="0"] {
+                    background: $color-navy;
+                }
+
+                &[data-i="1"] {
+                    background: $color-yellow;
+                }
+
+                &[data-i="2"] {
+                    background: $color-red;
+                }
+            }
         }
 
         .categoryText {
+            @include body();
+            font-weight: bold;
         }
     }
 }
