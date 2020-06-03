@@ -12,7 +12,7 @@ import { formats } from "./modules/format";
 import ReactGA from "react-ga";
 
 const SHEET_ID =
-    process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
+    process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
 
 const META_SHEET_ID =
     process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
@@ -216,7 +216,6 @@ function App() {
 
     React.useEffect(() => {
         if (!activePillar) return;
-        console.log("set question");
         setActiveQuestion(activePillar.questions[0]);
     }, [activePillar]);
 

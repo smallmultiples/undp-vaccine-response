@@ -1,6 +1,7 @@
 @import "../../variables.scss";
 
 $bottomPadding: 27px;
+$covidToggleWidth: 220px;
 
 .mapFiltersLegends {
     display: flex;
@@ -96,7 +97,7 @@ $bottomPadding: 27px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 220px;
+            width: 360px;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -144,6 +145,42 @@ $bottomPadding: 27px;
 
 // -----
 
+.categoryList {
+    list-style: none;
+    padding: 0;
+    margin-left: 24px;
+
+    .categoryItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .categoryIcon {
+            min-width: 9px;
+            min-height: 9px;
+            border-radius: 50%;
+            border: 2px solid $color-navy;
+            margin-right: 8px;
+
+            &[data-i="0"] {
+                border-color: $color-navy;
+            }
+
+            &[data-i="1"] {
+                border-color: $color-yellow;
+            }
+
+            &[data-i="2"] {
+                border-color: $color-red;
+            }
+        }
+
+        .categoryText {
+        }
+    }
+}
+
+// -----
+
 .radiusControls {
     padding-top: 16px;
     display: flex;
@@ -184,7 +221,16 @@ $bottomPadding: 27px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-bottom: $bottomPadding;
+    padding-bottom: 10px;
+}
+
+.radiusIndicatorFineprint {
+    p {
+        font-size: 12px;
+        width: $covidToggleWidth;
+        margin: 0 0 0 30px;
+        padding: 0;
+    }
 }
 
 .toggle {
@@ -192,7 +238,7 @@ $bottomPadding: 27px;
     border: 2px solid $color-blue-bg;
     height: 36px;
     border-radius: 18px;
-    width: 350px;
+    width: $covidToggleWidth;
     overflow: hidden;
     margin-left: 16px;
 
@@ -298,6 +344,7 @@ $lc-w-hdi: $l-w / 4;
 
 .legendColourSpanValue {
     @include body();
+    font-size: 12px;
     font-weight: bold;
     display: flex;
 
@@ -334,7 +381,7 @@ $lc-w-hdi: $l-w / 4;
 .bivariateAxisLabelY {
     @include buttonFont(center);
     font-size: 12px;
-    line-height: 10px;
+    line-height: 12px;
     min-width: $l-w;
     max-width: $l-w;
 }

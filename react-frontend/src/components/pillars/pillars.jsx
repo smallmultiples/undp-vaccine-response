@@ -12,7 +12,6 @@ const isOptionSelected = (item, selections) => {
 const PillarControl = props => {
     const { pillars, activePillar, activeQuestion, setActivePillar, setActiveQuestion } = props;
     // This component is the selector for the pillar just under the header.
-    console.log({ activePillar, activeQuestion });
     return (
         <div className={styles.pillarControl}>
             <div className={styles.pillarButtons}>
@@ -26,7 +25,6 @@ const PillarControl = props => {
                                 label={pillar.labelLong}
                                 pillarSelected={selected}
                                 onChange={question => {
-                                    console.log("ON CHANGE", pillar, question);
                                     setActivePillar(pillar);
                                     setActiveQuestion(question);
                                 }}

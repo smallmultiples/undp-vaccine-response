@@ -8,6 +8,10 @@
 .table {
     width: 100%;
     border-collapse: collapse;
+    @include mobileOnly() {
+        table-layout: fixed;
+        @include bodyXSmall();
+    }
     &[data-with-borders="true"] {
         border: 3px solid $color-blue-bg;
         .header {
@@ -23,10 +27,8 @@
     text-align: start;
     vertical-align: top;
     padding: 12px 24px;
-
-    @media (max-width: $width-mobile) {
-        padding: 10px;
-        font-size: 12px;
+    @include mobileOnly() {
+        padding: 6px;
     }
 }
 
@@ -37,6 +39,10 @@
 
 .cell {
     padding: 12px 24px;
+
+    @include mobileOnly() {
+        padding: 6px;
+    }
 
     &:first-of-type {
         font-weight: bold;

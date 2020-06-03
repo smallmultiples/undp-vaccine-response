@@ -22,6 +22,11 @@
         padding: 24px 0;
         margin-bottom: 24px;
 
+        @include mobileOnly() {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         &:before {
             content: "";
             display: block;
