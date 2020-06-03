@@ -285,7 +285,9 @@ const Map = props => {
     React.useEffect(() => {
         if (!activePillar) return;
         // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
-        const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators));
+        const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
+            d => !d.categorical
+        );
         setCurrentIndicators(d => ({
             ...d,
             bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
@@ -294,11 +296,19 @@ const Map = props => {
 
     React.useEffect(() => {
         if (!activeQuestion) return;
-        // Whenever active QUESTION changes, set the pillar indicator to the first for the question
-        setCurrentIndicators(d => ({
-            ...d,
-            bivariateX: activeQuestion.indicators[0],
-        }));
+        if (activeQuestion.categorical) {
+            setCurrentIndicators(d => ({
+                ...d,
+                bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
+                bivariateXEnabled: false,
+            }));
+        } else {
+            // Whenever active QUESTION changes, set the pillar indicator to the first for the question
+            setCurrentIndicators(d => ({
+                ...d,
+                bivariateX: activeQuestion.indicators[0],
+            }));
+        }
     }, [activeQuestion]);
 
     const domains = useDomains(countryData, currentIndicators);
@@ -321,6 +331,7 @@ const Map = props => {
                 scales={scales}
                 normalizedData={countryData}
                 currentIndicators={currentIndicators}
+                activeQuestion={activeQuestion}
             />
         </div>
     );
