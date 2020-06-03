@@ -142,8 +142,13 @@ const MapVis = props => {
 };
 
 // TODO: module these
+const getFormattedMapValue = (row, indicator) => {
+    const val = row[indicator.dataKey];
+    if (isNil(val) || val === "") return "-";
+    return indicator.format(val);
+};
 const getFormattedTooltipValue = (row, indicator) => {
-    const val = row[indicator.tooltipKey || indicator.dataKey];
+    const val = row[indicator.tooltipExtra.key];
     if (isNil(val) || val === "") return "-";
     return indicator.format(val);
 };
@@ -167,7 +172,7 @@ const MapTooltip = props => {
                 <div className={styles.tooltipDatumText}>
                     <div className={styles.tooltipDatumLabel}>{categoricalIndicator.label}</div>
                     <div className={styles.tooltipDatumValue}>
-                        {getFormattedTooltipValue(data, categoricalIndicator)}
+                        {getFormattedMapValue(data, categoricalIndicator)}
                     </div>
                 </div>
             </div>
@@ -194,11 +199,26 @@ const MapTooltip = props => {
                                 {currentIndicators.radius.label}
                             </div>
                             <div className={styles.tooltipDatumValue}>
-                                {getFormattedTooltipValue(data, currentIndicators.radius)}
+                                {getFormattedMapValue(data, currentIndicators.radius)}
                             </div>
                         </div>
                     </div>
                 )}
+                {!activeQuestion.categorical &&
+                    currentIndicators.radiusEnabled &&
+                    currentIndicators.radius.tooltipExtra && (
+                        <div className={styles.tooltipDatum}>
+                            <div className={styles.tooltipDatumIcon} data-radius />
+                            <div className={styles.tooltipDatumText}>
+                                <div className={styles.tooltipDatumLabel}>
+                                    {currentIndicators.radius.tooltipExtra.label}
+                                </div>
+                                <div className={styles.tooltipDatumValue}>
+                                    {getFormattedTooltipValue(data, currentIndicators.radius)}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 {category}
                 {currentIndicators.bivariateXEnabled && (
                     <div className={styles.tooltipDatum}>
@@ -212,6 +232,25 @@ const MapTooltip = props => {
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
                                 {currentIndicators.bivariateX.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedMapValue(data, currentIndicators.bivariateX)}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {currentIndicators.bivariateX.tooltipExtra && (
+                    <div className={styles.tooltipDatum}>
+                        <div
+                            className={styles.tooltipDatumIcon}
+                            data-bivariate
+                            style={{
+                                background: scales.colorX(data),
+                            }}
+                        />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateX.tooltipExtra.label}
                             </div>
                             <div className={styles.tooltipDatumValue}>
                                 {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
@@ -231,6 +270,25 @@ const MapTooltip = props => {
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
                                 {currentIndicators.bivariateY.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedMapValue(data, currentIndicators.bivariateY)}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {currentIndicators.bivariateYEnabled && currentIndicators.bivariateY.tooltipExtra && (
+                    <div className={styles.tooltipDatum}>
+                        <div
+                            className={styles.tooltipDatumIcon}
+                            data-bivariate
+                            style={{
+                                background: scales.colorY(data),
+                            }}
+                        />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateY.tooltipExtralabel}
                             </div>
                             <div className={styles.tooltipDatumValue}>
                                 {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
