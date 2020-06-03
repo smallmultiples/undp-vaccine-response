@@ -344,7 +344,10 @@ const BivariateLegend = props => {
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>
-                <div className={styles.legendYLabelContainer}>
+                <div
+                    className={styles.legendYLabelContainer}
+                    data-visible={currentIndicators.bivariateYEnabled}
+                >
                     <div className={styles.bivariateAxisLabelY}>
                         {currentIndicators.bivariateY.label}
                     </div>
@@ -359,10 +362,12 @@ const BivariateLegend = props => {
                         </div>
                     </div>
                 </div>
-
                 <BivariateLegendGrid {...props} />
             </div>
-            <div className={styles.bivariateLegendBottom}>
+            <div
+                className={styles.bivariateLegendBottom}
+                data-visible={currentIndicators.bivariateXEnabled}
+            >
                 <div className={styles.legendColourSpan} data-x={true}>
                     <div className={styles.legendColourSpanValue} data-x>
                         <IconArrowLeft />
