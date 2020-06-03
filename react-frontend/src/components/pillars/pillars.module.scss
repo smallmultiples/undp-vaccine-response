@@ -5,50 +5,202 @@
 .pillarControl {
     margin-bottom: 12px;
 
-    .pillarLabel {
-        @include body();
-        font-weight: bold;
-        margin-bottom: 0;
-    }
-
     .pillarButtons {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        margin-left: -12px;
-        .pillarButton {
-            background: none;
-            outline: none;
-            cursor: pointer;
-            border: 2px solid $color-navy;
-            padding: 12px 16px;
-            @include buttonFont();
-
-            &[data-selected="true"] {
-                background: $color-yellow;
-            }
-            margin: 12px;
-        }
     }
 }
 // ----
 
 .pillarInfo {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
-
     .pillarInfoText {
-        flex-grow: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        padding: 24px 0;
+        margin-bottom: 24px;
+
+        &:before {
+            content: "";
+            display: block;
+            width: 100vw;
+            position: absolute;
+            left: 50%;
+            right: 50%;
+            height: 100%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            background: $color-blue-bg;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+        }
+
         .pillarHeading {
             @include h1();
+            min-width: 290px;
+            width: 290px;
+            margin-right: 24px;
         }
 
         .pillarDescription {
             @include body();
-            margin-bottom: 8px;
-            max-width: 800px;
+            flex-grow: 1;
+            margin-top: 2px;
+            margin-bottom: 0;
+
+            em {
+                display: block;
+                margin-bottom: 5px;
+                font-style: normal;
+                font-weight: bold;
+            }
         }
     }
+}
+
+// -------
+// Dropdown
+.pillarDropdown {
+    position: relative;
+    margin-right: 48px;
+}
+
+.pillarDropdownButton {
+    border: none;
+    background: white;
+    outline: none;
+    @include buttonFont();
+    font-size: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    .pillarDropdownButtonLabel {
+        margin-right: 8px;
+        height: 100%;
+        padding: 5px 0;
+        font-size: 16px;
+        letter-spacing: 0.04em;
+        font-weight: $weight-medium;
+    }
+
+    &[data-selected="true"] {
+        .pillarDropdownButtonLabel {
+            background-color: $color-yellow;
+            font-weight: bold;
+        }
+    }
+}
+
+.blanket {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 21;
+}
+
+.dropdownIcon {
+    width: 12px;
+    transform: rotate(180deg);
+}
+
+.dropdownContent {
+    position: relative;
+    height: 0;
+    display: block;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 22;
+    &[data-open="false"] {
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
+    }
+}
+
+.selectMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: auto;
+    z-index: 22;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    margin-top: 8px;
+}
+
+.selectOption {
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: $weight-medium;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+    width: 100vw;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+
+    &:hover {
+        &[data-soon="false"] {
+            background: $color-yellow;
+        }
+    }
+    &[data-selected="true"] {
+        background: rgba($color-yellow, 0.8);
+        font-weight: $weight-semi;
+    }
+    &[data-soon="true"] {
+        cursor: not-allowed;
+        pointer-events: none;
+        color: rgba($color-navy, 0.5);
+    }
+}
+
+.comingSoonItem {
+    position: relative;
+    width: 100%;
+    padding: 16px 20px;
+    &:before {
+        content: "";
+        position: absolute;
+        height: 1px;
+        top: 50%;
+        left: 0;
+        right: 0;
+        background: $color-blue-bg;
+        z-index: 23;
+    }
+}
+
+.comingSoonBadge {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: $color-blue-bg;
+    padding: 6px 12px;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+    z-index: 24;
 }

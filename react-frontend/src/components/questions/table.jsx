@@ -45,4 +45,6 @@ const Table = props => {
     );
 };
 
+// TODO footer should be a tfoot.
+
 export default Table;

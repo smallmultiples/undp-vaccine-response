@@ -23,6 +23,11 @@
     text-align: start;
     vertical-align: top;
     padding: 12px 24px;
+
+    @media (max-width: $width-mobile) {
+        padding: 10px;
+        font-size: 12px;
+    }
 }
 
 .row {
@@ -35,6 +40,12 @@
 
     &:first-of-type {
         font-weight: bold;
+    }
+
+    @media (max-width: $width-mobile) {
+        padding: 10px;
+        font-size: 12px;
+        vertical-align: top;
     }
 }
 

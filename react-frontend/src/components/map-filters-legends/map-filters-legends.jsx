@@ -4,16 +4,52 @@ import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../ic
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import { flatten } from "lodash";
+import { animated, useSpring } from "react-spring";
+import useDimensions from "../../hooks/use-dimensions";
 
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
+            <QuestionInfo {...props} />
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
             <div className={styles.radiusControls}>
-                <RadiusLegend {...props} />
                 <RadiusIndicatorSelection {...props} />
+                <RadiusLegend {...props} />
             </div>
+        </div>
+    );
+};
+
+const QuestionInfo = props => {
+    const { activeQuestion } = props;
+    const [open, setOpen] = React.useState(false);
+    const [descriptionRef, descriptionDimensions] = useDimensions();
+
+    // Close when question changes.
+    React.useEffect(() => {
+        setOpen(false);
+    }, [activeQuestion]);
+
+    const descriptionContainerSpring = useSpring({
+        height: open ? descriptionDimensions.height : 40,
+    });
+
+    return (
+        <div className={styles.questionInfo}>
+            <div className={styles.questionInfoHeading}>{activeQuestion.label}</div>
+            <animated.div
+                className={styles.questionInfoDescriptionContainer}
+                style={descriptionContainerSpring}
+                data-open={open}
+            >
+                <p className={styles.questionInfoDescription} ref={descriptionRef}>
+                    {activeQuestion.description}
+                </p>
+            </animated.div>
+            <button className={styles.questionInfoSeeMore} onClick={() => setOpen(d => !d)}>
+                {open ? "view less" : "view more"}
+            </button>
         </div>
     );
 };
@@ -32,7 +68,7 @@ const Checkbox = props => {
         <button
             className={styles.checkbox}
             data-selected={value === true}
-            onClick={d => onChange(!value)}
+            onClick={() => onChange(!value)}
             disabled={disabled}
         >
             <svg
@@ -52,13 +88,14 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { activePillar, setCurrentIndicators, currentIndicators } = props;
-    const bivariateOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
+    const { activePillar, activeQuestion, setCurrentIndicators, currentIndicators } = props;
+    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
         d => !d.categorical
     );
+    const bivariateXOptions = activeQuestion.indicators.filter(d => !d.categorical);
 
     // Disable Y axis if there is only one indicator.
-    const disableY = bivariateOptions.length === 1;
+    const disableY = bivariateYOptions.length === 1;
 
     return (
         <div className={styles.bivariateIndicatorSelection}>
@@ -75,7 +112,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <Select
-                        options={bivariateOptions}
+                        options={bivariateYOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
@@ -99,7 +136,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <Select
-                        options={bivariateOptions}
+                        options={bivariateXOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }
@@ -163,26 +200,27 @@ const RadiusLegend = props => {
 };
 
 const Toggle = props => {
-    const totalLength = props.options.reduce((a, b) => a + b.label.length, 0);
+    const { options, onChange, value } = props;
 
-    const options = props.options.map(option => {
+    const totalLength = options.reduce((a, b) => a + b.label.length, 0);
+
+    const optionsButtons = options.map(option => {
         return (
             <button
                 key={option.label}
                 className={styles.toggleOption}
                 style={{ width: (option.label.length / totalLength) * 100 + "%" }}
-                onClick={() => props.onChange(option)}
-                data-active={option === props.value}
+                onClick={() => onChange && onChange(option)}
+                data-active={option === value}
             >
                 {option.label}
             </button>
         );
     });
     // TODO: someone needs to fix this gross code sorry
-    const optWidth =
-        (props.options[props.options.indexOf(props.value)].label.length / totalLength) * 100;
-    let slideLeft = props.options.reduce((a, b, i) => {
-        if (i < props.options.indexOf(props.value)) {
+    const optWidth = (options[options.indexOf(value)].label.length / totalLength) * 100;
+    let slideLeft = options.reduce((a, b, i) => {
+        if (i < options.indexOf(value)) {
             return a + b.label.length;
         }
         return a;
@@ -198,7 +236,7 @@ const Toggle = props => {
     return (
         <div className={styles.toggle}>
             {bgSlide}
-            {options}
+            {optionsButtons}
         </div>
     );
 };
@@ -318,8 +356,8 @@ const BivariateLegendGrid = props => {
                     className={styles.legendColourCell}
                     style={{ background: hex }}
                     data-disabled={disabled}
-                    data-xHdi={xHdi}
-                    data-yHdi={yHdi}
+                    data-hdi-x={xHdi}
+                    data-hdi-y={yHdi}
                 />
             );
         });

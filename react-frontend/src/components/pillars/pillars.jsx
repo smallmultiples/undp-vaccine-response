@@ -1,29 +1,37 @@
 import React from "react";
 import styles from "./pillars.module.scss";
+import PillarDropdown from "./pillar-dropdown";
+
+const isOptionSelected = (item, selections) => {
+    const selection = selections[0];
+    if (item.label === selection.label) return true;
+
+    return false;
+};
 
 const PillarControl = props => {
-    const { pillars, activePillar, setActivePillar } = props;
+    const { pillars, activePillar, activeQuestion, setActivePillar, setActiveQuestion } = props;
     // This component is the selector for the pillar just under the header.
+    console.log({ activePillar, activeQuestion });
     return (
         <div className={styles.pillarControl}>
-            <p className={styles.pillarLabel}>
-                Leading the recovery effort by assessing and supporting countries in the following
-                areas:
-            </p>
             <div className={styles.pillarButtons}>
                 {pillars
                     .filter(d => d.visible)
                     .map(pillar => {
                         const selected = pillar === activePillar;
                         return (
-                            <button
-                                key={pillar.labelLong}
-                                className={styles.pillarButton}
-                                onClick={() => setActivePillar(pillar)}
-                                data-selected={selected}
-                            >
-                                {pillar.labelLong}
-                            </button>
+                            <PillarDropdown
+                                options={pillar.questions}
+                                label={pillar.labelLong}
+                                pillarSelected={selected}
+                                onChange={question => {
+                                    console.log("ON CHANGE", pillar, question);
+                                    setActivePillar(pillar);
+                                    setActiveQuestion(question);
+                                }}
+                                value={activeQuestion}
+                            />
                         );
                     })}
             </div>
@@ -38,7 +46,11 @@ const PillarInfo = props => {
         <div className={styles.pillarInfo}>
             <div className={styles.pillarInfoText}>
                 <div className={styles.pillarHeading}>{activePillar.labelLong}</div>
-                <p className={styles.pillarDescription}>{activePillar.description}</p>
+
+                <p className={styles.pillarDescription}>
+                    <em>{activePillar.tagline}</em>
+                    {activePillar.description}
+                </p>
             </div>
         </div>
     );

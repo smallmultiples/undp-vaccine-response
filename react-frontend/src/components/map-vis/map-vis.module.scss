@@ -4,6 +4,8 @@
     width: 100%;
     height: 560px;
     position: relative;
+    border: 1px solid $color-blue-bg;
+    margin: 24px 0;
 }
 
 // ----
@@ -114,7 +116,7 @@
     }
 
     .visCategoryCircle {
-        fill: white;
+        fill: none;
         stroke: $color-navy;
         stroke-width: 2px;
         &[data-i="0"] {

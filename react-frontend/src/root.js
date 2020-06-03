@@ -9,12 +9,16 @@ import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
 import Footer from "./components/footer/footer";
 import { formats } from "./modules/format";
+import ReactGA from "react-ga";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
 
 const META_SHEET_ID =
     process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
+
+const trackingId = "UA-25119617-15";
+ReactGA.initialize(trackingId);
 
 const parseMetaSheet = raw => {
     const out = {};
@@ -38,16 +42,17 @@ const parseMetaSheet = raw => {
         // -----------
 
         // Question
-        const qs = row["Question short"];
+        const qs = row["Question"];
         if (qs) {
             currentQuestion = qs;
             out[currentPillar].questions[qs] = {
-                labelShort: qs,
-                label: row["Question"],
+                label: qs,
                 sheet: row["Sheet"],
+                description: row["Question description"],
                 indicators: {},
                 hidden: qs === "-",
                 categorical: false,
+                comingSoon: row["Question coming soon"],
             };
         }
         // ------------
@@ -92,6 +97,7 @@ const parseMetaSheet = raw => {
 
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
+                sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
                 tooltipKey: row["Tooltip Key"],
                 flipped: row["Invert Scale"],
@@ -99,7 +105,7 @@ const parseMetaSheet = raw => {
                 format: formats[row["Data Format"]]
                     ? formats[row["Data Format"]](row["Decimal Places"])
                     : formats.decimal(row["Decimal Places"]),
-                hdi: ind === "HDI",
+                hdi: ind === "Human Development Index",
                 meta,
             };
         }
@@ -147,8 +153,13 @@ const usePillarData = () => {
             ).then(d => parseMetaSheet(d.data));
             setPillars(pillars);
 
+            // TODO: remove concat when questions fixed
             const sheetsToFetch = uniq(
                 flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
+            ).concat(
+                flatten(
+                    pillars.map(p => flatten(p.questions.map(q => q.indicators.map(i => i.sheet))))
+                ).filter(Boolean)
             );
 
             let newSets = {};
@@ -196,11 +207,18 @@ const usePillarData = () => {
 function App() {
     const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
+    const [activeQuestion, setActiveQuestion] = React.useState(null);
 
     React.useEffect(() => {
         if (activePillar || !pillars) return;
         setActivePillar(pillars.find(d => d.visible));
     }, [pillars, activePillar]);
+
+    React.useEffect(() => {
+        if (!activePillar) return;
+        console.log("set question");
+        setActiveQuestion(activePillar.questions[0]);
+    }, [activePillar]);
 
     const covidPillar = React.useMemo(() => {
         if (!pillars) return null;
@@ -213,7 +231,7 @@ function App() {
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
-    if (!pillars || !activePillar || !regionLookup) return null; // TODO loader
+    if (!pillars || !activePillar || !regionLookup || !activeQuestion) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -224,6 +242,8 @@ function App() {
                     covidPillar={covidPillar}
                     setActivePillar={setActivePillar}
                     pillars={pillars}
+                    activeQuestion={activeQuestion}
+                    setActiveQuestion={setActiveQuestion}
                 />
                 <Map
                     countryData={countryData}
@@ -231,6 +251,7 @@ function App() {
                     activePillar={activePillar}
                     covidPillar={covidPillar}
                     pillars={pillars}
+                    activeQuestion={activeQuestion}
                 />
                 <DataFilters />
                 <Questions

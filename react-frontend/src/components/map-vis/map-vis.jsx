@@ -74,7 +74,7 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
 };
 
 const MapVis = props => {
-    const { normalizedData, countryDataLoading, scales, currentIndicators } = props;
+    const { normalizedData, countryDataLoading, scales, currentIndicators, activeQuestion } = props;
     const [mapContainerRef, viewport, handleViewStateChange] = useDeckViewport();
     const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
@@ -122,6 +122,7 @@ const MapVis = props => {
                         scales={scales}
                         normalizedData={normalizedData}
                         currentIndicators={currentIndicators}
+                        activeQuestion={activeQuestion}
                     />
                 )}
                 <MapTooltip
@@ -216,7 +217,7 @@ const categorySplit = val => val.split(";").map(d => d.trim());
 const groupRadius = 7;
 
 const CircleVis = props => {
-    const { viewport, scales, normalizedData, currentIndicators } = props;
+    const { viewport, scales, normalizedData, currentIndicators, activeQuestion } = props;
 
     const rowXY = row => {
         const [lng, lat] = [row["Longitude (average)"], row["Latitude (average)"]];
@@ -228,12 +229,14 @@ const CircleVis = props => {
 
     let content = null;
 
-    if (currentIndicators.bivariateX.categorical) {
+    if (activeQuestion.categorical) {
+        // TODO: this is assuming one categorical per question. will need code later.
+        const categoryIndicator = activeQuestion.indicators.find(d => d.categorical);
         const uniqueVals = uniq(
             flatten(
                 Object.values(normalizedData)
                     .map(d => {
-                        const val = d[currentIndicators.bivariateX.dataKey];
+                        const val = d[categoryIndicator.dataKey];
                         if (isNil(val)) return null;
                         return categorySplit(val);
                     })
@@ -244,7 +247,7 @@ const CircleVis = props => {
         const angleEach = 360 / uniqueVals.length;
 
         const groups = Object.values(normalizedData).map(row => {
-            const val = row[currentIndicators.bivariateX.dataKey];
+            const val = row[categoryIndicator.dataKey];
             if (isNil(val)) return null;
             const cats = categorySplit(val);
             const xy = rowXY(row);
