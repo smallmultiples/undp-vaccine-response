@@ -1,19 +1,8 @@
 import React from "react";
-import Select from "react-select";
-import dropdownStyle from "./pillar-dropdown.style";
 import styles from "./pillars.module.scss";
 import { Chevron } from "../icons/icons";
 
-const isOptionSelected = (item, selections) => {
-    const selection = selections[0];
-    if (item.label === selection.label) return true;
-
-    return false;
-};
-
-const NoopComponent = () => <React.Fragment />;
-
-const LocationDropdown = props => {
+const PillarDropdown = props => {
     const { value, label, options, onChange, pillarSelected } = props;
 
     const [isOpen, setIsOpen] = React.useState(false);
@@ -26,6 +15,20 @@ const LocationDropdown = props => {
         onChange(v);
         setIsOpen(false);
     }, []);
+
+    const optionEls = options.map(opt => {
+        const selected = opt === value;
+        return (
+            <li
+                className={styles.selectOption}
+                onClick={() => handleChange(opt)}
+                data-selected={selected}
+                data-soon={opt.comingSoon}
+            >
+                {opt.label}
+            </li>
+        );
+    });
 
     return (
         <Dropdown
@@ -42,23 +45,7 @@ const LocationDropdown = props => {
                 </button>
             }
         >
-            <div className={styles.selectContainer}>
-                <Select
-                    autoFocus
-                    components={{ IndicatorSeparator: null, Control: NoopComponent }}
-                    controlShouldRenderValue={false}
-                    hideSelectedOptions={false}
-                    isClearable={false}
-                    isSearchable={false}
-                    menuIsOpen
-                    onChange={handleChange}
-                    options={options}
-                    value={value}
-                    styles={dropdownStyle}
-                    tabSelectsValue={false}
-                    isOptionSelected={isOptionSelected}
-                />
-            </div>
+            <ul className={styles.selectMenu}>{optionEls}</ul>
         </Dropdown>
     );
 };
@@ -76,8 +63,4 @@ const Dropdown = props => {
     );
 };
 
-const IconContainer = p => (
-    <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation" {...p} />
-);
-
-export default LocationDropdown;
+export default PillarDropdown;

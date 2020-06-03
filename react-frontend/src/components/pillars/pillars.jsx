@@ -1,7 +1,5 @@
 import React from "react";
 import styles from "./pillars.module.scss";
-import Select from "react-select";
-import dropdownStyle from "./pillar-dropdown.style";
 import LocationDropdown from "./pillar-dropdown";
 
 const isOptionSelected = (item, selections) => {

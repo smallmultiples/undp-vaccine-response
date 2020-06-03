@@ -51,6 +51,7 @@ const parseMetaSheet = raw => {
                 indicators: {},
                 hidden: qs === "-",
                 categorical: false,
+                comingSoon: row["Question coming soon"],
             };
         }
         // ------------

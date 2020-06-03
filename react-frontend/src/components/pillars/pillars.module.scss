@@ -69,12 +69,6 @@
     margin-right: 48px;
 }
 
-.filterHeading {
-    @include h4();
-    margin: 0;
-    padding: 12px 0 4px 11px;
-}
-
 .pillarDropdownButton {
     border: none;
     background: white;
@@ -92,7 +86,9 @@
         margin-right: 8px;
         height: 100%;
         padding: 5px 0;
+        font-size: 16px;
         letter-spacing: 0.04em;
+        font-weight: $weight-semi;
     }
 
     &[data-selected="true"] {
@@ -109,7 +105,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 11;
+    z-index: 21;
 }
 
 .dropdownIcon {
@@ -121,14 +117,45 @@
     position: relative;
     height: 0;
     display: block;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 22;
     &[data-open="false"] {
-        display: none;
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
     }
 }
 
-.selectContainer {
-    position: relative;
-    // width: 100%;
+.selectMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: auto;
+    z-index: 22;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     background: white;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    margin-top: 8px;
+}
+
+.selectOption {
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: $weight-semi;
+    font-size: 14px;
+    line-height: 14px;
+    width: 100vw;
+    max-width: 380px;
+
+    &:hover {
+        &[data-soon="false"] {
+            background: $color-yellow;
+        }
+    }
+    &[data-soon="true"] {
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 }

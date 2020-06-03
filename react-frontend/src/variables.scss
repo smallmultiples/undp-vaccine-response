@@ -12,6 +12,8 @@ $color-green-data: #2eb872;
 
 $container-width: 1166px;
 $width-mobile: 700px;
+$weight-medium: 500;
+$weight-semi: 600;
 
 @mixin h1($text-align: "") {
     @if $text-align != "" {
