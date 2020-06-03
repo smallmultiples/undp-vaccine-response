@@ -42,12 +42,12 @@ const parseMetaSheet = raw => {
         // -----------
 
         // Question
-        const qs = row["Question short"];
+        const qs = row["Question"];
         if (qs) {
             currentQuestion = qs;
             out[currentPillar].questions[qs] = {
-                labelShort: qs,
-                label: row["Question"],
+                labelShort: row["Question short"],
+                label: qs,
                 sheet: row["Sheet"],
                 indicators: {},
                 hidden: qs === "-",
