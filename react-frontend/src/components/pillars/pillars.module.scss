@@ -5,30 +5,11 @@
 .pillarControl {
     margin-bottom: 12px;
 
-    .pillarLabel {
-        @include body();
-        font-weight: bold;
-        margin-bottom: 0;
-    }
-
     .pillarButtons {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         margin-left: -12px;
-        .pillarButton {
-            background: none;
-            outline: none;
-            cursor: pointer;
-            border: 2px solid $color-navy;
-            padding: 12px 16px;
-            @include buttonFont();
-
-            &[data-selected="true"] {
-                background: $color-yellow;
-            }
-            margin: 12px;
-        }
     }
 }
 // ----
@@ -82,9 +63,9 @@
 
 // -------
 // Dropdown
-.locationDropdown {
+.pillarDropdown {
     position: relative;
-    width: 100%;
+    margin-right: 48px;
 }
 
 .filterHeading {
@@ -93,26 +74,30 @@
     padding: 12px 0 4px 11px;
 }
 
-.locationDropdownButton {
+.pillarDropdownButton {
     border: none;
     background: white;
     outline: none;
-    border-radius: 22px;
-    padding: 13px 22px;
-    padding-bottom: 9px;
     @include buttonFont();
+    font-size: 16px;
     position: relative;
-
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 
-    transition: border-radius 0.2s;
+    .pillarDropdownButtonLabel {
+        margin-right: 8px;
+        height: 100%;
+        padding: 5px 0;
+        letter-spacing: 0.04em;
+    }
 
     &[data-selected="true"] {
-        border-radius: 22px 22px 0 0;
-        z-index: 13;
+        .pillarDropdownButtonLabel {
+            background-color: $color-yellow;
+            font-weight: bold;
+        }
     }
 }
 
@@ -127,6 +112,7 @@
 
 .dropdownIcon {
     width: 12px;
+    transform: rotate(180deg);
 }
 
 .dropdownContent {

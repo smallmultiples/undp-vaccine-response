@@ -2,6 +2,7 @@ import React from "react";
 import Select from "react-select";
 import dropdownStyle from "./pillar-dropdown.style";
 import styles from "./pillars.module.scss";
+import { Chevron } from "../icons/icons";
 
 const isOptionSelected = (item, selections) => {
     const selection = selections[0];
@@ -13,7 +14,7 @@ const isOptionSelected = (item, selections) => {
 const NoopComponent = () => <React.Fragment />;
 
 const LocationDropdown = props => {
-    const { value, label, options, onChange } = props;
+    const { value, label, options, onChange, pillarSelected } = props;
 
     const [isOpen, setIsOpen] = React.useState(false);
 
@@ -32,12 +33,12 @@ const LocationDropdown = props => {
             onClose={toggleOpen}
             target={
                 <button
-                    className={styles.locationDropdownButton}
+                    className={styles.pillarDropdownButton}
                     onClick={toggleOpen}
-                    data-selected={isOpen}
+                    data-selected={pillarSelected}
                 >
-                    <span>{label}</span>
-                    {/* <IconChevronDown className={styles.dropdownIcon} /> */}
+                    <div className={styles.pillarDropdownButtonLabel}>{label}</div>
+                    <Chevron className={styles.dropdownIcon} />
                 </button>
             }
         >
@@ -65,7 +66,7 @@ const LocationDropdown = props => {
 const Dropdown = props => {
     const { children, isOpen, target, onClose } = props;
     return (
-        <div className={styles.locationDropdown}>
+        <div className={styles.pillarDropdown}>
             {target}
             <div className={styles.dropdownContent} data-open={isOpen}>
                 <div className={styles.menuContainer}>{children}</div>

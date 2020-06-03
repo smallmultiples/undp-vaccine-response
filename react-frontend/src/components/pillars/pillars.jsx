@@ -17,20 +17,16 @@ const PillarControl = props => {
     console.log({ activePillar, activeQuestion });
     return (
         <div className={styles.pillarControl}>
-            <p className={styles.pillarLabel}>
-                Leading the recovery effort by assessing and supporting countries in the following
-                areas:
-            </p>
             <div className={styles.pillarButtons}>
                 {pillars
                     .filter(d => d.visible)
                     .map(pillar => {
-                        // TODO: selected state.
                         const selected = pillar === activePillar;
                         return (
                             <LocationDropdown
                                 options={pillar.questions}
                                 label={pillar.labelLong}
+                                pillarSelected={selected}
                                 onChange={question => {
                                     console.log("ON CHANGE", pillar, question);
                                     setActivePillar(pillar);
