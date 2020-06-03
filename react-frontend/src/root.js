@@ -218,13 +218,11 @@ const usePillarData = () => {
         loading,
         datasets,
         pillars,
-        regionLookup,
     };
 };
 
-// TODO: don't use regionLookup and instead use info from countryData
 function App() {
-    const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
+    const { pillars, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
     const [activeQuestion, setActiveQuestion] = React.useState(null);
 
@@ -274,7 +272,6 @@ function App() {
                 <Questions
                     activePillar={activePillar}
                     datasets={datasets}
-                    regionLookup={regionLookup}
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
                 />

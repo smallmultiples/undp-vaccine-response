@@ -9,7 +9,7 @@ import useMediaQuery from "../../hooks/use-media-query";
 const COUNTRIES_TOTAL = 249;
 
 const Question = props => {
-    const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
+    const { question, dataset, countryData, hdiIndicator } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
     const { isMobile } = useMediaQuery();
 
@@ -56,9 +56,8 @@ const Question = props => {
     ]);
 
     const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
-        const region = regionLookup?.find(r => r["ISO-alpha3 Code"] === x["Alpha-3 code"]);
         const country = countryData && countryData[x["Alpha-3 code"]];
-        const arr = [x["Country or Area"], region?.["Region Name"] || ""];
+        const arr = [x["Country or Area"], (country && country["Region Name"]) || ""];
         question.indicators.forEach(ind => {
             arr.push(
                 typeof x[ind.dataKey] === "number"
@@ -185,7 +184,7 @@ const Legend = props => {
 };
 
 const Questions = props => {
-    const { activePillar, datasets, regionLookup, countryData, hdiIndicator } = props;
+    const { activePillar, datasets, countryData, hdiIndicator } = props;
     return (
         <>
             <h2>Explore indicators for {activePillar.label}</h2>
@@ -194,7 +193,6 @@ const Questions = props => {
                     key={`${x.labelLong}_${i}`}
                     question={x}
                     dataset={datasets[x.sheet]}
-                    regionLookup={regionLookup}
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
                 />
