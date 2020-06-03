@@ -48,6 +48,7 @@ const parseMetaSheet = raw => {
             out[currentPillar].questions[qs] = {
                 label: qs,
                 sheet: row["Sheet"],
+                description: row["Question description"],
                 indicators: {},
                 hidden: qs === "-",
                 categorical: false,
