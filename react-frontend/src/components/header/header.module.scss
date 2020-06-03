@@ -1,7 +1,6 @@
 @import "../../variables.scss";
 
 .headerContainer {
-    width: 100vw;
     height: 100px;
     background-color: #fff;
 }
@@ -12,7 +11,8 @@
     align-items: center;
     max-width: $container-width;
     height: 100%;
-    margin-left: calc((100vw - #{$container-width}) / 2);
+    padding: 0 24px;
+    margin: 0 auto;
 }
 
 .title {
@@ -28,6 +28,9 @@
 .navItem {
     &:first-of-type {
         margin-right: 24px;
+        @include mobileOnly {
+            margin-right: 12px;
+        }
     }
 }
 
@@ -40,6 +43,11 @@
     &:hover {
         opacity: 1;
     }
+
+    @include mobileOnly {
+        @include bodyXSmall();
+        font-weight: bold;
+    }
 }
 
 .headings {
@@ -49,6 +57,10 @@
     justify-content: center;
     margin-left: 24px;
 
+    @include mobileOnly {
+        margin-left: 12px;
+    }
+
     .mainHeading {
         @include h4();
         margin-bottom: 8px;
@@ -56,6 +68,14 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
+        @include mobileOnly {
+            @include bodyXSmall();
+            font-weight: bold;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+            margin-bottom: 0;
+        }
+
         .betaTag {
             @include body();
             font-weight: bold;
@@ -64,6 +84,14 @@
             border-radius: 16px;
             text-transform: uppercase;
             margin-right: 12px;
+
+            @include mobileOnly {
+                @include bodyXSmall();
+                font-weight: bold;
+                padding: 3px 6px;
+                margin-left: 6px;
+                display: inline;
+            }
         }
     }
 

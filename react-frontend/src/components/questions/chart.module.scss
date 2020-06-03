@@ -3,6 +3,7 @@
 .container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     position: relative;
     margin-bottom: 48px;
 }
@@ -11,22 +12,21 @@
     width: 20%;
     padding: 0 12px;
     @include h4();
+
+    @include mobileOnly() {
+        @include bodyXSmall();
+        padding: 0 6px 0 0;
+    }
 }
 
 .svg {
-    width: 800px;
+    width: 80%;
     height: 150px;
 }
 
-.ticks {
-    width: 48px;
+.tick {
     @include bodyXSmall();
     font-weight: bold;
-    .tick {
-        position: absolute;
-        text-align: end;
-        width: 36px;
-    }
 }
 
 .line {

@@ -1,9 +1,12 @@
 import React from "react";
 import { ReactComponent as LogoUNDP } from "./undp-logo.svg";
+import useMediaQuery from "../../hooks/use-media-query";
 import styles from "./header.module.scss";
+
 const Header = () => {
     // TODO: dynamic date
     const dateFormat = "25 May 2020";
+    const { isMobile } = useMediaQuery();
     return (
         <header className={styles.headerContainer}>
             <div className={styles.header}>
@@ -13,8 +16,11 @@ const Header = () => {
                     </a>
                     <div className={styles.headings}>
                         <div className={styles.mainHeading}>
-                            <div className={styles.betaTag}>Beta</div>
-                            <span>Socio-Economic Recovery Data Platform</span>
+                            {!isMobile && <div className={styles.betaTag}>Beta</div>}
+                            <div>
+                                Socio-Economic Recovery Data Platform
+                                {isMobile && <div className={styles.betaTag}>Beta</div>}
+                            </div>
                         </div>
                         <div className={styles.subHeadings}>
                             <span className={styles.updateDate}>
