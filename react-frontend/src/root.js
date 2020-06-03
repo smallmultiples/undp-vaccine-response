@@ -247,7 +247,7 @@ function App() {
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
-    if (!pillars || !activePillar || !regionLookup || !activeQuestion) return null; // TODO loader
+    if (!pillars || !activePillar || !activeQuestion) return null; // TODO loader
 
     return (
         <div className={styles.root}>
