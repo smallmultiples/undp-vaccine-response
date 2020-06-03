@@ -5,10 +5,10 @@ $color-grey: #919399;
 $color-navy: #110848;
 $color-yellow: #e9ce2c;
 $color-dark-grey: #383838;
-$color-red-data: #F16821;
-$color-yellow-data: #F3D516;
-$color-lime-data: #CBE350;
-$color-green-data: #2EB872;
+$color-red-data: #f16821;
+$color-yellow-data: #f3d516;
+$color-lime-data: #cbe350;
+$color-green-data: #2eb872;
 
 $container-width: 1166px;
 $width-mobile: 700px;
@@ -20,8 +20,8 @@ $width-mobile: 700px;
     font-family: $font-proxima;
     font-style: normal;
     font-weight: bold;
-    font-size: 100px;
-    line-height: 100px;
+    font-size: 60px;
+    line-height: 60px;
 }
 @mixin h2($text-align: "") {
     @if $text-align != "" {
@@ -83,9 +83,8 @@ $width-mobile: 700px;
     }
     font-family: $font-proxima;
     font-style: normal;
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 14px;
 }
 
 @mixin button($bg-color: "", $font-color: "") {

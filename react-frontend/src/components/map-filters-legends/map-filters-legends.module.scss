@@ -142,7 +142,7 @@ $bottomPadding: 27px;
     border: 2px solid $color-blue-bg;
     height: 36px;
     border-radius: 18px;
-    width: 350px;
+    width: 380px;
     overflow: hidden;
     margin-left: 16px;
 
@@ -155,10 +155,7 @@ $bottomPadding: 27px;
         margin: 0;
         cursor: pointer;
         white-space: nowrap;
-        font-family: $font-proxima;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 14px;
+        @include buttonFont();
         line-height: 14px;
         opacity: 0.25;
         transition: opacity 0.2s;
@@ -226,10 +223,10 @@ $lc-w-hdi: $l-w / 4;
         background: none !important;
         border-color: rgba($color-blue-bg, 0.5);
     }
-    &[data-xHdi="true"] {
+    &[data-hdi-x="true"] {
         width: $lc-w-hdi;
     }
-    &[data-yHdi="true"] {
+    &[data-hdi-y="true"] {
         height: $lc-w-hdi;
     }
 }

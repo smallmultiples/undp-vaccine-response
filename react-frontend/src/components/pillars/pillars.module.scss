@@ -34,21 +34,48 @@
 // ----
 
 .pillarInfo {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
-
     .pillarInfoText {
-        flex-grow: 1;
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        padding: 24px 0;
+        margin-bottom: 24px;
+
+        &:before {
+            content: "";
+            display: block;
+            width: 100vw;
+            position: absolute;
+            left: 50%;
+            right: 50%;
+            height: 100%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            background: $color-blue-bg;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+        }
+
         .pillarHeading {
             @include h1();
+            min-width: 290px;
+            width: 290px;
+            margin-right: 24px;
         }
 
         .pillarDescription {
             @include body();
-            margin-bottom: 8px;
-            max-width: 800px;
+            flex-grow: 1;
+            margin-top: 2px;
+            margin-bottom: 0;
+
+            em {
+                display: block;
+                margin-bottom: 5px;
+                font-style: normal;
+                font-weight: bold;
+            }
         }
     }
 }

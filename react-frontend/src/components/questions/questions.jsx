@@ -77,7 +77,7 @@ const Question = props => {
                 tmp.push({
                     country: d["Country or Area"],
                     data: d[x.dataKey],
-                    hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator.dataKey],
+                    hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator?.dataKey],
                 });
             }
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");
@@ -86,6 +86,8 @@ const Question = props => {
                     indicator: x.label,
                     data: tmp,
                 };
+            } else {
+                return undefined;
             }
         })
         .filter(a => a !== undefined);
@@ -145,7 +147,7 @@ const Question = props => {
 const Legend = props => {
     return (
         <div className={styles.legendContainer}>
-            <div className={styles.legendTitle}>{props.hdiIndicator.dataKey}</div>
+            <div className={styles.legendTitle}>{props.hdiIndicator?.dataKey}</div>
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
                     <div className={styles.box} data-na={true} />
