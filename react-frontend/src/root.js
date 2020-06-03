@@ -216,7 +216,6 @@ function App() {
 
     React.useEffect(() => {
         if (!activePillar) return;
-        console.log("set question");
         setActiveQuestion(activePillar.questions[0]);
     }, [activePillar]);
 

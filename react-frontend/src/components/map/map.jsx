@@ -197,9 +197,6 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
             // Nulls based on enabled variates
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (row["Country or Area"].startsWith("United")) {
-                    console.log({ valX, valY });
-                }
                 if (nullValue(valX) || nullValue(valY)) return NULL_SHAPE_FILL;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
