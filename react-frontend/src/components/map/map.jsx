@@ -327,6 +327,7 @@ const Map = props => {
                     scales={scales}
                     currentIndicators={currentIndicators}
                     setCurrentIndicators={setCurrentIndicators}
+                    normalizedData={countryData}
                     {...props}
                 />
             )}

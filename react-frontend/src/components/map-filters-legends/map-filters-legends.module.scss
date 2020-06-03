@@ -144,6 +144,42 @@ $bottomPadding: 27px;
 
 // -----
 
+.categoryList {
+    list-style: none;
+    padding: 0;
+    margin-left: 24px;
+
+    .categoryItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .categoryIcon {
+            min-width: 9px;
+            min-height: 9px;
+            border-radius: 50%;
+            border: 2px solid $color-navy;
+            margin-right: 8px;
+
+            &[data-i="0"] {
+                border-color: $color-navy;
+            }
+
+            &[data-i="1"] {
+                border-color: $color-yellow;
+            }
+
+            &[data-i="2"] {
+                border-color: $color-red;
+            }
+        }
+
+        .categoryText {
+        }
+    }
+}
+
+// -----
+
 .radiusControls {
     padding-top: 16px;
     display: flex;

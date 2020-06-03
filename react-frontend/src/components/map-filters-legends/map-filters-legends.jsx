@@ -3,20 +3,19 @@ import styles from "./map-filters-legends.module.scss";
 import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../icons/icons";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
-import { flatten } from "lodash";
 import { animated, useSpring } from "react-spring";
 import useDimensions from "../../hooks/use-dimensions";
+import { uniq, isNil, flatten } from "lodash";
 
 const MapFiltersLegends = props => {
+    const { activeQuestion } = props;
     return (
         <div className={styles.mapFiltersLegends}>
             <QuestionInfo {...props} />
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            <div className={styles.radiusControls}>
-                <RadiusIndicatorSelection {...props} />
-                <RadiusLegend {...props} />
-            </div>
+            <RadiusControls {...props} />
+            <CategoricalLegend {...props} />
         </div>
     );
 };
@@ -148,6 +147,53 @@ const BivariateIndicatorSelection = props => {
                     />
                 </div>
             </div>
+        </div>
+    );
+};
+
+const categorySplit = val => val.split(";").map(d => d.trim());
+const CategoricalLegend = props => {
+    const { activeQuestion, normalizedData } = props;
+
+    const categoryIndicator = React.useMemo(
+        () => activeQuestion.indicators.find(d => d.categorical),
+        [activeQuestion]
+    );
+
+    // TODO: module.
+    const uniqueVals = React.useMemo(() => {
+        if (!categoryIndicator) return null;
+        return uniq(
+            flatten(
+                Object.values(normalizedData).map(d => {
+                    const val = d[categoryIndicator.dataKey];
+                    if (isNil(val)) return null;
+                    return categorySplit(val);
+                })
+            ).filter(d => d && d.length)
+        );
+    }, [normalizedData, categoryIndicator]);
+
+    if (!categoryIndicator) return null;
+
+    const items = uniqueVals.map((val, index) => {
+        return (
+            <li className={styles.categoryItem} key={val}>
+                <div className={styles.categoryIcon} data-i={index} />
+                <span className={styles.categoryText}>{val}</span>
+            </li>
+        );
+    });
+
+    return <ul className={styles.categoryList}>{items}</ul>;
+};
+
+const RadiusControls = props => {
+    if (props.activeQuestion.categorical) return null;
+    return (
+        <div className={styles.radiusControls}>
+            <RadiusIndicatorSelection {...props} />
+            <RadiusLegend {...props} />
         </div>
     );
 };
