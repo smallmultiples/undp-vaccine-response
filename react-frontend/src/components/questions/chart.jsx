@@ -70,7 +70,7 @@ const Chart = props => {
         <div className={styles.container}>
             <div className={styles.title}>{indicator}</div>
             {ticks}
-            <svg className={styles.svg} ref={ref}>
+            <svg className={styles.svg} ref={ref} onMouseLeave={() => setHoveredData(null)}>
                 {chartContent}
             </svg>
         </div>
