@@ -1,7 +1,6 @@
 @import "../../variables.scss";
 
 .headerContainer {
-    width: 100vw;
     height: 100px;
     background-color: #fff;
 }
@@ -12,7 +11,8 @@
     align-items: center;
     max-width: $container-width;
     height: 100%;
-    margin-left: calc((100vw - #{$container-width}) / 2);
+    padding: 0 24px;
+    margin: 0 auto;
 }
 
 .title {
