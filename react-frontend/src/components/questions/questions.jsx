@@ -13,6 +13,8 @@ const Question = props => {
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
     const { isMobile } = useMediaQuery();
 
+    if (question.comingSoon) return null;
+
     const headers = ["Country", "Region"];
 
     const rowsForOverviewTable = question.indicators.map(x => {
@@ -117,7 +119,7 @@ const Question = props => {
                 </div>
                 <div className={styles.overviewTable}>
                     <Table
-                        headings={["Indicators", "Coverage", "Currency", "Data source"]}
+                        headings={["Indicators", "Availability", "Currency", "Data source"]}
                         rows={rowsForOverviewTable}
                         fixedColumns={isMobile ? 0 : 2}
                         fixedColumnsWidth={30}
