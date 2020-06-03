@@ -95,6 +95,7 @@ const parseMetaSheet = raw => {
 
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
+                sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
                 tooltipKey: row["Tooltip Key"],
                 flipped: row["Invert Scale"],
@@ -150,8 +151,13 @@ const usePillarData = () => {
             ).then(d => parseMetaSheet(d.data));
             setPillars(pillars);
 
+            // TODO: remove concat when questions fixed
             const sheetsToFetch = uniq(
                 flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
+            ).concat(
+                flatten(
+                    pillars.map(p => flatten(p.questions.map(q => q.indicators.map(i => i.sheet))))
+                ).filter(Boolean)
             );
 
             let newSets = {};
