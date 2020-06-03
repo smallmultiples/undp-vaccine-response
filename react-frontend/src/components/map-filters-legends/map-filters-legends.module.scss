@@ -223,10 +223,10 @@ $lc-w-hdi: $l-w / 4;
         background: none !important;
         border-color: rgba($color-blue-bg, 0.5);
     }
-    &[data-xHdi="true"] {
+    &[data-hdi-x="true"] {
         width: $lc-w-hdi;
     }
-    &[data-yHdi="true"] {
+    &[data-hdi-y="true"] {
         height: $lc-w-hdi;
     }
 }

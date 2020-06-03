@@ -318,8 +318,8 @@ const BivariateLegendGrid = props => {
                     className={styles.legendColourCell}
                     style={{ background: hex }}
                     data-disabled={disabled}
-                    data-xHdi={xHdi}
-                    data-yHdi={yHdi}
+                    data-hdi-x={xHdi}
+                    data-hdi-y={yHdi}
                 />
             );
         });
