@@ -91,14 +91,14 @@ const Data = props => {
             const width = scales.x.bandwidth();
             const top = d.data >= 0 ? scales.y(d.data) : scales.y(0);
             const height = Math.abs(scales.y(0) - scales.y(d.data));
-            const isHovered = hoveredData && hoveredData.country.country === d.country;
+            const isHovered = hoveredData && hoveredData.item.country === d.country;
             return (
                 <g key={i}>
                     <rect
                         className={styles.bar}
                         x={isHovered ? left - 1 : left}
                         width={isHovered ? width + 2 : width}
-                        y={isHovered ? top - 5 : top}
+                        y={isHovered && d.data >= 0 ? top - 5 : top}
                         height={isHovered ? height + 5 : height}
                         data-low={d.hdi < 0.55}
                         data-medium={d.hdi >= 0.55 && d.hdi < 0.7}
@@ -112,7 +112,9 @@ const Data = props => {
                         width={width}
                         y={0}
                         height={150}
-                        onMouseEnter={e => setHoveredData({ country: d, left, top })}
+                        onMouseEnter={e =>
+                            setHoveredData({ item: d, left, top, isWithNegativeData: minVal < 0 })
+                        }
                     />
                 </g>
             );
@@ -172,16 +174,21 @@ const CountryData = props => {
     const { hoveredData, frame } = props;
     const framePadding = 12;
     const boxWidth = 150;
-    let x = hoveredData.left;
+    const boxHeight = 48;
+    let x = hoveredData.left + framePadding;
     x = x + boxWidth > frame.width - framePadding ? frame.width - boxWidth - framePadding : x;
     x = x < frame.left + framePadding ? frame.left + framePadding : x;
+
+    let y = hoveredData.top - boxHeight - framePadding;
+    y = y < frame.top + framePadding ? frame.top + framePadding : y;
+    y = hoveredData.isWithNegativeData && hoveredData.item.data > 0 ? frame.bottom - boxHeight - framePadding : y;
     return (
         <>
-            <rect x={x} y={40} className={styles.tooltip} />
-            <foreignObject x={x} y={40} width={boxWidth} height={48}>
+            <rect x={x} y={y} className={styles.tooltip} />
+            <foreignObject x={x} y={y} width={boxWidth} height={boxHeight}>
                 <div className={styles.tooltipTextWrapper}>
-                    <div className={styles.tooltipText}>{hoveredData.country.country}</div>
-                    <div className={styles.tooltipData}>{formatLabel(hoveredData.country.data)}</div>
+                    <div className={styles.tooltipText}>{hoveredData.item.country}</div>
+                    <div className={styles.tooltipData}>{formatLabel(hoveredData.item.data)}</div>
                 </div>
             </foreignObject>
         </>
