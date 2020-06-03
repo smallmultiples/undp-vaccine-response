@@ -13,7 +13,7 @@ $bottomPadding: 27px;
 
 .questionInfo {
     width: 290px;
-    margin-right: 48px;
+    margin-right: 54px;
 
     .questionInfoHeading {
         @include h3();
@@ -96,7 +96,7 @@ $bottomPadding: 27px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 240px;
+            width: 220px;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -150,7 +150,7 @@ $bottomPadding: 27px;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 12px;
+    margin-left: 24px;
 }
 
 .radiusLegend {
@@ -233,7 +233,7 @@ $bottomPadding: 27px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 24px;
+    margin-right: 12px;
     padding-top: 16px;
 }
 
@@ -286,12 +286,13 @@ $lc-w-hdi: $l-w / 4;
 
     &[data-y="true"] {
         flex-direction: column;
-        margin-right: 8px;
+        align-items: center;
         height: $l-w;
     }
     &[data-x="true"] {
         width: $l-w;
-        margin-top: 8px;
+        margin-top: 4px;
+        align-items: center;
     }
 }
 
@@ -311,6 +312,10 @@ $lc-w-hdi: $l-w / 4;
         }
     }
     &[data-x="true"] {
+        align-items: center;
+        svg {
+            margin-bottom: 2px;
+        }
         svg:first-child {
             margin-right: 8px;
         }
@@ -322,6 +327,7 @@ $lc-w-hdi: $l-w / 4;
 
 .legendYLabelContainer {
     position: relative;
+    width: 42px;
 }
 
 .bivariateAxisLabelX,
@@ -329,6 +335,7 @@ $lc-w-hdi: $l-w / 4;
     @include buttonFont(center);
     font-size: 12px;
     line-height: 10px;
+    min-width: $l-w;
     max-width: $l-w;
 }
 
@@ -340,5 +347,5 @@ $lc-w-hdi: $l-w / 4;
     top: 50%;
     left: 0;
     transform-origin: center center;
-    transform: translateX(-100%) rotate(-90deg);
+    transform: translateY(-50%) rotate(-90deg) translateY(-100%) translateY(-52px);
 }
