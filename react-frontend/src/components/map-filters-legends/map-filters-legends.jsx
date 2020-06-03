@@ -330,7 +330,6 @@ const RadiusIndicatorSelection = props => {
 
 const BivariateLegend = props => {
     const { currentIndicators } = props;
-    const { categories } = props.domains;
 
     const x0 = "Less";
     const x1 = "More";

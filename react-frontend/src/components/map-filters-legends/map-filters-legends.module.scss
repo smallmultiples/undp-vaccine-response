@@ -238,10 +238,23 @@ $covidToggleWidth: 220px;
     }
 
     .legendLabels {
+        width: 100%;
         display: flex;
         justify-content: space-between;
         font-size: 12px;
         font-weight: bold;
+        position: relative;
+        height: 15px;
+        span:first-child {
+            position: absolute;
+            left: 0;
+            transform: translateX(2px);
+        }
+        span:last-child {
+            position: absolute;
+            right: 0;
+            transform: translate(-8px);
+        }
     }
 }
 // -----
@@ -266,7 +279,7 @@ $covidToggleWidth: 220px;
     position: relative;
     border: 2px solid $color-blue-bg;
     height: 36px;
-    border-radius: 18px;
+    border-radius: 32px;
     width: $covidToggleWidth;
     overflow: hidden;
     margin-left: 16px;
