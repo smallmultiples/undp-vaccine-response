@@ -103,6 +103,7 @@ const parseMetaSheet = raw => {
 
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
+                tableLabel: row["Indicator Label Table"],
                 sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
                 tooltipExtra: row["Tooltip Key"] && {
@@ -271,6 +272,7 @@ function App() {
                 />
                 <Questions
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     datasets={datasets}
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
