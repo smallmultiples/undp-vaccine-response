@@ -106,6 +106,10 @@ $covidToggleWidth: 220px;
                 left: 12px;
                 top: 50%;
             }
+
+            @media (max-width: $width-mobile) {
+                width: 300px;
+            }
         }
     }
 }
@@ -399,11 +403,21 @@ $lc-w-hdi: $l-w / 4;
     width: 42px;
 }
 
+.legendYLabelContainer,
+.bivariateLegendBottom {
+    transition: opacity 0.2s;
+    &[data-visible="false"] {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
 .bivariateAxisLabelX,
 .bivariateAxisLabelY {
     @include buttonFont(center);
     font-size: 12px;
     line-height: 12px;
+    font-weight: $weight-medium;
     min-width: $l-w;
     max-width: $l-w;
 }

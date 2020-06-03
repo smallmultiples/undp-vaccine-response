@@ -252,8 +252,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.radius.format(domain[0])}</span>
-                <span>{currentIndicators.radius.format(domain[1])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[0])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[1])}</span>
             </div>
         </div>
     );
@@ -263,13 +263,14 @@ const Toggle = props => {
     const { options, onChange, value } = props;
 
     const totalLength = options.reduce((a, b) => a + b.label.length, 0);
+    const widths = [27, 30, 43];
 
-    const optionsButtons = options.map(option => {
+    const optionsButtons = options.map((option, i) => {
         return (
             <button
                 key={option.label}
                 className={styles.toggleOption}
-                style={{ width: (option.label.length / totalLength) * 100 + "%" }}
+                style={{ width: widths[i] + "%" }}
                 onClick={() => onChange && onChange(option)}
                 data-active={option === value}
             >
@@ -277,15 +278,13 @@ const Toggle = props => {
             </button>
         );
     });
-    // TODO: someone needs to fix this gross code sorry
-    const optWidth = (options[options.indexOf(value)].label.length / totalLength) * 100;
-    let slideLeft = options.reduce((a, b, i) => {
+    const slideLeft = widths.reduce((a, b, i) => {
         if (i < options.indexOf(value)) {
-            return a + b.label.length;
+            return a + b;
         }
         return a;
     }, 0);
-    slideLeft = (slideLeft / totalLength) * 100;
+    const optWidth = widths[options.indexOf(value)];
 
     const bgSlide = (
         <div
@@ -333,8 +332,8 @@ const BivariateLegend = props => {
     const { currentIndicators } = props;
     const { categories } = props.domains;
 
-    const formatX = currentIndicators.bivariateX.format;
-    const formatY = currentIndicators.bivariateY.format;
+    const formatX = currentIndicators.bivariateX.formatLegend;
+    const formatY = currentIndicators.bivariateY.formatLegend;
 
     const x0 = formatX(categories.x[0]);
     const x1 = formatX(categories.x[categories.x.length - 1]);
@@ -344,7 +343,10 @@ const BivariateLegend = props => {
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>
-                <div className={styles.legendYLabelContainer}>
+                <div
+                    className={styles.legendYLabelContainer}
+                    data-visible={currentIndicators.bivariateYEnabled}
+                >
                     <div className={styles.bivariateAxisLabelY}>
                         {currentIndicators.bivariateY.label}
                     </div>
@@ -359,10 +361,12 @@ const BivariateLegend = props => {
                         </div>
                     </div>
                 </div>
-
                 <BivariateLegendGrid {...props} />
             </div>
-            <div className={styles.bivariateLegendBottom}>
+            <div
+                className={styles.bivariateLegendBottom}
+                data-visible={currentIndicators.bivariateXEnabled}
+            >
                 <div className={styles.legendColourSpan} data-x={true}>
                     <div className={styles.legendColourSpanValue} data-x>
                         <IconArrowLeft />

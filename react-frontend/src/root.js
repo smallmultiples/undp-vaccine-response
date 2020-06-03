@@ -20,6 +20,8 @@ const META_SHEET_ID =
 const trackingId = "UA-25119617-15";
 ReactGA.initialize(trackingId);
 
+const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
+
 const parseMetaSheet = raw => {
     const out = {};
     let currentPillar = null;
@@ -95,6 +97,10 @@ const parseMetaSheet = raw => {
                 out[currentPillar].questions[currentQuestion].categorical = true;
             }
 
+            const decimals = numOrUndef(row["Decimal Places"]);
+            const legendDpRaw = numOrUndef(row["Legend Decimals"]);
+            const legendDecimals = isNaN(legendDpRaw) ? decimals : legendDpRaw;
+
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 sheet: row["Sheet"], // TODO: temporary
@@ -103,8 +109,12 @@ const parseMetaSheet = raw => {
                 flipped: row["Invert Scale"],
                 categorical: categorical,
                 format: formats[row["Data Format"]]
-                    ? formats[row["Data Format"]](row["Decimal Places"])
-                    : formats.decimal(row["Decimal Places"]),
+                    ? formats[row["Data Format"]](decimals)
+                    : formats.decimal(decimals),
+                formatLegend: formats[row["Data Format"]]
+                    ? formats[row["Data Format"]](legendDecimals)
+                    : formats.decimal(legendDecimals),
+
                 hdi: ind === "Human Development Index",
                 meta,
             };
@@ -258,7 +268,6 @@ function App() {
                     pillars={pillars}
                     activeQuestion={activeQuestion}
                 />
-                <DataFilters />
                 <Questions
                     activePillar={activePillar}
                     datasets={datasets}
