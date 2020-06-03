@@ -4,12 +4,14 @@ import Table from "./table";
 import { Chevron } from "../icons/icons";
 import Badge from "./badge";
 import Chart from "./chart";
+import useMediaQuery from "../../hooks/use-media-query";
 
 const COUNTRIES_TOTAL = 249;
 
 const Question = props => {
     const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
+    const isMobile = useMediaQuery();
 
     const headers = ["Country", "Region"];
 
@@ -19,7 +21,7 @@ const Question = props => {
 
         const cc = (
             <div className={styles.countryCount}>
-                <Badge percentage={(countryCount * 100) / COUNTRIES_TOTAL} />
+                {!isMobile && <Badge percentage={(countryCount * 100) / COUNTRIES_TOTAL} />}
                 <div
                     className={styles.label}
                 >{`${countryCount} / ${COUNTRIES_TOTAL} countries and areas`}</div>
@@ -98,7 +100,7 @@ const Question = props => {
                 <div className={styles.questionText}>
                     <div className={styles.label}>{question.label}</div>
                     <button className={styles.downloadButton}>Download CSV</button>
-                    <button
+                    {!isMobile && <button
                         className={styles.hideButton}
                         onClick={() => setIsPreviewShown(!isPreviewShown)}
                     >
@@ -107,17 +109,17 @@ const Question = props => {
                             className={styles.chevron}
                             data-direction={isPreviewShown ? "up" : "down"}
                         />
-                    </button>
+                    </button>}
                 </div>
                 <div className={styles.overviewTable}>
                     <Table
                         headings={["Indicators", "Coverage", "Currency", "Data source"]}
                         rows={rowsForOverviewTable}
-                        fixedColumns={2}
+                        fixedColumns={isMobile ? 0 : 2}
                         fixedColumnsWidth={30}
                     />
                 </div>
-                <div className={styles.countryTable} data-visible={isPreviewShown}>
+                {!!isMobile && <div className={styles.countryTable} data-visible={isPreviewShown}>
                     <Table
                         headings={headersForCountryTable}
                         rows={rowsForCountryTable || []}
@@ -131,7 +133,7 @@ const Question = props => {
                             </div>
                         }
                     />
-                </div>
+                </div>}
             </div>
             <div className={styles.chartsContainer}>
                 {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}

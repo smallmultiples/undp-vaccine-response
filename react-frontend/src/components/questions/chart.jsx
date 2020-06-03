@@ -3,11 +3,12 @@ import { scaleLinear, scaleBand } from "d3-scale";
 import { range, max } from "d3-array";
 import styles from "./chart.module.scss";
 import useDimensions from "../../hooks/use-dimensions";
+import useMediaQuery from "../../hooks/use-media-query";
 
 const padding = {
-    top: 0,
-    bottom: 0,
-    left: 0,
+    top: 10,
+    bottom: 10,
+    left: 30,
     right: 0,
 };
 
@@ -61,7 +62,6 @@ const Chart = props => {
         scales,
     };
 
-    const ticks = scales && data.length !== 0 && <Ticks {...chartProps} />;
     const chartContent = scales && data.length !== 0 && (
         <Data {...chartProps} hoveredData={hoveredData} setHoveredData={setHoveredData} />
     );
@@ -69,7 +69,6 @@ const Chart = props => {
     return (
         <div className={styles.container}>
             <div className={styles.title}>{indicator}</div>
-            {ticks}
             <svg className={styles.svg} ref={ref} onMouseLeave={() => setHoveredData(null)}>
                 {chartContent}
             </svg>
@@ -83,6 +82,7 @@ const Data = props => {
     const minVal = Math.min(...data);
     const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
     const midVal = absMaxVal / 2;
+    const { isMobile } = useMediaQuery();
 
     const rects = rawData
         .sort((j, k) => j.data - k.data)
@@ -113,7 +113,7 @@ const Data = props => {
                         y={0}
                         height={150}
                         onMouseEnter={e =>
-                            setHoveredData({ item: d, left, top, isWithNegativeData: minVal < 0 })
+                            !isMobile && setHoveredData({ item: d, left, top, isWithNegativeData: minVal < 0 })
                         }
                     />
                 </g>
@@ -124,34 +124,46 @@ const Data = props => {
             <g>
                 <rect
                     className={styles.thinLine}
-                    x={0}
+                    x={padding.left}
                     width={scales.frame.width}
                     y={scales.y(midVal)}
                     height={1}
                 />
+                <text className={styles.tick} x={0} y={scales.y(midVal) + 5}>
+                    {formatLabel(midVal)}
+                </text>
                 <rect
                     className={styles.thinLine}
-                    x={0}
+                    x={padding.left}
                     width={scales.frame.width}
                     y={scales.y(absMaxVal)}
                     height={1}
                 />
+                <text className={styles.tick} x={0} y={scales.y(absMaxVal) + 5}>
+                    {formatLabel(absMaxVal)}
+                </text>
                 {!isOnlyPositive && (
                     <>
                         <rect
                             className={styles.thinLine}
-                            x={0}
+                            x={padding.left}
                             width={scales.frame.width}
                             y={scales.y(-midVal)}
                             height={1}
                         />
+                        <text className={styles.tick} x={0} y={scales.y(-midVal) + 5}>
+                            {formatLabel(-midVal)}
+                        </text>
                         <rect
                             className={styles.thinLine}
-                            x={0}
+                            x={padding.left}
                             width={scales.frame.width}
                             y={scales.y(-absMaxVal)}
                             height={1}
                         />
+                        <text className={styles.tick} x={0} y={scales.y(-absMaxVal) + 5}>
+                            {formatLabel(-absMaxVal)}
+                        </text>
                     </>
                 )}
             </g>
@@ -159,13 +171,16 @@ const Data = props => {
             <g>
                 <rect
                     className={styles.line}
-                    x={0}
+                    x={padding.left}
                     width={scales.frame.width}
                     y={scales.y(0) - 2}
                     height={2}
                 />
+                <text className={styles.tick} x={0} y={scales.y(0) + 5}>
+                    0
+                </text>
             </g>
-            {hoveredData && <CountryData hoveredData={hoveredData} frame={scales.frame} />}
+            {!isMobile && hoveredData && <CountryData hoveredData={hoveredData} frame={scales.frame} />}
         </g>
     );
 };
@@ -181,7 +196,10 @@ const CountryData = props => {
 
     let y = hoveredData.top - boxHeight - framePadding;
     y = y < frame.top + framePadding ? frame.top + framePadding : y;
-    y = hoveredData.isWithNegativeData && hoveredData.item.data > 0 ? frame.bottom - boxHeight - framePadding : y;
+    y =
+        hoveredData.isWithNegativeData && hoveredData.item.data > 0
+            ? frame.bottom - boxHeight - framePadding
+            : y;
     return (
         <>
             <rect x={x} y={y} className={styles.tooltip} />
@@ -192,62 +210,6 @@ const CountryData = props => {
                 </div>
             </foreignObject>
         </>
-    );
-};
-
-const Ticks = props => {
-    const { scales, data, isOnlyPositive } = props;
-    const maxVal = Math.max(...data);
-    const minVal = Math.min(...data);
-    const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
-    const midVal = absMaxVal / 2;
-    return (
-        <div className={styles.ticks}>
-            <div
-                className={styles.tick}
-                style={{
-                    top: scales.y(absMaxVal) - 8,
-                }}
-            >
-                {formatLabel(absMaxVal)}
-            </div>
-            <div
-                className={styles.tick}
-                style={{
-                    top: scales.y(midVal) - 8,
-                }}
-            >
-                {formatLabel(midVal)}
-            </div>
-            <div
-                className={styles.tick}
-                style={{
-                    top: scales.y(0) - 8,
-                }}
-            >
-                0
-            </div>
-            {!isOnlyPositive && (
-                <>
-                    <div
-                        className={styles.tick}
-                        style={{
-                            top: scales.y(-midVal) - 8,
-                        }}
-                    >
-                        {formatLabel(-midVal)}
-                    </div>
-                    <div
-                        className={styles.tick}
-                        style={{
-                            top: scales.y(-absMaxVal) - 8,
-                        }}
-                    >
-                        {formatLabel(-absMaxVal)}
-                    </div>
-                </>
-            )}
-        </div>
     );
 };
 

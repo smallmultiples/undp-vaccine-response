@@ -8,6 +8,12 @@
         "qText overview overview overview"
         "country country country country";
     margin: 36px auto;
+
+    @include mobileOnly() {
+        display: flex;
+        flex-direction: column;
+        margin: 12px auto;
+    }
 }
 
 .questionText {
@@ -49,6 +55,10 @@
     padding-left: 24px;
     margin-bottom: 24px;
 
+    @include mobileOnly() {
+        padding: 0;
+    }
+
     .countryCount {
         display: flex;
         justify-content: space-between;
@@ -89,16 +99,25 @@
 }
 
 .legendContainer {
-    height: 48px;
     width: 100%;
+    margin-bottom: 24px;
     display: flex;
     justify-content: flex-end;
     align-items: baseline;
+
+    @include mobileOnly() {
+        flex-direction: column;
+        align-items: flex-end;
+    }
 
     .legendTitle {
         @include body();
         font-weight: bold;
         margin-right: 24px;
+        @include mobileOnly() {
+            margin-bottom: 12px;
+            margin-right: 0;
+        }
     }
 
     .legend {
