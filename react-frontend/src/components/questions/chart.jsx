@@ -113,7 +113,8 @@ const Data = props => {
                         y={0}
                         height={150}
                         onMouseEnter={e =>
-                            !isMobile && setHoveredData({ item: d, left, top, isWithNegativeData: minVal < 0 })
+                            !isMobile &&
+                            setHoveredData({ item: d, left, top, isWithNegativeData: minVal < 0 })
                         }
                     />
                 </g>
@@ -180,7 +181,9 @@ const Data = props => {
                     0
                 </text>
             </g>
-            {!isMobile && hoveredData && <CountryData hoveredData={hoveredData} frame={scales.frame} />}
+            {!isMobile && hoveredData && (
+                <CountryData hoveredData={hoveredData} frame={scales.frame} />
+            )}
         </g>
     );
 };
@@ -225,7 +228,7 @@ const formatLabel = number => {
     } else if (abs < 1000) {
         formattedNumber = Math.round(abs);
     } else if (abs >= 1000) {
-        formattedNumber = abs.toString().slice(0, 3) + " k";
+        formattedNumber = (abs / 1000).toFixed(1) + "k";
     }
     return sign + formattedNumber.toString();
 };
