@@ -53,7 +53,11 @@ export const formatUSD = decimals => {
 };
 
 export const formatCategory = () => raw => {
-    return "-";
+    if (isNil(raw) || raw === "") return "-";
+
+    const split = raw.split(";").map(d => d.trim());
+    if (split.length === 1) return split;
+    return split.slice(0, -1).join(", ") + " and " + last(split);
 };
 
 export const formats = {

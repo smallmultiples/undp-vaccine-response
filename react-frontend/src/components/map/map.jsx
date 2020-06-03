@@ -178,6 +178,8 @@ const getColorMatrices = (activePillar, currentIndicators) => {
     };
 };
 
+const nullValue = val => isNil(val) || val === "";
+
 const useScales = (domains, currentIndicators, activePillar) => {
     return React.useMemo(() => {
         const circleScale = scaleSymlog().range([4, 16]).domain(domains.extents.radius);
@@ -195,13 +197,16 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
             // Nulls based on enabled variates
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (isNil(valX) || isNil(valY)) return NULL_SHAPE_FILL;
+                if (row["Country or Area"].startsWith("United")) {
+                    console.log({ valX, valY });
+                }
+                if (nullValue(valX) || nullValue(valY)) return NULL_SHAPE_FILL;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
-                if (isNil(valX)) return NULL_SHAPE_FILL;
+                if (nullValue(valX)) return NULL_SHAPE_FILL;
             }
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (isNil(valY)) return NULL_SHAPE_FILL;
+                if (nullValue(valY)) return NULL_SHAPE_FILL;
             }
 
             const maxIndexX = colorMatrix[0].length - 1;
@@ -238,13 +243,13 @@ const useScales = (domains, currentIndicators, activePillar) => {
             const valX = getRowIndicatorValue(row, currentIndicators.bivariateX);
             const valY = getRowIndicatorValue(row, currentIndicators.bivariateY);
             if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (isNil(valX) || isNil(valY)) return NULL_SHAPE_STROKE;
+                if (nullValue(valX) || nullValue(valY)) return NULL_SHAPE_STROKE;
             }
             if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
-                if (isNil(valX)) return NULL_SHAPE_STROKE;
+                if (nullValue(valX)) return NULL_SHAPE_STROKE;
             }
             if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
-                if (isNil(valY)) return NULL_SHAPE_STROKE;
+                if (nullValue(valY)) return NULL_SHAPE_STROKE;
             }
             return GOOD_SHAPE_STROKE;
         };

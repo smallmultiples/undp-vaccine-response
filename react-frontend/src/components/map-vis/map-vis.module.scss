@@ -52,11 +52,18 @@
                     background: $color-blue-bg;
                 }
                 &[data-radius="true"] {
-                    width: 9px;
-                    height: 9px;
+                    min-width: 9px;
+                    min-height: 9px;
                     border-radius: 50%;
                     background: white;
                     border: 1.5px solid $color-navy;
+                }
+                &[data-category="true"] {
+                    min-width: 9px;
+                    min-height: 9px;
+                    border-radius: 50%;
+                    background: none;
+                    border: 1.5px solid $color-red;
                 }
             }
 
@@ -128,7 +135,7 @@
         }
 
         &[data-i="2"] {
-            stroke: red;
+            stroke: $color-red;
         }
 
         &[data-active="true"] {
@@ -141,7 +148,7 @@
             }
 
             &[data-i="2"] {
-                fill: red;
+                fill: $color-red;
             }
         }
     }
