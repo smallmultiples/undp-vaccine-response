@@ -5,7 +5,7 @@ import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import { animated, useSpring } from "react-spring";
 import useDimensions from "../../hooks/use-dimensions";
-import { uniq, isNil, flatten } from "lodash";
+import { uniq, isNil, flatten, last } from "lodash";
 
 const MapFiltersLegends = props => {
     const { activeQuestion } = props;
@@ -332,13 +332,10 @@ const BivariateLegend = props => {
     const { currentIndicators } = props;
     const { categories } = props.domains;
 
-    const formatX = currentIndicators.bivariateX.formatLegend;
-    const formatY = currentIndicators.bivariateY.formatLegend;
-
-    const x0 = formatX(categories.x[0]);
-    const x1 = formatX(categories.x[categories.x.length - 1]);
-    const y0 = formatY(categories.y[0]);
-    const y1 = formatY(categories.y[categories.y.length - 1]);
+    const x0 = "Less";
+    const x1 = "More";
+    const y0 = "Less";
+    const y1 = "More";
 
     return (
         <div className={styles.bivariateLegend}>
@@ -386,9 +383,10 @@ const BivariateLegend = props => {
 };
 
 const BivariateLegendGrid = props => {
-    const { scales, currentIndicators } = props;
+    const { domains, scales, currentIndicators } = props;
     const { bivariateXEnabled, bivariateYEnabled } = currentIndicators;
     const bivariateColourMatrixHex = scales.colorMatrix;
+    const [hovered, setHovered] = React.useState(null);
 
     const xDisabled = !bivariateXEnabled;
     const yDisabled = !bivariateYEnabled;
@@ -414,6 +412,70 @@ const BivariateLegendGrid = props => {
                 if (rowIndex < bivariateColourMatrixHex.length - 1) disabled = true;
             }
 
+            const showTooltip = hovered && hovered[0] === colIndex && hovered[1] === rowIndex;
+
+            let tooltip = null;
+
+            if (showTooltip) {
+                const xIndexMax = domains.categories.x.length - 1;
+                const yIndexMax = domains.categories.y.length - 1;
+
+                const xMin = currentIndicators.bivariateX.flipped
+                    ? domains.categories.x[xIndexMax - colIndex]
+                    : domains.categories.x[colIndex];
+                const xMax = currentIndicators.bivariateX.flipped
+                    ? domains.categories.x[xIndexMax - (colIndex + 1)]
+                    : domains.categories.x[colIndex + 1];
+                const yMin = currentIndicators.bivariateY.flipped
+                    ? domains.categories.y[rowIndex + 1]
+                    : domains.categories.y[yIndexMax - (rowIndex + 1)];
+                const yMax = currentIndicators.bivariateY.flipped
+                    ? domains.categories.y[rowIndex]
+                    : domains.categories.y[yIndexMax - rowIndex];
+                tooltip = (
+                    <div className={styles.legendColourTooltip}>
+                        {bivariateYEnabled && (
+                            <div className={styles.legendColourTooltipEntry}>
+                                <div
+                                    className={styles.legendColourTooltipIcon}
+                                    style={{
+                                        background: bivariateColourMatrixHex[rowIndex][0],
+                                    }}
+                                />
+                                <div className={styles.legendColourTooltipText}>
+                                    <div className={styles.legendColourTooltipLabel}>
+                                        {currentIndicators.bivariateY.label}
+                                    </div>
+                                    <div className={styles.legendColourTooltipValue}>
+                                        Between {currentIndicators.bivariateY.formatLegend(yMin)}{" "}
+                                        and {currentIndicators.bivariateY.formatLegend(yMax)}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {bivariateXEnabled && (
+                            <div className={styles.legendColourTooltipEntry}>
+                                <div
+                                    className={styles.legendColourTooltipIcon}
+                                    style={{
+                                        background: last(bivariateColourMatrixHex)[colIndex],
+                                    }}
+                                />
+                                <div className={styles.legendColourTooltipText}>
+                                    <div className={styles.legendColourTooltipLabel}>
+                                        {currentIndicators.bivariateX.label}
+                                    </div>
+                                    <div className={styles.legendColourTooltipValue}>
+                                        Between {currentIndicators.bivariateX.formatLegend(xMin)}{" "}
+                                        and {currentIndicators.bivariateX.formatLegend(xMax)}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
             return (
                 <div
                     key={colIndex}
@@ -422,7 +484,12 @@ const BivariateLegendGrid = props => {
                     data-disabled={disabled}
                     data-hdi-x={xHdi}
                     data-hdi-y={yHdi}
-                />
+                    data-hovered={showTooltip}
+                    onMouseEnter={() => !disabled && setHovered([colIndex, rowIndex])}
+                    onMouseLeave={() => setHovered(null)}
+                >
+                    {tooltip}
+                </div>
             );
         });
         return (
