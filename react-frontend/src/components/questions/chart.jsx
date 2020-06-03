@@ -1,6 +1,6 @@
 import React from "react";
 import { scaleLinear, scaleBand } from "d3-scale";
-import { range, max, extent } from "d3-array";
+import { range, max } from "d3-array";
 import styles from "./chart.module.scss";
 import useDimensions from "../../hooks/use-dimensions";
 
@@ -91,7 +91,7 @@ const Data = props => {
             const width = scales.x.bandwidth();
             const top = d.data >= 0 ? scales.y(d.data) : scales.y(0);
             const height = Math.abs(scales.y(0) - scales.y(d.data));
-            const isHovered = hoveredData && hoveredData.country === d.country;
+            const isHovered = hoveredData && hoveredData.country.country === d.country;
             return (
                 <g key={i}>
                     <rect
@@ -163,18 +163,28 @@ const Data = props => {
                     height={2}
                 />
             </g>
-            {hoveredData && (
-                        <>
-                            <rect x={hoveredData.left - 40} y={40} className={styles.tooltip} />
-                            <foreignObject x={hoveredData.left - 40} y={40} width={150} height={48}>
-                                <div className={styles.tooltipTextWrapper}>
-                                    <div className={styles.tooltipText}>{hoveredData.country.country}</div>
-                                    <div className={styles.tooltipData}>{hoveredData.country.data}</div>
-                                </div>
-                            </foreignObject>
-                        </>
-                    )}
+            {hoveredData && <CountryData hoveredData={hoveredData} frame={scales.frame} />}
         </g>
+    );
+};
+
+const CountryData = props => {
+    const { hoveredData, frame } = props;
+    const framePadding = 12;
+    const boxWidth = 150;
+    let x = hoveredData.left;
+    x = x + boxWidth > frame.width - framePadding ? frame.width - boxWidth - framePadding : x;
+    x = x < frame.left + framePadding ? frame.left + framePadding : x;
+    return (
+        <>
+            <rect x={x} y={40} className={styles.tooltip} />
+            <foreignObject x={x} y={40} width={boxWidth} height={48}>
+                <div className={styles.tooltipTextWrapper}>
+                    <div className={styles.tooltipText}>{hoveredData.country.country}</div>
+                    <div className={styles.tooltipData}>{formatLabel(hoveredData.country.data)}</div>
+                </div>
+            </foreignObject>
+        </>
     );
 };
 

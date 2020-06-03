@@ -9,7 +9,6 @@ const COUNTRIES_TOTAL = 249;
 
 const Question = props => {
     const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
-    console.log(hdiIndicator);
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
 
     const headers = ["Country", "Region"];
@@ -87,6 +86,8 @@ const Question = props => {
                     indicator: x.label,
                     data: tmp,
                 };
+            } else {
+                return undefined;
             }
         })
         .filter(a => a !== undefined);
