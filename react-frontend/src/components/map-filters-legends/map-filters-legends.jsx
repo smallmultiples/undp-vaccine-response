@@ -252,8 +252,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.radius.format(domain[0])}</span>
-                <span>{currentIndicators.radius.format(domain[1])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[0])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[1])}</span>
             </div>
         </div>
     );
@@ -332,8 +332,8 @@ const BivariateLegend = props => {
     const { currentIndicators } = props;
     const { categories } = props.domains;
 
-    const formatX = currentIndicators.bivariateX.format;
-    const formatY = currentIndicators.bivariateY.format;
+    const formatX = currentIndicators.bivariateX.formatLegend;
+    const formatY = currentIndicators.bivariateY.formatLegend;
 
     const x0 = formatX(categories.x[0]);
     const x1 = formatX(categories.x[categories.x.length - 1]);
@@ -343,7 +343,10 @@ const BivariateLegend = props => {
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>
-                <div className={styles.legendYLabelContainer}>
+                <div
+                    className={styles.legendYLabelContainer}
+                    data-visible={currentIndicators.bivariateYEnabled}
+                >
                     <div className={styles.bivariateAxisLabelY}>
                         {currentIndicators.bivariateY.label}
                     </div>
@@ -358,10 +361,12 @@ const BivariateLegend = props => {
                         </div>
                     </div>
                 </div>
-
                 <BivariateLegendGrid {...props} />
             </div>
-            <div className={styles.bivariateLegendBottom}>
+            <div
+                className={styles.bivariateLegendBottom}
+                data-visible={currentIndicators.bivariateXEnabled}
+            >
                 <div className={styles.legendColourSpan} data-x={true}>
                     <div className={styles.legendColourSpanValue} data-x>
                         <IconArrowLeft />
