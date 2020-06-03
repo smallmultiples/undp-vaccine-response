@@ -196,11 +196,18 @@ const usePillarData = () => {
 function App() {
     const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
+    const [activeQuestion, setActiveQuestion] = React.useState(null);
 
     React.useEffect(() => {
         if (activePillar || !pillars) return;
         setActivePillar(pillars.find(d => d.visible));
     }, [pillars, activePillar]);
+
+    React.useEffect(() => {
+        if (!activePillar) return;
+        console.log("set question");
+        setActiveQuestion(activePillar.questions[0]);
+    }, [activePillar]);
 
     const covidPillar = React.useMemo(() => {
         if (!pillars) return null;
@@ -213,7 +220,7 @@ function App() {
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
-    if (!pillars || !activePillar || !regionLookup) return null; // TODO loader
+    if (!pillars || !activePillar || !regionLookup || !activeQuestion) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -224,6 +231,8 @@ function App() {
                     covidPillar={covidPillar}
                     setActivePillar={setActivePillar}
                     pillars={pillars}
+                    activeQuestion={activeQuestion}
+                    setActiveQuestion={setActiveQuestion}
                 />
                 <Map
                     countryData={countryData}
@@ -231,6 +240,7 @@ function App() {
                     activePillar={activePillar}
                     covidPillar={covidPillar}
                     pillars={pillars}
+                    activeQuestion={activeQuestion}
                 />
                 <DataFilters />
                 <Questions
