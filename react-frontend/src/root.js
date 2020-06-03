@@ -149,7 +149,7 @@ const usePillarData = () => {
     React.useEffect(() => {
         (async () => {
             const pillars = await axios(
-                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
+                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators2`
             ).then(d => parseMetaSheet(d.data));
             setPillars(pillars);
 
