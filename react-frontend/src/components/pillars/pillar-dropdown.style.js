@@ -1,5 +1,6 @@
 const lightBlue = "#E9ECF6";
 const navy = "#110848";
+const yellow = "#e9ce2c";
 const font = `"proxima-nova"`;
 
 export default {
@@ -15,18 +16,7 @@ export default {
         zIndex: state.menuIsOpen ? 12 : 8,
         outline: "none",
         boxShadow: "none",
-        ":after": {
-            content: JSON.stringify(""),
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 1,
-            background: navy,
-        },
-        ":hover": {
-            border: "none",
-        },
+        display: "none",
     }),
 
     singleValue: (provided, state) => ({
@@ -73,15 +63,19 @@ export default {
     menu: (provided, state) => ({
         ...provided,
         border: "none",
-        borderRadius: "0 0 22px 22px",
+        borderRadius: 0,
         boxShadow: "0 0 12px 8px rgba(0,0,0,0.03)",
-        padding: "0",
+        padding: 0,
         boxSizing: "border-box",
         fontFamily: font,
         overflow: "hidden",
-        marginTop: 0,
+        marginTop: 8,
         zIndex: 12,
-        paddingBottom: 12,
+        width: 560,
+    }),
+    menuList: (provided, state) => ({
+        ...provided,
+        padding: 0,
     }),
 
     option: (provided, state) => ({
@@ -89,8 +83,9 @@ export default {
         padding: "12px 6px 12px 22px",
         background: "none",
         color: navy,
+        fontWeight: "bold",
         ":hover": {
-            background: lightBlue,
+            background: yellow,
             color: navy,
         },
     }),
