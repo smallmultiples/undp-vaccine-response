@@ -9,12 +9,16 @@ import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
 import Footer from "./components/footer/footer";
 import { formats } from "./modules/format";
+import ReactGA from "react-ga";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "1o8FVEy59M0k8XHRm3TvCNpt-MQ8V_e0TaqqOGe7N1tQ";
 
 const META_SHEET_ID =
     process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
+
+const trackingId = "UA-25119617-15";
+ReactGA.initialize(trackingId);
 
 const parseMetaSheet = raw => {
     const out = {};
