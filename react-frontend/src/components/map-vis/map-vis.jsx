@@ -261,8 +261,6 @@ const CircleVis = props => {
         return viewport.project([lng, lat]);
     };
 
-    if (!currentIndicators.radiusEnabled) return null;
-
     let content = null;
 
     if (activeQuestion.categorical) {
@@ -305,7 +303,7 @@ const CircleVis = props => {
             );
         });
         content = <g>{groups}</g>;
-    } else {
+    } else if (currentIndicators.radiusEnabled) {
         const circles = Object.values(normalizedData).map(row => {
             const xy = rowXY(row);
             if (!xy) return null;
