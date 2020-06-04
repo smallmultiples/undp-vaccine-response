@@ -18,6 +18,8 @@
     width: 200px;
     box-sizing: content-box;
     z-index: 23;
+    left: 0;
+    top: 0;
 
     .tooltipHeader {
         background: $color-yellow;

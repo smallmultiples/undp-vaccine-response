@@ -158,7 +158,6 @@ const getFormattedTooltipValue = (row, indicator) => {
     return indicator.tooltipExtra.format(val);
 };
 
-const TOOLTIP_WIDTH = 200;
 const MapTooltip = props => {
     const {
         tooltip,
@@ -192,14 +191,16 @@ const MapTooltip = props => {
         );
     }
 
-    const clampedLeft = Math.min(tooltip.x, mapContainerDimensions.width - TOOLTIP_WIDTH);
+    const clampedLeft = `min(${tooltip.x}px, calc(${mapContainerDimensions.width}px - 100%))`;
+    const clampedY = `min(${tooltip.y}px, calc(${mapContainerDimensions.height}px - 100%))`;
+
+    const transform = `translate(${clampedLeft}, ${clampedY})`;
 
     return (
         <div
             className={styles.tooltip}
             style={{
-                left: clampedLeft,
-                top: tooltip.y,
+                transform,
             }}
         >
             <div className={styles.tooltipHeader}>
