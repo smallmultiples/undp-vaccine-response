@@ -100,7 +100,10 @@ const Question = props => {
             <div className={styles.question}>
                 <div className={styles.questionText}>
                     <div className={styles.label}>{question.label}</div>
-                    <p className={styles.description}>{question.description}</p>
+                    <p
+                        className={styles.description}
+                        dangerouslySetInnerHTML={{ __html: question.description }}
+                    />
                 </div>
                 <div className={styles.chartsContainer}>
                     {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
