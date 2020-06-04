@@ -11,7 +11,7 @@
     align-items: center;
     max-width: $container-width;
     height: 100%;
-    padding: 0 24px;
+    padding: 0 12px;
     margin: 0 auto;
 }
 
@@ -59,6 +59,7 @@
 
     @include mobileOnly {
         margin-left: 12px;
+        justify-content: space-evenly;
     }
 
     .mainHeading {
@@ -71,7 +72,7 @@
         @include mobileOnly {
             @include bodyXSmall();
             font-weight: bold;
-            flex-direction: column-reverse;
+            flex-direction: column;
             align-items: flex-start;
             margin-bottom: 0;
         }
@@ -89,8 +90,8 @@
                 @include bodyXSmall();
                 font-weight: bold;
                 padding: 3px 6px;
-                margin-left: 6px;
-                display: inline;
+                margin-right: 0;
+                margin-bottom: 6px;
             }
         }
     }

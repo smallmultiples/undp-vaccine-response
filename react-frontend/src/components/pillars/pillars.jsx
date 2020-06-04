@@ -1,6 +1,8 @@
 import React from "react";
 import styles from "./pillars.module.scss";
 import PillarDropdown from "./pillar-dropdown";
+import useMediaQuery from "../../hooks/use-media-query";
+import PillarExpandable from "./pillar-expandable";
 
 const isOptionSelected = (item, selections) => {
     const selection = selections[0];
@@ -12,6 +14,9 @@ const isOptionSelected = (item, selections) => {
 const PillarControl = props => {
     const { pillars, activePillar, activeQuestion, setActivePillar, setActiveQuestion } = props;
     // This component is the selector for the pillar just under the header.
+    const { isMobile } = useMediaQuery();
+    const [expandedPillar, setExpandedPillar] = React.useState(undefined);
+
     return (
         <div className={styles.pillarControl}>
             <div className={styles.pillarButtons}>
@@ -19,6 +24,22 @@ const PillarControl = props => {
                     .filter(d => d.visible)
                     .map(pillar => {
                         const selected = pillar === activePillar;
+                        if (isMobile) {
+                            return (
+                                <PillarExpandable
+                                    options={pillar.questions}
+                                    label={pillar.labelLong}
+                                    activePillar={activePillar}
+                                    expandedPillar={expandedPillar}
+                                    onExpand={() => setExpandedPillar(pillar.labelLong)}
+                                    onChange={question => {
+                                        setActivePillar(pillar);
+                                        setActiveQuestion(question);
+                                    }}
+                                    value={activeQuestion}
+                                />
+                            );
+                        }
                         return (
                             <PillarDropdown
                                 options={pillar.questions}

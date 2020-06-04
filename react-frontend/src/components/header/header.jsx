@@ -16,10 +16,9 @@ const Header = () => {
                     </a>
                     <div className={styles.headings}>
                         <div className={styles.mainHeading}>
-                            {!isMobile && <div className={styles.betaTag}>Beta</div>}
+                            <div className={styles.betaTag}>Beta</div>
                             <div>
                                 Socio-Economic Recovery Data Platform
-                                {isMobile && <div className={styles.betaTag}>Beta</div>}
                             </div>
                         </div>
                         <div className={styles.subHeadings}>
@@ -29,7 +28,7 @@ const Header = () => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.collapsibleHeader}>
+                {!isMobile && <div className={styles.collapsibleHeader}>
                     <ul className={styles.navButtons}>
                         <li className={styles.navItem} data-active={true}>
                             <a className={styles.navLink} href="#">
@@ -42,7 +41,7 @@ const Header = () => {
                             </a>
                         </li>
                     </ul>
-                </div>
+                </div>}
             </div>
         </header>
     );
