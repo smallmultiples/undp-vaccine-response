@@ -48,6 +48,18 @@
             min-width: 290px;
             width: 290px;
             margin-right: 24px;
+            @include mobileOnly() {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                @include h2();
+            }
+        }
+
+        .pillarDescriptionWrapper {
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
         }
 
         .pillarDescription {
@@ -258,6 +270,7 @@
     .selectOption, .comingSoonItem {
         padding: 6px 12px;
         width: 100%;
+        max-width: unset;
         box-sizing: border-box;
         &[data-selected="true"] {
             background: rgba($color-blue-bg, 0.8);

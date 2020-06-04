@@ -2,7 +2,7 @@ import React from "react";
 
 const QUERIES = [
     { key: "isTablet", query: "screen and (max-width: 1250px)" },
-    { key: "isMobile", query: "screen and (max-width: 900px)" },
+    { key: "isMobile", query: "screen and (max-width: 700px)" },
 ];
 
 const mediaQueryLists = QUERIES.map(q => ({
