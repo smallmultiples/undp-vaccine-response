@@ -316,6 +316,11 @@ $covidToggleWidth: 220px;
         width: $covidToggleWidth;
         margin: 0 0 0 30px;
         padding: 0;
+
+        @include mobileOnly {
+            width: 190px;
+            margin-left: 6px;
+        }
     }
 }
 
@@ -327,6 +332,11 @@ $covidToggleWidth: 220px;
     width: $covidToggleWidth;
     overflow: hidden;
     margin-left: 16px;
+
+    @include mobileOnly {
+        width: 190px;
+        margin-left: 6px;
+    }
 
     .toggleOption {
         background: none;
@@ -367,6 +377,10 @@ $covidToggleWidth: 220px;
     align-items: flex-end;
     margin-right: 12px;
     padding-top: 16px;
+
+    @include mobileOnly() {
+        width: 30%;
+    }
 }
 
 .bivariateLegendTop {

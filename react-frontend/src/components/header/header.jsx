@@ -12,7 +12,7 @@ const Header = () => {
             <div className={styles.header}>
                 <div className={styles.title}>
                     <a className={styles.logo} href="#">
-                        <LogoUNDP />
+                        <LogoUNDP height={isMobile ? 60 : 80} width={isMobile ? 30 : 40} />
                     </a>
                     <div className={styles.headings}>
                         <div className={styles.mainHeading}>

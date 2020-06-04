@@ -3,6 +3,10 @@
 .headerContainer {
     height: 100px;
     background-color: #fff;
+
+    @include mobileOnly() {
+        height: 80px;
+    }
 }
 
 .header {
@@ -13,6 +17,10 @@
     height: 100%;
     padding: 0 12px;
     margin: 0 auto;
+}
+
+.logo {
+    height: 60px;
 }
 
 .title {
@@ -91,7 +99,7 @@
                 font-weight: bold;
                 padding: 3px 6px;
                 margin-right: 0;
-                margin-bottom: 6px;
+                margin-bottom: 2px;
             }
         }
     }
