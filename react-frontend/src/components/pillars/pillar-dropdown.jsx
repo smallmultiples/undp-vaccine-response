@@ -11,10 +11,13 @@ const PillarDropdown = props => {
         setIsOpen(d => !d);
     }, []);
 
-    const handleChange = React.useCallback(v => {
-        onChange(v);
-        setIsOpen(false);
-    }, []);
+    const handleChange = React.useCallback(
+        question => {
+            onChange(question);
+            setIsOpen(false);
+        },
+        [onChange]
+    );
 
     const optionEls = options
         .filter(d => !d.comingSoon)

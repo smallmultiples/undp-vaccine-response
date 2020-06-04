@@ -233,23 +233,23 @@ const usePillarData = () => {
 
 function App() {
     const { pillars, datasets, countryData, loading } = usePillarData();
-    const [activePillar, setActivePillar] = React.useState(null);
     const [activeQuestion, setActiveQuestion] = React.useState(null);
 
     React.useEffect(() => {
-        if (activePillar || !pillars) return;
-        setActivePillar(pillars.find(d => d.visible));
-    }, [pillars, activePillar]);
-
-    React.useEffect(() => {
-        if (!activePillar) return;
-        setActiveQuestion(activePillar.questions[0]);
-    }, [activePillar]);
+        if (activeQuestion || !pillars) return;
+        const questions = flatten(pillars.filter(d => d.visible).map(p => p.questions));
+        setActiveQuestion(questions[0]);
+    }, [pillars, activeQuestion]);
 
     const covidPillar = React.useMemo(() => {
         if (!pillars) return null;
         return pillars.find(d => d.covid);
     }, [pillars]);
+
+    const activePillar = React.useMemo(() => {
+        if (!pillars) return null;
+        return pillars.find(pillar => pillar.questions.some(q => q === activeQuestion));
+    }, [activeQuestion]);
 
     const hdiIndicator = React.useMemo(() => {
         if (!pillars) return null;
@@ -266,7 +266,6 @@ function App() {
                 <Pillars
                     activePillar={activePillar}
                     covidPillar={covidPillar}
-                    setActivePillar={setActivePillar}
                     pillars={pillars}
                     activeQuestion={activeQuestion}
                     setActiveQuestion={setActiveQuestion}

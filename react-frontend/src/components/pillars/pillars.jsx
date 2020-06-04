@@ -2,15 +2,8 @@ import React from "react";
 import styles from "./pillars.module.scss";
 import PillarDropdown from "./pillar-dropdown";
 
-const isOptionSelected = (item, selections) => {
-    const selection = selections[0];
-    if (item.label === selection.label) return true;
-
-    return false;
-};
-
 const PillarControl = props => {
-    const { pillars, activePillar, activeQuestion, setActivePillar, setActiveQuestion } = props;
+    const { pillars, activePillar, activeQuestion, setActiveQuestion } = props;
     // This component is the selector for the pillar just under the header.
     return (
         <div className={styles.pillarControl}>
@@ -25,7 +18,6 @@ const PillarControl = props => {
                                 label={pillar.labelLong}
                                 pillarSelected={selected}
                                 onChange={question => {
-                                    setActivePillar(pillar);
                                     setActiveQuestion(question);
                                 }}
                                 value={activeQuestion}
