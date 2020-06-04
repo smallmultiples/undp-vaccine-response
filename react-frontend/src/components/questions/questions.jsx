@@ -104,9 +104,9 @@ const Question = props => {
                         className={styles.description}
                         dangerouslySetInnerHTML={{ __html: question.description }}
                     />
+                    {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
                 </div>
                 <div className={styles.chartsContainer}>
-                    {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
                     {chartData &&
                         chartData.map((x, i) => {
                             return (
@@ -150,7 +150,7 @@ const Question = props => {
                             withBorders={true}
                             footer={
                                 <div className={styles.summary}>
-                                    <div>201 more rows</div>
+                                    <div>{`${COUNTRIES_TOTAL - 5} more rows`}</div>
                                     <button className={styles.downloadButton}>Download CSV</button>
                                 </div>
                             }
