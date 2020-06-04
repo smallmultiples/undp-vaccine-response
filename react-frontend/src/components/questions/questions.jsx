@@ -150,7 +150,7 @@ const Question = props => {
                             withBorders={true}
                             footer={
                                 <div className={styles.summary}>
-                                    <div>201 more rows</div>
+                                    <div>{`${COUNTRIES_TOTAL - 5} more rows`}</div>
                                     <button className={styles.downloadButton}>Download CSV</button>
                                 </div>
                             }

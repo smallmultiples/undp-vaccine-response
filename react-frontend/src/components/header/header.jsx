@@ -3,33 +3,33 @@ import { ReactComponent as LogoUNDP } from "./undp-logo.svg";
 import useMediaQuery from "../../hooks/use-media-query";
 import styles from "./header.module.scss";
 
-const Header = () => {
-    // TODO: dynamic date
-    const dateFormat = "25 May 2020";
+const Header = props => {
+    const { lastUpdatedDate } = props;
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' });
+    const date = dateTimeFormat.format(lastUpdatedDate);
     const { isMobile } = useMediaQuery();
     return (
         <header className={styles.headerContainer}>
             <div className={styles.header}>
                 <div className={styles.title}>
                     <a className={styles.logo} href="#">
-                        <LogoUNDP />
+                        <LogoUNDP height={isMobile ? 60 : 80} width={isMobile ? 30 : 40} />
                     </a>
                     <div className={styles.headings}>
                         <div className={styles.mainHeading}>
-                            {!isMobile && <div className={styles.betaTag}>Beta</div>}
+                            <div className={styles.betaTag}>Beta</div>
                             <div>
                                 Socio-Economic Recovery Data Platform
-                                {isMobile && <div className={styles.betaTag}>Beta</div>}
                             </div>
                         </div>
                         <div className={styles.subHeadings}>
                             <span className={styles.updateDate}>
-                                Data last updated <em>{dateFormat}</em>
+                                Data last updated <em>{date}</em>
                             </span>
                         </div>
                     </div>
                 </div>
-                <div className={styles.collapsibleHeader}>
+                {!isMobile && <div className={styles.collapsibleHeader}>
                     <ul className={styles.navButtons}>
                         <li className={styles.navItem} data-active={true}>
                             <a className={styles.navLink} href="#">
@@ -42,7 +42,7 @@ const Header = () => {
                             </a>
                         </li>
                     </ul>
-                </div>
+                </div>}
             </div>
         </header>
     );

@@ -8,6 +8,9 @@ $covidToggleWidth: 220px;
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: wrap;
+    @include mobileOnly() {
+        justify-content: space-around;
+    }
 }
 
 // ----
@@ -15,6 +18,11 @@ $covidToggleWidth: 220px;
 .questionInfo {
     width: 290px;
     margin-right: 54px;
+
+    @include mobileOnly() {
+        width: 100%;
+        margin-right: 0;
+    }
 
     .questionInfoHeading {
         @include h3();
@@ -77,6 +85,10 @@ $covidToggleWidth: 220px;
     padding-top: 16px;
     margin-right: 24px;
 
+    @include mobileOnly() {
+        width: 100%;
+    }
+
     .bivariateIndicatorItem {
         display: flex;
         flex-direction: row;
@@ -102,6 +114,9 @@ $covidToggleWidth: 220px;
         .bivariateIndicatorDropdownLabel {
             font-size: 12px;
             margin: 0 0 7px 10px;
+            @include mobileOnly() {
+                display: none;
+            }
         }
 
         .bivariateIndicatorDropdownWrap {
@@ -113,10 +128,13 @@ $covidToggleWidth: 220px;
                 z-index: 8;
                 left: 12px;
                 top: 50%;
+                @include mobileOnly() {
+                    top: 25%;
+                }
             }
 
-            @media (max-width: $width-mobile) {
-                width: 300px;
+            @include mobileOnly() {
+                width: 100%;
             }
         }
     }
@@ -300,6 +318,11 @@ $covidToggleWidth: 220px;
         width: $covidToggleWidth;
         margin: 0 0 0 30px;
         padding: 0;
+
+        @include mobileOnly {
+            width: 190px;
+            margin-left: 6px;
+        }
     }
 }
 
@@ -311,6 +334,11 @@ $covidToggleWidth: 220px;
     width: $covidToggleWidth;
     overflow: hidden;
     margin-left: 16px;
+
+    @include mobileOnly {
+        width: 190px;
+        margin-left: 6px;
+    }
 
     .toggleOption {
         background: none;
@@ -351,6 +379,10 @@ $covidToggleWidth: 220px;
     align-items: flex-end;
     margin-right: 12px;
     padding-top: 16px;
+
+    @include mobileOnly() {
+        width: 30%;
+    }
 }
 
 .bivariateLegendTop {

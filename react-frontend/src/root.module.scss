@@ -11,8 +11,8 @@
     padding: 0 32px;
 
     @media (max-width: $width-mobile) {
-        width: calc(100% - 40px);
+        width: calc(100% - 24px);
         margin: 0;
-        padding: 0 20px;
+        padding: 0 12px;
     }
 }

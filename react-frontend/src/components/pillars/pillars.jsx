@@ -1,10 +1,18 @@
 import React from "react";
 import styles from "./pillars.module.scss";
 import PillarDropdown from "./pillar-dropdown";
+import useMediaQuery from "../../hooks/use-media-query";
+import PillarExpandable from "./pillar-expandable";
+import useDimensions from "../../hooks/use-dimensions";
+
+import { Plus, Minus } from "../icons/icons";
 
 const PillarControl = props => {
     const { pillars, activePillar, activeQuestion, setActiveQuestion } = props;
     // This component is the selector for the pillar just under the header.
+    const { isMobile } = useMediaQuery();
+    const [expandedPillar, setExpandedPillar] = React.useState(undefined);
+
     return (
         <div className={styles.pillarControl}>
             <div className={styles.pillarButtons}>
@@ -12,6 +20,25 @@ const PillarControl = props => {
                     .filter(d => d.visible)
                     .map(pillar => {
                         const selected = pillar === activePillar;
+                        if (isMobile) {
+                            return (
+                                <PillarExpandable
+                                    options={pillar.questions}
+                                    label={pillar.labelLong}
+                                    activePillar={activePillar}
+                                    expandedPillar={expandedPillar}
+                                    onExpand={() =>
+                                        expandedPillar !== pillar.labelLong
+                                            ? setExpandedPillar(pillar.labelLong)
+                                            : setExpandedPillar(undefined)
+                                    }
+                                    onChange={question => {
+                                        setActiveQuestion(question);
+                                    }}
+                                    value={activeQuestion}
+                                />
+                            );
+                        }
                         return (
                             <PillarDropdown
                                 options={pillar.questions}
@@ -31,16 +58,32 @@ const PillarControl = props => {
 
 const PillarInfo = props => {
     const { activePillar } = props;
+    const { isMobile } = useMediaQuery();
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    const [contentRef, contentDimensions] = useDimensions();
 
     return (
         <div className={styles.pillarInfo}>
             <div className={styles.pillarInfoText}>
-                <div className={styles.pillarHeading}>{activePillar.labelLong}</div>
+                <div
+                    className={styles.pillarHeading}
+                    onClick={isMobile ? () => setIsExpanded(!isExpanded) : undefined}
+                >
+                    {activePillar.labelLong}
+                    {isMobile ? isExpanded ? <Minus /> : <Plus /> : null}
+                </div>
 
-                <p className={styles.pillarDescription}>
-                    <em>{activePillar.tagline}</em>
-                    {activePillar.description}
-                </p>
+                <div
+                    className={styles.pillarDescriptionWrapper}
+                    style={{
+                        maxHeight: !isMobile ? "unset" : isExpanded ? contentDimensions.height : 0,
+                    }}
+                >
+                    <p className={styles.pillarDescription} ref={contentRef}>
+                        <em>{activePillar.tagline}</em>
+                        {activePillar.description}
+                    </p>
+                </div>
             </div>
         </div>
     );
