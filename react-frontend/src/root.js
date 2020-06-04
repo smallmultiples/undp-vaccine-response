@@ -104,20 +104,30 @@ const parseMetaSheet = raw => {
             const legendDpRaw = numOrUndef(row["Legend Decimals"]);
             const legendDecimals = isNaN(legendDpRaw) ? decimals : legendDpRaw;
 
+            const tooltipDpRaw = numOrUndef(row["Tooltip Decimals"]);
+            const tooltipDecimals = isNaN(tooltipDpRaw) ? decimals : tooltipDpRaw;
+            const mapFormat = formats[row["Data Format"]]
+                ? formats[row["Data Format"]](decimals)
+                : formats.decimal(decimals);
+            console.log(
+                row["Tooltip Label"] || row["Tooltip Key"],
+                row["Tooltip Label"],
+                row["Tooltip Key"]
+            );
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 tableLabel: row["Indicator Label Table"],
-                sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
                 tooltipExtra: row["Tooltip Key"] && {
                     key: row["Tooltip Key"],
                     label: row["Tooltip Label"] || row["Tooltip Key"],
+                    format: formats[row["Tooltip Format"]]
+                        ? formats[row["Tooltip Format"]](tooltipDecimals)
+                        : mapFormat,
                 },
                 flipped: row["Invert Scale"],
                 categorical: categorical,
-                format: formats[row["Data Format"]]
-                    ? formats[row["Data Format"]](decimals)
-                    : formats.decimal(decimals),
+                format: mapFormat,
                 formatLegend: formats[row["Data Format"]]
                     ? formats[row["Data Format"]](legendDecimals)
                     : formats.decimal(legendDecimals),

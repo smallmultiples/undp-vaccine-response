@@ -149,8 +149,7 @@ const getFormattedMapValue = (row, indicator) => {
 };
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipExtra.key];
-    if (isNil(val) || val === "") return "-";
-    return indicator.format(val);
+    return indicator.tooltipExtra.format(val);
 };
 
 const MapTooltip = props => {
