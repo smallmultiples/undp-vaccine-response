@@ -154,7 +154,7 @@ const Question = props => {
 const Legend = props => {
     return (
         <div className={styles.legendContainer}>
-            <div className={styles.legendTitle}>{props.hdiIndicator?.dataKey}</div>
+            <div className={styles.legendTitle}>Human Development Group</div>
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
                     <div className={styles.box} data-na={true} />
