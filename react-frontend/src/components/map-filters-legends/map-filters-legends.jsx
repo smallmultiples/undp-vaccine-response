@@ -225,7 +225,9 @@ const RadiusLegend = props => {
     const ar = range[0];
     const ax = ar + hs;
 
-    const br = range[1];
+    const MAX_RADIUS = 18;
+
+    const br = Math.min(MAX_RADIUS, range[1]);
     const bx = width - br - hs;
 
     const cy = height / 2;

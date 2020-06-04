@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./map.module.scss";
 import { extent } from "d3-array";
-import { scaleSymlog, scaleLinear } from "d3-scale";
+import { scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
 import { flatten, isNil, last } from "lodash";
@@ -189,7 +189,7 @@ const nullValue = val => isNil(val) || val === "";
 
 const useScales = (domains, currentIndicators, activePillar) => {
     return React.useMemo(() => {
-        const circleScale = scaleSymlog().range([4, 16]).domain(domains.extents.radius);
+        const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.radius);
         const circleRadiusScale = row =>
             circleScale(getRowIndicatorValue(row, currentIndicators.radius));
         circleRadiusScale.range = circleScale.range;
