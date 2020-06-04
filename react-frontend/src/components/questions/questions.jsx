@@ -104,9 +104,9 @@ const Question = props => {
                         className={styles.description}
                         dangerouslySetInnerHTML={{ __html: question.description }}
                     />
-                    {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
                 </div>
                 <div className={styles.chartsContainer}>
+                    {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
                     {chartData &&
                         chartData.map((x, i) => {
                             return (
