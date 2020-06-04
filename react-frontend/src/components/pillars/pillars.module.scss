@@ -25,6 +25,7 @@
         @include mobileOnly() {
             flex-direction: column;
             align-items: flex-start;
+            padding: 12px 0;
         }
 
         &:before {
@@ -48,6 +49,18 @@
             min-width: 290px;
             width: 290px;
             margin-right: 24px;
+            @include mobileOnly() {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                @include h2();
+            }
+        }
+
+        .pillarDescriptionWrapper {
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
         }
 
         .pillarDescription {
@@ -208,4 +221,61 @@
     border-radius: 12px;
     letter-spacing: 0.04em;
     z-index: 24;
+}
+
+// -------
+// Expandable
+
+.expandable {
+    width: 100%;
+    .title {
+        border: 1px solid $color-blue-bg;
+        border-bottom: 0;
+        &[data-expanded="true"] {
+            border-bottom: 1px solid $color-blue-bg;
+        }
+    }
+    &:last-of-type {
+        .title {
+            border: 1px solid $color-blue-bg;
+        }
+    }
+}
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @include h4();
+    padding: 10px 12px;
+    &[data-active="true"] {
+        background-color: $color-yellow;
+    }
+}
+
+.chevron {
+    &[data-expanded="false"] {
+        transform: rotate(180deg);
+    }
+}
+
+.contentWrapper {
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.contentContainer {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .selectOption, .comingSoonItem {
+        padding: 6px 12px;
+        width: 100%;
+        max-width: unset;
+        box-sizing: border-box;
+        &[data-selected="true"] {
+            background: rgba($color-blue-bg, 0.8);
+            font-weight: $weight-semi;
+        }
+    }
 }

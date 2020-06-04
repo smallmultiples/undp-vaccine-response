@@ -10,6 +10,7 @@ import { flatten, uniq, last } from "lodash";
 import Footer from "./components/footer/footer";
 import { formats } from "./modules/format";
 import ReactGA from "react-ga";
+import Expandable from "./components/pillars/pillar-expandable";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
@@ -298,6 +299,12 @@ function App() {
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
                 />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
             </div>
             <Footer />
         </div>
