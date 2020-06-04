@@ -37,7 +37,7 @@ const Header = props => {
                             </a>
                         </li>
                         <li className={styles.navItem} data-active={false}>
-                            <a className={styles.navLink} href="#">
+                            <a className={styles.navLink} href="./html2/about.html">
                                 About
                             </a>
                         </li>

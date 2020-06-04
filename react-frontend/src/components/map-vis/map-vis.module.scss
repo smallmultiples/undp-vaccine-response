@@ -162,3 +162,8 @@
 }
 
 // ------
+
+.button3D {
+    @include button();
+    width: fit-content;
+}

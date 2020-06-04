@@ -103,6 +103,11 @@ const MapVis = props => {
             lineWidthMinPixels: 0.5,
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
+            onClick: info => {
+                if (info.object.properties.ISO3 === "NPL") {
+                    window.location = "./html2/nepal.html";
+                }
+            },
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
                 getLineColor: [normalizedData, currentIndicators],
@@ -143,6 +148,12 @@ const MapVis = props => {
                     <h4>Loading...</h4>
                 </div>
             </div>
+            <button
+                className={styles.button3D}
+                onClick={() => (window.location = "./html2/hdi.html")}
+            >
+                View in 3D mode
+            </button>
         </div>
     );
 };

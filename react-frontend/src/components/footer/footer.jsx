@@ -16,7 +16,7 @@ const Footer = props => {
                 </a>
                 <ul className={styles.nav}>
                     <li>
-                        <a href="./about.html" title="Read more about the UNDP Data Platform">
+                        <a href="./html2/about.html" title="Read more about the UNDP Data Platform">
                             About
                         </a>
                     </li>
