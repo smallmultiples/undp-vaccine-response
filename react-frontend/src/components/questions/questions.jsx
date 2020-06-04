@@ -82,10 +82,10 @@ const Question = props => {
                 });
             }
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");
-            if (tmp.length > 0 && isNumericData && tmp != "") {
+            if (tmp.length > 0 && isNumericData) {
                 return {
                     indicator: ind,
-                    data: tmp.filter(d => d.data != ""),
+                    data: tmp.filter(d => d.data !== ""),
                 };
             } else {
                 return undefined;
