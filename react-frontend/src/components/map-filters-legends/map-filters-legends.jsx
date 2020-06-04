@@ -5,7 +5,7 @@ import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import { animated, useSpring } from "react-spring";
 import useDimensions from "../../hooks/use-dimensions";
-import { uniq, isNil, flatten } from "lodash";
+import { uniq, isNil, flatten, last } from "lodash";
 
 const MapFiltersLegends = props => {
     const { activeQuestion } = props;
@@ -153,14 +153,14 @@ const BivariateIndicatorSelection = props => {
 
 const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
-    const { activeQuestion, normalizedData } = props;
+    const { activeQuestion, normalizedData, setCurrentIndicators, currentIndicators } = props;
 
     const categoryIndicator = React.useMemo(
         () => activeQuestion.indicators.find(d => d.categorical),
         [activeQuestion]
     );
 
-    // TODO: module.
+    // TODO: this should be in the radius extents maybe.
     const uniqueVals = React.useMemo(() => {
         if (!categoryIndicator) return null;
         return uniq(
@@ -176,16 +176,43 @@ const CategoricalLegend = props => {
 
     if (!categoryIndicator) return null;
 
+    // TODO: "support" is hardcoded in here.
     const items = uniqueVals.map((val, index) => {
         return (
-            <li className={styles.categoryItem} key={val}>
-                <div className={styles.categoryIcon} data-i={index} />
-                <span className={styles.categoryText}>{val}</span>
-            </li>
+            <tr className={styles.categoryItemRow} key={val}>
+                <td className={styles.categoryItemCell}>
+                    <div className={styles.categoryIcon} data-i={index} />
+                    <span className={styles.categoryText}>No {val} support</span>
+                </td>
+                <td className={styles.categoryItemCell}>
+                    <div className={styles.categoryIcon} data-i={index} data-selected />
+                    <span className={styles.categoryText}>{val} support</span>
+                </td>
+            </tr>
         );
     });
 
-    return <ul className={styles.categoryList}>{items}</ul>;
+    return (
+        <div className={styles.categoryLegend}>
+            <div className={styles.categoryLegendHeader}>
+                <Checkbox
+                    value={currentIndicators.radiusEnabled}
+                    onChange={v =>
+                        setCurrentIndicators(d => ({
+                            ...d,
+                            radiusEnabled: v,
+                        }))
+                    }
+                />
+                <div className={styles.categoryLegendHeading}>
+                    {categoryIndicator && "Show " + categoryIndicator.label}
+                </div>
+            </div>
+            <table className={styles.categoryList} data-visible={currentIndicators.radiusEnabled}>
+                <tbody>{items}</tbody>
+            </table>
+        </div>
+    );
 };
 
 const RadiusControls = props => {
@@ -214,7 +241,9 @@ const RadiusLegend = props => {
     const ar = range[0];
     const ax = ar + hs;
 
-    const br = range[1];
+    const MAX_RADIUS = 18;
+
+    const br = Math.min(MAX_RADIUS, range[1]);
     const bx = width - br - hs;
 
     const cy = height / 2;
@@ -241,8 +270,8 @@ const RadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.radius.format(domain[0])}</span>
-                <span>{currentIndicators.radius.format(domain[1])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[0])}</span>
+                <span>{currentIndicators.radius.formatLegend(domain[1])}</span>
             </div>
         </div>
     );
@@ -252,13 +281,14 @@ const Toggle = props => {
     const { options, onChange, value } = props;
 
     const totalLength = options.reduce((a, b) => a + b.label.length, 0);
+    const widths = [27, 30, 43];
 
-    const optionsButtons = options.map(option => {
+    const optionsButtons = options.map((option, i) => {
         return (
             <button
                 key={option.label}
                 className={styles.toggleOption}
-                style={{ width: (option.label.length / totalLength) * 100 + "%" }}
+                style={{ width: widths[i] + "%" }}
                 onClick={() => onChange && onChange(option)}
                 data-active={option === value}
             >
@@ -266,20 +296,18 @@ const Toggle = props => {
             </button>
         );
     });
-    // TODO: someone needs to fix this gross code sorry
-    const optWidth = (options[options.indexOf(value)].label.length / totalLength) * 100;
-    let slideLeft = options.reduce((a, b, i) => {
+    const slideLeft = widths.reduce((a, b, i) => {
         if (i < options.indexOf(value)) {
-            return a + b.label.length;
+            return a + b;
         }
         return a;
     }, 0);
-    slideLeft = (slideLeft / totalLength) * 100;
+    const optWidth = widths[options.indexOf(value)];
 
     const bgSlide = (
         <div
             className={styles.toggleSlide}
-            style={{ width: `calc(${optWidth}% - 2px)`, left: `calc(${slideLeft}% + 1px)` }}
+            style={{ width: `calc(${optWidth}% - 4px)`, left: `calc(${slideLeft}% + 2px)` }}
         />
     );
     return (
@@ -320,20 +348,19 @@ const RadiusIndicatorSelection = props => {
 
 const BivariateLegend = props => {
     const { currentIndicators } = props;
-    const { categories } = props.domains;
 
-    const formatX = currentIndicators.bivariateX.format;
-    const formatY = currentIndicators.bivariateY.format;
-
-    const x0 = formatX(categories.x[0]);
-    const x1 = formatX(categories.x[categories.x.length - 1]);
-    const y0 = formatY(categories.y[0]);
-    const y1 = formatY(categories.y[categories.y.length - 1]);
+    const x0 = "Less";
+    const x1 = "More";
+    const y0 = "Less";
+    const y1 = "More";
 
     return (
         <div className={styles.bivariateLegend}>
             <div className={styles.bivariateLegendTop}>
-                <div className={styles.legendYLabelContainer}>
+                <div
+                    className={styles.legendYLabelContainer}
+                    data-visible={currentIndicators.bivariateYEnabled}
+                >
                     <div className={styles.bivariateAxisLabelY}>
                         {currentIndicators.bivariateY.label}
                     </div>
@@ -348,10 +375,12 @@ const BivariateLegend = props => {
                         </div>
                     </div>
                 </div>
-
                 <BivariateLegendGrid {...props} />
             </div>
-            <div className={styles.bivariateLegendBottom}>
+            <div
+                className={styles.bivariateLegendBottom}
+                data-visible={currentIndicators.bivariateXEnabled}
+            >
                 <div className={styles.legendColourSpan} data-x={true}>
                     <div className={styles.legendColourSpanValue} data-x>
                         <IconArrowLeft />
@@ -371,9 +400,10 @@ const BivariateLegend = props => {
 };
 
 const BivariateLegendGrid = props => {
-    const { scales, currentIndicators } = props;
+    const { domains, scales, currentIndicators } = props;
     const { bivariateXEnabled, bivariateYEnabled } = currentIndicators;
     const bivariateColourMatrixHex = scales.colorMatrix;
+    const [hovered, setHovered] = React.useState(null);
 
     const xDisabled = !bivariateXEnabled;
     const yDisabled = !bivariateYEnabled;
@@ -399,6 +429,74 @@ const BivariateLegendGrid = props => {
                 if (rowIndex < bivariateColourMatrixHex.length - 1) disabled = true;
             }
 
+            const showTooltip = hovered && hovered[0] === colIndex && hovered[1] === rowIndex;
+
+            let tooltip = null;
+
+            if (showTooltip) {
+                const xIndexMax = domains.categories.x.length - 1;
+                const yIndexMax = domains.categories.y.length - 1;
+
+                const xMin = currentIndicators.bivariateX.flipped
+                    ? domains.categories.x[xIndexMax - colIndex]
+                    : domains.categories.x[colIndex];
+                const xMax = currentIndicators.bivariateX.flipped
+                    ? domains.categories.x[xIndexMax - (colIndex + 1)]
+                    : domains.categories.x[colIndex + 1];
+                const yMin = currentIndicators.bivariateY.flipped
+                    ? domains.categories.y[rowIndex + 1]
+                    : domains.categories.y[yIndexMax - (rowIndex + 1)];
+                const yMax = currentIndicators.bivariateY.flipped
+                    ? domains.categories.y[rowIndex]
+                    : domains.categories.y[yIndexMax - rowIndex];
+
+                // If both axes are HDI then we hide the y tooltip because it is borked.
+                const hideY = currentIndicators.bivariateY.hdi && currentIndicators.bivariateX.hdi;
+
+                tooltip = (
+                    <div className={styles.legendColourTooltip}>
+                        {bivariateYEnabled && !hideY && (
+                            <div className={styles.legendColourTooltipEntry}>
+                                <div
+                                    className={styles.legendColourTooltipIcon}
+                                    style={{
+                                        background: bivariateColourMatrixHex[rowIndex][0],
+                                    }}
+                                />
+                                <div className={styles.legendColourTooltipText}>
+                                    <div className={styles.legendColourTooltipLabel}>
+                                        {currentIndicators.bivariateY.label}
+                                    </div>
+                                    <div className={styles.legendColourTooltipValue}>
+                                        Between {currentIndicators.bivariateY.formatLegend(yMin)}{" "}
+                                        and {currentIndicators.bivariateY.formatLegend(yMax)}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {bivariateXEnabled && (
+                            <div className={styles.legendColourTooltipEntry}>
+                                <div
+                                    className={styles.legendColourTooltipIcon}
+                                    style={{
+                                        background: last(bivariateColourMatrixHex)[colIndex],
+                                    }}
+                                />
+                                <div className={styles.legendColourTooltipText}>
+                                    <div className={styles.legendColourTooltipLabel}>
+                                        {currentIndicators.bivariateX.label}
+                                    </div>
+                                    <div className={styles.legendColourTooltipValue}>
+                                        Between {currentIndicators.bivariateX.formatLegend(xMin)}{" "}
+                                        and {currentIndicators.bivariateX.formatLegend(xMax)}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
             return (
                 <div
                     key={colIndex}
@@ -407,7 +505,12 @@ const BivariateLegendGrid = props => {
                     data-disabled={disabled}
                     data-hdi-x={xHdi}
                     data-hdi-y={yHdi}
-                />
+                    data-hovered={showTooltip}
+                    onMouseEnter={() => !disabled && setHovered([colIndex, rowIndex])}
+                    onMouseLeave={() => setHovered(null)}
+                >
+                    {tooltip}
+                </div>
             );
         });
         return (

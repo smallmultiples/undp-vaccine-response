@@ -4,15 +4,8 @@ import PillarDropdown from "./pillar-dropdown";
 import useMediaQuery from "../../hooks/use-media-query";
 import PillarExpandable from "./pillar-expandable";
 
-const isOptionSelected = (item, selections) => {
-    const selection = selections[0];
-    if (item.label === selection.label) return true;
-
-    return false;
-};
-
 const PillarControl = props => {
-    const { pillars, activePillar, activeQuestion, setActivePillar, setActiveQuestion } = props;
+    const { pillars, activePillar, activeQuestion, setActiveQuestion } = props;
     // This component is the selector for the pillar just under the header.
     const { isMobile } = useMediaQuery();
     const [expandedPillar, setExpandedPillar] = React.useState(undefined);
@@ -46,7 +39,6 @@ const PillarControl = props => {
                                 label={pillar.labelLong}
                                 pillarSelected={selected}
                                 onChange={question => {
-                                    setActivePillar(pillar);
                                     setActiveQuestion(question);
                                 }}
                                 value={activeQuestion}

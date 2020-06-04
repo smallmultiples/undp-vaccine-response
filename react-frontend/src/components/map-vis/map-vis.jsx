@@ -70,12 +70,17 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
         );
     }, []);
 
-    return [mapContainerRef, viewport, handleViewStateChange];
+    return [mapContainerRef, viewport, handleViewStateChange, mapContainerDimensions];
 };
 
 const MapVis = props => {
     const { normalizedData, countryDataLoading, scales, currentIndicators, activeQuestion } = props;
-    const [mapContainerRef, viewport, handleViewStateChange] = useDeckViewport();
+    const [
+        mapContainerRef,
+        viewport,
+        handleViewStateChange,
+        mapContainerDimensions,
+    ] = useDeckViewport();
     const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
 
@@ -131,6 +136,7 @@ const MapVis = props => {
                     currentIndicators={currentIndicators}
                     activeQuestion={activeQuestion}
                     scales={scales}
+                    mapContainerDimensions={mapContainerDimensions}
                 />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -142,14 +148,25 @@ const MapVis = props => {
 };
 
 // TODO: module these
-const getFormattedTooltipValue = (row, indicator) => {
-    const val = row[indicator.tooltipKey || indicator.dataKey];
+const getFormattedMapValue = (row, indicator) => {
+    const val = row[indicator.dataKey];
     if (isNil(val) || val === "") return "-";
     return indicator.format(val);
 };
+const getFormattedTooltipValue = (row, indicator) => {
+    const val = row[indicator.tooltipExtra.key];
+    return indicator.tooltipExtra.format(val);
+};
 
 const MapTooltip = props => {
-    const { tooltip, normalizedData, currentIndicators, activeQuestion, scales } = props;
+    const {
+        tooltip,
+        normalizedData,
+        currentIndicators,
+        activeQuestion,
+        scales,
+        mapContainerDimensions,
+    } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -167,19 +184,23 @@ const MapTooltip = props => {
                 <div className={styles.tooltipDatumText}>
                     <div className={styles.tooltipDatumLabel}>{categoricalIndicator.label}</div>
                     <div className={styles.tooltipDatumValue}>
-                        {getFormattedTooltipValue(data, categoricalIndicator)}
+                        {getFormattedMapValue(data, categoricalIndicator)}
                     </div>
                 </div>
             </div>
         );
     }
 
+    const clampedLeft = `min(${tooltip.x}px, calc(${mapContainerDimensions.width}px - 100%))`;
+    const clampedY = `min(${tooltip.y}px, calc(${mapContainerDimensions.height}px - 100%))`;
+
+    const transform = `translate(${clampedLeft}, ${clampedY})`;
+
     return (
         <div
             className={styles.tooltip}
             style={{
-                left: tooltip.x,
-                top: tooltip.y,
+                transform,
             }}
         >
             <div className={styles.tooltipHeader}>
@@ -194,11 +215,26 @@ const MapTooltip = props => {
                                 {currentIndicators.radius.label}
                             </div>
                             <div className={styles.tooltipDatumValue}>
-                                {getFormattedTooltipValue(data, currentIndicators.radius)}
+                                {getFormattedMapValue(data, currentIndicators.radius)}
                             </div>
                         </div>
                     </div>
                 )}
+                {!activeQuestion.categorical &&
+                    currentIndicators.radiusEnabled &&
+                    currentIndicators.radius.tooltipExtra && (
+                        <div className={styles.tooltipDatum}>
+                            <div className={styles.tooltipDatumIcon} data-radius />
+                            <div className={styles.tooltipDatumText}>
+                                <div className={styles.tooltipDatumLabel}>
+                                    {currentIndicators.radius.tooltipExtra.label}
+                                </div>
+                                <div className={styles.tooltipDatumValue}>
+                                    {getFormattedTooltipValue(data, currentIndicators.radius)}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 {category}
                 {currentIndicators.bivariateXEnabled && (
                     <div className={styles.tooltipDatum}>
@@ -212,6 +248,25 @@ const MapTooltip = props => {
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
                                 {currentIndicators.bivariateX.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedMapValue(data, currentIndicators.bivariateX)}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {currentIndicators.bivariateXEnabled && currentIndicators.bivariateX.tooltipExtra && (
+                    <div className={styles.tooltipDatum}>
+                        <div
+                            className={styles.tooltipDatumIcon}
+                            data-bivariate
+                            style={{
+                                background: scales.colorX(data),
+                            }}
+                        />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateX.tooltipExtra.label}
                             </div>
                             <div className={styles.tooltipDatumValue}>
                                 {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
@@ -231,6 +286,25 @@ const MapTooltip = props => {
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
                                 {currentIndicators.bivariateY.label}
+                            </div>
+                            <div className={styles.tooltipDatumValue}>
+                                {getFormattedMapValue(data, currentIndicators.bivariateY)}
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {currentIndicators.bivariateYEnabled && currentIndicators.bivariateY.tooltipExtra && (
+                    <div className={styles.tooltipDatum}>
+                        <div
+                            className={styles.tooltipDatumIcon}
+                            data-bivariate
+                            style={{
+                                background: scales.colorY(data),
+                            }}
+                        />
+                        <div className={styles.tooltipDatumText}>
+                            <div className={styles.tooltipDatumLabel}>
+                                {currentIndicators.bivariateY.tooltipExtralabel}
                             </div>
                             <div className={styles.tooltipDatumValue}>
                                 {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
@@ -274,6 +348,8 @@ const CircleVis = props => {
         return viewport.project([lng, lat]);
     };
 
+    if (!currentIndicators.radiusEnabled) return null;
+
     let content = null;
 
     if (activeQuestion.categorical) {
@@ -307,6 +383,7 @@ const CircleVis = props => {
 
             return (
                 <g
+                    key={row[SHEET_ROW_ID]}
                     style={{
                         transform: `translate(${xy[0]}px, ${xy[1]}px)`,
                     }}
