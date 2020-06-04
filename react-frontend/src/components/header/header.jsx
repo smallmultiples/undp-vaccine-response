@@ -3,9 +3,10 @@ import { ReactComponent as LogoUNDP } from "./undp-logo.svg";
 import useMediaQuery from "../../hooks/use-media-query";
 import styles from "./header.module.scss";
 
-const Header = () => {
-    // TODO: dynamic date
-    const dateFormat = "25 May 2020";
+const Header = props => {
+    const { lastUpdatedDate } = props;
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' });
+    const date = dateTimeFormat.format(lastUpdatedDate);
     const { isMobile } = useMediaQuery();
     return (
         <header className={styles.headerContainer}>
@@ -23,7 +24,7 @@ const Header = () => {
                         </div>
                         <div className={styles.subHeadings}>
                             <span className={styles.updateDate}>
-                                Data last updated <em>{dateFormat}</em>
+                                Data last updated <em>{date}</em>
                             </span>
                         </div>
                     </div>
