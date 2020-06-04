@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./map.module.scss";
-import { extent } from "d3-array";
+import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
@@ -11,6 +11,8 @@ const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
 const NULL_SHAPE_STROKE = [233, 236, 246]; // #E9ECF6
 // If true, pink is left, if false pink is right
 const FLIP_COLOURS_HORIZONTALLY = true;
+// Whether to use a quantile scale. Uses linear ranges if false.
+const USE_QUANTILE = true;
 
 const useDomains = (countryData, currentIndicators) => {
     return React.useMemo(() => {
@@ -24,11 +26,13 @@ const useDomains = (countryData, currentIndicators) => {
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.bivariateX.dataKey])
                   .filter(d => d !== undefined && d !== "")
+                  .sort((a, b) => a - b)
             : [];
         const valuesY = ready
             ? Object.values(countryData)
                   .map(raw => raw[currentIndicators.bivariateY.dataKey])
                   .filter(d => d !== undefined && d !== "")
+                  .sort((a, b) => a - b)
             : [];
         const valuesRadius = ready
             ? Object.values(countryData)
@@ -46,17 +50,25 @@ const useDomains = (countryData, currentIndicators) => {
             if (xHdi) {
                 jenksX = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                const extents = extent(valuesX);
-                const scale = scaleLinear().range(extents).domain([0, 1]);
-                jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                if (USE_QUANTILE) {
+                    jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
+                } else {
+                    const extents = extent(valuesX);
+                    const scale = scaleLinear().range(extents).domain([0, 1]);
+                    jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                }
             }
 
             if (yHdi) {
                 jenksY = [0, 0.55, 0.7, 0.8, 1.0];
             } else {
-                const extents = extent(valuesY);
-                const scale = scaleLinear().range(extents).domain([0, 1]);
-                jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                if (USE_QUANTILE) {
+                    jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
+                } else {
+                    const extents = extent(valuesY);
+                    const scale = scaleLinear().range(extents).domain([0, 1]);
+                    jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                }
             }
         }
 
