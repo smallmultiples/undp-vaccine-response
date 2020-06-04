@@ -71,7 +71,8 @@ const parseMetaSheet = raw => {
                 row["Time period"] ||
                 row["Data source name"] ||
                 row["Data source link"] ||
-                row["Number of Countries"]
+                row["Number of Countries"] ||
+                row["How often updated"]
             ) {
                 const names = row["Data source name"].split(";").map(d => d.trim());
                 const urls = row["Data source link"].split(";").map(d => d.trim());
@@ -84,6 +85,7 @@ const parseMetaSheet = raw => {
                 const countryCount = row["Number of Countries"];
                 meta = {
                     currency: row["Time period"],
+                    updateFrequency: row["How often updated"],
                     sources,
                     countryCount,
                 };
@@ -248,6 +250,16 @@ function App() {
         return pillars.find(d => d.covid);
     }, [pillars]);
 
+    const lastUpdatedDate = React.useMemo(() => {
+        if (!covidPillar) return undefined;
+        return new Date(
+            covidPillar.questions[0].indicators[0].meta.updateFrequency.replace(
+                "Last updated ",
+                ""
+            ) + " GMT+1000"
+        );
+    });
+
     const activePillar = React.useMemo(() => {
         if (!pillars) return null;
         return pillars.find(pillar => pillar.questions.some(q => q === activeQuestion));
@@ -263,7 +275,7 @@ function App() {
 
     return (
         <div className={styles.root}>
-            <Header />
+            <Header lastUpdatedDate={lastUpdatedDate} />
             <div className={styles.container}>
                 <Pillars
                     activePillar={activePillar}

@@ -39,8 +39,6 @@ $covidToggleWidth: 220px;
             left: 0;
             right: 0;
             height: 30px;
-            background: linear-gradient(rgba(white, 0), white);
-            transition: opacity 0.2s;
         }
 
         &[data-open="true"] {
@@ -54,6 +52,10 @@ $covidToggleWidth: 220px;
         @include body();
         margin: 0;
         text-overflow: ellipsis;
+
+        strong {
+            font-weight: 700;
+        }
     }
 
     .questionInfoSeeMore {

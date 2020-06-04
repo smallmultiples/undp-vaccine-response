@@ -102,8 +102,8 @@ const Data = props => {
                         className={styles.bar}
                         x={isHovered ? left - 1 : left}
                         width={isHovered ? width + 2 : width}
-                        y={isHovered && d.data >= 0 ? top - 5 : top}
-                        height={isHovered ? height + 5 : height}
+                        y={top}
+                        height={height}
                         data-low={d.hdi < 0.55}
                         data-medium={d.hdi >= 0.55 && d.hdi < 0.7}
                         data-high={d.hdi >= 0.7 && d.hdi < 0.8}

@@ -3,7 +3,6 @@ import styles from "./map-filters-legends.module.scss";
 import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../icons/icons";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
-import { animated, useSpring } from "react-spring";
 import useDimensions from "../../hooks/use-dimensions";
 import { uniq, isNil, flatten, last } from "lodash";
 
@@ -37,33 +36,18 @@ export const MapFiltersLegendMobile = props => {
 
 const QuestionInfo = props => {
     const { activeQuestion } = props;
-    const [open, setOpen] = React.useState(false);
     const [descriptionRef, descriptionDimensions] = useDimensions();
-
-    // Close when question changes.
-    React.useEffect(() => {
-        setOpen(false);
-    }, [activeQuestion]);
-
-    const descriptionContainerSpring = useSpring({
-        height: open ? descriptionDimensions.height : 40,
-    });
 
     return (
         <div className={styles.questionInfo}>
             <div className={styles.questionInfoHeading}>{activeQuestion.label}</div>
-            <animated.div
-                className={styles.questionInfoDescriptionContainer}
-                style={descriptionContainerSpring}
-                data-open={open}
-            >
-                <p className={styles.questionInfoDescription} ref={descriptionRef}>
-                    {activeQuestion.description}
-                </p>
-            </animated.div>
-            <button className={styles.questionInfoSeeMore} onClick={() => setOpen(d => !d)}>
-                {open ? "view less" : "view more"}
-            </button>
+            <div className={styles.questionInfoDescriptionContainer}>
+                <p
+                    className={styles.questionInfoDescription}
+                    ref={descriptionRef}
+                    dangerouslySetInnerHTML={{ __html: activeQuestion.description }}
+                />
+            </div>
         </div>
     );
 };
