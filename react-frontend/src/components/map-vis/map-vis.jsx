@@ -70,12 +70,17 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
         );
     }, []);
 
-    return [mapContainerRef, viewport, handleViewStateChange];
+    return [mapContainerRef, viewport, handleViewStateChange, mapContainerDimensions];
 };
 
 const MapVis = props => {
     const { normalizedData, countryDataLoading, scales, currentIndicators, activeQuestion } = props;
-    const [mapContainerRef, viewport, handleViewStateChange] = useDeckViewport();
+    const [
+        mapContainerRef,
+        viewport,
+        handleViewStateChange,
+        mapContainerDimensions,
+    ] = useDeckViewport();
     const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
 
@@ -131,6 +136,7 @@ const MapVis = props => {
                     currentIndicators={currentIndicators}
                     activeQuestion={activeQuestion}
                     scales={scales}
+                    mapContainerDimensions={mapContainerDimensions}
                 />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -152,8 +158,16 @@ const getFormattedTooltipValue = (row, indicator) => {
     return indicator.tooltipExtra.format(val);
 };
 
+const TOOLTIP_WIDTH = 200;
 const MapTooltip = props => {
-    const { tooltip, normalizedData, currentIndicators, activeQuestion, scales } = props;
+    const {
+        tooltip,
+        normalizedData,
+        currentIndicators,
+        activeQuestion,
+        scales,
+        mapContainerDimensions,
+    } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -178,11 +192,13 @@ const MapTooltip = props => {
         );
     }
 
+    const clampedLeft = Math.min(tooltip.x, mapContainerDimensions.width - TOOLTIP_WIDTH);
+
     return (
         <div
             className={styles.tooltip}
             style={{
-                left: tooltip.x,
+                left: clampedLeft,
                 top: tooltip.y,
             }}
         >
