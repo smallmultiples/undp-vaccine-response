@@ -103,6 +103,7 @@ const parseMetaSheet = raw => {
 
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
+                tableLabel: row["Indicator Label Table"],
                 sheet: row["Sheet"], // TODO: temporary
                 dataKey: row["Data Key"],
                 tooltipExtra: row["Tooltip Key"] && {
@@ -218,13 +219,11 @@ const usePillarData = () => {
         loading,
         datasets,
         pillars,
-        regionLookup,
     };
 };
 
-// TODO: don't use regionLookup and instead use info from countryData
 function App() {
-    const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
+    const { pillars, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
     const [activeQuestion, setActiveQuestion] = React.useState(null);
 
@@ -249,7 +248,7 @@ function App() {
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
-    if (!pillars || !activePillar || !regionLookup || !activeQuestion) return null; // TODO loader
+    if (!pillars || !activePillar || !activeQuestion) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -273,8 +272,8 @@ function App() {
                 />
                 <Questions
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     datasets={datasets}
-                    regionLookup={regionLookup}
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
                 />

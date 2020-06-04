@@ -4,7 +4,7 @@ import { extent } from "d3-array";
 import { scaleSymlog, scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
-import { flatten, isNil } from "lodash";
+import { flatten, isNil, last } from "lodash";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -161,7 +161,14 @@ const getColorMatrices = (activePillar, currentIndicators) => {
 
     let colorMatrixHex = colourMatricesHex[activePillar.label];
 
-    if (xHdi || (xHdi && yHdi)) {
+    if (xHdi && yHdi) {
+        colorMatrixHex = [
+            last(hdiColorMatrixHex),
+            last(hdiColorMatrixHex),
+            last(hdiColorMatrixHex),
+            last(hdiColorMatrixHex),
+        ];
+    } else if (xHdi) {
         colorMatrixHex = hdiColorMatrixHex;
     } else if (yHdi) {
         // Transpose the matrix and reverse.
@@ -348,12 +355,15 @@ const Map = props => {
                 ...d,
                 bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
                 bivariateXEnabled: false,
+                bivariateYEnabled: false,
             }));
         } else {
             // Whenever active QUESTION changes, set the pillar indicator to the first for the question
             setCurrentIndicators(d => ({
                 ...d,
                 bivariateX: activeQuestion.indicators[0],
+                bivariateXEnabled: true,
+                bivariateYEnabled: false,
             }));
         }
     }, [activeQuestion]);

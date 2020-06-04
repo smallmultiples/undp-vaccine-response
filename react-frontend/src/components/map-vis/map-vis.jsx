@@ -365,6 +365,7 @@ const CircleVis = props => {
 
             return (
                 <g
+                    key={row[SHEET_ROW_ID]}
                     style={{
                         transform: `translate(${xy[0]}px, ${xy[1]}px)`,
                     }}

@@ -1,7 +1,7 @@
 import { last, isNil } from "lodash";
 // from https://stackoverflow.com/questions/9461621/format-a-number-as-2-5k-if-a-thousand-or-more-otherwise-900
 // modified
-const isDef = num => !isNaN(num);
+const isDef = num => !isNaN(num) && !isNil(num) && num !== "";
 
 export const formatSI = (decimals = 2) => num => {
     if (!isDef(num)) return undefined;
