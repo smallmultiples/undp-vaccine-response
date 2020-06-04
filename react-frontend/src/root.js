@@ -113,6 +113,7 @@ const parseMetaSheet = raw => {
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 tableLabel: row["Indicator Label Table"],
+                description: row["Indicator Description"],
                 dataKey: row["Data Key"],
                 tooltipExtra: row["Tooltip Key"] && {
                     key: row["Tooltip Key"],

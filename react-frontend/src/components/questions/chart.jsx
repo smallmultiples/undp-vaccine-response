@@ -68,7 +68,10 @@ const Chart = props => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.title}>{indicator}</div>
+            <div className={styles.infoContainer}>
+                <div className={styles.title}>{indicator.tableLabel || indicator.label}</div>
+                <p className={styles.info}>{indicator.description}</p>
+            </div>
             <svg className={styles.svg} ref={ref} onMouseLeave={() => setHoveredData(null)}>
                 {chartContent}
             </svg>
