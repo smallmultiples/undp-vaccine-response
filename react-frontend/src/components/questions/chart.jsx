@@ -60,6 +60,7 @@ const Chart = props => {
         dimensions,
         domains,
         scales,
+        indicator,
     };
 
     const chartContent = scales && data.length !== 0 && (
@@ -68,7 +69,10 @@ const Chart = props => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.title}>{indicator}</div>
+            <div className={styles.infoContainer}>
+                <div className={styles.title}>{indicator.tableLabel || indicator.label}</div>
+                <p className={styles.info}>{indicator.description}</p>
+            </div>
             <svg className={styles.svg} ref={ref} onMouseLeave={() => setHoveredData(null)}>
                 {chartContent}
             </svg>
@@ -77,7 +81,7 @@ const Chart = props => {
 };
 
 const Data = props => {
-    const { scales, data, rawData, isOnlyPositive, hoveredData, setHoveredData } = props;
+    const { scales, data, rawData, isOnlyPositive, hoveredData, setHoveredData, indicator } = props;
     const maxVal = Math.max(...data);
     const minVal = Math.min(...data);
     const absMaxVal = Math.max(Math.abs(minVal), Math.abs(maxVal));
@@ -131,7 +135,7 @@ const Data = props => {
                     height={1}
                 />
                 <text className={styles.tick} x={0} y={scales.y(midVal) + 5}>
-                    {formatLabel(midVal)}
+                    {indicator.format(midVal)}
                 </text>
                 <rect
                     className={styles.thinLine}
@@ -141,7 +145,7 @@ const Data = props => {
                     height={1}
                 />
                 <text className={styles.tick} x={0} y={scales.y(absMaxVal) + 5}>
-                    {formatLabel(absMaxVal)}
+                    {indicator.format(absMaxVal)}
                 </text>
                 {!isOnlyPositive && (
                     <>
@@ -153,7 +157,7 @@ const Data = props => {
                             height={1}
                         />
                         <text className={styles.tick} x={0} y={scales.y(-midVal) + 5}>
-                            {formatLabel(-midVal)}
+                            {indicator.format(-midVal)}
                         </text>
                         <rect
                             className={styles.thinLine}
@@ -163,7 +167,7 @@ const Data = props => {
                             height={1}
                         />
                         <text className={styles.tick} x={0} y={scales.y(-absMaxVal) + 5}>
-                            {formatLabel(-absMaxVal)}
+                            {indicator.format(-absMaxVal)}
                         </text>
                     </>
                 )}
@@ -182,14 +186,14 @@ const Data = props => {
                 </text>
             </g>
             {!isMobile && hoveredData && (
-                <CountryData hoveredData={hoveredData} frame={scales.frame} />
+                <CountryData hoveredData={hoveredData} frame={scales.frame} indicator={indicator} />
             )}
         </g>
     );
 };
 
 const CountryData = props => {
-    const { hoveredData, frame } = props;
+    const { hoveredData, frame, indicator } = props;
     const framePadding = 12;
     const boxWidth = 150;
     const boxHeight = 48;
@@ -209,28 +213,13 @@ const CountryData = props => {
             <foreignObject x={x} y={y} width={boxWidth} height={boxHeight}>
                 <div className={styles.tooltipTextWrapper}>
                     <div className={styles.tooltipText}>{hoveredData.item.country}</div>
-                    <div className={styles.tooltipData}>{formatLabel(hoveredData.item.data)}</div>
+                    <div className={styles.tooltipData}>
+                        {indicator.format(hoveredData.item.data)}
+                    </div>
                 </div>
             </foreignObject>
         </>
     );
-};
-
-const formatLabel = number => {
-    if (!number) {
-        return;
-    }
-    const abs = Math.abs(number);
-    const sign = number >= 0 ? "" : "-";
-    let formattedNumber;
-    if (abs <= 1) {
-        formattedNumber = Math.round(abs * 10) / 10;
-    } else if (abs < 1000) {
-        formattedNumber = Math.round(abs);
-    } else if (abs >= 1000) {
-        formattedNumber = (abs / 1000).toFixed(1) + "k";
-    }
-    return sign + formattedNumber.toString();
 };
 
 export default Chart;

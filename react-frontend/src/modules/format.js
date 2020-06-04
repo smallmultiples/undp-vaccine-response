@@ -6,27 +6,29 @@ const isDef = num => !isNaN(num) && !isNil(num) && num !== "";
 const validateDecimals = (decimals, defaultValue = 2) =>
     isNaN(decimals) ? defaultValue : decimals;
 
-export const formatSI = (decimals = 2) => num => {
-    if (!isDef(num)) return undefined;
-    var si = [
-        { value: 1, symbol: "" },
-        { value: 1e3, symbol: "K" },
-        { value: 1e6, symbol: "M" },
-        { value: 1e9, symbol: "B" },
-        { value: 1e12, symbol: "T" },
-    ];
-    var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-    var i;
-    for (i = si.length - 1; i > 0; i--) {
-        if (num >= si[i].value) {
-            break;
+export const formatSI = (decimals = 2) => {
+    const format = formatDecimal(decimals);
+    return num => {
+        if (!isDef(num)) return undefined;
+
+        const isNegative = num < 0;
+        const abs = Math.abs(num);
+        var si = [
+            { value: 1, symbol: "" },
+            { value: 1e3, symbol: "K" },
+            { value: 1e6, symbol: "M" },
+            { value: 1e9, symbol: "B" },
+            { value: 1e12, symbol: "T" },
+        ];
+        var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        var i;
+        for (i = si.length - 1; i > 0; i--) {
+            if (abs >= si[i].value) {
+                break;
+            }
         }
-    }
-    return (
-        (num / si[i].value)
-            .toLocaleString(undefined, { maximumFractionDigits: validateDecimals(decimals, 2) })
-            .replace(rx, "$1") + si[i].symbol
-    );
+        return (isNegative ? "-" : "") + format(abs / si[i].value).replace(rx, "$1") + si[i].symbol;
+    };
 };
 
 export const formatPercent = (decimals = 2) => raw => {
