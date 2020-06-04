@@ -6,22 +6,44 @@
     align-items: center;
     position: relative;
     margin-bottom: 48px;
+
+    &:last-child {
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: $width-mobile) {
+        display: block;
+    }
 }
 
-.title {
+.infoContainer {
     width: 20%;
     padding: 0 12px;
-    @include h4();
+
+    .title {
+        @include h4();
+    }
+
+    .info {
+        font-size: 12px;
+    }
 
     @include mobileOnly() {
         @include bodyXSmall();
         padding: 0 6px 0 0;
+    }
+    @media (max-width: $width-mobile) {
+        width: 100%;
     }
 }
 
 .svg {
     width: 80%;
     height: 150px;
+
+    @media (max-width: $width-mobile) {
+        width: 100%;
+    }
 }
 
 .tick {
@@ -61,7 +83,7 @@
 }
 
 .hoverableBar {
-    fill: rgba(0,0,0,0);
+    fill: rgba(0, 0, 0, 0);
     pointer-events: painted;
 }
 

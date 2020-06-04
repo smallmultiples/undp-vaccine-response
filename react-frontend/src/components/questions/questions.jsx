@@ -84,7 +84,7 @@ const Question = props => {
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");
             if (tmp.length > 0 && isNumericData) {
                 return {
-                    indicator: ind.tableLabel || ind.label,
+                    indicator: ind,
                     data: tmp,
                 };
             } else {
@@ -100,6 +100,29 @@ const Question = props => {
             <div className={styles.question}>
                 <div className={styles.questionText}>
                     <div className={styles.label}>{question.label}</div>
+                    <p className={styles.description}>{question.description}</p>
+                </div>
+                <div className={styles.chartsContainer}>
+                    {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
+                    {chartData &&
+                        chartData.map((x, i) => {
+                            return (
+                                <Chart
+                                    key={`${x.indicator}_${i}`}
+                                    indicator={x.indicator}
+                                    data={x.data}
+                                />
+                            );
+                        })}
+                </div>
+                <div className={styles.overviewTable}>
+                    <h3>Source information</h3>
+                    <Table
+                        headings={["Indicators", "Availability", "Currency", "Data source"]}
+                        rows={rowsForOverviewTable}
+                        fixedColumns={isMobile ? 0 : 2}
+                        fixedColumnsWidth={30}
+                    />
                     <button className={styles.downloadButton}>Download CSV</button>
                     {!isMobile && (
                         <button
@@ -113,14 +136,6 @@ const Question = props => {
                             />
                         </button>
                     )}
-                </div>
-                <div className={styles.overviewTable}>
-                    <Table
-                        headings={["Indicators", "Availability", "Currency", "Data source"]}
-                        rows={rowsForOverviewTable}
-                        fixedColumns={isMobile ? 0 : 2}
-                        fixedColumnsWidth={30}
-                    />
                 </div>
                 {!isMobile && (
                     <div className={styles.countryTable} data-visible={isPreviewShown}>
@@ -139,13 +154,6 @@ const Question = props => {
                         />
                     </div>
                 )}
-            </div>
-            <div className={styles.chartsContainer}>
-                {chartData.length > 0 && <Legend hdiIndicator={hdiIndicator} />}
-                {chartData &&
-                    chartData.map(x => {
-                        return <Chart key={x.indicator} indicator={x.indicator} data={x.data} />;
-                    })}
             </div>
         </>
     );
@@ -185,7 +193,7 @@ const Questions = props => {
     const { activePillar, datasets, countryData, hdiIndicator, covidPillar } = props;
     return (
         <>
-            <h2>Explore indicators for {activePillar.label}</h2>
+            <h2 className={styles.questionsHeading}>Explore indicators for {activePillar.label}</h2>
             {activePillar.questions.map((x, i) => (
                 <Question
                     key={`${x.labelLong}_${i}`}

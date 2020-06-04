@@ -1,12 +1,17 @@
 @import "../../variables.scss";
 
+.questionsHeading {
+    padding-top: 60px;
+}
+
 .question {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
     grid-template-areas:
-        "qText overview overview overview"
-        "country country country country";
+        "qText charts charts charts"
+        ". overview overview overview"
+        "table table table table";
     margin: 36px auto;
 
     @include mobileOnly() {
@@ -27,32 +32,10 @@
     .explanation {
         margin-bottom: 24px;
     }
-
-    .downloadButton {
-        @include button();
-        width: fit-content;
-        margin-bottom: 12px;
-        display: block;
-    }
-
-    .hideButton {
-        @include button($color-blue-bg, $color-navy);
-        width: fit-content;
-        margin-bottom: 24px;
-        display: block;
-
-        .chevron {
-            margin-left: 12px;
-            &[data-direction="down"] {
-                transform: rotate(180deg);
-            }
-        }
-    }
 }
 
 .overviewTable {
     grid-area: overview;
-    padding-left: 24px;
     margin-bottom: 24px;
 
     @include mobileOnly() {
@@ -65,7 +48,26 @@
         align-items: center;
 
         .label {
-            max-width: 100px;
+            max-width: 150px;
+        }
+    }
+
+    .downloadButton {
+        @include button();
+        width: fit-content;
+        margin: 30px 20px 10px 0;
+    }
+
+    .hideButton {
+        @include button($color-blue-bg, $color-navy);
+        width: fit-content;
+        margin: 30px 20px 10px 0;
+
+        .chevron {
+            margin-left: 12px;
+            &[data-direction="down"] {
+                transform: rotate(180deg);
+            }
         }
     }
 
@@ -75,7 +77,7 @@
 }
 
 .countryTable {
-    grid-area: country;
+    grid-area: table;
     opacity: 0;
     max-height: 0;
     overflow: hidden;
@@ -103,6 +105,7 @@
 }
 
 .chartsContainer {
+    grid-area: charts;
     margin-bottom: 24px;
 }
 
