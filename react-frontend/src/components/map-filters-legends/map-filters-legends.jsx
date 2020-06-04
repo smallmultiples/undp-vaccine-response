@@ -96,6 +96,8 @@ const BivariateIndicatorSelection = props => {
     // Disable Y axis if there is only one indicator.
     const disableY = bivariateYOptions.length === 1;
 
+    //TODO the labels for the dropdowns are not very accessible, I don't think?
+
     return (
         <div className={styles.bivariateIndicatorSelection}>
             <div className={styles.bivariateIndicatorItem} data-y>
@@ -110,6 +112,9 @@ const BivariateIndicatorSelection = props => {
                     disabled={disableY}
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
+                    <p className={styles.bivariateIndicatorDropdownLabel}>
+                        Other indicators in this pillar:
+                    </p>
                     <Select
                         options={bivariateYOptions}
                         onChange={indicator =>
@@ -134,6 +139,9 @@ const BivariateIndicatorSelection = props => {
                     }
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
+                    <p className={styles.bivariateIndicatorDropdownLabel}>
+                        Other indicators in this question:
+                    </p>
                     <Select
                         options={bivariateXOptions}
                         onChange={indicator =>
