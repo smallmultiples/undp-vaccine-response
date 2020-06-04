@@ -24,9 +24,12 @@ const PillarControl = props => {
                                     label={pillar.labelLong}
                                     activePillar={activePillar}
                                     expandedPillar={expandedPillar}
-                                    onExpand={() => setExpandedPillar(pillar.labelLong)}
+                                    onExpand={() =>
+                                        expandedPillar !== pillar.labelLong
+                                            ? setExpandedPillar(pillar.labelLong)
+                                            : setExpandedPillar(undefined)
+                                    }
                                     onChange={question => {
-                                        setActivePillar(pillar);
                                         setActiveQuestion(question);
                                     }}
                                     value={activeQuestion}

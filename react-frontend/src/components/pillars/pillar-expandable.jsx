@@ -2,6 +2,8 @@ import React from "react";
 import styles from "./pillars.module.scss";
 import useDimensions from "../../hooks/use-dimensions";
 
+import { Chevron } from "../icons/icons";
+
 const PillarExpandable = props => {
     const { options, label, activePillar, expandedPillar, onExpand, onChange, value } = props;
     const [contentRef, contentDimensions] = useDimensions();
@@ -46,7 +48,7 @@ const PillarExpandable = props => {
                 data-expanded={expandedPillar === label}
             >
                 {label}
-                {/* <div>{isExpanded ? iconExpanded : iconCollapsed}</div> */}
+                <Chevron className={styles.chevron} data-expanded={expandedPillar === label} />
             </div>
             <div
                 className={styles.contentWrapper}
