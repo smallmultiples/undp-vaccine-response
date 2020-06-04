@@ -225,7 +225,9 @@ const RadiusLegend = props => {
     const ar = range[0];
     const ax = ar + hs;
 
-    const br = range[1];
+    const MAX_RADIUS = 18;
+
+    const br = Math.min(MAX_RADIUS, range[1]);
     const bx = width - br - hs;
 
     const cy = height / 2;
@@ -431,9 +433,13 @@ const BivariateLegendGrid = props => {
                 const yMax = currentIndicators.bivariateY.flipped
                     ? domains.categories.y[rowIndex]
                     : domains.categories.y[yIndexMax - rowIndex];
+
+                // If both axes are HDI then we hide the y tooltip because it is borked.
+                const hideY = currentIndicators.bivariateY.hdi && currentIndicators.bivariateX.hdi;
+
                 tooltip = (
                     <div className={styles.legendColourTooltip}>
-                        {bivariateYEnabled && (
+                        {bivariateYEnabled && !hideY && (
                             <div className={styles.legendColourTooltipEntry}>
                                 <div
                                     className={styles.legendColourTooltipIcon}

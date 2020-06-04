@@ -1,2 +1,3 @@
 data/out
 react-frontend/.env
+react-frontend/public/data/*.json

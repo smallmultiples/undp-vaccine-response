@@ -17,6 +17,9 @@ const SHEET_ID =
 const META_SHEET_ID =
     process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
 
+const USE_SHEET =
+    process.env.NODE_ENV === "development" || process.env.REACT_APP_USE_SHEET === "true";
+
 const trackingId = "UA-25119617-15";
 ReactGA.initialize(trackingId);
 
@@ -101,19 +104,30 @@ const parseMetaSheet = raw => {
             const legendDpRaw = numOrUndef(row["Legend Decimals"]);
             const legendDecimals = isNaN(legendDpRaw) ? decimals : legendDpRaw;
 
+            const tooltipDpRaw = numOrUndef(row["Tooltip Decimals"]);
+            const tooltipDecimals = isNaN(tooltipDpRaw) ? decimals : tooltipDpRaw;
+            const mapFormat = formats[row["Data Format"]]
+                ? formats[row["Data Format"]](decimals)
+                : formats.decimal(decimals);
+            console.log(
+                row["Tooltip Label"] || row["Tooltip Key"],
+                row["Tooltip Label"],
+                row["Tooltip Key"]
+            );
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
-                sheet: row["Sheet"], // TODO: temporary
+                tableLabel: row["Indicator Label Table"],
                 dataKey: row["Data Key"],
                 tooltipExtra: row["Tooltip Key"] && {
                     key: row["Tooltip Key"],
                     label: row["Tooltip Label"] || row["Tooltip Key"],
+                    format: formats[row["Tooltip Format"]]
+                        ? formats[row["Tooltip Format"]](tooltipDecimals)
+                        : mapFormat,
                 },
                 flipped: row["Invert Scale"],
                 categorical: categorical,
-                format: formats[row["Data Format"]]
-                    ? formats[row["Data Format"]](decimals)
-                    : formats.decimal(decimals),
+                format: mapFormat,
                 formatLegend: formats[row["Data Format"]]
                     ? formats[row["Data Format"]](legendDecimals)
                     : formats.decimal(legendDecimals),
@@ -151,40 +165,40 @@ const usePillarData = () => {
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
-        (async () => {})();
-    }, []);
-
-    React.useEffect(() => {
         (async () => {
-            const pillars = await axios(
-                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
-            ).then(d => parseMetaSheet(d.data));
+            const pillarUrl = USE_SHEET
+                ? `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=indicators`
+                : `${process.env.PUBLIC_URL}/data/meta.json`;
+            const pillars = await axios(pillarUrl).then(d => parseMetaSheet(d.data));
             setPillars(pillars);
 
-            const regionsPromise = await axios(
-                `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:L`
-            )
+            const regionsUrl = USE_SHEET
+                ? `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:L`
+                : `${process.env.PUBLIC_URL}/data/regions.json`;
+            const regionsPromise = await axios(regionsUrl)
                 .then(d => d.data)
                 .then(setRegionLookup);
 
-            // TODO: remove concat when questions fixed
-            const sheetsToFetch = uniq(
-                flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
-            ).concat(
-                flatten(
-                    pillars.map(p => flatten(p.questions.map(q => q.indicators.map(i => i.sheet))))
-                ).filter(Boolean)
-            );
-
             let newSets = {};
-            await Promise.all(
-                sheetsToFetch.map(async sheet => {
-                    const res = await axios(
-                        `https://holy-sheet.visualise.today/sheet/${SHEET_ID}?range=${sheet}`
-                    );
-                    newSets[sheet] = res.data;
-                })
-            );
+
+            if (USE_SHEET) {
+                const sheetsToFetch = uniq(
+                    flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
+                );
+
+                await Promise.all(
+                    sheetsToFetch.map(async sheet => {
+                        const res = await axios(
+                            `https://holy-sheet.visualise.today/sheet/${SHEET_ID}?range=${sheet}`
+                        );
+                        newSets[sheet] = res.data;
+                    })
+                );
+            } else {
+                newSets = await axios(`${process.env.PUBLIC_URL}/data/datasets.json`).then(
+                    d => d.data
+                );
+            }
             await regionsPromise;
 
             setDatasets(newSets);
@@ -218,13 +232,11 @@ const usePillarData = () => {
         loading,
         datasets,
         pillars,
-        regionLookup,
     };
 };
 
-// TODO: don't use regionLookup and instead use info from countryData
 function App() {
-    const { pillars, regionLookup, datasets, countryData, loading } = usePillarData();
+    const { pillars, datasets, countryData, loading } = usePillarData();
     const [activePillar, setActivePillar] = React.useState(null);
     const [activeQuestion, setActiveQuestion] = React.useState(null);
 
@@ -249,7 +261,7 @@ function App() {
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
-    if (!pillars || !activePillar || !regionLookup || !activeQuestion) return null; // TODO loader
+    if (!pillars || !activePillar || !activeQuestion) return null; // TODO loader
 
     return (
         <div className={styles.root}>
@@ -273,8 +285,8 @@ function App() {
                 />
                 <Questions
                     activePillar={activePillar}
+                    covidPillar={covidPillar}
                     datasets={datasets}
-                    regionLookup={regionLookup}
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
                 />

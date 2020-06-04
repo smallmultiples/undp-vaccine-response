@@ -5,21 +5,24 @@ import { Chevron } from "../icons/icons";
 import Badge from "./badge";
 import Chart from "./chart";
 import useMediaQuery from "../../hooks/use-media-query";
+import { flatten } from "lodash";
 
 const COUNTRIES_TOTAL = 249;
 
 const Question = props => {
-    const { question, dataset, regionLookup, countryData, hdiIndicator } = props;
+    const { question, dataset, countryData, hdiIndicator, covidPillar } = props;
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
     const { isMobile } = useMediaQuery();
 
     if (question.comingSoon) return null;
 
+    const covidIndicators = flatten(covidPillar.questions.map(d => d.indicators));
+
     const headers = ["Country", "Region"];
 
-    const rowsForOverviewTable = question.indicators.map(x => {
-        const label = x.label;
-        const countryCount = x.meta ? x.meta.countryCount : "";
+    const rowsForOverviewTable = question.indicators.map(ind => {
+        const label = ind.tableLabel || ind.label;
+        const countryCount = ind.meta ? ind.meta.countryCount : "";
 
         const cc = (
             <div className={styles.countryCount}>
@@ -30,16 +33,16 @@ const Question = props => {
             </div>
         );
 
-        const currency = x.meta ? x.meta.currency : "";
+        const currency = ind.meta ? ind.meta.currency : "";
         const sources = (
             <div>
-                {x.meta?.sources.map((s, i) => {
+                {ind.meta?.sources.map((s, i) => {
                     return (
                         <span key={`link_${i}`}>
                             <a href={s.url} target="_blank" rel="noopener noreferrer">
                                 {s.name}
                             </a>
-                            {i < x.meta.sources.length - 1 && ", "}
+                            {i < ind.meta.sources.length - 1 && ", "}
                         </span>
                     );
                 })}
@@ -49,45 +52,39 @@ const Question = props => {
         return [label, cc, currency, sources];
     });
 
-    const headersForCountryTable = headers.concat([
-        "Confirmed cases, cumulative",
-        "Deaths, cumulative",
-        "Death rate",
-    ]);
+    const headersForCountryTable = headers.concat(
+        covidIndicators.map(d => d.tableLabel || d.label)
+    );
 
     const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
-        const region = regionLookup?.find(r => r["ISO-alpha3 Code"] === x["Alpha-3 code"]);
         const country = countryData && countryData[x["Alpha-3 code"]];
-        const arr = [x["Country or Area"], region?.["Region Name"] || ""];
+        const arr = [x["Country or Area"], (country && country["Region Name"]) || ""];
         question.indicators.forEach(ind => {
-            arr.push(
-                typeof x[ind.dataKey] === "number"
-                    ? Math.round(x[ind.dataKey] * 10) / 10
-                    : x[ind.dataKey]
-            );
+            arr.push(ind.format(x[ind.dataKey]));
         });
+
         if (country) {
-            arr.push(country.Cumulative_cases);
-            arr.push(country.Cumulative_deaths);
-            arr.push(`${Math.round(country.test_death_rate * 10) / 10}%`);
+            covidIndicators.forEach(ind => {
+                arr.push(ind.format(country[ind.dataKey]));
+            });
         }
         return arr;
     });
 
     const chartData = question.indicators
-        .map(x => {
+        .map(ind => {
             const tmp = [];
             for (const d of dataset || []) {
                 tmp.push({
                     country: d["Country or Area"],
-                    data: d[x.dataKey],
+                    data: d[ind.dataKey],
                     hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator?.dataKey],
                 });
             }
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");
             if (tmp.length > 0 && isNumericData) {
                 return {
-                    indicator: x.label,
+                    indicator: ind.tableLabel || ind.label,
                     data: tmp,
                 };
             } else {
@@ -125,7 +122,7 @@ const Question = props => {
                         fixedColumnsWidth={30}
                     />
                 </div>
-                {!!isMobile && (
+                {!isMobile && (
                     <div className={styles.countryTable} data-visible={isPreviewShown}>
                         <Table
                             headings={headersForCountryTable}
@@ -157,7 +154,7 @@ const Question = props => {
 const Legend = props => {
     return (
         <div className={styles.legendContainer}>
-            <div className={styles.legendTitle}>{props.hdiIndicator?.dataKey}</div>
+            <div className={styles.legendTitle}>Human Development Group</div>
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
                     <div className={styles.box} data-na={true} />
@@ -185,7 +182,7 @@ const Legend = props => {
 };
 
 const Questions = props => {
-    const { activePillar, datasets, regionLookup, countryData, hdiIndicator } = props;
+    const { activePillar, datasets, countryData, hdiIndicator, covidPillar } = props;
     return (
         <>
             <h2>Explore indicators for {activePillar.label}</h2>
@@ -194,9 +191,9 @@ const Questions = props => {
                     key={`${x.labelLong}_${i}`}
                     question={x}
                     dataset={datasets[x.sheet]}
-                    regionLookup={regionLookup}
                     countryData={countryData}
                     hdiIndicator={hdiIndicator}
+                    covidPillar={covidPillar}
                 />
             ))}
         </>

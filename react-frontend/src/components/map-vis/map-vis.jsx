@@ -70,12 +70,17 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
         );
     }, []);
 
-    return [mapContainerRef, viewport, handleViewStateChange];
+    return [mapContainerRef, viewport, handleViewStateChange, mapContainerDimensions];
 };
 
 const MapVis = props => {
     const { normalizedData, countryDataLoading, scales, currentIndicators, activeQuestion } = props;
-    const [mapContainerRef, viewport, handleViewStateChange] = useDeckViewport();
+    const [
+        mapContainerRef,
+        viewport,
+        handleViewStateChange,
+        mapContainerDimensions,
+    ] = useDeckViewport();
     const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
 
@@ -131,6 +136,7 @@ const MapVis = props => {
                     currentIndicators={currentIndicators}
                     activeQuestion={activeQuestion}
                     scales={scales}
+                    mapContainerDimensions={mapContainerDimensions}
                 />
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -149,12 +155,18 @@ const getFormattedMapValue = (row, indicator) => {
 };
 const getFormattedTooltipValue = (row, indicator) => {
     const val = row[indicator.tooltipExtra.key];
-    if (isNil(val) || val === "") return "-";
-    return indicator.format(val);
+    return indicator.tooltipExtra.format(val);
 };
 
 const MapTooltip = props => {
-    const { tooltip, normalizedData, currentIndicators, activeQuestion, scales } = props;
+    const {
+        tooltip,
+        normalizedData,
+        currentIndicators,
+        activeQuestion,
+        scales,
+        mapContainerDimensions,
+    } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -179,12 +191,16 @@ const MapTooltip = props => {
         );
     }
 
+    const clampedLeft = `min(${tooltip.x}px, calc(${mapContainerDimensions.width}px - 100%))`;
+    const clampedY = `min(${tooltip.y}px, calc(${mapContainerDimensions.height}px - 100%))`;
+
+    const transform = `translate(${clampedLeft}, ${clampedY})`;
+
     return (
         <div
             className={styles.tooltip}
             style={{
-                left: tooltip.x,
-                top: tooltip.y,
+                transform,
             }}
         >
             <div className={styles.tooltipHeader}>
@@ -365,6 +381,7 @@ const CircleVis = props => {
 
             return (
                 <g
+                    key={row[SHEET_ROW_ID]}
                     style={{
                         transform: `translate(${xy[0]}px, ${xy[1]}px)`,
                     }}
