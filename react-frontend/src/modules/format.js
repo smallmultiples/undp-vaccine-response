@@ -3,6 +3,9 @@ import { last, isNil } from "lodash";
 // modified
 const isDef = num => !isNaN(num) && !isNil(num) && num !== "";
 
+const validateDecimals = (decimals, defaultValue = 2) =>
+    isNaN(decimals) ? defaultValue : decimals;
+
 export const formatSI = (decimals = 2) => num => {
     if (!isDef(num)) return undefined;
     var si = [
@@ -21,27 +24,29 @@ export const formatSI = (decimals = 2) => num => {
     }
     return (
         (num / si[i].value)
-            .toLocaleString(undefined, { maximumFractionDigits: decimals })
+            .toLocaleString(undefined, { maximumFractionDigits: validateDecimals(decimals, 2) })
             .replace(rx, "$1") + si[i].symbol
     );
 };
 
 export const formatPercent = (decimals = 2) => raw => {
     if (!isDef(raw)) return "-";
-    return raw.toLocaleString(undefined, { maximumFractionDigits: decimals }) + "%";
+    return (
+        raw.toLocaleString(undefined, { maximumFractionDigits: validateDecimals(decimals, 2) }) +
+        "%"
+    );
 };
 
 export const formatDecimal = (decimals = 2) => raw => {
     if (!isDef(raw)) return "-";
     return raw.toLocaleString(undefined, {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: 0,
+        maximumFractionDigits: validateDecimals(decimals, 2),
     });
 };
 
 export const formatComma = (decimals = 0) => raw => {
     if (!isDef(raw)) return "-";
-    return raw.toLocaleString(undefined, { maximumFractionDigits: decimals });
+    return raw.toLocaleString(undefined, { maximumFractionDigits: validateDecimals(decimals, 0) });
 };
 
 export const formatUSD = decimals => {
