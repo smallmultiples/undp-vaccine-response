@@ -20,6 +20,21 @@ const MapFiltersLegends = props => {
     );
 };
 
+export const QuestionInfoMobile = props => {
+    return <QuestionInfo {...props} />;
+}
+
+export const MapFiltersLegendMobile = props => {
+    return (
+        <div className={styles.mapFiltersLegends}>
+            <BivariateLegend {...props} />
+            <RadiusControls {...props} />
+            <BivariateIndicatorSelection {...props} />
+            <CategoricalLegend {...props} />
+        </div>
+    );
+}
+
 const QuestionInfo = props => {
     const { activeQuestion } = props;
     const [open, setOpen] = React.useState(false);

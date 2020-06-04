@@ -3,8 +3,12 @@ import styles from "./map.module.scss";
 import { extent } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
-import MapFiltersLegends from "../map-filters-legends/map-filters-legends";
+import MapFiltersLegends, {
+    QuestionInfoMobile,
+    MapFiltersLegendMobile,
+} from "../map-filters-legends/map-filters-legends";
 import { flatten, isNil, last } from "lodash";
+import useMediaQuery from "../../hooks/use-media-query";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -372,9 +376,11 @@ const Map = props => {
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, activePillar);
 
+    const { isMobile } = useMediaQuery();
+
     return (
         <div className={styles.map}>
-            {scales && (
+            {!isMobile && scales && (
                 <MapFiltersLegends
                     domains={domains}
                     scales={scales}
@@ -384,6 +390,7 @@ const Map = props => {
                     {...props}
                 />
             )}
+            {isMobile && <QuestionInfoMobile activeQuestion={activeQuestion} />}
             <MapVis
                 {...props}
                 domains={domains}
@@ -392,6 +399,16 @@ const Map = props => {
                 currentIndicators={currentIndicators}
                 activeQuestion={activeQuestion}
             />
+            {isMobile && (
+                <MapFiltersLegendMobile
+                    domains={domains}
+                    scales={scales}
+                    currentIndicators={currentIndicators}
+                    setCurrentIndicators={setCurrentIndicators}
+                    normalizedData={countryData}
+                    {...props}
+                />
+            )}
         </div>
     );
 };

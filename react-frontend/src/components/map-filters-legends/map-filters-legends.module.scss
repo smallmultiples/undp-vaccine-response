@@ -8,6 +8,9 @@ $covidToggleWidth: 220px;
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: wrap;
+    @include mobileOnly() {
+        justify-content: space-around;
+    }
 }
 
 // ----
@@ -15,6 +18,11 @@ $covidToggleWidth: 220px;
 .questionInfo {
     width: 290px;
     margin-right: 54px;
+
+    @include mobileOnly() {
+        width: 100%;
+        margin-right: 0;
+    }
 
     .questionInfoHeading {
         @include h3();
@@ -75,6 +83,10 @@ $covidToggleWidth: 220px;
     padding-top: 16px;
     margin-right: 24px;
 
+    @include mobileOnly() {
+        width: 100%;
+    }
+
     .bivariateIndicatorItem {
         display: flex;
         flex-direction: row;
@@ -100,6 +112,9 @@ $covidToggleWidth: 220px;
         .bivariateIndicatorDropdownLabel {
             font-size: 12px;
             margin: 0 0 7px 10px;
+            @include mobileOnly() {
+                display: none;
+            }
         }
 
         .bivariateIndicatorDropdownWrap {
@@ -111,10 +126,13 @@ $covidToggleWidth: 220px;
                 z-index: 8;
                 left: 12px;
                 top: 50%;
+                @include mobileOnly() {
+                    top: 25%;
+                }
             }
 
-            @media (max-width: $width-mobile) {
-                width: 300px;
+            @include mobileOnly() {
+                width: 100%;
             }
         }
     }
