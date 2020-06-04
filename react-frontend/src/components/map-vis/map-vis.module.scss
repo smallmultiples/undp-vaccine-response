@@ -17,6 +17,7 @@
     pointer-events: none;
     width: 200px;
     box-sizing: content-box;
+    z-index: 23;
 
     .tooltipHeader {
         background: $color-yellow;
