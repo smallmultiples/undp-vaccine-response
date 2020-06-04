@@ -348,6 +348,8 @@ const CircleVis = props => {
         return viewport.project([lng, lat]);
     };
 
+    if (!currentIndicators.radiusEnabled) return null;
+
     let content = null;
 
     if (activeQuestion.categorical) {

@@ -356,6 +356,7 @@ const Map = props => {
                 bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
                 bivariateXEnabled: false,
                 bivariateYEnabled: false,
+                radiusEnabled: true,
             }));
         } else {
             // Whenever active QUESTION changes, set the pillar indicator to the first for the question

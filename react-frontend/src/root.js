@@ -109,11 +109,7 @@ const parseMetaSheet = raw => {
             const mapFormat = formats[row["Data Format"]]
                 ? formats[row["Data Format"]](decimals)
                 : formats.decimal(decimals);
-            console.log(
-                row["Tooltip Label"] || row["Tooltip Key"],
-                row["Tooltip Label"],
-                row["Tooltip Key"]
-            );
+
             out[currentPillar].questions[currentQuestion].indicators[ind] = {
                 label: ind,
                 tableLabel: row["Indicator Label Table"],

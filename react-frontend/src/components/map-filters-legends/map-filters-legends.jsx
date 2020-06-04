@@ -153,14 +153,14 @@ const BivariateIndicatorSelection = props => {
 
 const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
-    const { activeQuestion, normalizedData } = props;
+    const { activeQuestion, normalizedData, setCurrentIndicators, currentIndicators } = props;
 
     const categoryIndicator = React.useMemo(
         () => activeQuestion.indicators.find(d => d.categorical),
         [activeQuestion]
     );
 
-    // TODO: module.
+    // TODO: this should be in the radius extents maybe.
     const uniqueVals = React.useMemo(() => {
         if (!categoryIndicator) return null;
         return uniq(
@@ -193,9 +193,25 @@ const CategoricalLegend = props => {
     });
 
     return (
-        <table className={styles.categoryList}>
-            <tbody>{items}</tbody>
-        </table>
+        <div className={styles.categoryLegend}>
+            <div className={styles.categoryLegendHeader}>
+                <Checkbox
+                    value={currentIndicators.radiusEnabled}
+                    onChange={v =>
+                        setCurrentIndicators(d => ({
+                            ...d,
+                            radiusEnabled: v,
+                        }))
+                    }
+                />
+                <div className={styles.categoryLegendHeading}>
+                    {categoryIndicator && "Show " + categoryIndicator.label}
+                </div>
+            </div>
+            <table className={styles.categoryList} data-visible={currentIndicators.radiusEnabled}>
+                <tbody>{items}</tbody>
+            </table>
+        </div>
     );
 };
 
