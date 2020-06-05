@@ -23,6 +23,7 @@ const PillarControl = props => {
                         if (isMobile) {
                             return (
                                 <PillarExpandable
+                                    key={pillar.label}
                                     options={pillar.questions}
                                     label={pillar.labelLong}
                                     activePillar={activePillar}
@@ -41,6 +42,7 @@ const PillarControl = props => {
                         }
                         return (
                             <PillarDropdown
+                                key={pillar.label}
                                 options={pillar.questions}
                                 label={pillar.labelLong}
                                 pillarSelected={selected}

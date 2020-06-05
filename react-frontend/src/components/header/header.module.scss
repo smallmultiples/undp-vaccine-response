@@ -99,19 +99,4 @@
             }
         }
     }
-
-    .subHeadings {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-
-        .updateDate {
-            @include bodyXSmall();
-            em {
-                font-style: normal;
-                font-weight: bold;
-            }
-        }
-    }
 }
