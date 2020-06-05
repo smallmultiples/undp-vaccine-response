@@ -16,11 +16,6 @@ const Footer = props => {
                 </a>
                 <ul className={styles.nav}>
                     <li>
-                        <a href="./about.html" title="Read more about the UNDP Data Platform">
-                            About
-                        </a>
-                    </li>
-                    <li>
                         <a
                             href="https://www.undp.org/content/undp/en/home/2030-agenda-for-sustainable-development/partnerships.html"
                             title="Read more about UNDP partnerships"

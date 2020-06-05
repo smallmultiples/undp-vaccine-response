@@ -5,7 +5,11 @@ import styles from "./header.module.scss";
 
 const Header = props => {
     const { lastUpdatedDate } = props;
-    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' });
+    const dateTimeFormat = new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+    });
     const date = dateTimeFormat.format(lastUpdatedDate);
     const { isMobile } = useMediaQuery();
     return (
@@ -18,9 +22,7 @@ const Header = props => {
                     <div className={styles.headings}>
                         <div className={styles.mainHeading}>
                             <div className={styles.betaTag}>Beta</div>
-                            <div>
-                                Socio-Economic Recovery Data Platform
-                            </div>
+                            <div>Socio-Economic Recovery Data Platform</div>
                         </div>
                         <div className={styles.subHeadings}>
                             <span className={styles.updateDate}>
@@ -29,20 +31,6 @@ const Header = props => {
                         </div>
                     </div>
                 </div>
-                {!isMobile && <div className={styles.collapsibleHeader}>
-                    <ul className={styles.navButtons}>
-                        <li className={styles.navItem} data-active={true}>
-                            <a className={styles.navLink} href="#">
-                                Home
-                            </a>
-                        </li>
-                        <li className={styles.navItem} data-active={false}>
-                            <a className={styles.navLink} href="#">
-                                About
-                            </a>
-                        </li>
-                    </ul>
-                </div>}
             </div>
         </header>
     );

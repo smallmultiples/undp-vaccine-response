@@ -9,7 +9,8 @@
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto;
     grid-template-areas:
-        "qText charts charts charts"
+        "qText qText qText qText"
+        "charts charts charts charts"
         "overview overview overview overview"
         "table table table table";
     margin: 36px auto;
