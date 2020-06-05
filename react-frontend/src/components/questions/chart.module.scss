@@ -19,6 +19,7 @@
 .infoContainer {
     width: 20%;
     padding: 0;
+    margin-right: 12px;
 
     .title {
         @include h4();
