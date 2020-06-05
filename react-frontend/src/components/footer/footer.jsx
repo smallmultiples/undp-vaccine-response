@@ -5,7 +5,11 @@ import { ReactComponent as Logo } from "./logo.svg";
 
 const Footer = props => {
     const { lastUpdatedDate } = props;
-    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' });
+    const dateTimeFormat = new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+    });
     const date = dateTimeFormat.format(lastUpdatedDate);
 
     return (
@@ -25,14 +29,6 @@ const Footer = props => {
                         <Logo />
                     </a>
                     <ul className={styles.nav}>
-                        <li>
-                            <a
-                                href="./html2/about.html"
-                                title="Read more about the UNDP Data Platform"
-                            >
-                                About
-                            </a>
-                        </li>
                         <li>
                             <a
                                 href="https://www.undp.org/content/undp/en/home/2030-agenda-for-sustainable-development/partnerships.html"
