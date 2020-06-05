@@ -23,9 +23,9 @@ const PillarDropdown = props => {
         .filter(d => !d.comingSoon)
         .map(opt => {
             const selected = opt === value;
-
             return (
                 <li
+                    key={opt.label}
                     className={styles.selectOption}
                     onClick={() => handleChange(opt)}
                     data-selected={selected}
@@ -40,7 +40,7 @@ const PillarDropdown = props => {
         .filter(d => d.comingSoon)
         .map(opt => {
             return (
-                <li className={styles.selectOption} data-soon>
+                <li key={opt.label} className={styles.selectOption} data-soon>
                     <div className={styles.selectOptionLabel}>{opt.label}</div>
                 </li>
             );

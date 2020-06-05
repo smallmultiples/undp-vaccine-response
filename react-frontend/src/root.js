@@ -5,12 +5,10 @@ import styles from "./root.module.scss";
 import Header from "./components/header/header";
 import Pillars from "./components/pillars/pillars";
 import Questions from "./components/questions/questions";
-import DataFilters from "./components/data-filters/data-filters";
 import { flatten, uniq, last } from "lodash";
 import Footer from "./components/footer/footer";
 import { formats } from "./modules/format";
 import ReactGA from "react-ga";
-import Expandable from "./components/pillars/pillar-expandable";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
@@ -258,12 +256,12 @@ function App() {
                 ""
             ) + " GMT+1000"
         );
-    });
+    }, [covidPillar]);
 
     const activePillar = React.useMemo(() => {
         if (!pillars) return null;
         return pillars.find(pillar => pillar.questions.some(q => q === activeQuestion));
-    }, [activeQuestion]);
+    }, [activeQuestion, pillars]);
 
     const hdiIndicator = React.useMemo(() => {
         if (!pillars) return null;
@@ -275,7 +273,7 @@ function App() {
 
     return (
         <div className={styles.root}>
-            <Header lastUpdatedDate={lastUpdatedDate} />
+            <Header />
             <div className={styles.container}>
                 <Pillars
                     activePillar={activePillar}
@@ -306,7 +304,7 @@ function App() {
                 <br />
                 <br />
             </div>
-            <Footer />
+            <Footer lastUpdatedDate={lastUpdatedDate} />
         </div>
     );
 }
