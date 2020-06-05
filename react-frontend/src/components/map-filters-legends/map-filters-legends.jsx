@@ -7,7 +7,6 @@ import useDimensions from "../../hooks/use-dimensions";
 import { uniq, isNil, flatten, last } from "lodash";
 
 const MapFiltersLegends = props => {
-    const { activeQuestion } = props;
     return (
         <div className={styles.mapFiltersLegends}>
             <QuestionInfo {...props} />
@@ -36,7 +35,7 @@ export const MapFiltersLegendMobile = props => {
 
 const QuestionInfo = props => {
     const { activeQuestion } = props;
-    const [descriptionRef, descriptionDimensions] = useDimensions();
+    const [descriptionRef] = useDimensions();
 
     return (
         <div className={styles.questionInfo}>
@@ -287,7 +286,6 @@ const RadiusLegend = props => {
 const Toggle = props => {
     const { options, onChange, value } = props;
 
-    const totalLength = options.reduce((a, b) => a + b.label.length, 0);
     const widths = [27, 30, 43];
 
     const optionsButtons = options.map((option, i) => {

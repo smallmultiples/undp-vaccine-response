@@ -56,7 +56,7 @@ const Question = props => {
         covidIndicators.map(d => d.tableLabel || d.label)
     );
 
-    const rowsForCountryTable = dataset?.slice(0, 5).map(x => {
+    const rowsForCountryTable = dataset?.map(x => {
         const country = countryData && countryData[x["Alpha-3 code"]];
         const arr = [x["Country or Area"], (country && country["Region Name"]) || ""];
         question.indicators.forEach(ind => {
@@ -93,7 +93,16 @@ const Question = props => {
         })
         .filter(a => a !== undefined);
 
-    // TODO footer: not always 201 more rows
+        const csvHeadings = question.label;
+        const arrayForCsv = [headersForCountryTable].concat(rowsForCountryTable);
+        arrayForCsv.unshift(csvHeadings);
+        const csv = arrayForCsv?.map(function(d){
+            return JSON.stringify(d);
+         })
+         .join('\n') 
+         .replace(/(^\[)|(\]$)/mg, '');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
 
     return (
         <>
@@ -126,7 +135,7 @@ const Question = props => {
                         fixedColumns={isMobile ? 0 : 2}
                         fixedColumnsWidth={30}
                     />
-                    <button className={styles.downloadButton}>Download CSV</button>
+                    <a className={styles.downloadButton} href={url} download={'data-undp.csv'}>Download CSV</a>
                     {!isMobile && (
                         <button
                             className={styles.hideButton}
@@ -144,7 +153,7 @@ const Question = props => {
                     <div className={styles.countryTable} data-visible={isPreviewShown}>
                         <Table
                             headings={headersForCountryTable}
-                            rows={rowsForCountryTable || []}
+                            rows={(rowsForCountryTable || []).slice(0, 5)}
                             fixedColumns={2}
                             fixedColumnsWidth={15}
                             withBorders={true}

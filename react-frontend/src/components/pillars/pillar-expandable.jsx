@@ -10,7 +10,7 @@ const PillarExpandable = props => {
 
     const handleChange = React.useCallback(v => {
         onChange(v);
-    }, []);
+    }, [onChange]);
 
     const optionEls = options
         .filter(d => !d.comingSoon)
