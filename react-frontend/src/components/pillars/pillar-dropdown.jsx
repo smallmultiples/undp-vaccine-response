@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./pillars.module.scss";
-import { Chevron } from "../icons/icons";
+import { Chevron, Cohesion, Economic, Health, Macro, Protect } from "../icons/icons";
 
 const PillarDropdown = props => {
-    const { value, label, options, onChange, pillarSelected } = props;
+    const { value, label, options, onChange, pillarSelected, slug } = props;
 
     const [isOpen, setIsOpen] = React.useState(false);
 
@@ -56,6 +56,15 @@ const PillarDropdown = props => {
                     onClick={toggleOpen}
                     data-selected={pillarSelected}
                 >
+                    {
+                        {
+                            Cohesion: <Cohesion className={styles.pillarIcon} />,
+                            Economic: <Economic className={styles.pillarIcon} />,
+                            Health: <Health className={styles.pillarIcon} />,
+                            Macro: <Macro className={styles.pillarIcon} />,
+                            Protect: <Protect className={styles.pillarIcon} />,
+                        }[slug]
+                    }
                     <div className={styles.pillarDropdownButtonLabel}>{label}</div>
                     <Chevron className={styles.dropdownIcon} />
                 </button>

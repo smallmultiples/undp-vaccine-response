@@ -2,15 +2,18 @@ import React from "react";
 import styles from "./pillars.module.scss";
 import useDimensions from "../../hooks/use-dimensions";
 
-import { Chevron } from "../icons/icons";
+import { Chevron, Cohesion, Economic, Health, Macro, Protect } from "../icons/icons";
 
 const PillarExpandable = props => {
-    const { options, label, activePillar, expandedPillar, onExpand, onChange, value } = props;
+    const { options, label, activePillar, expandedPillar, onExpand, onChange, value, slug } = props;
     const [contentRef, contentDimensions] = useDimensions();
 
-    const handleChange = React.useCallback(v => {
-        onChange(v);
-    }, [onChange]);
+    const handleChange = React.useCallback(
+        v => {
+            onChange(v);
+        },
+        [onChange]
+    );
 
     const optionEls = options
         .filter(d => !d.comingSoon)
@@ -47,6 +50,15 @@ const PillarExpandable = props => {
                 data-active={activePillar.labelLong === label}
                 data-expanded={expandedPillar === label}
             >
+                {
+                    {
+                        Cohesion: <Cohesion className={styles.pillarIcon} />,
+                        Economic: <Economic className={styles.pillarIcon} />,
+                        Health: <Health className={styles.pillarIcon} />,
+                        Macro: <Macro className={styles.pillarIcon} />,
+                        Protect: <Protect className={styles.pillarIcon} />,
+                    }[slug]
+                }
                 {label}
                 <Chevron className={styles.chevron} data-expanded={expandedPillar === label} />
             </div>
