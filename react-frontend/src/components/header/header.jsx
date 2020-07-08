@@ -9,7 +9,7 @@ const Header = () => {
         <header className={styles.headerContainer}>
             <div className={styles.header}>
                 <div className={styles.title}>
-                    <a className={styles.logo} href="#">
+                    <a className={styles.logo} href="./">
                         <LogoUNDP height={isMobile ? 60 : 80} width={isMobile ? 30 : 40} />
                     </a>
                     <div className={styles.headings}>
