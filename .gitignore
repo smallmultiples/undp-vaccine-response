@@ -1,3 +1,5 @@
 data/out
 react-frontend/.env
 react-frontend/public/data/*.json
+SA-population-dots.dbf
+SA-population-dots.geojson
