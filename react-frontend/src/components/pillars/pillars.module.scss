@@ -104,6 +104,12 @@
         text-decoration: underline;
     }
 
+    svg:first-child {
+        width: auto;
+        height: 24px;
+        margin-right: 8px;
+    }
+
     .pillarDropdownButtonLabel {
         margin-right: 8px;
         height: 100%;
@@ -234,6 +240,11 @@
         &[data-expanded="true"] {
             border-bottom: 1px solid $color-blue-bg;
         }
+        svg:first-child {
+            width: auto;
+            height: 24px;
+            margin-right: 8px;
+        }
     }
     &:last-of-type {
         .title {
@@ -268,7 +279,8 @@
     margin: 0;
     padding: 0;
 
-    .selectOption, .comingSoonItem {
+    .selectOption,
+    .comingSoonItem {
         padding: 6px 12px;
         width: 100%;
         max-width: unset;

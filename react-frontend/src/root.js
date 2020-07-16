@@ -38,6 +38,7 @@ const parseMetaSheet = raw => {
                 labelLong: row["Pillar long"],
                 tagline: row["Pillar tagline"],
                 description: row["Pillar Description"],
+                slug: row["Pillar slug"],
                 questions: {},
                 visible: currentPillar !== "ALL",
                 covid: currentPillar === "ALL",
