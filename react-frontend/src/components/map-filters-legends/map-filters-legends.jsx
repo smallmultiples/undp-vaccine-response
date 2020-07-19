@@ -4,7 +4,7 @@ import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../ic
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import useDimensions from "../../hooks/use-dimensions";
-import { uniq, isNil, flatten, last } from "lodash";
+import { uniq, isNil, flatten, last, flattenDeep } from "lodash";
 import isMapOnly from "../../modules/is-map-only";
 
 const MapFiltersLegends = props => {
@@ -86,11 +86,29 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { activePillar, activeQuestion, setCurrentIndicators, currentIndicators } = props;
-    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
-        d => !d.categorical
+    const {
+        activePillar,
+        activeQuestion,
+        setCurrentIndicators,
+        currentIndicators,
+        pillars,
+    } = props;
+    const bivariateYOptions = React.useMemo(
+        () =>
+            isMapOnly
+                ? flatten(flatten(pillars.map(p => p.questions)).map(q => q.indicators)).filter(
+                      d => !d.categorical
+                  )
+                : flatten(activePillar.questions.map(d => d.indicators)).filter(
+                      d => !d.categorical
+                  ),
+        [activePillar, pillars]
     );
-    const bivariateXOptions = activeQuestion.indicators.filter(d => !d.categorical);
+    const bivariateXOptions = React.useMemo(
+        () =>
+            isMapOnly ? bivariateYOptions : activeQuestion.indicators.filter(d => !d.categorical),
+        [activeQuestion, bivariateYOptions]
+    );
 
     // Disable Y axis if there is only one indicator.
     const disableY = bivariateYOptions.length === 1;
