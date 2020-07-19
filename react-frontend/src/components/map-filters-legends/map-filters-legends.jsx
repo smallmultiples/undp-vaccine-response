@@ -1,11 +1,11 @@
+import { flatten, isNil, last, uniq } from "lodash";
 import React from "react";
-import styles from "./map-filters-legends.module.scss";
-import { IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown } from "../icons/icons";
 import Select from "react-select";
-import dropdownStyle from "../../modules/dropdown.style";
 import useDimensions from "../../hooks/use-dimensions";
-import { uniq, isNil, flatten, last, flattenDeep } from "lodash";
+import dropdownStyle from "../../modules/dropdown.style";
 import isMapOnly from "../../modules/is-map-only";
+import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
+import styles from "./map-filters-legends.module.scss";
 
 const MapFiltersLegends = props => {
     return (

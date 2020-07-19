@@ -2,7 +2,7 @@ import React from "react";
 import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
 import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
-import { isNil, flatten, uniq, isMap } from "lodash";
+import { isNil, flatten, uniq } from "lodash";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
 import isMapOnly from "../../modules/is-map-only";
