@@ -2,6 +2,7 @@ import React from "react";
 import { ReactComponent as LogoUNDP } from "./undp-logo.svg";
 import useMediaQuery from "../../hooks/use-media-query";
 import styles from "./header.module.scss";
+import isMapOnly from "../../modules/is-map-only";
 
 const Header = () => {
     const { isMobile } = useMediaQuery();
@@ -15,7 +16,11 @@ const Header = () => {
                     <div className={styles.headings}>
                         <div className={styles.mainHeading}>
                             <div className={styles.betaTag}>Beta</div>
-                            <div>Socio-Economic Recovery Data Platform</div>
+                            <div>
+                                {isMapOnly
+                                    ? "Socio-Economic Recovery Map"
+                                    : "Socio-Economic Recovery Data Platform"}
+                            </div>
                         </div>
                     </div>
                 </div>

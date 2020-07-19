@@ -2,9 +2,10 @@ import React from "react";
 import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
 import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
-import { isNil, flatten, uniq } from "lodash";
+import { isNil, flatten, uniq, isMap } from "lodash";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
+import isMapOnly from "../../modules/is-map-only";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -148,12 +149,14 @@ const MapVis = props => {
                     <h4>Loading...</h4>
                 </div>
             </div>
-            <button
-                className={styles.button3D}
-                onClick={() => (window.location = "./html2/hdi.html")}
-            >
-                View in 3D mode
-            </button>
+            {!isMapOnly && (
+                <button
+                    className={styles.button3D}
+                    onClick={() => (window.location = "./html2/hdi.html")}
+                >
+                    View in 3D mode
+                </button>
+            )}
         </div>
     );
 };
@@ -187,8 +190,11 @@ const MapTooltip = props => {
     if (!data) return null;
 
     let category = null;
-    if (activeQuestion.categorical) {
-        const categoricalIndicator = activeQuestion.indicators.find(d => d.categorical);
+    const categoricalIndicator = isMapOnly
+        ? Object.values(currentIndicators).find(d => d.categorical)
+        : activeQuestion.indicators.find(d => d.categorical);
+
+    if (categoricalIndicator) {
         category = (
             <div className={styles.tooltipDatum}>
                 <div className={styles.tooltipDatumIcon} data-category />
@@ -218,7 +224,7 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                {!activeQuestion.categorical && currentIndicators.radiusEnabled && (
+                {!categoricalIndicator && currentIndicators.radiusEnabled && (
                     <div className={styles.tooltipDatum}>
                         <div className={styles.tooltipDatumIcon} data-radius />
                         <div className={styles.tooltipDatumText}>
@@ -231,7 +237,7 @@ const MapTooltip = props => {
                         </div>
                     </div>
                 )}
-                {!activeQuestion.categorical &&
+                {!categoricalIndicator &&
                     currentIndicators.radiusEnabled &&
                     currentIndicators.radius.tooltipExtra && (
                         <div className={styles.tooltipDatum}>
@@ -247,7 +253,7 @@ const MapTooltip = props => {
                         </div>
                     )}
                 {category}
-                {currentIndicators.bivariateXEnabled && (
+                {currentIndicators.bivariateXEnabled && !currentIndicators.bivariateX.categorical && (
                     <div className={styles.tooltipDatum}>
                         <div
                             className={styles.tooltipDatumIcon}
@@ -266,26 +272,28 @@ const MapTooltip = props => {
                         </div>
                     </div>
                 )}
-                {currentIndicators.bivariateXEnabled && currentIndicators.bivariateX.tooltipExtra && (
-                    <div className={styles.tooltipDatum}>
-                        <div
-                            className={styles.tooltipDatumIcon}
-                            data-bivariate
-                            style={{
-                                background: scales.colorX(data),
-                            }}
-                        />
-                        <div className={styles.tooltipDatumText}>
-                            <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.bivariateX.tooltipExtra.label}
-                            </div>
-                            <div className={styles.tooltipDatumValue}>
-                                {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
+                {currentIndicators.bivariateXEnabled &&
+                    currentIndicators.bivariateX.tooltipExtra &&
+                    !currentIndicators.bivariateX.categorical && (
+                        <div className={styles.tooltipDatum}>
+                            <div
+                                className={styles.tooltipDatumIcon}
+                                data-bivariate
+                                style={{
+                                    background: scales.colorX(data),
+                                }}
+                            />
+                            <div className={styles.tooltipDatumText}>
+                                <div className={styles.tooltipDatumLabel}>
+                                    {currentIndicators.bivariateX.tooltipExtra.label}
+                                </div>
+                                <div className={styles.tooltipDatumValue}>
+                                    {getFormattedTooltipValue(data, currentIndicators.bivariateX)}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-                {currentIndicators.bivariateYEnabled && (
+                    )}
+                {currentIndicators.bivariateYEnabled && !currentIndicators.bivariateY.categorical && (
                     <div className={styles.tooltipDatum}>
                         <div
                             className={styles.tooltipDatumIcon}
@@ -304,25 +312,27 @@ const MapTooltip = props => {
                         </div>
                     </div>
                 )}
-                {currentIndicators.bivariateYEnabled && currentIndicators.bivariateY.tooltipExtra && (
-                    <div className={styles.tooltipDatum}>
-                        <div
-                            className={styles.tooltipDatumIcon}
-                            data-bivariate
-                            style={{
-                                background: scales.colorY(data),
-                            }}
-                        />
-                        <div className={styles.tooltipDatumText}>
-                            <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.bivariateY.tooltipExtralabel}
-                            </div>
-                            <div className={styles.tooltipDatumValue}>
-                                {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
+                {currentIndicators.bivariateYEnabled &&
+                    currentIndicators.bivariateY.tooltipExtra &&
+                    !currentIndicators.bivariateY.categorical && (
+                        <div className={styles.tooltipDatum}>
+                            <div
+                                className={styles.tooltipDatumIcon}
+                                data-bivariate
+                                style={{
+                                    background: scales.colorY(data),
+                                }}
+                            />
+                            <div className={styles.tooltipDatumText}>
+                                <div className={styles.tooltipDatumLabel}>
+                                    {currentIndicators.bivariateY.tooltipExtralabel}
+                                </div>
+                                <div className={styles.tooltipDatumValue}>
+                                    {getFormattedTooltipValue(data, currentIndicators.bivariateY)}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
             </div>
         </div>
     );
@@ -335,10 +345,13 @@ const groupRadius = 7;
 const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators, activeQuestion } = props;
 
-    const categoryIndicator = React.useMemo(
-        () => activeQuestion.indicators.find(d => d.categorical),
-        [activeQuestion]
-    );
+    const categoryIndicator = React.useMemo(() => {
+        if (isMapOnly) {
+            return Object.values(currentIndicators).find(d => d.categorical);
+        } else {
+            return activeQuestion.indicators.find(d => d.categorical);
+        }
+    }, [activeQuestion, currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
         if (!categoryIndicator) return null;
@@ -363,7 +376,7 @@ const CircleVis = props => {
 
     let content = null;
 
-    if (activeQuestion.categorical) {
+    if (categoryIndicator) {
         // TODO: this is assuming one categorical per question. will need code later.
         const angleEach = 360 / uniqueVals.length;
 

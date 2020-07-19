@@ -9,6 +9,7 @@ import { flatten, uniq, last } from "lodash";
 import Footer from "./components/footer/footer";
 import { formats } from "./modules/format";
 import ReactGA from "react-ga";
+import { isMapOnly } from "./modules/is-map-only";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
@@ -276,13 +277,15 @@ function App() {
         <div className={styles.root}>
             <Header />
             <div className={styles.container}>
-                <Pillars
-                    activePillar={activePillar}
-                    covidPillar={covidPillar}
-                    pillars={pillars}
-                    activeQuestion={activeQuestion}
-                    setActiveQuestion={setActiveQuestion}
-                />
+                {!isMapOnly && (
+                    <Pillars
+                        activePillar={activePillar}
+                        covidPillar={covidPillar}
+                        pillars={pillars}
+                        activeQuestion={activeQuestion}
+                        setActiveQuestion={setActiveQuestion}
+                    />
+                )}
                 <Map
                     countryData={countryData}
                     countryDataLoading={loading}
@@ -291,13 +294,15 @@ function App() {
                     pillars={pillars}
                     activeQuestion={activeQuestion}
                 />
-                <Questions
-                    activePillar={activePillar}
-                    covidPillar={covidPillar}
-                    datasets={datasets}
-                    countryData={countryData}
-                    hdiIndicator={hdiIndicator}
-                />
+                {!isMapOnly && (
+                    <Questions
+                        activePillar={activePillar}
+                        covidPillar={covidPillar}
+                        datasets={datasets}
+                        countryData={countryData}
+                        hdiIndicator={hdiIndicator}
+                    />
+                )}
                 <br />
                 <br />
                 <br />
