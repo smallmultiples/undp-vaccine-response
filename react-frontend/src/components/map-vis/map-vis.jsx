@@ -5,6 +5,7 @@ import axios from "axios";
 import { isNil, flatten, uniq } from "lodash";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
+import isMapOnly from "../../modules/is-map-only";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -148,12 +149,14 @@ const MapVis = props => {
                     <h4>Loading...</h4>
                 </div>
             </div>
-            <button
-                className={styles.button3D}
-                onClick={() => (window.location = "./html2/hdi.html")}
-            >
-                View in 3D mode
-            </button>
+            {!isMapOnly && (
+                <button
+                    className={styles.button3D}
+                    onClick={() => (window.location = "./html2/hdi.html")}
+                >
+                    View in 3D mode
+                </button>
+            )}
         </div>
     );
 };

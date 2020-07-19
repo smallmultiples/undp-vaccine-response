@@ -5,11 +5,12 @@ import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import useDimensions from "../../hooks/use-dimensions";
 import { uniq, isNil, flatten, last } from "lodash";
+import isMapOnly from "../../modules/is-map-only";
 
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
-            <QuestionInfo {...props} />
+            {!isMapOnly && <QuestionInfo {...props} />}
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
             <RadiusControls {...props} />
@@ -20,7 +21,7 @@ const MapFiltersLegends = props => {
 
 export const QuestionInfoMobile = props => {
     return <QuestionInfo {...props} />;
-}
+};
 
 export const MapFiltersLegendMobile = props => {
     return (
@@ -31,7 +32,7 @@ export const MapFiltersLegendMobile = props => {
             <CategoricalLegend {...props} />
         </div>
     );
-}
+};
 
 const QuestionInfo = props => {
     const { activeQuestion } = props;
