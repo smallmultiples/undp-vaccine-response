@@ -96,9 +96,7 @@ const BivariateIndicatorSelection = props => {
     const bivariateYOptions = React.useMemo(
         () =>
             isMapOnly
-                ? flatten(flatten(pillars.map(p => p.questions)).map(q => q.indicators)).filter(
-                      d => !d.categorical
-                  )
+                ? flatten(flatten(pillars.map(p => p.questions)).map(q => q.indicators))
                 : flatten(activePillar.questions.map(d => d.indicators)).filter(
                       d => !d.categorical
                   ),

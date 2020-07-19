@@ -2,7 +2,7 @@ import React from "react";
 import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
 import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
-import { isNil, flatten, uniq } from "lodash";
+import { isNil, flatten, uniq, isMap } from "lodash";
 import { feature as topojsonParse } from "topojson-client";
 import styles from "./map-vis.module.scss";
 import isMapOnly from "../../modules/is-map-only";
@@ -338,10 +338,13 @@ const groupRadius = 7;
 const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators, activeQuestion } = props;
 
-    const categoryIndicator = React.useMemo(
-        () => activeQuestion.indicators.find(d => d.categorical),
-        [activeQuestion]
-    );
+    const categoryIndicator = React.useMemo(() => {
+        if (isMapOnly) {
+            return Object.values(currentIndicators).find(d => d.categorical);
+        } else {
+            return activeQuestion.indicators.find(d => d.categorical);
+        }
+    }, [activeQuestion, currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
         if (!categoryIndicator) return null;
@@ -366,7 +369,7 @@ const CircleVis = props => {
 
     let content = null;
 
-    if (activeQuestion.categorical) {
+    if (categoryIndicator) {
         // TODO: this is assuming one categorical per question. will need code later.
         const angleEach = 360 / uniqueVals.length;
 
