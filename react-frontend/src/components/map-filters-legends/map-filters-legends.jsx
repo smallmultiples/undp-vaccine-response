@@ -128,7 +128,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        Other indicators in this pillar:
+                        {isMapOnly ? "Indicator Y" : "Other indicators in this pillar:"}
                     </p>
                     <Select
                         options={bivariateYOptions}
@@ -155,7 +155,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        Other indicators in this question:
+                        {isMapOnly ? "Indicator X" : "Other indicators in this question:"}
                     </p>
                     <Select
                         options={bivariateXOptions}
