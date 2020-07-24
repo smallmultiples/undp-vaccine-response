@@ -71,7 +71,7 @@ export default function Country(props) {
                         index === HDI_BUCKETS.length - 1
                             ? Number.POSITIVE_INFINITY
                             : HDI_BUCKETS[index + 1];
-                    if (hdi >= low && hdi < high) return true;
+                    return hdi >= low && hdi < high;
                 }),
                 HDI_BUCKETS.length - 2
             );
