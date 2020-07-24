@@ -4,7 +4,7 @@ set -e
 
 mkdir -p output/
 mkdir -p output/geojson
-rm -r output/geojson
+rm -rf output/geojson/*
 
 while read p; do
   OUTNAME="./output/geojson/$p.geojson"
@@ -13,7 +13,7 @@ while read p; do
 
   ogr2ogr \
   -where "iso_code='$p'" \
-  -select "iso_code","region","GDLcode","shdi" \
+  -select "iso_code","region","GDLcode" \
   -f GeoJSON $OUTNAME \
   "GDL Shapefiles V4/GDL Shapefiles V4.shp" 
 done < isos.txt
