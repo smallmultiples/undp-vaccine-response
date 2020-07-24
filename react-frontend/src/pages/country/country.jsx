@@ -93,6 +93,11 @@ export default function Country(props) {
         mapContainerDimensions,
     ] = useDeckViewport(bounds);
 
+    const loading = React.useMemo(
+        () => !Boolean(viewport && subdivisionGeo && countryHdiData.length && bounds),
+        [viewport, subdivisionGeo, countryHdiData, bounds]
+    );
+
     const layers = [
         new GeoJsonLayer({
             id: "world",
@@ -114,7 +119,7 @@ export default function Country(props) {
         <div>
             <h1>{countryName}</h1>
             <div className={styles.mapContainer} ref={mapContainerRef}>
-                {viewport && (
+                {!loading && (
                     <DeckGL
                         viewState={viewport}
                         controller
@@ -127,6 +132,10 @@ export default function Country(props) {
                         />
                     </DeckGL>
                 )}
+                <div className={styles.loader} data-visible={loading}>
+                    {/* todo: nicer loader. move up? */}
+                    <h4>Loading...</h4>
+                </div>
                 <MapTooltip
                     tooltip={tooltip}
                     countryHdiData={countryHdiData}
