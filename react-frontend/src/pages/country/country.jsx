@@ -1,9 +1,16 @@
 import axios from "axios";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
 import React from "react";
+import { StaticMap } from "react-map-gl";
 import { useRouteMatch } from "react-router-dom";
 import { feature as topojsonParse } from "topojson-client";
-import { DATA_SHEET_ID, STATIC_DATA_BASE_URL, USE_SHEET } from "../../config/constants";
+import {
+    DATA_SHEET_ID,
+    MAPBOX_BASEMAP_STYLE_ID,
+    MAPBOX_TOKEN,
+    STATIC_DATA_BASE_URL,
+    USE_SHEET,
+} from "../../config/constants";
 import useDeckViewport from "../../hooks/use-deck-viewport";
 import styles from "./country.module.scss";
 
@@ -70,7 +77,12 @@ export default function Country(props) {
                         controller
                         layers={layers}
                         onViewStateChange={handleViewStateChange}
-                    />
+                    >
+                        <StaticMap
+                            mapboxApiAccessToken={MAPBOX_TOKEN}
+                            mapStyle={MAPBOX_BASEMAP_STYLE_ID}
+                        />
+                    </DeckGL>
                 )}
             </div>
         </div>
