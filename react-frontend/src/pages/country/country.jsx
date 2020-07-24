@@ -1,8 +1,11 @@
 import axios from "axios";
+import DeckGL, { GeoJsonLayer } from "deck.gl";
 import React from "react";
-import { feature as topojsonParse } from "topojson-client";
 import { useRouteMatch } from "react-router-dom";
-import { STATIC_DATA_BASE_URL, DATA_SHEET_ID, USE_SHEET } from "../../config/constants";
+import { feature as topojsonParse } from "topojson-client";
+import { DATA_SHEET_ID, STATIC_DATA_BASE_URL, USE_SHEET } from "../../config/constants";
+import useDeckViewport from "../../hooks/use-deck-viewport";
+import styles from "./country.module.scss";
 
 export default function Country(props) {
     const match = useRouteMatch();
@@ -26,14 +29,50 @@ export default function Country(props) {
         axios(url)
             .then(d => d.data)
             .then(setHdiData);
-    });
+    }, []);
 
-    if (!subdivisionGeo || !hdiData) return null;
+    const countryHdiData = React.useMemo(() => {
+        if (!hdiData) return [];
+        return hdiData.filter(row => row["Alpha-3 code"] === countryCode);
+    }, [countryCode, hdiData]);
+
+    const [
+        mapContainerRef,
+        viewport,
+        handleViewStateChange,
+        mapContainerDimensions,
+    ] = useDeckViewport();
+
+    const layers = [
+        new GeoJsonLayer({
+            id: "world",
+            data: subdivisionGeo,
+            filled: true,
+            getFillColor: shape => {
+                const row = countryHdiData.find(d => d["GDLCODE"] === shape.properties["GDLcode"]);
+                return [222, 222, 222];
+                // return scales.color(row);
+            },
+            stroked: true,
+            getLineColor: [255, 0, 0],
+            lineWidthMinPixels: 0.5,
+            pickable: false,
+        }),
+    ];
 
     return (
         <div>
             <h2>Country Page: {countryCode}</h2>
-            <code>{JSON.stringify(hdiData, null, 4)}</code>
+            <div className={styles.mapContainer} ref={mapContainerRef}>
+                {viewport && (
+                    <DeckGL
+                        viewState={viewport}
+                        controller
+                        layers={layers}
+                        onViewStateChange={handleViewStateChange}
+                    />
+                )}
+            </div>
         </div>
     );
 }

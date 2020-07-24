@@ -1,11 +1,11 @@
-import React from "react";
-import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
-import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
-import { isNil, flatten, uniq } from "lodash";
+import DeckGL, { GeoJsonLayer } from "deck.gl";
+import { flatten, isNil, uniq } from "lodash";
+import React from "react";
 import { feature as topojsonParse } from "topojson-client";
-import styles from "./map-vis.module.scss";
+import useDeckViewport from "../../hooks/use-deck-viewport";
 import isMapOnly from "../../modules/is-map-only";
+import styles from "./map-vis.module.scss";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -30,48 +30,6 @@ const useGeoData = () => {
         shapeData,
         loading,
     };
-};
-
-// Bounds we zoom to on load.
-// North west lng lat
-// South east lng lat
-const INITIAL_BOUNDS = [
-    [-180, 76],
-    [180, -60],
-];
-const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
-    const [mapContainerRef, mapContainerDimensions] = useDimensions();
-    const [viewport, setViewport] = React.useState(null);
-
-    React.useEffect(() => {
-        if (viewport) return;
-        if (!mapContainerDimensions) return;
-        setViewport(
-            new WebMercatorViewport({
-                longitude: 0,
-                latitude: 0,
-                zoom: 1,
-                pitch: 0,
-                bearing: 0,
-                width: mapContainerDimensions.width,
-                height: mapContainerDimensions.height,
-            }).fitBounds(initialBounds, {
-                padding,
-            })
-        );
-    }, [mapContainerDimensions, viewport, initialBounds, padding]);
-
-    const handleViewStateChange = React.useCallback(newState => {
-        setViewport(
-            v =>
-                new WebMercatorViewport({
-                    ...v,
-                    ...newState.viewState,
-                })
-        );
-    }, []);
-
-    return [mapContainerRef, viewport, handleViewStateChange, mapContainerDimensions];
 };
 
 const MapVis = props => {
