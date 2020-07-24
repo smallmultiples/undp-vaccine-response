@@ -273,7 +273,12 @@ export default function Pillar() {
 
     if (!pillars || !activePillar || !activeQuestion) return null; // TODO loader
 
-    // TODO: move footer
+    const dateTimeFormat = new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+    });
+    const date = dateTimeFormat.format(lastUpdatedDate);
 
     return (
         <React.Fragment>
@@ -309,7 +314,11 @@ export default function Pillar() {
             <br />
             <br />
             <br />
-            <Footer lastUpdatedDate={lastUpdatedDate} />
+            <div className={styles.subHeadings}>
+                <span className={styles.updateDate}>
+                    Data last updated <em>{date}</em>
+                </span>
+            </div>
         </React.Fragment>
     );
 }

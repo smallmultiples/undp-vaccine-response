@@ -1,1 +1,17 @@
 @import "../../variables.scss";
+
+.subHeadings {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+
+    .updateDate {
+        @include bodyXSmall();
+        em {
+            font-style: normal;
+            font-weight: bold;
+        }
+    }
+}
