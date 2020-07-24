@@ -23,6 +23,7 @@ export default function Country(props) {
 
     const [subdivisionGeo, setSubdivisionGeo] = React.useState(null);
     const [hdiData, setHdiData] = React.useState(null);
+    const [tooltip, setTooltip] = React.useState(null);
 
     React.useEffect(() => {
         axios(`${STATIC_DATA_BASE_URL}/geo/subdivisions/${countryCode}.topojson`).then(res => {
@@ -86,13 +87,14 @@ export default function Country(props) {
             data: subdivisionGeo,
             filled: true,
             getFillColor: shape => {
-                const row = countryHdiData.find(d => d["GDLCODE"] === shape.properties["GDLcode"]);
+                const row = countryHdiData.find(row => getRowId(row) === getShapeId(shape));
                 return colourScale(row.hdi);
             },
             stroked: true,
             getLineColor: [255, 255, 255],
             lineWidthMinPixels: 0.5,
-            pickable: false,
+            pickable: true,
+            onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
         }),
     ];
 
@@ -113,7 +115,61 @@ export default function Country(props) {
                         />
                     </DeckGL>
                 )}
+                <MapTooltip
+                    tooltip={tooltip}
+                    countryHdiData={countryHdiData}
+                    colourScale={colourScale}
+                    mapContainerDimensions={mapContainerDimensions}
+                />
             </div>
         </div>
     );
 }
+
+const getShapeId = shape => shape.properties["GDLcode"];
+const getRowId = row => row["GDLCODE"];
+const getShapeName = shape => shape.properties["region"];
+
+const MapTooltip = props => {
+    const { tooltip, countryHdiData, colourScale, mapContainerDimensions } = props;
+
+    const row = React.useMemo(() => {
+        if (!tooltip) return null;
+        return countryHdiData.find(row => getRowId(row) === getShapeId(tooltip.object));
+    }, [tooltip, countryHdiData]);
+
+    if (!row) return null;
+
+    const clampedLeft = `min(${tooltip.x}px, calc(${mapContainerDimensions.width}px - 100%))`;
+    const clampedY = `min(${tooltip.y}px, calc(${mapContainerDimensions.height}px - 100%))`;
+
+    const transform = `translate(${clampedLeft}, ${clampedY})`;
+
+    return (
+        <div
+            className={styles.tooltip}
+            style={{
+                transform,
+            }}
+        >
+            <div className={styles.tooltipHeader}>
+                <div className={styles.tooltipHeading}>{getShapeName(tooltip.object)}</div>
+            </div>
+            <div className={styles.tooltipBody}>
+                <div className={styles.tooltipDatum}>
+                    <div
+                        className={styles.tooltipDatumIcon}
+                        data-bivariate
+                        style={{
+                            background: colourScale(row.hdi),
+                        }}
+                    />
+                    <div className={styles.tooltipDatumText}>
+                        <div className={styles.tooltipDatumLabel}>HDI</div>
+                        <div className={styles.tooltipDatumValue}>{row.hdi}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
