@@ -12,6 +12,7 @@ import {
     USE_SHEET,
 } from "../../config/constants";
 import useDeckViewport from "../../hooks/use-deck-viewport";
+import bbox from "@turf/bbox";
 import styles from "./country.module.scss";
 
 export default function Country(props) {
@@ -27,6 +28,15 @@ export default function Country(props) {
             setSubdivisionGeo(parsed);
         });
     }, [countryCode]);
+
+    const bounds = React.useMemo(() => {
+        if (!subdivisionGeo) return undefined;
+        const raw = bbox(subdivisionGeo);
+        return [
+            [raw[0], raw[1]],
+            [raw[2], raw[3]],
+        ];
+    }, [subdivisionGeo]);
 
     React.useEffect(() => {
         // TODO: add to import script
@@ -48,7 +58,7 @@ export default function Country(props) {
         viewport,
         handleViewStateChange,
         mapContainerDimensions,
-    ] = useDeckViewport();
+    ] = useDeckViewport(bounds);
 
     const layers = [
         new GeoJsonLayer({
@@ -61,7 +71,7 @@ export default function Country(props) {
                 // return scales.color(row);
             },
             stroked: true,
-            getLineColor: [255, 0, 0],
+            getLineColor: [255, 255, 255],
             lineWidthMinPixels: 0.5,
             pickable: false,
         }),

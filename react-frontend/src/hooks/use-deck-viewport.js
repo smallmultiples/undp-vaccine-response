@@ -13,6 +13,7 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
 
+    // Initial ONLY
     React.useEffect(() => {
         if (viewport) return;
         if (!mapContainerDimensions) return;
@@ -29,7 +30,21 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
                 padding,
             })
         );
-    }, [mapContainerDimensions, viewport, initialBounds, padding]);
+    }, [mapContainerDimensions, initialBounds, padding, viewport]);
+
+    // If bounds change.
+    React.useEffect(() => {
+        console.log("new bounds!!!", initialBounds);
+        setViewport(v =>
+            v
+                ? new WebMercatorViewport({
+                      ...v,
+                  }).fitBounds(initialBounds, {
+                      padding,
+                  })
+                : null
+        );
+    }, [initialBounds, padding]);
 
     const handleViewStateChange = React.useCallback(newState => {
         setViewport(
