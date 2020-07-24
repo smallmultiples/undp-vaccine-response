@@ -1,15 +1,15 @@
 import React from "react";
-import Map from "./components/map/map";
+import Map from "../../components/map/map";
 import axios from "axios";
-import styles from "./root.module.scss";
-import Header from "./components/header/header";
-import Pillars from "./components/pillars/pillars";
-import Questions from "./components/questions/questions";
+import styles from "./pillar.module.scss";
+import Header from "../../components/header/header";
+import Pillars from "../../components/pillars/pillars";
+import Questions from "../../components/questions/questions";
 import { flatten, uniq, last } from "lodash";
-import Footer from "./components/footer/footer";
-import { formats } from "./modules/format";
+import Footer from "../../components/footer/footer";
+import { formats } from "../../modules/format";
 import ReactGA from "react-ga";
-import { isMapOnly } from "./modules/is-map-only";
+import { isMapOnly } from "../../modules/is-map-only";
 
 const SHEET_ID =
     process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
@@ -235,7 +235,7 @@ const usePillarData = () => {
     };
 };
 
-function App() {
+export default function Pillar() {
     const { pillars, datasets, countryData, loading } = usePillarData();
     const [activeQuestion, setActiveQuestion] = React.useState(null);
 
@@ -273,46 +273,43 @@ function App() {
 
     if (!pillars || !activePillar || !activeQuestion) return null; // TODO loader
 
+    // TODO: move footer
+
     return (
-        <div className={styles.root}>
-            <Header />
-            <div className={styles.container}>
-                {!isMapOnly && (
-                    <Pillars
-                        activePillar={activePillar}
-                        covidPillar={covidPillar}
-                        pillars={pillars}
-                        activeQuestion={activeQuestion}
-                        setActiveQuestion={setActiveQuestion}
-                    />
-                )}
-                <Map
-                    countryData={countryData}
-                    countryDataLoading={loading}
+        <React.Fragment>
+            {!isMapOnly && (
+                <Pillars
                     activePillar={activePillar}
                     covidPillar={covidPillar}
                     pillars={pillars}
                     activeQuestion={activeQuestion}
+                    setActiveQuestion={setActiveQuestion}
                 />
-                {!isMapOnly && (
-                    <Questions
-                        activePillar={activePillar}
-                        covidPillar={covidPillar}
-                        datasets={datasets}
-                        countryData={countryData}
-                        hdiIndicator={hdiIndicator}
-                    />
-                )}
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-            </div>
+            )}
+            <Map
+                countryData={countryData}
+                countryDataLoading={loading}
+                activePillar={activePillar}
+                covidPillar={covidPillar}
+                pillars={pillars}
+                activeQuestion={activeQuestion}
+            />
+            {!isMapOnly && (
+                <Questions
+                    activePillar={activePillar}
+                    covidPillar={covidPillar}
+                    datasets={datasets}
+                    countryData={countryData}
+                    hdiIndicator={hdiIndicator}
+                />
+            )}
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
             <Footer lastUpdatedDate={lastUpdatedDate} />
-        </div>
+        </React.Fragment>
     );
 }
-
-export default App;
