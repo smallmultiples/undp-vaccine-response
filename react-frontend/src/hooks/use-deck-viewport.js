@@ -34,7 +34,6 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
 
     // If bounds change.
     React.useEffect(() => {
-        console.log("new bounds!!!", initialBounds);
         setViewport(v =>
             v
                 ? new WebMercatorViewport({
