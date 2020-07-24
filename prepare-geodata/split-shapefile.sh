@@ -2,11 +2,12 @@
 
 set -e
 
-rm -r output
 mkdir -p output/
+mkdir -p output/geojson
+rm -r output/geojson
 
 while read p; do
-  OUTNAME="./output/$p.geojson"
+  OUTNAME="./output/geojson/$p.geojson"
 
   echo "Writing $p to $OUTNAME..."
 
