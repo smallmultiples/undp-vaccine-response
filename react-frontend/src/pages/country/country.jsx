@@ -1,5 +1,5 @@
 import axios from "axios";
-import DeckGL, { GeoJsonLayer } from "deck.gl";
+import DeckGL, { GeoJsonLayer, MapView } from "deck.gl";
 import React from "react";
 import { StaticMap } from "react-map-gl";
 import { useRouteMatch } from "react-router-dom";
@@ -112,6 +112,7 @@ export default function Country(props) {
             lineWidthMinPixels: 0.5,
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
+            wrapLongitude: true,
         }),
     ];
 
@@ -125,6 +126,7 @@ export default function Country(props) {
                         controller
                         layers={layers}
                         onViewStateChange={handleViewStateChange}
+                        views={new MapView({ repeat: true })}
                     >
                         <StaticMap
                             mapboxApiAccessToken={MAPBOX_TOKEN}
