@@ -3,7 +3,7 @@ import React from "react";
 import { feature as topojsonParse } from "topojson-client";
 import { useRouteMatch } from "react-router-dom";
 
-const DATA_BASE_URL = process.env.REACT_APP_DATA_BASE_URL || "http://localhost:5000/";
+const DATA_BASE_URL = process.env.REACT_APP_DATA_BASE_URL || "/data";
 
 export default function Country(props) {
     const match = useRouteMatch();
