@@ -1,27 +1,13 @@
+import axios from "axios";
+import { flatten, last, uniq } from "lodash";
 import React from "react";
 import Map from "../../components/map/map";
-import axios from "axios";
-import styles from "./pillar.module.scss";
-import Header from "../../components/header/header";
 import Pillars from "../../components/pillars/pillars";
 import Questions from "../../components/questions/questions";
-import { flatten, uniq, last } from "lodash";
-import Footer from "../../components/footer/footer";
 import { formats } from "../../modules/format";
-import ReactGA from "react-ga";
 import { isMapOnly } from "../../modules/is-map-only";
-
-const SHEET_ID =
-    process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
-
-const META_SHEET_ID =
-    process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
-
-const USE_SHEET =
-    process.env.NODE_ENV === "development" || process.env.REACT_APP_USE_SHEET === "true";
-
-const trackingId = "UA-25119617-15";
-ReactGA.initialize(trackingId);
+import styles from "./pillar.module.scss";
+import { DATA_SHEET_ID, META_SHEET_ID, USE_SHEET } from "../../config/constants";
 
 const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 
@@ -189,7 +175,7 @@ const usePillarData = () => {
                 await Promise.all(
                     sheetsToFetch.map(async sheet => {
                         const res = await axios(
-                            `https://holy-sheet.visualise.today/sheet/${SHEET_ID}?range=${sheet}`
+                            `https://holy-sheet.visualise.today/sheet/${DATA_SHEET_ID}?range=${sheet}`
                         );
                         newSets[sheet] = res.data;
                     })
