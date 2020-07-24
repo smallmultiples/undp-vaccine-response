@@ -56,7 +56,14 @@ export default function Country(props) {
         return hdiData.filter(row => row["Alpha-3 code"] === countryCode);
     }, [countryCode, hdiData]);
 
-    const colourScale = React.useMemo(() => {
+    const countryName = React.useMemo(() => {
+        if (!countryHdiData.length) return "";
+        const row = countryHdiData.find(c => c["Country or Area"]);
+        if (!row) return "-";
+        return row["Country or Area"];
+    }, [countryHdiData]);
+
+    const colourScaleHex = React.useMemo(() => {
         return hdi => {
             const bucket = Math.min(
                 HDI_BUCKETS.findIndex((low, index) => {
@@ -68,11 +75,16 @@ export default function Country(props) {
                 }),
                 HDI_BUCKETS.length - 2
             );
-            const hex = HDI_COLOURS[bucket];
-
-            return hexToRgb(hex);
+            return HDI_COLOURS[bucket];
         };
-    });
+    }, []);
+
+    const colourScaleRgb = React.useMemo(() => {
+        return hdi => {
+            const hex = colourScaleHex(hdi);
+            return hexToRgb(hex).concat([128]);
+        };
+    }, [colourScaleHex]);
 
     const [
         mapContainerRef,
@@ -88,7 +100,7 @@ export default function Country(props) {
             filled: true,
             getFillColor: shape => {
                 const row = countryHdiData.find(row => getRowId(row) === getShapeId(shape));
-                return colourScale(row.hdi);
+                return colourScaleRgb(row.hdi);
             },
             stroked: true,
             getLineColor: [255, 255, 255],
@@ -100,7 +112,7 @@ export default function Country(props) {
 
     return (
         <div>
-            <h2>Country Page: {countryCode}</h2>
+            <h1>{countryName}</h1>
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 {viewport && (
                     <DeckGL
@@ -118,7 +130,7 @@ export default function Country(props) {
                 <MapTooltip
                     tooltip={tooltip}
                     countryHdiData={countryHdiData}
-                    colourScale={colourScale}
+                    colourScaleHex={colourScaleHex}
                     mapContainerDimensions={mapContainerDimensions}
                 />
             </div>
@@ -131,7 +143,7 @@ const getRowId = row => row["GDLCODE"];
 const getShapeName = shape => shape.properties["region"];
 
 const MapTooltip = props => {
-    const { tooltip, countryHdiData, colourScale, mapContainerDimensions } = props;
+    const { tooltip, countryHdiData, colourScaleHex, mapContainerDimensions } = props;
 
     const row = React.useMemo(() => {
         if (!tooltip) return null;
@@ -161,7 +173,7 @@ const MapTooltip = props => {
                         className={styles.tooltipDatumIcon}
                         data-bivariate
                         style={{
-                            background: colourScale(row.hdi),
+                            background: colourScaleHex(row.hdi),
                         }}
                     />
                     <div className={styles.tooltipDatumText}>
