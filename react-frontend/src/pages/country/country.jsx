@@ -14,6 +14,8 @@ import {
 import useDeckViewport from "../../hooks/use-deck-viewport";
 import bbox from "@turf/bbox";
 import styles from "./country.module.scss";
+import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
+import { hexToRgb } from "../../modules/utils";
 
 export default function Country(props) {
     const match = useRouteMatch();
@@ -53,6 +55,24 @@ export default function Country(props) {
         return hdiData.filter(row => row["Alpha-3 code"] === countryCode);
     }, [countryCode, hdiData]);
 
+    const colourScale = React.useMemo(() => {
+        return hdi => {
+            const bucket = Math.min(
+                HDI_BUCKETS.findIndex((low, index) => {
+                    const high =
+                        index === HDI_BUCKETS.length - 1
+                            ? Number.POSITIVE_INFINITY
+                            : HDI_BUCKETS[index + 1];
+                    if (hdi >= low && hdi < high) return true;
+                }),
+                HDI_BUCKETS.length - 2
+            );
+            const hex = HDI_COLOURS[bucket];
+
+            return hexToRgb(hex);
+        };
+    });
+
     const [
         mapContainerRef,
         viewport,
@@ -67,8 +87,7 @@ export default function Country(props) {
             filled: true,
             getFillColor: shape => {
                 const row = countryHdiData.find(d => d["GDLCODE"] === shape.properties["GDLcode"]);
-                return [222, 222, 222];
-                // return scales.color(row);
+                return colourScale(row.hdi);
             },
             stroked: true,
             getLineColor: [255, 255, 255],

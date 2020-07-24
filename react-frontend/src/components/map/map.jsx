@@ -9,6 +9,8 @@ import MapFiltersLegends, {
 } from "../map-filters-legends/map-filters-legends";
 import { flatten, isNil, last } from "lodash";
 import useMediaQuery from "../../hooks/use-media-query";
+import { HDI_BUCKETS } from "../../config/scales";
+import { hexToRgb } from "../../modules/utils";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -52,7 +54,7 @@ const useDomains = (countryData, currentIndicators) => {
             const yHdi = currentIndicators.bivariateY.hdi;
 
             if (xHdi) {
-                jenksX = [0, 0.55, 0.7, 0.8, 1.0];
+                jenksX = HDI_BUCKETS;
             } else {
                 if (USE_QUANTILE) {
                     jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
@@ -64,7 +66,7 @@ const useDomains = (countryData, currentIndicators) => {
             }
 
             if (yHdi) {
-                jenksY = [0, 0.55, 0.7, 0.8, 1.0];
+                jenksY = HDI_BUCKETS;
             } else {
                 if (USE_QUANTILE) {
                     jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
@@ -92,11 +94,6 @@ const useDomains = (countryData, currentIndicators) => {
         };
     }, [countryData, currentIndicators]);
 };
-
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? result.slice(1, 4).map(n => parseInt(n, 16)) : null;
-}
 
 const blueLightColourMatrixHex = [
     ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
