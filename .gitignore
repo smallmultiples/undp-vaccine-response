@@ -55,3 +55,6 @@ src/qgis2web_2020_07_17-14_49_51_598160/css/images/check.png
 src/qgis2web_2020_07_17-14_49_51_598160/css/images/cancel_@2X.png
 src/qgis2web_2020_07_17-14_49_51_598160/css/images/cancel.png
 src/qgis2web_2020_07_17-14_49_51_598160/css/fontawesome-all.min.css
+
+# Local Netlify folder
+.netlify
