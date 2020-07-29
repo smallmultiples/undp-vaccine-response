@@ -4,21 +4,8 @@ import styles from "./footer.module.scss";
 import { ReactComponent as Logo } from "./logo.svg";
 
 const Footer = props => {
-    const { lastUpdatedDate } = props;
-    const dateTimeFormat = new Intl.DateTimeFormat("en", {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-    });
-    const date = dateTimeFormat.format(lastUpdatedDate);
-
     return (
         <>
-            <div className={styles.subHeadings}>
-                <span className={styles.updateDate}>
-                    Data last updated <em>{date}</em>
-                </span>
-            </div>
             <footer>
                 <div className={styles.container}>
                     <a
