@@ -7,7 +7,23 @@ export const META_SHEET_ID =
 export const USE_SHEET =
     process.env.NODE_ENV === "development" || process.env.REACT_APP_USE_SHEET === "true";
 
-export const STATIC_DATA_BASE_URL = process.env.REACT_APP_DATA_BASE_URL || "/data";
+export const SHEET_SERVER_URL = `https://holy-sheet.visualise.today`;
+
+export const STATIC_DATA_BASE_URL =
+    process.env.REACT_APP_DATA_BASE_URL || process.env.PUBLIC_URL + "/data";
+
+export const PILLAR_URL = USE_SHEET
+    ? `${SHEET_SERVER_URL}/sheet/${META_SHEET_ID}?range=indicators`
+    : `${STATIC_DATA_BASE_URL}/meta.json`;
+
+export const REGIONS_URL = USE_SHEET
+    ? `${SHEET_SERVER_URL}/sheet/${META_SHEET_ID}?range=regions!D:L`
+    : `${STATIC_DATA_BASE_URL}/regions.json`;
+
+/**
+ * Sheet server URL for the country/subregion data
+ */
+export const DATA_SHEET_URL = `${SHEET_SERVER_URL}/sheet/${DATA_SHEET_ID}`;
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 if (!MAPBOX_TOKEN) {
