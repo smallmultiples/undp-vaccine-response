@@ -13,7 +13,7 @@ export const STATIC_DATA_BASE_URL =
     process.env.REACT_APP_DATA_BASE_URL || process.env.PUBLIC_URL + "/data";
 
 export const PILLAR_URL = USE_SHEET
-    ? `${SHEET_SERVER_URL}/sheet/${META_SHEET_ID}?range=indicators`
+    ? `${SHEET_SERVER_URL}/sheet/${META_SHEET_ID}?range=indicators-phase2`
     : `${STATIC_DATA_BASE_URL}/meta.json`;
 
 export const REGIONS_URL = USE_SHEET

@@ -33,9 +33,7 @@ const usePillarData = () => {
             let newSets = {};
 
             if (USE_SHEET) {
-                const sheetsToFetch = uniq(
-                    flatten(pillars.map(p => p.questions.map(q => q.sheet))).filter(Boolean)
-                );
+                const sheetsToFetch = uniq(pillars.map(p => p.sheet).filter(Boolean));
 
                 await Promise.all(
                     sheetsToFetch.map(async sheet => {
@@ -82,14 +80,14 @@ const usePillarData = () => {
     };
 };
 
-export default function Pillar() {
+export default function Pillar(props) {
     const { pillars, datasets, countryData, loading } = usePillarData();
     const [activeQuestion, setActiveQuestion] = React.useState(null);
 
     React.useEffect(() => {
         if (activeQuestion || !pillars) return;
-        const questions = flatten(pillars.filter(d => d.visible).map(p => p.questions));
-        setActiveQuestion(questions[0]);
+        const goals = flatten(pillars.filter(d => d.visible).map(p => p.goals));
+        setActiveQuestion(goals[0]);
     }, [pillars, activeQuestion]);
 
     const covidPillar = React.useMemo(() => {
@@ -100,21 +98,19 @@ export default function Pillar() {
     const lastUpdatedDate = React.useMemo(() => {
         if (!covidPillar) return undefined;
         return new Date(
-            covidPillar.questions[0].indicators[0].meta.updateFrequency.replace(
-                "Last updated ",
-                ""
-            ) + " GMT+1000"
+            covidPillar.goals[0].indicators[0].meta.updateFrequency.replace("Last updated ", "") +
+                " GMT+1000"
         );
     }, [covidPillar]);
 
     const activePillar = React.useMemo(() => {
         if (!pillars) return null;
-        return pillars.find(pillar => pillar.questions.some(q => q === activeQuestion));
+        return pillars.find(pillar => pillar.goals.some(q => q === activeQuestion));
     }, [activeQuestion, pillars]);
 
     const hdiIndicator = React.useMemo(() => {
         if (!pillars) return null;
-        const indicators = flatten(pillars.map(p => flatten(p.questions.map(q => q.indicators))));
+        const indicators = flatten(pillars.map(p => flatten(p.goals.map(q => q.indicators))));
         return indicators.find(d => d.hdi);
     }, [pillars]);
 
@@ -129,15 +125,6 @@ export default function Pillar() {
 
     return (
         <React.Fragment>
-            {!isMapOnly && (
-                <Pillars
-                    activePillar={activePillar}
-                    covidPillar={covidPillar}
-                    pillars={pillars}
-                    activeQuestion={activeQuestion}
-                    setActiveQuestion={setActiveQuestion}
-                />
-            )}
             <Map
                 countryData={countryData}
                 countryDataLoading={loading}

@@ -96,10 +96,8 @@ const BivariateIndicatorSelection = props => {
     const bivariateYOptions = React.useMemo(
         () =>
             isMapOnly
-                ? flatten(flatten(pillars.map(p => p.questions)).map(q => q.indicators))
-                : flatten(activePillar.questions.map(d => d.indicators)).filter(
-                      d => !d.categorical
-                  ),
+                ? flatten(flatten(pillars.map(p => p.goals)).map(q => q.indicators))
+                : flatten(activePillar.goals.map(d => d.indicators)).filter(d => !d.categorical),
         [activePillar, pillars]
     );
     const bivariateXOptions = React.useMemo(
@@ -342,7 +340,7 @@ const Toggle = props => {
 
 const RadiusIndicatorSelection = props => {
     const { covidPillar, setCurrentIndicators, currentIndicators } = props;
-    const radiusOptions = flatten(covidPillar.questions.map(d => d.indicators));
+    const radiusOptions = flatten(covidPillar.goals.map(d => d.indicators));
     return (
         <div className={styles.radiusIndicatorSelection}>
             <Checkbox

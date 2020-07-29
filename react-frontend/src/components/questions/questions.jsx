@@ -16,7 +16,7 @@ const Question = props => {
 
     if (question.comingSoon) return null;
 
-    const covidIndicators = flatten(covidPillar.questions.map(d => d.indicators));
+    const covidIndicators = flatten(covidPillar.goals.map(d => d.indicators));
 
     const headers = ["Country", "Region"];
 
@@ -93,16 +93,17 @@ const Question = props => {
         })
         .filter(a => a !== undefined);
 
-        const csvHeadings = question.label;
-        const arrayForCsv = [headersForCountryTable].concat(rowsForCountryTable);
-        arrayForCsv.unshift(csvHeadings);
-        const csv = arrayForCsv?.map(function(d){
+    const csvHeadings = question.label;
+    const arrayForCsv = [headersForCountryTable].concat(rowsForCountryTable);
+    arrayForCsv.unshift(csvHeadings);
+    const csv = arrayForCsv
+        ?.map(function (d) {
             return JSON.stringify(d);
-         })
-         .join('\n') 
-         .replace(/(^\[)|(\]$)/mg, '');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
+        })
+        .join("\n")
+        .replace(/(^\[)|(\]$)/gm, "");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
 
     return (
         <>
@@ -135,7 +136,9 @@ const Question = props => {
                         fixedColumns={isMobile ? 0 : 2}
                         fixedColumnsWidth={30}
                     />
-                    <a className={styles.downloadButton} href={url} download={'data-undp.csv'}>Download CSV</a>
+                    <a className={styles.downloadButton} href={url} download={"data-undp.csv"}>
+                        Download CSV
+                    </a>
                     {!isMobile && (
                         <button
                             className={styles.hideButton}
@@ -206,7 +209,7 @@ const Questions = props => {
     return (
         <>
             <h2 className={styles.questionsHeading}>Explore indicators for {activePillar.label}</h2>
-            {activePillar.questions.map((x, i) => (
+            {activePillar.goals.map((x, i) => (
                 <Question
                     key={`${x.labelLong}_${i}`}
                     question={x}

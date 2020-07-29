@@ -24,7 +24,7 @@ const PillarControl = props => {
                             return (
                                 <PillarExpandable
                                     key={pillar.label}
-                                    options={pillar.questions}
+                                    options={pillar.goals}
                                     label={pillar.labelLong}
                                     activePillar={activePillar}
                                     expandedPillar={expandedPillar}
@@ -44,7 +44,7 @@ const PillarControl = props => {
                         return (
                             <PillarDropdown
                                 key={pillar.label}
-                                options={pillar.questions}
+                                options={pillar.goals}
                                 label={pillar.labelLong}
                                 slug={pillar.slug}
                                 pillarSelected={selected}

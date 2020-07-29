@@ -171,7 +171,6 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
 const getColorMatrices = (activePillar, currentIndicators) => {
     const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
     const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
-
     let colorMatrixHex = colourMatricesHex[activePillar.label];
 
     if (xHdi && yHdi) {
@@ -327,7 +326,7 @@ const useScales = (domains, currentIndicators, activePillar) => {
 
 const getDefaultIndicatorState = (activePillar, activeQuestion, covidPillar) => {
     // TODO: module
-    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators));
+    const bivariateYOptions = flatten(activePillar.goals.map(d => d.indicators));
 
     return {
         // Question indicator is the X axis
@@ -337,7 +336,7 @@ const getDefaultIndicatorState = (activePillar, activeQuestion, covidPillar) => 
         bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
         bivariateYEnabled: false,
         // Radius indicator is the circle radius
-        radius: covidPillar.questions[0].indicators[0],
+        radius: covidPillar.goals[0].indicators[0],
         radiusEnabled: true,
     };
 };
@@ -352,7 +351,7 @@ const Map = props => {
     React.useEffect(() => {
         if (!activePillar) return;
         // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
-        const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
+        const bivariateYOptions = flatten(activePillar.goals.map(d => d.indicators)).filter(
             d => !d.categorical
         );
         setCurrentIndicators(d => ({

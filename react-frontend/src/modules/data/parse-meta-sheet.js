@@ -6,7 +6,7 @@ const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 export const parseMetaSheet = raw => {
     const out = {};
     let currentPillar = null;
-    let currentQuestion = null;
+    let currentGoal = null;
     for (let row of raw) {
         // Pillar
         if (row.col0) {
@@ -17,25 +17,25 @@ export const parseMetaSheet = raw => {
                 tagline: row["Pillar tagline"],
                 description: row["Pillar Description"],
                 slug: row["Pillar slug"],
-                questions: {},
+                goals: {},
                 visible: currentPillar !== "ALL",
                 covid: currentPillar === "ALL",
+                sheet: row["Sheet"],
             };
         }
         // -----------
 
-        // Question
-        const qs = row["Question"];
+        // Goal
+        const qs = row["Goal"];
         if (qs) {
-            currentQuestion = qs;
-            out[currentPillar].questions[qs] = {
+            currentGoal = qs;
+            out[currentPillar].goals[qs] = {
                 label: qs,
-                description: row["Question description"],
+                description: row["Goal description"],
                 indicators: {},
                 hidden: qs === "-",
                 categorical: false,
-                comingSoon: row["Question coming soon"],
-                sheet: row["Sheet"],
+                comingSoon: row["Goal coming soon"],
             };
         }
         // ------------
@@ -67,20 +67,17 @@ export const parseMetaSheet = raw => {
                     countryCount,
                 };
             } else {
-                const lastQuestionIndicator = last(
-                    out[currentPillar].questions[currentQuestion].indicators
-                );
-                if (lastQuestionIndicator) {
+                const lastGoalIndicator = last(out[currentPillar].goals[currentGoal].indicators);
+                if (lastGoalIndicator) {
                     // Copy the previous meta
-                    meta = lastQuestionIndicator.meta;
+                    meta = lastGoalIndicator.meta;
                 }
             }
             const categorical = row["Data Format"] === "category";
             if (categorical) {
-                out[currentPillar].questions[currentQuestion].categorical = true;
+                out[currentPillar].goals[currentGoal].categorical = true;
             }
 
-            // TODO: move formats to selectors.
             const decimals = numOrUndef(row["Decimal Places"]);
             const legendDpRaw = numOrUndef(row["Legend Decimals"]);
             const legendDecimals = isNaN(legendDpRaw) ? decimals : legendDpRaw;
@@ -91,7 +88,7 @@ export const parseMetaSheet = raw => {
                 ? formats[row["Data Format"]](decimals)
                 : formats.decimal(decimals);
 
-            out[currentPillar].questions[currentQuestion].indicators[ind] = {
+            out[currentPillar].goals[currentGoal].indicators[ind] = {
                 label: ind,
                 tableLabel: row["Indicator Label Table"],
                 description: row["Indicator Description"],
@@ -119,17 +116,17 @@ export const parseMetaSheet = raw => {
     }
 
     const asArrays = Object.values(out).map(pillar => {
-        const questions = Object.values(pillar.questions).map(question => {
-            const indicators = Object.values(question.indicators);
+        const goals = Object.values(pillar.goals).map(goal => {
+            const indicators = Object.values(goal.indicators);
             return {
-                ...question,
+                ...goal,
                 indicators,
             };
         });
 
         return {
             ...pillar,
-            questions,
+            goals,
         };
     });
 
