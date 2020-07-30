@@ -116,13 +116,15 @@ export const parseMetaSheet = raw => {
     }
 
     const asArrays = Object.values(out).map(pillar => {
-        const goals = Object.values(pillar.goals).map(goal => {
-            const indicators = Object.values(goal.indicators);
-            return {
-                ...goal,
-                indicators,
-            };
-        });
+        const goals = Object.values(pillar.goals)
+            .map(goal => {
+                const indicators = Object.values(goal.indicators);
+                return {
+                    ...goal,
+                    indicators,
+                };
+            })
+            .filter(goal => goal.indicators.length > 0);
 
         return {
             ...pillar,
