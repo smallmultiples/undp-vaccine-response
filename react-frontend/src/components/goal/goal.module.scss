@@ -50,3 +50,14 @@
         flex-grow: 1;
     }
 }
+
+.timeArea {
+    width: 100%;
+    padding: 16px 20px;
+    background: $color-blue-bg;
+    box-sizing: border-box;
+
+    img {
+        width: 100%;
+    }
+}

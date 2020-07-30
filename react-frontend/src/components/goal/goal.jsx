@@ -1,6 +1,7 @@
 import React from "react";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
+import TimeSliderTemp from "./time-slider-temp.svg";
 
 export default function Goal(props) {
     const { goal, pillar, pillarData } = props;
@@ -56,6 +57,9 @@ export default function Goal(props) {
                         goal={goal}
                     />
                 </div>
+            </div>
+            <div className={styles.timeArea}>
+                <img src={TimeSliderTemp} />
             </div>
             {/*!isMapOnly && (
             <Questions
