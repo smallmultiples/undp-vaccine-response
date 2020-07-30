@@ -78,6 +78,8 @@
 }
 
 .tempAllData,
+.tempNews,
+.tempPartnership,
 .tempOtherTracking {
     width: 100%;
     padding: 48px;
@@ -87,7 +89,8 @@
     }
 }
 
-.tempAllData {
+.tempAllData,
+.tempPartnership {
     padding: 48px 0;
     position: relative;
 
