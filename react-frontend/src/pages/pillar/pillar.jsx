@@ -71,10 +71,10 @@ export default function Pillar(props) {
     if (!pillar) return null; // TODO loader
 
     return (
-        <React.Fragment>
+        <div>
             {pillar.goals.map(goal => (
                 <Goal key={goal.label} goal={goal} pillar={pillar} pillarData={pillarData} />
             ))}
-        </React.Fragment>
+        </div>
     );
 }
