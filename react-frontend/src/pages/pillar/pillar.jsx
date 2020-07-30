@@ -13,6 +13,7 @@ import styles from "./pillar.module.scss";
 import TempPillarIcon from "./temp-pillar-icon.svg";
 import TempPillarExplore from "./temp-pillar-explore.svg";
 import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
+import TempPillarAllData from "./temp-pillar-all-data.svg";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
@@ -103,6 +104,9 @@ export default function Pillar(props) {
             </div>
             <div className={styles.tempOtherTracking}>
                 <img src={TempPillarOtherTracking} alt="Other things countries are tracking" />
+            </div>
+            <div className={styles.tempAllData}>
+                <img src={TempPillarAllData} alt="All Data" />
             </div>
         </div>
     );
