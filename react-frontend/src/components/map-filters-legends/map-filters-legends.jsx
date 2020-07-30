@@ -10,17 +10,12 @@ import styles from "./map-filters-legends.module.scss";
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
-            {!isMapOnly && <QuestionInfo {...props} />}
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
             <RadiusControls {...props} />
             <CategoricalLegend {...props} />
         </div>
     );
-};
-
-export const QuestionInfoMobile = props => {
-    return <QuestionInfo {...props} />;
 };
 
 export const MapFiltersLegendMobile = props => {
@@ -30,24 +25,6 @@ export const MapFiltersLegendMobile = props => {
             <RadiusControls {...props} />
             <BivariateIndicatorSelection {...props} />
             <CategoricalLegend {...props} />
-        </div>
-    );
-};
-
-const QuestionInfo = props => {
-    const { goal } = props;
-    const [descriptionRef] = useDimensions();
-
-    return (
-        <div className={styles.questionInfo}>
-            <div className={styles.questionInfoHeading}>{goal.label}</div>
-            <div className={styles.questionInfoDescriptionContainer}>
-                <p
-                    className={styles.questionInfoDescription}
-                    ref={descriptionRef}
-                    dangerouslySetInnerHTML={{ __html: goal.description }}
-                />
-            </div>
         </div>
     );
 };

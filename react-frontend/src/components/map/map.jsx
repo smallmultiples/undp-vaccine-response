@@ -4,7 +4,6 @@ import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import MapVis from "../map-vis/map-vis";
 import MapFiltersLegends, {
-    QuestionInfoMobile,
     MapFiltersLegendMobile,
 } from "../map-filters-legends/map-filters-legends";
 import { flatten, isNil, last } from "lodash";
@@ -398,7 +397,6 @@ const Map = props => {
                     {...props}
                 />
             )}
-            {isMobile && <QuestionInfoMobile goal={goal} />}
             <MapVis
                 {...props}
                 domains={domains}
