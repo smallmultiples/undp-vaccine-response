@@ -28,6 +28,8 @@ export default function Goal(props) {
                 const rowKey = row["Alpha-3 code"];
                 newData[rowKey] = newData[rowKey] || {};
 
+                Object.entries(row)
+                    .filter(([key, value]) => Boolean(value))
                     .forEach(([key, value]) => {
                         newData[rowKey][key] = value;
                     });
