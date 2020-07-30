@@ -35,7 +35,6 @@ const usePillarData = () => {
 
     React.useEffect(() => {
         if (!pillar) return;
-        // TODO: add static per pillar files. Export required too.
         if (USE_SHEET) {
             axios(`${DATA_SHEET_URL}?range=${pillar.sheet}`)
                 .then(d => d.data)

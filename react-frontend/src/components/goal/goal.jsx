@@ -21,14 +21,17 @@ export default function Goal(props) {
         Object.values(regionLookup).forEach(region => {
             newData[region["ISO-alpha3 Code"]] = region;
         });
-        data.forEach(row => {
-            const rowKey = row["Alpha-3 code"];
-            newData[rowKey] = newData[rowKey] || {};
+        // TODO: real year handling.
+        data.slice()
+            .sort((a, b) => a.Year - b.Year)
+            .forEach(row => {
+                const rowKey = row["Alpha-3 code"];
+                newData[rowKey] = newData[rowKey] || {};
 
-            Object.entries(row).forEach(([key, value]) => {
-                newData[rowKey][key] = value;
+                    .forEach(([key, value]) => {
+                        newData[rowKey][key] = value;
+                    });
             });
-        });
         return newData;
     }, [data, loading, regionLookup]);
 
