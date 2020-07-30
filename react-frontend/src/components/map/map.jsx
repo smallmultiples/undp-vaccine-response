@@ -168,10 +168,10 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - clamped : clamped;
 };
 
-const getColorMatrices = (activePillar, currentIndicators) => {
+const getColorMatrices = (pillar, currentIndicators) => {
     const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
     const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
-    let colorMatrixHex = colourMatricesHex[activePillar.label];
+    let colorMatrixHex = colourMatricesHex[pillar.label];
 
     if (xHdi && yHdi) {
         colorMatrixHex = [
@@ -199,7 +199,7 @@ const getColorMatrices = (activePillar, currentIndicators) => {
 
 const nullValue = val => isNil(val) || val === "";
 
-const useScales = (domains, currentIndicators, activePillar) => {
+const useScales = (domains, currentIndicators, pillar) => {
     return React.useMemo(() => {
         const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.radius);
         const circleRadiusScale = row =>
@@ -207,7 +207,7 @@ const useScales = (domains, currentIndicators, activePillar) => {
         circleRadiusScale.range = circleScale.range;
         circleRadiusScale.domain = circleScale.domain;
 
-        let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, currentIndicators);
+        let { colorMatrix, colorMatrixHex } = getColorMatrices(pillar, currentIndicators);
         const maxIndexX = colorMatrix[0].length - 1;
         const maxIndexY = colorMatrix.length - 1;
 
@@ -321,16 +321,16 @@ const useScales = (domains, currentIndicators, activePillar) => {
             colorX: xColourScale,
             colorY: yColourScale,
         };
-    }, [domains, currentIndicators, activePillar]);
+    }, [domains, currentIndicators, pillar]);
 };
 
-const getDefaultIndicatorState = (activePillar, activeQuestion, covidPillar) => {
+const getDefaultIndicatorState = (pillar, goal, covidPillar) => {
     // TODO: module
-    const bivariateYOptions = flatten(activePillar.goals.map(d => d.indicators));
+    const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators));
 
     return {
         // Question indicator is the X axis
-        bivariateX: activeQuestion.indicators[0],
+        bivariateX: goal.indicators[0],
         bivariateXEnabled: true,
         // Any indicator for the pillar on the Y axis
         bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
@@ -342,30 +342,30 @@ const getDefaultIndicatorState = (activePillar, activeQuestion, covidPillar) => 
 };
 
 const Map = props => {
-    const { countryData, covidPillar, activePillar, activeQuestion } = props;
+    const { countryData, covidPillar, pillar, goal } = props;
 
     const [currentIndicators, setCurrentIndicators] = React.useState(
-        getDefaultIndicatorState(activePillar, activeQuestion, covidPillar)
+        getDefaultIndicatorState(pillar, goal, covidPillar)
     );
 
     React.useEffect(() => {
-        if (!activePillar) return;
+        if (!pillar) return;
         // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
-        const bivariateYOptions = flatten(activePillar.goals.map(d => d.indicators)).filter(
+        const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators)).filter(
             d => !d.categorical
         );
         setCurrentIndicators(d => ({
             ...d,
             bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
         }));
-    }, [activePillar]);
+    }, [pillar]);
 
     React.useEffect(() => {
-        if (!activeQuestion) return;
-        if (activeQuestion.categorical) {
+        if (!goal) return;
+        if (goal.categorical) {
             setCurrentIndicators(d => ({
                 ...d,
-                bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
+                bivariateX: goal.indicators.filter(d => !d.categorical)[0],
                 bivariateXEnabled: false,
                 bivariateYEnabled: false,
                 radiusEnabled: true,
@@ -374,15 +374,15 @@ const Map = props => {
             // Whenever active QUESTION changes, set the pillar indicator to the first for the question
             setCurrentIndicators(d => ({
                 ...d,
-                bivariateX: activeQuestion.indicators[0],
+                bivariateX: goal.indicators[0],
                 bivariateXEnabled: true,
                 bivariateYEnabled: false,
             }));
         }
-    }, [activeQuestion]);
+    }, [goal]);
 
     const domains = useDomains(countryData, currentIndicators);
-    const scales = useScales(domains, currentIndicators, activePillar);
+    const scales = useScales(domains, currentIndicators, pillar);
 
     const { isMobile } = useMediaQuery();
 
@@ -398,14 +398,14 @@ const Map = props => {
                     {...props}
                 />
             )}
-            {isMobile && <QuestionInfoMobile activeQuestion={activeQuestion} />}
+            {isMobile && <QuestionInfoMobile goal={goal} />}
             <MapVis
                 {...props}
                 domains={domains}
                 scales={scales}
                 normalizedData={countryData}
                 currentIndicators={currentIndicators}
-                activeQuestion={activeQuestion}
+                goal={goal}
             />
             {isMobile && (
                 <MapFiltersLegendMobile

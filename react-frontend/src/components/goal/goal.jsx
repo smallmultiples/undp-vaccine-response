@@ -35,10 +35,10 @@ export default function Goal(props) {
             <Map
                 countryData={countryData}
                 countryDataLoading={loading}
-                activePillar={pillar}
+                pillar={pillar}
                 covidPillar={covidPillar}
                 pillars={pillars}
-                activeQuestion={goal}
+                goal={goal}
             />
             {/*!isMapOnly && (
             <Questions

@@ -35,17 +35,17 @@ export const MapFiltersLegendMobile = props => {
 };
 
 const QuestionInfo = props => {
-    const { activeQuestion } = props;
+    const { goal } = props;
     const [descriptionRef] = useDimensions();
 
     return (
         <div className={styles.questionInfo}>
-            <div className={styles.questionInfoHeading}>{activeQuestion.label}</div>
+            <div className={styles.questionInfoHeading}>{goal.label}</div>
             <div className={styles.questionInfoDescriptionContainer}>
                 <p
                     className={styles.questionInfoDescription}
                     ref={descriptionRef}
-                    dangerouslySetInnerHTML={{ __html: activeQuestion.description }}
+                    dangerouslySetInnerHTML={{ __html: goal.description }}
                 />
             </div>
         </div>
@@ -86,13 +86,7 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const {
-        activePillar,
-        activeQuestion,
-        setCurrentIndicators,
-        currentIndicators,
-        pillars,
-    } = props;
+    const { activePillar, goal, setCurrentIndicators, currentIndicators, pillars } = props;
     const bivariateYOptions = React.useMemo(
         () =>
             isMapOnly
@@ -101,9 +95,8 @@ const BivariateIndicatorSelection = props => {
         [activePillar, pillars]
     );
     const bivariateXOptions = React.useMemo(
-        () =>
-            isMapOnly ? bivariateYOptions : activeQuestion.indicators.filter(d => !d.categorical),
-        [activeQuestion, bivariateYOptions]
+        () => (isMapOnly ? bivariateYOptions : goal.indicators.filter(d => !d.categorical)),
+        [goal, bivariateYOptions]
     );
 
     // Disable Y axis if there is only one indicator.
@@ -174,12 +167,9 @@ const BivariateIndicatorSelection = props => {
 
 const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
-    const { activeQuestion, normalizedData, setCurrentIndicators, currentIndicators } = props;
+    const { goal, normalizedData, setCurrentIndicators, currentIndicators } = props;
 
-    const categoryIndicator = React.useMemo(
-        () => activeQuestion.indicators.find(d => d.categorical),
-        [activeQuestion]
-    );
+    const categoryIndicator = React.useMemo(() => goal.indicators.find(d => d.categorical), [goal]);
 
     // TODO: this should be in the radius extents maybe.
     const uniqueVals = React.useMemo(() => {
@@ -237,7 +227,7 @@ const CategoricalLegend = props => {
 };
 
 const RadiusControls = props => {
-    if (props.activeQuestion.categorical) return null;
+    if (props.goal.categorical) return null;
     return (
         <div className={styles.radiusControls}>
             <RadiusIndicatorSelection {...props} />
