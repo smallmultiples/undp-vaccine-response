@@ -1,6 +1,7 @@
 @import "../../variables.scss";
 
 .goal {
+    margin-bottom: 24px;
 }
 
 .tempGoalHeader {
@@ -21,5 +22,31 @@
         transform: translateX(-50%);
         background: $color-blue-bg;
         z-index: -1;
+    }
+}
+
+.mapArea {
+    display: flex;
+
+    .mapSidebar {
+        width: 260px;
+        margin-right: 20px;
+
+        .sidebarBlock {
+            height: 33%;
+            padding: 20px;
+            border: 1px solid $color-blue-bg;
+            &:not(:last-child) {
+                margin-bottom: 20px;
+            }
+
+            h3 {
+                text-align: center;
+            }
+        }
+    }
+
+    .mapContainer {
+        flex-grow: 1;
     }
 }

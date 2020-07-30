@@ -32,19 +32,31 @@ export default function Goal(props) {
     }, [data, loading, regionLookup]);
 
     return (
-        <React.Fragment>
+        <div className={styles.goal}>
             <div className={styles.tempGoalHeader}>
                 <h2>{goal.label}</h2>
                 <p>{goal.description}</p>
             </div>
-            <Map
-                countryData={countryData}
-                countryDataLoading={loading}
-                pillar={pillar}
-                covidPillar={covidPillar}
-                pillars={pillars}
-                goal={goal}
-            />
+            <div className={styles.mapArea}>
+                <div className={styles.mapSidebar}>
+                    <div className={styles.sidebarBlock}>
+                        <h3>Placeholder</h3>
+                    </div>
+                    <div className={styles.sidebarBlock}>
+                        <h3>Placeholder</h3>
+                    </div>
+                </div>
+                <div className={styles.mapContainer}>
+                    <Map
+                        countryData={countryData}
+                        countryDataLoading={loading}
+                        pillar={pillar}
+                        covidPillar={covidPillar}
+                        pillars={pillars}
+                        goal={goal}
+                    />
+                </div>
+            </div>
             {/*!isMapOnly && (
             <Questions
                 pillar={pillar}
@@ -54,6 +66,6 @@ export default function Goal(props) {
                 hdiIndicator={hdiIndicator}
             />
         )*/}
-        </React.Fragment>
+        </div>
     );
 }
