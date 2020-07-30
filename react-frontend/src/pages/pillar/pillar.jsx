@@ -32,7 +32,7 @@ const usePillarData = () => {
 
     const pillar = React.useMemo(() => {
         if (!pillars) return null;
-        return pillars[1]; // TODO
+        return pillars[2]; // TODO
     });
 
     React.useEffect(() => {
@@ -63,11 +63,11 @@ export default function Pillar(props) {
 
     if (!pillar) return null; // TODO loader
 
-    console.log({ pillar });
-
     return (
         <React.Fragment>
-            <Goal goal={pillar.goals[0]} pillar={pillar} pillarData={pillarData} />
+            {pillar.goals.map(goal => (
+                <Goal key={goal.label} goal={goal} pillar={pillar} pillarData={pillarData} />
+            ))}
         </React.Fragment>
     );
 }
