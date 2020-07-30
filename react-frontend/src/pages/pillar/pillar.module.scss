@@ -1,17 +1,24 @@
 @import "../../variables.scss";
 
-.subHeadings {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 6px;
+.pillarHeading {
+    h5 {
+        margin-bottom: 24px;
+        font-weight: normal;
 
-    .updateDate {
-        @include bodyXSmall();
-        em {
-            font-style: normal;
-            font-weight: bold;
+        strong {
+            font-weight: 600;
+        }
+    }
+
+    .pillarHeadingMain {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+
+        h1 {
+            max-width: 300px;
+            margin: 0 36px 0 0;
+            font-size: 60px;
         }
     }
 }

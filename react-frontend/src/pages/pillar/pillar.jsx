@@ -9,6 +9,7 @@ import {
     STATIC_DATA_BASE_URL,
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
+import styles from "./pillar.module.scss";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
@@ -71,6 +72,20 @@ export default function Pillar(props) {
 
     return (
         <div>
+            <div className={styles.pillarHeading}>
+                <h5>
+                    <strong>Our Response</strong> - {pillar.labelLong}
+                </h5>
+                <div className={styles.pillarHeadingMain}>
+                    <h1>{pillar.labelLong}</h1>
+                    <p>
+                        <strong>{pillar.tagline}</strong>
+                        <br />
+                        <br />
+                        {pillar.description}
+                    </p>
+                </div>
+            </div>
             {pillar.goals.map(goal => (
                 <Goal key={goal.label} goal={goal} pillar={pillar} pillarData={pillarData} />
             ))}
