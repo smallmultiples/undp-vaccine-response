@@ -1,5 +1,6 @@
 import React from "react";
 import Map from "../map/map";
+import styles from "./goal.module.scss";
 
 export default function Goal(props) {
     const { goal, pillar, pillarData } = props;
@@ -32,6 +33,10 @@ export default function Goal(props) {
 
     return (
         <React.Fragment>
+            <div className={styles.tempGoalHeader}>
+                <h2>{goal.label}</h2>
+                <p>{goal.description}</p>
+            </div>
             <Map
                 countryData={countryData}
                 countryDataLoading={loading}

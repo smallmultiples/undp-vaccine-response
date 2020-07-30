@@ -107,14 +107,6 @@ const MapVis = props => {
                     <h4>Loading...</h4>
                 </div>
             </div>
-            {!isMapOnly && (
-                <button
-                    className={styles.button3D}
-                    onClick={() => (window.location = "./html2/hdi.html")}
-                >
-                    View in 3D mode
-                </button>
-            )}
         </div>
     );
 };

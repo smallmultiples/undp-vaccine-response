@@ -347,6 +347,8 @@ const Map = props => {
         getDefaultIndicatorState(pillar, goal, covidPillar)
     );
 
+    // TODO: remove most of this logic. goal and pillar won't change.
+
     React.useEffect(() => {
         if (!pillar) return;
         // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
