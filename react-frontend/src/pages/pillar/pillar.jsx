@@ -12,6 +12,7 @@ import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./pillar.module.scss";
 import TempPillarIcon from "./temp-pillar-icon.svg";
 import TempPillarExplore from "./temp-pillar-explore.svg";
+import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
@@ -97,6 +98,12 @@ export default function Pillar(props) {
             {pillar.goals.map(goal => (
                 <Goal key={goal.label} goal={goal} pillar={pillar} pillarData={pillarData} />
             ))}
+            <div className={styles.tempGoalHeader}>
+                <h2>Other things countries are tracking</h2>
+            </div>
+            <div className={styles.tempOtherTracking}>
+                <img src={TempPillarOtherTracking} alt="Other things countries are tracking" />
+            </div>
         </div>
     );
 }
