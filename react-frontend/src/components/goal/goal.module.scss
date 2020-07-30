@@ -12,6 +12,11 @@
     text-align: center;
     position: relative;
     margin: 24px 0;
+
+    p {
+        max-width: 600px;
+    }
+
     &:after {
         content: "";
         width: 100vw;
