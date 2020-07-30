@@ -1,7 +1,13 @@
 import axios from "axios";
 import React from "react";
 import Goal from "../../components/goal/goal";
-import { DATA_SHEET_URL, PILLAR_URL, REGIONS_URL } from "../../config/constants";
+import {
+    DATA_SHEET_URL,
+    PILLAR_URL,
+    REGIONS_URL,
+    USE_SHEET,
+    STATIC_DATA_BASE_URL,
+} from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 
 const usePillarData = () => {
@@ -30,10 +36,17 @@ const usePillarData = () => {
     React.useEffect(() => {
         if (!pillar) return;
         // TODO: add static per pillar files. Export required too.
-        axios(`${DATA_SHEET_URL}?range=${pillar.sheet}`)
-            .then(d => d.data)
-            .then(setPillarData)
-            .then(() => setLoading(false));
+        if (USE_SHEET) {
+            axios(`${DATA_SHEET_URL}?range=${pillar.sheet}`)
+                .then(d => d.data)
+                .then(setPillarData)
+                .then(() => setLoading(false));
+        } else {
+            axios(`${STATIC_DATA_BASE_URL}/${pillar.sheet}.json`)
+                .then(d => d.data)
+                .then(setPillarData)
+                .then(() => setLoading(false));
+        }
     }, [pillar]);
 
     // TODO: remove "pillars".
