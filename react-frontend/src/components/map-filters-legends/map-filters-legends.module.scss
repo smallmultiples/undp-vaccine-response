@@ -17,12 +17,16 @@ $covidToggleWidth: 220px;
 
 .bivariateIndicatorSelection {
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     padding-top: 16px;
-    margin-right: 24px;
+    padding-right: 36px;
+    margin-right: 30px;
+    border-right: 1px solid $color-blue-bg;
 
     @include mobileOnly() {
         width: 100%;
+        border-right: none;
     }
 
     .bivariateIndicatorItem {
@@ -56,7 +60,8 @@ $covidToggleWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 280px;
+            min-width: 280px;
+            flex-grow: 1;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -313,7 +318,7 @@ $covidToggleWidth: 220px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 12px;
+    margin-right: 30px;
     padding-top: 16px;
 
     @include mobileOnly() {
