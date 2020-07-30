@@ -33,7 +33,7 @@ const useGeoData = () => {
 };
 
 const MapVis = props => {
-    const { normalizedData, countryDataLoading, scales, currentIndicators, activeQuestion } = props;
+    const { normalizedData, countryDataLoading, scales, currentIndicators, goal } = props;
     const [
         mapContainerRef,
         viewport,
@@ -91,14 +91,14 @@ const MapVis = props => {
                         scales={scales}
                         normalizedData={normalizedData}
                         currentIndicators={currentIndicators}
-                        activeQuestion={activeQuestion}
+                        goal={goal}
                     />
                 )}
                 <MapTooltip
                     tooltip={tooltip}
                     normalizedData={normalizedData}
                     currentIndicators={currentIndicators}
-                    activeQuestion={activeQuestion}
+                    goal={goal}
                     scales={scales}
                     mapContainerDimensions={mapContainerDimensions}
                 />
@@ -135,7 +135,7 @@ const MapTooltip = props => {
         tooltip,
         normalizedData,
         currentIndicators,
-        activeQuestion,
+        goal,
         scales,
         mapContainerDimensions,
     } = props;
@@ -150,7 +150,7 @@ const MapTooltip = props => {
     let category = null;
     const categoricalIndicator = isMapOnly
         ? Object.values(currentIndicators).find(d => d.categorical)
-        : activeQuestion.indicators.find(d => d.categorical);
+        : goal.indicators.find(d => d.categorical);
 
     if (categoricalIndicator) {
         category = (
@@ -301,15 +301,15 @@ const categorySplit = val => val.split(";").map(d => d.trim());
 const groupRadius = 7;
 
 const CircleVis = props => {
-    const { viewport, scales, normalizedData, currentIndicators, activeQuestion } = props;
+    const { viewport, scales, normalizedData, currentIndicators, goal } = props;
 
     const categoryIndicator = React.useMemo(() => {
         if (isMapOnly) {
             return Object.values(currentIndicators).find(d => d.categorical);
         } else {
-            return activeQuestion.indicators.find(d => d.categorical);
+            return goal.indicators.find(d => d.categorical);
         }
-    }, [activeQuestion, currentIndicators]);
+    }, [goal, currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
         if (!categoryIndicator) return null;

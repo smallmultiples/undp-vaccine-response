@@ -8,7 +8,7 @@ import useDimensions from "../../hooks/use-dimensions";
 import { Plus, Minus } from "../icons/icons";
 
 const PillarControl = props => {
-    const { pillars, activePillar, activeQuestion, setActiveQuestion } = props;
+    const { pillars, pillar, goal, setGoal } = props;
     // This component is the selector for the pillar just under the header.
     const { isMobile } = useMediaQuery();
     const [expandedPillar, setExpandedPillar] = React.useState(undefined);
@@ -19,14 +19,14 @@ const PillarControl = props => {
                 {pillars
                     .filter(d => d.visible)
                     .map(pillar => {
-                        const selected = pillar === activePillar;
+                        const selected = pillar === pillar;
                         if (isMobile) {
                             return (
                                 <PillarExpandable
                                     key={pillar.label}
                                     options={pillar.goals}
                                     label={pillar.labelLong}
-                                    activePillar={activePillar}
+                                    pillar={pillar}
                                     expandedPillar={expandedPillar}
                                     slug={pillar.slug}
                                     onExpand={() =>
@@ -35,9 +35,9 @@ const PillarControl = props => {
                                             : setExpandedPillar(undefined)
                                     }
                                     onChange={question => {
-                                        setActiveQuestion(question);
+                                        setGoal(question);
                                     }}
-                                    value={activeQuestion}
+                                    value={goal}
                                 />
                             );
                         }
@@ -49,9 +49,9 @@ const PillarControl = props => {
                                 slug={pillar.slug}
                                 pillarSelected={selected}
                                 onChange={question => {
-                                    setActiveQuestion(question);
+                                    setGoal(question);
                                 }}
-                                value={activeQuestion}
+                                value={goal}
                             />
                         );
                     })}
@@ -61,7 +61,7 @@ const PillarControl = props => {
 };
 
 const PillarInfo = props => {
-    const { activePillar } = props;
+    const { pillar } = props;
     const { isMobile } = useMediaQuery();
     const [isExpanded, setIsExpanded] = React.useState(false);
     const [contentRef, contentDimensions] = useDimensions();
@@ -73,7 +73,7 @@ const PillarInfo = props => {
                     className={styles.pillarHeading}
                     onClick={isMobile ? () => setIsExpanded(!isExpanded) : undefined}
                 >
-                    {activePillar.labelLong}
+                    {pillar.labelLong}
                     {isMobile ? isExpanded ? <Minus /> : <Plus /> : null}
                 </div>
 
@@ -84,8 +84,8 @@ const PillarInfo = props => {
                     }}
                 >
                     <p className={styles.pillarDescription} ref={contentRef}>
-                        <em>{activePillar.tagline}</em>
-                        {activePillar.description}
+                        <em>{pillar.tagline}</em>
+                        {pillar.description}
                     </p>
                 </div>
             </div>

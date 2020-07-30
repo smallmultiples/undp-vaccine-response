@@ -205,11 +205,11 @@ const Legend = props => {
 };
 
 const Questions = props => {
-    const { activePillar, datasets, countryData, hdiIndicator, covidPillar } = props;
+    const { pillar, datasets, countryData, hdiIndicator, covidPillar } = props;
     return (
         <>
-            <h2 className={styles.questionsHeading}>Explore indicators for {activePillar.label}</h2>
-            {activePillar.goals.map((x, i) => (
+            <h2 className={styles.questionsHeading}>Explore indicators for {pillar.label}</h2>
+            {pillar.goals.map((x, i) => (
                 <Question
                     key={`${x.labelLong}_${i}`}
                     question={x}

@@ -42,7 +42,7 @@ export default function Goal(props) {
             />
             {/*!isMapOnly && (
             <Questions
-                activePillar={activePillar}
+                pillar={pillar}
                 covidPillar={covidPillar}
                 datasets={datasets}
                 countryData={countryData}

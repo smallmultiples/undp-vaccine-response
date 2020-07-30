@@ -5,7 +5,7 @@ import useDimensions from "../../hooks/use-dimensions";
 import { Chevron, Cohesion, Economic, Health, Macro, Protect } from "../icons/icons";
 
 const PillarExpandable = props => {
-    const { options, label, activePillar, expandedPillar, onExpand, onChange, value, slug } = props;
+    const { options, label, pillar, expandedPillar, onExpand, onChange, value, slug } = props;
     const [contentRef, contentDimensions] = useDimensions();
 
     const handleChange = React.useCallback(
@@ -47,7 +47,7 @@ const PillarExpandable = props => {
             <div
                 className={styles.title}
                 onClick={onExpand}
-                data-active={activePillar.labelLong === label}
+                data-active={pillar.labelLong === label}
                 data-expanded={expandedPillar === label}
             >
                 {

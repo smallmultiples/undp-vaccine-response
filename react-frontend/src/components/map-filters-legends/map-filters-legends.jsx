@@ -86,13 +86,13 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { activePillar, goal, setCurrentIndicators, currentIndicators, pillars } = props;
+    const { pillar, goal, setCurrentIndicators, currentIndicators, pillars } = props;
     const bivariateYOptions = React.useMemo(
         () =>
             isMapOnly
                 ? flatten(flatten(pillars.map(p => p.goals)).map(q => q.indicators))
-                : flatten(activePillar.goals.map(d => d.indicators)).filter(d => !d.categorical),
-        [activePillar, pillars]
+                : flatten(pillar.goals.map(d => d.indicators)).filter(d => !d.categorical),
+        [pillar, pillars]
     );
     const bivariateXOptions = React.useMemo(
         () => (isMapOnly ? bivariateYOptions : goal.indicators.filter(d => !d.categorical)),
