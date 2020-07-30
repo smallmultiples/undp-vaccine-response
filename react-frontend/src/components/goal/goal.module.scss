@@ -1,7 +1,7 @@
 @import "../../variables.scss";
 
 .goal {
-    margin-bottom: 24px;
+    margin-bottom: 80px;
 }
 
 .tempGoalHeader {
@@ -66,7 +66,16 @@
     padding: 16px 20px;
     background: $color-blue-bg;
     box-sizing: border-box;
+    margin-bottom: 20px;
 
+    // Placeholder:
+    img {
+        width: 100%;
+    }
+}
+
+.graphArea {
+    // Placeholder:
     img {
         width: 100%;
     }
