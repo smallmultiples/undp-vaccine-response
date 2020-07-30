@@ -1,16 +1,8 @@
 import axios from "axios";
 import React from "react";
-import {
-    DATA_SHEET_URL,
-    PILLAR_URL,
-    REGIONS_URL,
-    STATIC_DATA_BASE_URL,
-    USE_SHEET,
-} from "../../config/constants";
-import parseMetaSheet from "../../modules/data/parse-meta-sheet";
-import { isMapOnly } from "../../modules/is-map-only";
-import styles from "./pillar.module.scss";
 import Goal from "../../components/goal/goal";
+import { DATA_SHEET_URL, PILLAR_URL, REGIONS_URL } from "../../config/constants";
+import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
@@ -33,7 +25,7 @@ const usePillarData = () => {
     const pillar = React.useMemo(() => {
         if (!pillars) return null;
         return pillars[2]; // TODO
-    });
+    }, [pillars]);
 
     React.useEffect(() => {
         if (!pillar) return;
@@ -60,6 +52,8 @@ export default function Pillar(props) {
     const pillarData = usePillarData();
     // TODO: pillar must be global state.
     const { pillar, data, regionLookup, loading } = pillarData;
+
+    console.log({ data, regionLookup, loading });
 
     if (!pillar) return null; // TODO loader
 

@@ -59,7 +59,7 @@ export default function Goal(props) {
                 </div>
             </div>
             <div className={styles.timeArea}>
-                <img src={TimeSliderTemp} />
+                <img src={TimeSliderTemp} alt="temporary time slider" />
             </div>
             {/*!isMapOnly && (
             <Questions

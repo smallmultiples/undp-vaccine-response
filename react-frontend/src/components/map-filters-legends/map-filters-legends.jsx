@@ -1,7 +1,6 @@
 import { flatten, isNil, last, uniq } from "lodash";
 import React from "react";
 import Select from "react-select";
-import useDimensions from "../../hooks/use-dimensions";
 import dropdownStyle from "../../modules/dropdown.style";
 import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
