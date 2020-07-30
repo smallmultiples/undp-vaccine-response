@@ -10,6 +10,8 @@ import {
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./pillar.module.scss";
+import TempPillarIcon from "./temp-pillar-icon.svg";
+import TempPillarExplore from "./temp-pillar-explore.svg";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
@@ -68,6 +70,8 @@ export default function Pillar(props) {
 
     console.log({ data, regionLookup, loading });
 
+    console.log({ pillarData });
+
     if (!pillar) return null; // TODO loader
 
     return (
@@ -77,6 +81,7 @@ export default function Pillar(props) {
                     <strong>Our Response</strong> - {pillar.labelLong}
                 </h5>
                 <div className={styles.pillarHeadingMain}>
+                    <img src={TempPillarIcon} alt={pillar.tagline} />
                     <h1>{pillar.labelLong}</h1>
                     <p>
                         <strong>{pillar.tagline}</strong>
@@ -85,6 +90,9 @@ export default function Pillar(props) {
                         {pillar.description}
                     </p>
                 </div>
+            </div>
+            <div className={styles.pillarExplore}>
+                <img src={TempPillarExplore} alt="Explore" />
             </div>
             {pillar.goals.map(goal => (
                 <Goal key={goal.label} goal={goal} pillar={pillar} pillarData={pillarData} />
