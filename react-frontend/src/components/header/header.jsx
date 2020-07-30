@@ -2,7 +2,6 @@ import React from "react";
 import { ReactComponent as LogoUNDP } from "./undp-logo.svg";
 import useMediaQuery from "../../hooks/use-media-query";
 import styles from "./header.module.scss";
-import isMapOnly from "../../modules/is-map-only";
 
 const Header = () => {
     const { isMobile } = useMediaQuery();
