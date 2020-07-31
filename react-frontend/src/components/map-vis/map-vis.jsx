@@ -4,7 +4,6 @@ import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import { feature as topojsonParse } from "topojson-client";
 import useDeckViewport from "../../hooks/use-deck-viewport";
-import isMapOnly from "../../modules/is-map-only";
 import styles from "./map-vis.module.scss";
 
 const SHEET_ROW_ID = "Alpha-3 code";
@@ -123,14 +122,7 @@ const getFormattedTooltipValue = (row, indicator) => {
 };
 
 const MapTooltip = props => {
-    const {
-        tooltip,
-        normalizedData,
-        currentIndicators,
-        goal,
-        scales,
-        mapContainerDimensions,
-    } = props;
+    const { tooltip, normalizedData, currentIndicators, scales, mapContainerDimensions } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -140,18 +132,19 @@ const MapTooltip = props => {
     if (!data) return null;
 
     let category = null;
-    const categoricalIndicator = isMapOnly
-        ? Object.values(currentIndicators).find(d => d.categorical)
-        : goal.indicators.find(d => d.categorical);
+    const mapVisualisationIndicator = currentIndicators.mapVisualisation;
 
-    if (categoricalIndicator) {
+    // TODO: tidy up Map VIsualisation Indicator tooltip.
+    if (mapVisualisationIndicator && mapVisualisationIndicator.categorical) {
         category = (
             <div className={styles.tooltipDatum}>
                 <div className={styles.tooltipDatumIcon} data-category />
                 <div className={styles.tooltipDatumText}>
-                    <div className={styles.tooltipDatumLabel}>{categoricalIndicator.label}</div>
+                    <div className={styles.tooltipDatumLabel}>
+                        {mapVisualisationIndicator.label}
+                    </div>
                     <div className={styles.tooltipDatumValue}>
-                        {getFormattedMapValue(data, categoricalIndicator)}
+                        {getFormattedMapValue(data, mapVisualisationIndicator)}
                     </div>
                 </div>
             </div>
@@ -174,20 +167,22 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                {!categoricalIndicator && currentIndicators.mapVisualisationEnabled && (
-                    <div className={styles.tooltipDatum}>
-                        <div className={styles.tooltipDatumIcon} data-radius />
-                        <div className={styles.tooltipDatumText}>
-                            <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.mapVisualisation.label}
-                            </div>
-                            <div className={styles.tooltipDatumValue}>
-                                {getFormattedMapValue(data, currentIndicators.mapVisualisation)}
+                {currentIndicators.mapVisualisationEnabled &&
+                    mapVisualisationIndicator &&
+                    !mapVisualisationIndicator.categorical && (
+                        <div className={styles.tooltipDatum}>
+                            <div className={styles.tooltipDatumIcon} data-radius />
+                            <div className={styles.tooltipDatumText}>
+                                <div className={styles.tooltipDatumLabel}>
+                                    {currentIndicators.mapVisualisation.label}
+                                </div>
+                                <div className={styles.tooltipDatumValue}>
+                                    {getFormattedMapValue(data, currentIndicators.mapVisualisation)}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-                {!categoricalIndicator &&
+                    )}
+                {!mapVisualisationIndicator &&
                     currentIndicators.mapVisualisationEnabled &&
                     currentIndicators.mapVisualisation.tooltipExtra && (
                         <div className={styles.tooltipDatum}>
