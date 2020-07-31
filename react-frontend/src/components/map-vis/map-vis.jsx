@@ -4,6 +4,7 @@ import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import { feature as topojsonParse } from "topojson-client";
 import useDeckViewport from "../../hooks/use-deck-viewport";
+import { categorySplit } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
 
 const SHEET_ROW_ID = "Alpha-3 code";
@@ -285,8 +286,6 @@ const MapTooltip = props => {
         </div>
     );
 };
-
-const categorySplit = val => val.split(";").map(d => d.trim());
 
 const circlePadding = 4; // this includes the stroke
 const circleRadius = 4;

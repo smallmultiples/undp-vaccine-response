@@ -5,6 +5,7 @@ import dropdownStyle from "../../modules/dropdown.style";
 import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
+import { categorySplit } from "../../modules/utils";
 
 // TODO: rename "normalizedData"
 const MapFiltersLegends = props => {
@@ -133,7 +134,6 @@ const BivariateIndicatorSelection = props => {
     );
 };
 
-const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
     const { normalizedData, currentIndicators } = props;
 
