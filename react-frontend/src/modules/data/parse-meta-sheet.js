@@ -92,6 +92,7 @@ export const parseMetaSheet = raw => {
                 label: ind,
                 tableLabel: row["Indicator Label Table"],
                 description: row["Indicator Description"],
+                isProgressIndicator: row["Progress Indicator"],
                 dataKey: row["Data Key"],
                 tooltipExtra: row["Tooltip Key"] && {
                     key: row["Tooltip Key"],
