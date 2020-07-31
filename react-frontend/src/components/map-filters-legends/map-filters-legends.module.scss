@@ -196,7 +196,7 @@ $covidToggleWidth: 220px;
 
 // -----
 
-.radiusControls {
+.mapVisualisationControls {
     padding-top: 16px;
     display: flex;
     flex-direction: column;
@@ -204,7 +204,7 @@ $covidToggleWidth: 220px;
     justify-content: flex-start;
 }
 
-.radiusLegend {
+.mapVisualisationLegend {
     display: flex;
     flex-direction: column;
     margin-bottom: 12px;
@@ -246,14 +246,14 @@ $covidToggleWidth: 220px;
 }
 // -----
 
-.radiusIndicatorSelection {
+.mapVisualisationIndicatorSelection {
     display: flex;
     flex-direction: row;
     align-items: center;
     padding-bottom: 10px;
 }
 
-.radiusIndicatorFineprint {
+.mapVisualisationIndicatorFineprint {
     p {
         font-size: 12px;
         width: $covidToggleWidth;

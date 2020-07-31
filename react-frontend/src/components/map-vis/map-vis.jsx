@@ -174,30 +174,33 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                {!categoricalIndicator && currentIndicators.radiusEnabled && (
+                {!categoricalIndicator && currentIndicators.mapVisualisationEnabled && (
                     <div className={styles.tooltipDatum}>
                         <div className={styles.tooltipDatumIcon} data-radius />
                         <div className={styles.tooltipDatumText}>
                             <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.radius.label}
+                                {currentIndicators.mapVisualisation.label}
                             </div>
                             <div className={styles.tooltipDatumValue}>
-                                {getFormattedMapValue(data, currentIndicators.radius)}
+                                {getFormattedMapValue(data, currentIndicators.mapVisualisation)}
                             </div>
                         </div>
                     </div>
                 )}
                 {!categoricalIndicator &&
-                    currentIndicators.radiusEnabled &&
-                    currentIndicators.radius.tooltipExtra && (
+                    currentIndicators.mapVisualisationEnabled &&
+                    currentIndicators.mapVisualisation.tooltipExtra && (
                         <div className={styles.tooltipDatum}>
                             <div className={styles.tooltipDatumIcon} data-radius />
                             <div className={styles.tooltipDatumText}>
                                 <div className={styles.tooltipDatumLabel}>
-                                    {currentIndicators.radius.tooltipExtra.label}
+                                    {currentIndicators.mapVisualisation.tooltipExtra.label}
                                 </div>
                                 <div className={styles.tooltipDatumValue}>
-                                    {getFormattedTooltipValue(data, currentIndicators.radius)}
+                                    {getFormattedTooltipValue(
+                                        data,
+                                        currentIndicators.mapVisualisation
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -322,7 +325,7 @@ const CircleVis = props => {
         return viewport.project([lng, lat]);
     };
 
-    if (!currentIndicators.radiusEnabled) return null;
+    if (!currentIndicators.mapVisualisationEnabled) return null;
 
     let content = null;
 
@@ -367,12 +370,12 @@ const CircleVis = props => {
             );
         });
         content = <g>{groups}</g>;
-    } else if (currentIndicators.radiusEnabled) {
+    } else if (currentIndicators.mapVisualisationEnabled) {
         const circles = Object.values(normalizedData).map(row => {
             const xy = rowXY(row);
             if (!xy) return null;
             const [x, y] = xy;
-            const r = scales.radius(row);
+            const r = scales.mapVisualisationRadius(row);
             if (isNaN(r)) return null;
             return (
                 <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />

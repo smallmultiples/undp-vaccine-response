@@ -25,7 +25,7 @@ const useDomains = (countryData, currentIndicators) => {
             countryData &&
             currentIndicators.bivariateX &&
             currentIndicators.bivariateY &&
-            currentIndicators.radius;
+            currentIndicators.mapVisualisation;
 
         const valuesX = ready
             ? Object.values(countryData)
@@ -39,9 +39,9 @@ const useDomains = (countryData, currentIndicators) => {
                   .filter(d => d !== undefined && d !== "")
                   .sort((a, b) => a - b)
             : [];
-        const valuesRadius = ready
+        const valuesMapVis = ready
             ? Object.values(countryData)
-                  .map(raw => raw[currentIndicators.radius.dataKey])
+                  .map(raw => raw[currentIndicators.mapVisualisation.dataKey])
                   .filter(d => d !== undefined && d !== "")
             : [];
 
@@ -81,10 +81,10 @@ const useDomains = (countryData, currentIndicators) => {
             values: {
                 x: valuesX,
                 y: valuesY,
-                radius: valuesRadius,
+                mapVisualisation: valuesMapVis,
             },
             extents: {
-                radius: extent(valuesRadius),
+                mapVisualisation: extent(valuesMapVis),
             },
             categories: {
                 x: jenksX,
@@ -200,11 +200,11 @@ const nullValue = val => isNil(val) || val === "";
 
 const useScales = (domains, currentIndicators, pillar) => {
     return React.useMemo(() => {
-        const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.radius);
-        const circleRadiusScale = row =>
-            circleScale(getRowIndicatorValue(row, currentIndicators.radius));
-        circleRadiusScale.range = circleScale.range;
-        circleRadiusScale.domain = circleScale.domain;
+        const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.mapVisualisation);
+        const mapVisualisationRadiusScale = row =>
+            circleScale(getRowIndicatorValue(row, currentIndicators.mapVisualisation));
+        mapVisualisationRadiusScale.range = circleScale.range;
+        mapVisualisationRadiusScale.domain = circleScale.domain;
 
         let { colorMatrix, colorMatrixHex } = getColorMatrices(pillar, currentIndicators);
         const maxIndexX = colorMatrix[0].length - 1;
@@ -313,7 +313,7 @@ const useScales = (domains, currentIndicators, pillar) => {
         };
 
         return {
-            radius: circleRadiusScale,
+            mapVisualisationRadius: mapVisualisationRadiusScale,
             color: bivariateColourScale,
             stroke: strokeScale,
             colorMatrix: colorMatrixHex,
@@ -334,9 +334,9 @@ const getDefaultIndicatorState = (pillar, goal, covidPillar) => {
         // Any indicator for the pillar on the Y axis
         bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
         bivariateYEnabled: false,
-        // Radius indicator is the circle radius
-        radius: covidPillar.goals[0].indicators[0],
-        radiusEnabled: true,
+        // "above-map" layer, be it simple circles or whatever. Is a "progress indicator".
+        mapVisualisation: covidPillar.goals[0].indicators[0],
+        mapVisualisationEnabled: true,
     };
 };
 
@@ -369,7 +369,7 @@ const Map = props => {
                 bivariateX: goal.indicators.filter(d => !d.categorical)[0],
                 bivariateXEnabled: false,
                 bivariateYEnabled: false,
-                radiusEnabled: true,
+                mapVisualisationEnabled: true,
             }));
         } else {
             // Whenever active QUESTION changes, set the pillar indicator to the first for the question

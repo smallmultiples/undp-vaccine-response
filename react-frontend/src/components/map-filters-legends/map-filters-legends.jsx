@@ -11,7 +11,7 @@ const MapFiltersLegends = props => {
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            <RadiusControls {...props} />
+            <ProgressIndicator {...props} />
             <CategoricalLegend {...props} />
         </div>
     );
@@ -21,7 +21,7 @@ export const MapFiltersLegendMobile = props => {
     return (
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
-            <RadiusControls {...props} />
+            <ProgressIndicator {...props} />
             <BivariateIndicatorSelection {...props} />
             <CategoricalLegend {...props} />
         </div>
@@ -161,7 +161,6 @@ const CategoricalLegend = props => {
 
     if (!indicator) return null;
 
-    // TODO: "support" is hardcoded in here.
     const items = uniqueVals.map((val, index) => {
         const fmtString = indicator.categoryFormat || "{v}";
         const categoryString = fmtString.replace("{v}", val);
@@ -179,11 +178,11 @@ const CategoricalLegend = props => {
         <div className={styles.categoryLegend}>
             <div className={styles.categoryLegendHeader}>
                 <Checkbox
-                    value={currentIndicators.radiusEnabled}
+                    value={currentIndicators.mapVisualisationEnabled}
                     onChange={v =>
                         setCurrentIndicators(d => ({
                             ...d,
-                            radiusEnabled: v,
+                            mapVisualisationEnabled: v,
                         }))
                     }
                 />
@@ -191,7 +190,10 @@ const CategoricalLegend = props => {
                     {indicator && "Show " + indicator.label}
                 </div>
             </div>
-            <table className={styles.categoryList} data-visible={currentIndicators.radiusEnabled}>
+            <table
+                className={styles.categoryList}
+                data-visible={currentIndicators.mapVisualisationEnabled}
+            >
                 <tbody>
                     {items}
                     <tr className={styles.categoryItemRow}>
@@ -206,24 +208,23 @@ const CategoricalLegend = props => {
     );
 };
 
-const RadiusControls = props => {
-    if (props.goal.indicators.some(i => i.categorical)) return null;
+const ProgressIndicator = props => {
     return (
-        <div className={styles.radiusControls}>
-            <RadiusIndicatorSelection {...props} />
-            <RadiusLegend {...props} />
-            <div className={styles.radiusIndicatorFineprint}>
+        <div className={styles.mapVisualisationControls}>
+            <IndicatorSelection {...props} />
+            <MapVisualisationLegend {...props} />
+            <div className={styles.mapVisualisationIndicatorFineprint}>
                 <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
             </div>
         </div>
     );
 };
 
-const RadiusLegend = props => {
+const MapVisualisationLegend = props => {
     const { currentIndicators } = props;
-    if (!props.scales.radius) return null;
-    const domain = props.scales.radius.domain();
-    const range = props.scales.radius.range();
+    if (!props.scales.mapVisualisationRadius) return null;
+    const domain = props.scales.mapVisualisationRadius.domain();
+    const range = props.scales.mapVisualisationRadius.range();
 
     const stroke = 2;
     const hs = stroke / 2;
@@ -254,15 +255,15 @@ const RadiusLegend = props => {
         .join(" ");
 
     return (
-        <div className={styles.radiusLegend}>
+        <div className={styles.mapVisualisationLegend}>
             <svg className={styles.legendSvg}>
                 <polygon className={styles.legendPoly} points={polyPoints} />
                 <circle className={styles.legendCircle} cx={ax} r={ar} cy={cy} />
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.radius.formatLegend(domain[0])}</span>
-                <span>{currentIndicators.radius.formatLegend(domain[1])}</span>
+                <span>{currentIndicators.mapVisualisation.formatLegend(domain[0])}</span>
+                <span>{currentIndicators.mapVisualisation.formatLegend(domain[1])}</span>
             </div>
         </div>
     );
@@ -308,27 +309,27 @@ const Toggle = props => {
     );
 };
 
-const RadiusIndicatorSelection = props => {
+const IndicatorSelection = props => {
     const { covidPillar, setCurrentIndicators, currentIndicators } = props;
-    const radiusOptions = flatten(covidPillar.goals.map(d => d.indicators));
+    const options = flatten(covidPillar.goals.map(d => d.indicators));
     return (
-        <div className={styles.radiusIndicatorSelection}>
+        <div className={styles.mapVisualisationIndicatorSelection}>
             <Checkbox
-                value={currentIndicators.radiusEnabled}
+                value={currentIndicators.mapVisualisationEnabled}
                 onChange={v =>
                     setCurrentIndicators(d => ({
                         ...d,
-                        radiusEnabled: v,
+                        mapVisualisationEnabled: v,
                     }))
                 }
             />
             <Toggle
-                options={radiusOptions}
-                value={currentIndicators.radius}
+                options={options}
+                value={currentIndicators.mapVisualisation}
                 onChange={v =>
                     setCurrentIndicators(d => ({
                         ...d,
-                        radius: v,
+                        mapVisualisation: v,
                     }))
                 }
             />
