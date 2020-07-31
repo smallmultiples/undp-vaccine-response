@@ -293,7 +293,9 @@ const MapTooltip = props => {
 
 const categorySplit = val => val.split(";").map(d => d.trim());
 
-const groupRadius = 7;
+const circlePadding = 4; // this includes the stroke
+const circleRadius = 4;
+const circleRadiusInactive = 3;
 
 const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators } = props;
@@ -325,7 +327,11 @@ const CircleVis = props => {
 
     if (indicator.categorical) {
         // TODO: this is assuming one categorical per question. will need code later.
-        const angleEach = 360 / uniqueVals.length;
+        // TODO: what did I mean by ^ :(
+        const numCircles = uniqueVals.length;
+        const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
+        const groupRadius = minimumCircumference / (Math.PI * 2);
+        const angleEach = 360 / numCircles;
 
         const groups = Object.values(normalizedData).map(row => {
             const val = row[indicator.dataKey];
@@ -333,7 +339,6 @@ const CircleVis = props => {
             const cats = categorySplit(val);
             const xy = rowXY(row);
             if (!xy) return null;
-            const r = 4;
 
             const groupCircles = uniqueVals.map((cat, i) => {
                 const a = i * angleEach - 90;
@@ -344,7 +349,7 @@ const CircleVis = props => {
                         className={styles.visCategoryCircle}
                         data-i={i}
                         data-active={active}
-                        r={r}
+                        r={active ? circleRadius : circleRadiusInactive}
                         style={{
                             transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
                         }}

@@ -141,32 +141,37 @@ $covidToggleWidth: 220px;
             min-width: 9px;
             min-height: 9px;
             border-radius: 50%;
-            border: 2px solid $color-navy;
+            border: 2px solid $color-blue-bg;
             margin-right: 8px;
-
-            &[data-i="0"] {
-                border-color: $color-navy;
-            }
-
-            &[data-i="1"] {
-                border-color: $color-yellow;
-            }
-
-            &[data-i="2"] {
-                border-color: $color-red;
-            }
 
             &[data-selected="true"] {
                 &[data-i="0"] {
                     background: $color-navy;
+                    border-color: $color-navy;
                 }
-
                 &[data-i="1"] {
                     background: $color-yellow;
+                    border-color: $color-yellow;
                 }
-
                 &[data-i="2"] {
                     background: $color-red;
+                    border-color: $color-red;
+                }
+                &[data-i="3"] {
+                    background: $color-green;
+                    border-color: $color-green;
+                }
+                &[data-i="4"] {
+                    background: $color-blue;
+                    border-color: $color-blue;
+                }
+                &[data-i="5"] {
+                    background: $color-purple;
+                    border-color: $color-purple;
+                }
+                &[data-i="6"] {
+                    background: $color-cerise;
+                    border-color: $color-cerise;
                 }
             }
         }
