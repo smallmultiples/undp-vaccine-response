@@ -7,11 +7,6 @@ export default function Goal(props) {
     const { goal, pillar, pillarData } = props;
     const { pillars, data, regionLookup, loading } = pillarData;
 
-    const covidPillar = React.useMemo(() => {
-        if (!pillars) return null;
-        return pillars.find(d => d.covid);
-    }, [pillars]);
-
     // TODO: replace
     // Countrydata is just a merge of all the datasets
     const countryData = React.useMemo(() => {
@@ -62,7 +57,6 @@ export default function Goal(props) {
                         countryData={countryData}
                         countryDataLoading={loading}
                         pillar={pillar}
-                        covidPillar={covidPillar}
                         pillars={pillars}
                         goal={goal}
                     />
@@ -77,7 +71,6 @@ export default function Goal(props) {
             {/*!isMapOnly && (
             <Questions
                 pillar={pillar}
-                covidPillar={covidPillar}
                 datasets={datasets}
                 countryData={countryData}
                 hdiIndicator={hdiIndicator}

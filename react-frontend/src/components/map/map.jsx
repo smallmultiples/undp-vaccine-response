@@ -323,7 +323,7 @@ const useScales = (domains, currentIndicators, pillar) => {
     }, [domains, currentIndicators, pillar]);
 };
 
-const getDefaultIndicatorState = (pillar, goal, covidPillar) => {
+const getDefaultIndicatorState = (pillar, goal) => {
     // TODO: module
     const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators));
 
@@ -343,10 +343,10 @@ const getDefaultIndicatorState = (pillar, goal, covidPillar) => {
 };
 
 const Map = props => {
-    const { countryData, covidPillar, pillar, goal } = props;
+    const { countryData, pillar, goal } = props;
 
     const [currentIndicators, setCurrentIndicators] = React.useState(
-        getDefaultIndicatorState(pillar, goal, covidPillar)
+        getDefaultIndicatorState(pillar, goal)
     );
 
     // TODO: remove most of this logic. goal and pillar won't change.

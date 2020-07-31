@@ -19,7 +19,6 @@ export const parseMetaSheet = raw => {
                 slug: row["Pillar slug"],
                 goals: {},
                 visible: currentPillar !== "ALL",
-                covid: currentPillar === "ALL",
             };
         }
         // -----------

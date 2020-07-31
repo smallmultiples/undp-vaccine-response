@@ -60,7 +60,6 @@ const usePillarData = () => {
     }, [pillar]);
 
     // TODO: remove "pillars".
-    // TODO: remove special "covid" sheet.
 
     return {
         pillar,
