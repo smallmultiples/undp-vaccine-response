@@ -20,7 +20,6 @@ export const parseMetaSheet = raw => {
                 goals: {},
                 visible: currentPillar !== "ALL",
                 covid: currentPillar === "ALL",
-                sheet: row["Sheet"],
             };
         }
         // -----------
@@ -36,6 +35,7 @@ export const parseMetaSheet = raw => {
                 hidden: qs === "-",
                 categorical: false,
                 comingSoon: row["Goal coming soon"],
+                sheet: row["Sheet"],
             };
         }
         // ------------

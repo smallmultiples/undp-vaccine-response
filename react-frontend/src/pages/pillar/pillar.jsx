@@ -42,17 +42,21 @@ const usePillarData = () => {
 
     React.useEffect(() => {
         if (!pillar) return;
-        if (USE_SHEET) {
-            axios(`${DATA_SHEET_URL}?range=${pillar.sheet}`)
-                .then(d => d.data)
-                .then(setPillarData)
-                .then(() => setLoading(false));
-        } else {
-            axios(`${STATIC_DATA_BASE_URL}/${pillar.sheet}.json`)
-                .then(d => d.data)
-                .then(setPillarData)
-                .then(() => setLoading(false));
-        }
+        let newPillarData = [];
+        const sheets = Object.values(pillar.goals).map(goal => goal.sheet);
+        Promise.all(
+            sheets.map(sheet =>
+                axios(
+                    USE_SHEET
+                        ? `${DATA_SHEET_URL}?range=${sheet}`
+                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
+                )
+                    .then(d => d.data)
+                    .then(d => (newPillarData = newPillarData.concat(d)))
+            )
+        )
+            .then(() => setPillarData(newPillarData))
+            .then(() => setLoading(false));
     }, [pillar]);
 
     // TODO: remove "pillars".
