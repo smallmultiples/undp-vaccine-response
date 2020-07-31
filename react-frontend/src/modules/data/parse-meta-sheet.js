@@ -73,10 +73,6 @@ export const parseMetaSheet = raw => {
                     meta = lastGoalIndicator.meta;
                 }
             }
-            const categorical = row["Data Format"] === "category";
-            if (categorical) {
-                out[currentPillar].goals[currentGoal].categorical = true;
-            }
 
             const decimals = numOrUndef(row["Decimal Places"]);
             const legendDpRaw = numOrUndef(row["Legend Decimals"]);
@@ -102,7 +98,8 @@ export const parseMetaSheet = raw => {
                         : mapFormat,
                 },
                 flipped: row["Invert Scale"],
-                categorical: categorical,
+                categorical: row["Data Format"] === "category",
+                categoryFormat: row["Category Format"],
                 format: mapFormat,
                 formatLegend: formats[row["Data Format"]]
                     ? formats[row["Data Format"]](legendDecimals)

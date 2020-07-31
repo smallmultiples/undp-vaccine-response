@@ -78,8 +78,6 @@ const BivariateIndicatorSelection = props => {
     // Disable Y axis if there is only one indicator.
     const disableY = bivariateYOptions.length === 1;
 
-    //TODO the labels for the dropdowns are not very accessible, I don't think?
-
     return (
         <div className={styles.bivariateIndicatorSelection}>
             <div className={styles.bivariateIndicatorItem} data-y>
@@ -145,35 +143,33 @@ const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
     const { goal, normalizedData, setCurrentIndicators, currentIndicators } = props;
 
-    const categoryIndicator = React.useMemo(() => goal.indicators.find(d => d.categorical), [goal]);
+    const indicator = React.useMemo(() => goal.indicators.find(d => d.categorical), [goal]);
 
     // TODO: this should be in the radius extents maybe.
     const uniqueVals = React.useMemo(() => {
-        if (!categoryIndicator) return null;
+        if (!indicator) return null;
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[categoryIndicator.dataKey];
+                    const val = d[indicator.dataKey];
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
-    }, [normalizedData, categoryIndicator]);
+    }, [normalizedData, indicator]);
 
-    if (!categoryIndicator) return null;
+    if (!indicator) return null;
 
     // TODO: "support" is hardcoded in here.
     const items = uniqueVals.map((val, index) => {
+        const fmtString = indicator.categoryFormat || "{v}";
+        const categoryString = fmtString.replace("{v}", val);
         return (
             <tr className={styles.categoryItemRow} key={val}>
                 <td className={styles.categoryItemCell}>
-                    <div className={styles.categoryIcon} data-i={index} />
-                    <span className={styles.categoryText}>No {val} support</span>
-                </td>
-                <td className={styles.categoryItemCell}>
                     <div className={styles.categoryIcon} data-i={index} data-selected />
-                    <span className={styles.categoryText}>{val} support</span>
+                    <span className={styles.categoryText}>{categoryString}</span>
                 </td>
             </tr>
         );
@@ -192,18 +188,26 @@ const CategoricalLegend = props => {
                     }
                 />
                 <div className={styles.categoryLegendHeading}>
-                    {categoryIndicator && "Show " + categoryIndicator.label}
+                    {indicator && "Show " + indicator.label}
                 </div>
             </div>
             <table className={styles.categoryList} data-visible={currentIndicators.radiusEnabled}>
-                <tbody>{items}</tbody>
+                <tbody>
+                    {items}
+                    <tr className={styles.categoryItemRow}>
+                        <td className={styles.categoryItemCell}>
+                            <div className={styles.categoryIcon} />
+                            <span className={styles.categoryText}>Not available</span>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     );
 };
 
 const RadiusControls = props => {
-    if (props.goal.categorical) return null;
+    if (props.goal.indicators.some(i => i.categorical)) return null;
     return (
         <div className={styles.radiusControls}>
             <RadiusIndicatorSelection {...props} />
