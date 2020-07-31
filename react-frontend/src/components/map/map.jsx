@@ -389,7 +389,7 @@ const Map = props => {
 
     return (
         <div className={styles.map}>
-            {!isMobile && scales && (
+            {!isMobile && scales && countryData && (
                 <MapFiltersLegends
                     domains={domains}
                     scales={scales}
