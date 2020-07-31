@@ -327,6 +327,8 @@ const getDefaultIndicatorState = (pillar, goal, covidPillar) => {
     // TODO: module
     const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators));
 
+    const mapVisualisationOptions = goal.indicators.filter(d => d.isProgressIndicator);
+
     return {
         // Question indicator is the X axis
         bivariateX: goal.indicators[0],
@@ -335,8 +337,8 @@ const getDefaultIndicatorState = (pillar, goal, covidPillar) => {
         bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
         bivariateYEnabled: false,
         // "above-map" layer, be it simple circles or whatever. Is a "progress indicator".
-        mapVisualisation: covidPillar.goals[0].indicators[0],
-        mapVisualisationEnabled: true,
+        mapVisualisation: mapVisualisationOptions[0],
+        mapVisualisationEnabled: mapVisualisationOptions.length > 0,
     };
 };
 

@@ -6,26 +6,20 @@ import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
 
+// TODO: rename "normalizedData"
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            <ProgressIndicator {...props} />
-            <CategoricalLegend {...props} />
+            <MapVisualisationControls {...props} />
         </div>
     );
 };
 
 export const MapFiltersLegendMobile = props => {
-    return (
-        <div className={styles.mapFiltersLegends}>
-            <BivariateLegend {...props} />
-            <ProgressIndicator {...props} />
-            <BivariateIndicatorSelection {...props} />
-            <CategoricalLegend {...props} />
-        </div>
-    );
+    // TODO: redo this.
+    return <MapFiltersLegends {...props} />;
 };
 
 const isOptionSelected = (item, selections) => {
@@ -141,9 +135,9 @@ const BivariateIndicatorSelection = props => {
 
 const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
-    const { goal, normalizedData, setCurrentIndicators, currentIndicators } = props;
+    const { normalizedData, currentIndicators } = props;
 
-    const indicator = React.useMemo(() => goal.indicators.find(d => d.categorical), [goal]);
+    const indicator = currentIndicators.mapVisualisation;
 
     // TODO: this should be in the radius extents maybe.
     const uniqueVals = React.useMemo(() => {
@@ -176,20 +170,6 @@ const CategoricalLegend = props => {
 
     return (
         <div className={styles.categoryLegend}>
-            <div className={styles.categoryLegendHeader}>
-                <Checkbox
-                    value={currentIndicators.mapVisualisationEnabled}
-                    onChange={v =>
-                        setCurrentIndicators(d => ({
-                            ...d,
-                            mapVisualisationEnabled: v,
-                        }))
-                    }
-                />
-                <div className={styles.categoryLegendHeading}>
-                    {indicator && "Show " + indicator.label}
-                </div>
-            </div>
             <table
                 className={styles.categoryList}
                 data-visible={currentIndicators.mapVisualisationEnabled}
@@ -208,19 +188,23 @@ const CategoricalLegend = props => {
     );
 };
 
-const ProgressIndicator = props => {
+const MapVisualisationControls = props => {
+    const mapVisIndicator = props.currentIndicators.mapVisualisation;
+    if (!mapVisIndicator) return null;
+
     return (
         <div className={styles.mapVisualisationControls}>
-            <IndicatorSelection {...props} />
-            <MapVisualisationLegend {...props} />
-            <div className={styles.mapVisualisationIndicatorFineprint}>
-                <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
-            </div>
+            <MapVisualisationIndicatorSelection {...props} />
+            {mapVisIndicator.categorical ? (
+                <CategoricalLegend {...props} />
+            ) : (
+                <MapVisualisationRadiusLegend {...props} />
+            )}
         </div>
     );
 };
 
-const MapVisualisationLegend = props => {
+const MapVisualisationRadiusLegend = props => {
     const { currentIndicators } = props;
     if (!props.scales.mapVisualisationRadius) return null;
     const domain = props.scales.mapVisualisationRadius.domain();
@@ -264,6 +248,9 @@ const MapVisualisationLegend = props => {
             <div className={styles.legendLabels}>
                 <span>{currentIndicators.mapVisualisation.formatLegend(domain[0])}</span>
                 <span>{currentIndicators.mapVisualisation.formatLegend(domain[1])}</span>
+            </div>
+            <div className={styles.mapVisualisationIndicatorFineprint}>
+                <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
             </div>
         </div>
     );
@@ -309,9 +296,9 @@ const Toggle = props => {
     );
 };
 
-const IndicatorSelection = props => {
-    const { covidPillar, setCurrentIndicators, currentIndicators } = props;
-    const options = flatten(covidPillar.goals.map(d => d.indicators));
+const MapVisualisationIndicatorSelection = props => {
+    const { setCurrentIndicators, currentIndicators, goal } = props;
+    const options = goal.indicators.filter(d => d.isProgressIndicator);
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
             <Checkbox

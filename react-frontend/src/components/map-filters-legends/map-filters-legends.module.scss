@@ -118,18 +118,6 @@ $covidToggleWidth: 220px;
 
 .categoryLegend {
     padding-top: 12px;
-
-    .categoryLegendHeader {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        .categoryLegendHeading {
-            margin-left: 8px;
-            @include body();
-            font-weight: $weight-semi;
-        }
-    }
 }
 
 .categoryList {
