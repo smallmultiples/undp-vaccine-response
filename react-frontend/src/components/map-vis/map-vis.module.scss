@@ -131,11 +131,12 @@
 
     .visCategoryCircle {
         fill: none;
-        stroke: $color-blue-bg;
+        stroke: $color-grey-c3;
         stroke-width: 2px;
 
         &[data-active="true"] {
             stroke-width: 1px;
+            fill: $color-grey-c3;
             &[data-i="0"] {
                 fill: $color-navy;
                 stroke: $color-navy;

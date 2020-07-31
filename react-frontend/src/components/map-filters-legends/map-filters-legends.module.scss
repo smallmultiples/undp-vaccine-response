@@ -141,10 +141,11 @@ $covidToggleWidth: 220px;
             min-width: 9px;
             min-height: 9px;
             border-radius: 50%;
-            border: 2px solid $color-blue-bg;
+            border: 2px solid $color-grey-c3;
             margin-right: 8px;
 
             &[data-selected="true"] {
+                background: $color-grey-c3;
                 &[data-i="0"] {
                     background: $color-navy;
                     border-color: $color-navy;
