@@ -296,28 +296,22 @@ const categorySplit = val => val.split(";").map(d => d.trim());
 const groupRadius = 7;
 
 const CircleVis = props => {
-    const { viewport, scales, normalizedData, currentIndicators, goal } = props;
+    const { viewport, scales, normalizedData, currentIndicators } = props;
 
-    const categoryIndicator = React.useMemo(() => {
-        if (isMapOnly) {
-            return Object.values(currentIndicators).find(d => d.categorical);
-        } else {
-            return goal.indicators.find(d => d.categorical);
-        }
-    }, [goal, currentIndicators]);
+    const indicator = React.useMemo(() => currentIndicators.mapVisualisation, [currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
-        if (!categoryIndicator) return null;
+        if (!indicator.categorical) return null;
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[categoryIndicator.dataKey];
+                    const val = d[indicator.dataKey];
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
-    }, [normalizedData, categoryIndicator]);
+    }, [normalizedData, indicator]);
 
     const rowXY = row => {
         const [lng, lat] = [row["Longitude (average)"], row["Latitude (average)"]];
@@ -329,12 +323,12 @@ const CircleVis = props => {
 
     let content = null;
 
-    if (categoryIndicator) {
+    if (indicator.categorical) {
         // TODO: this is assuming one categorical per question. will need code later.
         const angleEach = 360 / uniqueVals.length;
 
         const groups = Object.values(normalizedData).map(row => {
-            const val = row[categoryIndicator.dataKey];
+            const val = row[indicator.dataKey];
             if (isNil(val)) return null;
             const cats = categorySplit(val);
             const xy = rowXY(row);
