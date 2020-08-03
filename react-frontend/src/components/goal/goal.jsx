@@ -27,6 +27,12 @@ const useGoalData = goal => {
     };
 };
 
+export const TIMELINE_SCALES = {
+    Yearly: 1,
+    Monthly: 2,
+    Daily: 3,
+};
+
 export default function Goal(props) {
     const { goal, pillar, pillarData } = props;
     const { pillars, regionLookup, loading } = pillarData;
@@ -34,6 +40,7 @@ export default function Goal(props) {
     const { goalData, goalLoading } = useGoalData(goal);
 
     const [currentTime, setCurrentTime] = React.useState(new Date());
+    const [timelineRange, setTimelineRange] = React.useState();
 
     const countryData = React.useMemo(() => {
         if (!goalData) return {};
@@ -60,6 +67,8 @@ export default function Goal(props) {
             });
         return newData;
     }, [goalData, loading, regionLookup]);
+
+    console.log(goal.label, goalData, countryData);
 
     return (
         <div className={styles.goal}>
