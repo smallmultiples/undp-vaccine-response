@@ -1,23 +1,52 @@
+import axios from "axios";
 import React from "react";
+import { DATA_SHEET_URL, STATIC_DATA_BASE_URL, USE_SHEET } from "../../config/constants";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
 import TimeSliderTemp from "./time-slider-temp.svg";
 
+const useGoalData = goal => {
+    const [goalData, setGoalData] = React.useState(null);
+    const [goalLoading, setGoalLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        if (!goal) return;
+        axios(
+            USE_SHEET
+                ? `${DATA_SHEET_URL}?range=${goal.sheet}`
+                : `${STATIC_DATA_BASE_URL}/${goal.sheet}.json`
+        )
+            .then(res => res.data)
+            .then(setGoalData)
+            .then(() => setGoalLoading(false));
+    }, [goal]);
+
+    return {
+        goalData,
+        goalLoading,
+    };
+};
+
 export default function Goal(props) {
     const { goal, pillar, pillarData } = props;
-    const { pillars, data, regionLookup, loading } = pillarData;
+    const { pillars, regionLookup, loading } = pillarData;
 
-    // TODO: replace
-    // Countrydata is just a merge of all the datasets
+    const { goalData, goalLoading } = useGoalData(goal);
+
+    const [currentTime, setCurrentTime] = React.useState(new Date());
+
     const countryData = React.useMemo(() => {
-        if (loading) return null;
+        if (!goalData) return {};
 
         let newData = {};
+
+        // Prefill the object.
         Object.values(regionLookup).forEach(region => {
             newData[region["ISO-alpha3 Code"]] = region;
         });
-        // TODO: real year handling.
-        data.slice()
+
+        goalData
+            .filter(d => d.Year <= currentTime)
             .sort((a, b) => a.Year - b.Year)
             .forEach(row => {
                 const rowKey = row["Alpha-3 code"];
@@ -30,7 +59,7 @@ export default function Goal(props) {
                     });
             });
         return newData;
-    }, [data, loading, regionLookup]);
+    }, [goalData, loading, regionLookup]);
 
     return (
         <div className={styles.goal}>

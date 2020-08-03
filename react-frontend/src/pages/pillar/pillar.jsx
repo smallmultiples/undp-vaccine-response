@@ -1,27 +1,20 @@
 import axios from "axios";
 import React from "react";
 import Goal from "../../components/goal/goal";
-import {
-    DATA_SHEET_URL,
-    PILLAR_URL,
-    REGIONS_URL,
-    USE_SHEET,
-    STATIC_DATA_BASE_URL,
-} from "../../config/constants";
+import { PILLAR_URL, REGIONS_URL } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./pillar.module.scss";
-import TempPillarIcon from "./temp-pillar-icon.svg";
-import TempPillarExplore from "./temp-pillar-explore.svg";
-import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
 import TempPillarAllData from "./temp-pillar-all-data.svg";
+import TempPillarExplore from "./temp-pillar-explore.svg";
+import TempPillarIcon from "./temp-pillar-icon.svg";
 import TempPillarNews from "./temp-pillar-news.png";
+import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
 import TempPillarPartnership from "./temp-pillar-partnerships.svg";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
     const [regionLookup, setRegionLookup] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
-    const [pillarData, setPillarData] = React.useState(null);
 
     React.useEffect(() => {
         Promise.all([
@@ -40,44 +33,20 @@ const usePillarData = () => {
         return pillars[2]; // TODO
     }, [pillars]);
 
-    React.useEffect(() => {
-        if (!pillar) return;
-        let newPillarData = [];
-        const sheets = Object.values(pillar.goals).map(goal => goal.sheet);
-        Promise.all(
-            sheets.map(sheet =>
-                axios(
-                    USE_SHEET
-                        ? `${DATA_SHEET_URL}?range=${sheet}`
-                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
-                )
-                    .then(d => d.data)
-                    .then(d => (newPillarData = newPillarData.concat(d)))
-            )
-        )
-            .then(() => setPillarData(newPillarData))
-            .then(() => setLoading(false));
-    }, [pillar]);
-
     // TODO: remove "pillars".
 
     return {
         pillar,
-        loading,
+        pillarLoading: loading,
         pillars,
         regionLookup,
-        data: pillarData,
     };
 };
 
 export default function Pillar(props) {
     const pillarData = usePillarData();
     // TODO: pillar must be global state.
-    const { pillar, data, regionLookup, loading } = pillarData;
-
-    console.log({ data, regionLookup, loading });
-
-    console.log({ pillarData });
+    const { pillar } = pillarData;
 
     if (!pillar) return null; // TODO loader
 
