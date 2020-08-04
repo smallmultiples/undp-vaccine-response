@@ -47,15 +47,19 @@ function TimelineVis(props) {
 
     const ticks = tickData.map(tick => {
         const x = scale(tick) * 100 + "%";
+        const onClick = () => {
+            timelineState.setCurrentTime(tick);
+        };
+
         // TODO: format based on timeline scale.
         return (
-            <div className={styles.tick} style={{ left: x }}>
+            <div className={styles.tick} style={{ left: x }} onClick={onClick}>
                 {1900 + tick.getYear()}
             </div>
         );
     });
 
-    const fillWidth = scale(timelineState.currentYear) * 100 + "%";
+    const fillWidth = scale(timelineState.currentTime) * 100 + "%";
 
     return (
         <div className={styles.vis}>
