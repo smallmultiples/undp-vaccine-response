@@ -72,7 +72,7 @@ function useIndicatorState(pillar, goal) {
 }
 
 export default function Goal(props) {
-    const { goal, pillar, pillars, regionLookup, pillarLoading, goalDatasets } = props;
+    const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
 
     // TODO: make this context?
     const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
@@ -136,7 +136,6 @@ export default function Goal(props) {
                         countryData={countryData}
                         countryDataLoading={pillarLoading}
                         pillar={pillar}
-                        pillars={pillars}
                         goal={goal}
                         currentIndicators={currentIndicators}
                         setCurrentIndicators={setCurrentIndicators}

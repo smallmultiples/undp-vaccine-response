@@ -37,10 +37,8 @@ const usePillarData = () => {
 
     const pillar = React.useMemo(() => {
         if (!pillars) return null;
-        return pillars[2]; // TODO
+        return pillars[2]; // TODO: pass in prop
     }, [pillars]);
-
-    // TODO: remove "pillars"?
 
     React.useEffect(() => {
         if (!pillar) return;
@@ -64,7 +62,6 @@ const usePillarData = () => {
     return {
         pillar,
         pillarLoading: loading,
-        pillars,
         goalDatasets,
         regionLookup,
     };
@@ -73,9 +70,8 @@ const usePillarData = () => {
 export default function Pillar(props) {
     const pillarData = usePillarData();
     // TODO: pillar must be global state.
-    // TODO: remove "pillars" from Goal
     // TODO: remove "regionLookup"?
-    const { pillar, pillars, regionLookup, goalDatasets } = pillarData;
+    const { pillar, regionLookup, goalDatasets } = pillarData;
 
     if (!pillar) return null; // TODO loader
 
@@ -105,7 +101,6 @@ export default function Pillar(props) {
                         key={goal.label}
                         goal={goal}
                         pillar={pillar}
-                        pillars={pillars}
                         regionLookup={regionLookup}
                         goalDatasets={goalDatasets}
                         goalData={goalDatasets[goal.sheet]}
