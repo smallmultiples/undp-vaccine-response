@@ -99,18 +99,19 @@ export default function Pillar(props) {
             <div className={styles.pillarExplore}>
                 <img src={TempPillarExplore} alt="Explore" />
             </div>
-            {pillar.goals.map(goal => (
-                <Goal
-                    key={goal.label}
-                    goal={goal}
-                    pillar={pillar}
-                    pillars={pillars}
-                    regionLookup={regionLookup}
-                    goalDatasets={goalDatasets}
-                    goalData={goalDatasets[goal.sheet]}
-                    pillarLoading={pillarData.loading}
-                />
-            ))}
+            {!pillarData.loading &&
+                pillar.goals.map(goal => (
+                    <Goal
+                        key={goal.label}
+                        goal={goal}
+                        pillar={pillar}
+                        pillars={pillars}
+                        regionLookup={regionLookup}
+                        goalDatasets={goalDatasets}
+                        goalData={goalDatasets[goal.sheet]}
+                        pillarLoading={pillarData.loading}
+                    />
+                ))}
             <div className={styles.tempGoalHeader}>
                 <h2>Other things countries are tracking</h2>
             </div>

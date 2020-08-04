@@ -1,15 +1,15 @@
-import React from "react";
-import styles from "./map.module.scss";
 import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
-import MapVis from "../map-vis/map-vis";
+import { isNil, last } from "lodash";
+import React from "react";
+import { HDI_BUCKETS } from "../../config/scales";
+import useMediaQuery from "../../hooks/use-media-query";
+import { hexToRgb } from "../../modules/utils";
 import MapFiltersLegends, {
     MapFiltersLegendMobile,
 } from "../map-filters-legends/map-filters-legends";
-import { flatten, isNil, last } from "lodash";
-import useMediaQuery from "../../hooks/use-media-query";
-import { HDI_BUCKETS } from "../../config/scales";
-import { hexToRgb } from "../../modules/utils";
+import MapVis from "../map-vis/map-vis";
+import styles from "./map.module.scss";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -323,66 +323,8 @@ const useScales = (domains, currentIndicators, pillar) => {
     }, [domains, currentIndicators, pillar]);
 };
 
-const getDefaultIndicatorState = (pillar, goal) => {
-    // TODO: module
-    const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators));
-
-    const mapVisualisationOptions = goal.indicators.filter(d => d.isProgressIndicator);
-
-    return {
-        // Question indicator is the X axis
-        bivariateX: goal.indicators[0],
-        bivariateXEnabled: true,
-        // Any indicator for the pillar on the Y axis
-        bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
-        bivariateYEnabled: false,
-        // "above-map" layer, be it simple circles or whatever. Is a "progress indicator".
-        mapVisualisation: mapVisualisationOptions[0],
-        mapVisualisationEnabled: mapVisualisationOptions.length > 0,
-    };
-};
-
 const Map = props => {
-    const { countryData, pillar, goal } = props;
-
-    const [currentIndicators, setCurrentIndicators] = React.useState(
-        getDefaultIndicatorState(pillar, goal)
-    );
-
-    // TODO: remove most of this logic. goal and pillar won't change.
-
-    React.useEffect(() => {
-        if (!pillar) return;
-        // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
-        const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators)).filter(
-            d => !d.categorical
-        );
-        setCurrentIndicators(d => ({
-            ...d,
-            bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
-        }));
-    }, [pillar]);
-
-    React.useEffect(() => {
-        if (!goal) return;
-        if (goal.categorical) {
-            setCurrentIndicators(d => ({
-                ...d,
-                bivariateX: goal.indicators.filter(d => !d.categorical)[0],
-                bivariateXEnabled: false,
-                bivariateYEnabled: false,
-                mapVisualisationEnabled: true,
-            }));
-        } else {
-            // Whenever active QUESTION changes, set the pillar indicator to the first for the question
-            setCurrentIndicators(d => ({
-                ...d,
-                bivariateX: goal.indicators[0],
-                bivariateXEnabled: true,
-                bivariateYEnabled: false,
-            }));
-        }
-    }, [goal]);
+    const { currentIndicators, setCurrentIndicators, countryData, pillar, goal } = props;
 
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar);
