@@ -62,6 +62,7 @@ function useTimeFilteredData(selectedIndicatorData, timelineState) {
     );
 
     // Take the rows and put them into a {[key]: {values}} map.
+    // TODO: we could reverse the sort, and then keep going until all fields are filled instead of overwriting.
     const outputMap = React.useMemo(() => {
         let ret = {};
         timeFiltered.forEach(row => {
