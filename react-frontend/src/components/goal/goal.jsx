@@ -3,6 +3,7 @@ import Map from "../map/map";
 import styles from "./goal.module.scss";
 import TimeSliderTemp from "./time-slider-temp.svg";
 import { useIndicatorState } from "./useIndicatorState";
+import { isObject, groupBy, uniqBy, uniq } from "lodash";
 
 export const TIMELINE_SCALES = {
     Yearly: 1,
@@ -10,16 +11,8 @@ export const TIMELINE_SCALES = {
     Daily: 3,
 };
 
-export default function Goal(props) {
-    const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
-
-    // TODO: make this context?
-    const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
-
-    const [currentTime, setCurrentTime] = React.useState(new Date());
-    const [timelineRange, setTimelineRange] = React.useState();
-
-    const countryData = React.useMemo(() => {
+function useSelectedIndicatorData(goalDatasets, currentTime, currentIndicators, regionLookup) {
+    const selectedIndicatorData = React.useMemo(() => {
         if (!goalDatasets) return {};
 
         let newData = {};
@@ -29,26 +22,56 @@ export default function Goal(props) {
             newData[region["ISO-alpha3 Code"]] = { ...region };
         });
 
-        // TODO: don't go through _all_ datasets. Intelligently select based on indicators.
-        // TODO: filter to within range.
-        Object.values(goalDatasets).forEach(dataset => {
-            dataset
+        const selectedDatums = groupBy(
+            Object.values(currentIndicators)
+                .filter(isObject)
+                .map(indicator => ({
+                    dataKey: indicator.dataKey,
+                    sheet: indicator.goal.sheet,
+                })),
+            d => d.sheet
+        );
+
+        Object.entries(selectedDatums).forEach(([sheet, datums]) => {
+            // TODO: filter to within time range.
+            const dataInTime = goalDatasets[sheet]
                 .filter(d => d.Year <= currentTime)
-                .sort((a, b) => a.Year - b.Year)
-                .forEach(row => {
+                .sort((a, b) => a.Year - b.Year);
+
+            const uniqueDataKeysForSheet = uniq(datums.map(d => d.dataKey));
+
+            uniqueDataKeysForSheet.forEach(dataKey => {
+                dataInTime.forEach(row => {
                     const rowKey = row["Alpha-3 code"];
                     newData[rowKey] = newData[rowKey] || {};
-
-                    Object.entries(row)
-                        .filter(([key, value]) => Boolean(value))
-                        .forEach(([key, value]) => {
-                            newData[rowKey][key] = value;
-                        });
+                    const value = row[dataKey];
+                    if (value === "" || value === null || value === undefined) return;
+                    newData[rowKey][dataKey] = row[dataKey];
                 });
+            });
         });
 
         return newData;
-    }, [goalDatasets, regionLookup]);
+    }, [goalDatasets, currentTime, currentIndicators, regionLookup]);
+
+    return selectedIndicatorData;
+}
+
+export default function Goal(props) {
+    const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
+
+    // State
+    const [currentTime, setCurrentTime] = React.useState(new Date());
+
+    // Hooks
+    // TODO: make this context?
+    const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
+    const countryData = useSelectedIndicatorData(
+        goalDatasets,
+        currentTime,
+        currentIndicators,
+        regionLookup
+    );
 
     return (
         <div className={styles.goal}>

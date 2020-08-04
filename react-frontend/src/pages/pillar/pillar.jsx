@@ -21,7 +21,7 @@ const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
     const [regionLookup, setRegionLookup] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
-    const [goalDatasets, setGoalDatasets] = React.useState({});
+    const [goalDatasets, setGoalDatasets] = React.useState(null);
 
     React.useEffect(() => {
         Promise.all([
@@ -103,7 +103,7 @@ export default function Pillar(props) {
                         pillar={pillar}
                         regionLookup={regionLookup}
                         goalDatasets={goalDatasets}
-                        goalData={goalDatasets[goal.sheet]}
+                        goalData={goalDatasets && goalDatasets[goal.sheet]}
                         pillarLoading={pillarData.loading}
                     />
                 ))}

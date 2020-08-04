@@ -103,9 +103,9 @@ export const parseMetaSheet = raw => {
                 formatLegend: formats[row["Data Format"]]
                     ? formats[row["Data Format"]](legendDecimals)
                     : formats.decimal(legendDecimals),
-
                 hdi: ind === "Human Development Index",
                 meta,
+                goal: out[currentPillar].goals[currentGoal],
             };
         }
 
