@@ -3,24 +3,17 @@ import Map from "../map/map";
 import styles from "./goal.module.scss";
 import TimeSliderTemp from "./time-slider-temp.svg";
 import { useIndicatorState } from "./useIndicatorState";
-import { isObject, groupBy, uniqBy, uniq } from "lodash";
+import { isObject, groupBy, uniq } from "lodash";
+import useTimelineState from "./useTimelineState";
 
-export const TIMELINE_SCALES = {
-    Yearly: 1,
-    Monthly: 2,
-    Daily: 3,
-};
+const ROW_KEY = "Alpha-3 code";
+const TIME_KEY = "Year";
 
-function useSelectedIndicatorData(goalDatasets, currentTime, currentIndicators, regionLookup) {
+function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators, regionLookup) {
     const selectedIndicatorData = React.useMemo(() => {
-        if (!goalDatasets) return {};
+        if (pillarLoading || !goalDatasets) return [];
 
-        let newData = {};
-
-        // Prefill the object.
-        Object.values(regionLookup).forEach(region => {
-            newData[region["ISO-alpha3 Code"]] = { ...region };
-        });
+        let newData = [];
 
         const selectedDatums = groupBy(
             Object.values(currentIndicators)
@@ -33,45 +26,71 @@ function useSelectedIndicatorData(goalDatasets, currentTime, currentIndicators, 
         );
 
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
-            // TODO: filter to within time range.
-            const dataInTime = goalDatasets[sheet]
-                .filter(d => d.Year <= currentTime)
-                .sort((a, b) => a.Year - b.Year);
-
+            const dateSorted = goalDatasets[sheet].sort((a, b) => a.Year - b.Year);
             const uniqueDataKeysForSheet = uniq(datums.map(d => d.dataKey));
 
-            uniqueDataKeysForSheet.forEach(dataKey => {
-                dataInTime.forEach(row => {
-                    const rowKey = row["Alpha-3 code"];
-                    newData[rowKey] = newData[rowKey] || {};
+            // Just extract required datums.
+            const newRows = dateSorted.map(row => {
+                const outRow = {
+                    [ROW_KEY]: row[ROW_KEY],
+                    [TIME_KEY]: row[TIME_KEY],
+                };
+                uniqueDataKeysForSheet.forEach(dataKey => {
                     const value = row[dataKey];
                     if (value === "" || value === null || value === undefined) return;
-                    newData[rowKey][dataKey] = row[dataKey];
+                    outRow[dataKey] = row[dataKey];
                 });
+                return outRow;
             });
+
+            newData = newData.concat(newRows);
         });
 
         return newData;
-    }, [goalDatasets, currentTime, currentIndicators, regionLookup]);
+    }, [goalDatasets, pillarLoading, currentIndicators, regionLookup]);
 
     return selectedIndicatorData;
+}
+
+function useTimeFilteredData(selectedIndicatorData, timelineState) {
+    // Take only matching rows.
+    // TODO: split up by timespan and current time?
+    // TODO: use a binary search. sortedIndex?
+    const timeFiltered = React.useMemo(
+        () => selectedIndicatorData.filter(d => d[TIME_KEY] <= timelineState.currentTime),
+        [selectedIndicatorData, timelineState]
+    );
+
+    // Take the rows and put them into a {[key]: {values}} map.
+    const outputMap = React.useMemo(() => {
+        let ret = {};
+        timeFiltered.forEach(row => {
+            const rowKey = row[ROW_KEY];
+            ret[rowKey] = {
+                ...ret[rowKey],
+                ...row,
+            } || { ...row };
+        });
+        return ret;
+    }, [timeFiltered]);
+
+    return outputMap;
 }
 
 export default function Goal(props) {
     const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
 
-    // State
-    const [currentTime, setCurrentTime] = React.useState(new Date());
-
     // Hooks
     // TODO: make this context?
     const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
-    const countryData = useSelectedIndicatorData(
+    const selectedIndicatorData = useSelectedIndicatorData(
         goalDatasets,
-        currentTime,
+        pillarLoading,
         currentIndicators,
         regionLookup
     );
+    const timelineState = useTimelineState(selectedIndicatorData);
+    const timeFilteredData = useTimeFilteredData(selectedIndicatorData, timelineState);
 
     return (
         <div className={styles.goal}>
@@ -95,7 +114,7 @@ export default function Goal(props) {
                 </div>
                 <div className={styles.mapContainer}>
                     <Map
-                        countryData={countryData}
+                        countryData={timeFilteredData}
                         countryDataLoading={pillarLoading}
                         pillar={pillar}
                         goal={goal}
@@ -110,14 +129,6 @@ export default function Goal(props) {
             <div className={styles.graphArea}>
                 <PlaceholderGraphs goal={goal} />
             </div>
-            {/*!isMapOnly && (
-            <Questions
-                pillar={pillar}
-                datasets={datasets}
-                countryData={countryData}
-                hdiIndicator={hdiIndicator}
-            />
-        )*/}
         </div>
     );
 }
