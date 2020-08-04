@@ -320,8 +320,6 @@ const CircleVis = props => {
     let content = null;
 
     if (indicator.categorical) {
-        // TODO: this is assuming one categorical per question. will need code later.
-        // TODO: what did I mean by ^ :(
         const numCircles = uniqueVals.length;
         const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
         const groupRadius = minimumCircumference / (Math.PI * 2);

@@ -32,7 +32,6 @@ export const parseMetaSheet = raw => {
                 description: row["Goal description"],
                 indicators: {},
                 hidden: qs === "-",
-                categorical: false,
                 comingSoon: row["Goal coming soon"],
                 sheet: row["Sheet"],
             };
