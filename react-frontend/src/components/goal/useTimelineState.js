@@ -33,6 +33,10 @@ export default function useTimelineState(selectedIndicatorData) {
     React.useEffect(() => {
         if (!currentTime && isDateValid(timespan[1])) {
             setCurrentTime(timespan[1]);
+        } else if (currentTime > timespan[1]) {
+            setCurrentTime(timespan[1]);
+        } else if (currentTime < timespan[0]) {
+            setCurrentTime(timespan[0]);
         }
     }, [timespan]);
 
