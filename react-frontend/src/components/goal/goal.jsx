@@ -26,7 +26,7 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
         );
 
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
-            const dateSorted = goalDatasets[sheet].sort((a, b) => a.Year - b.Year);
+            const dateSorted = goalDatasets[sheet].sort((a, b) => a[TIME_KEY] - b[TIME_KEY]);
             const uniqueDataKeysForSheet = uniq(datums.map(d => d.dataKey));
 
             // Just extract required datums.

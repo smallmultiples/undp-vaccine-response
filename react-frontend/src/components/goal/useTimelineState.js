@@ -9,6 +9,8 @@ export const TIMELINE_SCALE = {
     Daily: 3,
 };
 
+const isDateValid = d => Boolean(d && !isNaN(d.getTime()));
+
 export default function useTimelineState(selectedIndicatorData) {
     const timelineScale = React.useMemo(() => {
         // TODO: pick an appropriate scale based on indicators.
@@ -27,8 +29,13 @@ export default function useTimelineState(selectedIndicatorData) {
         }
     }, [timelineScale, selectedIndicatorData]);
 
-    // TODO: better initial date.
-    const [currentTime, setCurrentTime] = React.useState(new Date());
+    const [currentTime, setCurrentTime] = React.useState(null);
+
+    React.useEffect(() => {
+        if (!currentTime && isDateValid(timespan[1])) {
+            setCurrentTime(timespan[1]);
+        }
+    }, [timespan]);
 
     return {
         currentTime,

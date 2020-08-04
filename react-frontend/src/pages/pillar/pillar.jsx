@@ -16,6 +16,7 @@ import TempPillarIcon from "./temp-pillar-icon.svg";
 import TempPillarNews from "./temp-pillar-news.png";
 import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
 import TempPillarPartnership from "./temp-pillar-partnerships.svg";
+import { parseSheetDate } from "../../modules/utils";
 
 const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
@@ -52,6 +53,12 @@ const usePillarData = () => {
                         : `${STATIC_DATA_BASE_URL}/${sheet}.json`
                 )
                     .then(d => d.data)
+                    .then(data =>
+                        data.map(d => ({
+                            ...d,
+                            Year: parseSheetDate(d.Year),
+                        }))
+                    )
                     .then(d => (newGoalData[sheet] = d))
             )
         )

@@ -8,3 +8,12 @@ export const categorySplit = val =>
         .split(";")
         .map(d => d.trim())
         .filter(Boolean);
+
+export function parseSheetDate(raw) {
+    if (!isNaN(raw) && raw < 100000) {
+        // Excel date. Days since 1/1/1900
+        return new Date((raw - (25567 + 2)) * 86400 * 1000);
+    }
+
+    return new Date(raw);
+}
