@@ -45,6 +45,10 @@
         align-items: center;
         font-size: 12px;
 
+        &[data-selected="true"] {
+            font-weight: 600;
+        }
+
         &:before {
             content: "";
             width: 1px;

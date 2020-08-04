@@ -51,9 +51,16 @@ function TimelineVis(props) {
             timelineState.setCurrentTime(tick);
         };
 
+        const selected = timelineState.currentTime === tick;
+
         // TODO: format based on timeline scale.
         return (
-            <div className={styles.tick} style={{ left: x }} onClick={onClick}>
+            <div
+                className={styles.tick}
+                data-selected={selected}
+                style={{ left: x }}
+                onClick={onClick}
+            >
                 {1900 + tick.getYear()}
             </div>
         );
