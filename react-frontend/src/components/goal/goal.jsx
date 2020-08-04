@@ -30,18 +30,23 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
             const uniqueDataKeysForSheet = uniq(datums.map(d => d.dataKey));
 
             // Just extract required datums.
-            const newRows = dateSorted.map(row => {
-                const outRow = {
-                    [ROW_KEY]: row[ROW_KEY],
-                    [TIME_KEY]: row[TIME_KEY],
-                };
-                uniqueDataKeysForSheet.forEach(dataKey => {
-                    const value = row[dataKey];
-                    if (value === "" || value === null || value === undefined) return;
-                    outRow[dataKey] = row[dataKey];
-                });
-                return outRow;
-            });
+            const newRows = dateSorted
+                .map(row => {
+                    let outRow = null;
+                    uniqueDataKeysForSheet.forEach(dataKey => {
+                        const value = row[dataKey];
+                        if (value === "" || value === null || value === undefined) return;
+                        if (!outRow) {
+                            outRow = {
+                                [ROW_KEY]: row[ROW_KEY],
+                                [TIME_KEY]: row[TIME_KEY],
+                            };
+                        }
+                        outRow[dataKey] = row[dataKey];
+                    });
+                    return outRow;
+                })
+                .filter(Boolean);
 
             newData = newData.concat(newRows);
         });
