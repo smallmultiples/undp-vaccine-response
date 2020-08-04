@@ -1,10 +1,10 @@
 import React from "react";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
-import TimeSliderTemp from "./time-slider-temp.svg";
 import { useIndicatorState } from "./useIndicatorState";
 import { isObject, groupBy, uniq } from "lodash";
 import useTimelineState from "./useTimelineState";
+import Timeline from "../timeline/timeline";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -125,7 +125,7 @@ export default function Goal(props) {
                 </div>
             </div>
             <div className={styles.timeArea}>
-                <img src={TimeSliderTemp} alt="temporary time slider" />
+                <Timeline timelineState={timelineState} />
             </div>
             <div className={styles.graphArea}>
                 <PlaceholderGraphs goal={goal} />

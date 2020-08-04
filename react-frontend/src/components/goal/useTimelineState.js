@@ -2,14 +2,13 @@ import { flatten } from "lodash";
 import React from "react";
 import { extent } from "d3";
 import { startOfYear } from "date-fns";
+import { isDateValid } from "../../modules/utils";
 
 export const TIMELINE_SCALE = {
     Yearly: 1,
     Monthly: 2,
     Daily: 3,
 };
-
-const isDateValid = d => Boolean(d && !isNaN(d.getTime()));
 
 export default function useTimelineState(selectedIndicatorData) {
     const timelineScale = React.useMemo(() => {

@@ -17,3 +17,5 @@ export function parseSheetDate(raw) {
 
     return new Date(raw);
 }
+
+export const isDateValid = d => Boolean(d && !isNaN(d.getTime()));
