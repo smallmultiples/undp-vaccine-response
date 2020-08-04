@@ -1,7 +1,13 @@
 import axios from "axios";
 import React from "react";
 import Goal from "../../components/goal/goal";
-import { PILLAR_URL, REGIONS_URL } from "../../config/constants";
+import {
+    DATA_SHEET_URL,
+    PILLAR_URL,
+    REGIONS_URL,
+    STATIC_DATA_BASE_URL,
+    USE_SHEET,
+} from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./pillar.module.scss";
 import TempPillarAllData from "./temp-pillar-all-data.svg";
@@ -15,6 +21,7 @@ const usePillarData = () => {
     const [pillars, setPillars] = React.useState(null);
     const [regionLookup, setRegionLookup] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
+    const [goalDatasets, setGoalDatasets] = React.useState({});
 
     React.useEffect(() => {
         Promise.all([
@@ -33,12 +40,32 @@ const usePillarData = () => {
         return pillars[2]; // TODO
     }, [pillars]);
 
-    // TODO: remove "pillars".
+    // TODO: remove "pillars"?
+
+    React.useEffect(() => {
+        if (!pillar) return;
+        let newGoalData = {};
+        const sheets = Object.values(pillar.goals).map(goal => goal.sheet);
+        Promise.all(
+            sheets.map(sheet =>
+                axios(
+                    USE_SHEET
+                        ? `${DATA_SHEET_URL}?range=${sheet}`
+                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
+                )
+                    .then(d => d.data)
+                    .then(d => (newGoalData[sheet] = d))
+            )
+        )
+            .then(() => setGoalDatasets(newGoalData))
+            .then(() => setLoading(false));
+    }, [pillar]);
 
     return {
         pillar,
         pillarLoading: loading,
         pillars,
+        goalDatasets,
         regionLookup,
     };
 };
@@ -46,7 +73,9 @@ const usePillarData = () => {
 export default function Pillar(props) {
     const pillarData = usePillarData();
     // TODO: pillar must be global state.
-    const { pillar } = pillarData;
+    // TODO: remove "pillars" from Goal
+    // TODO: remove "regionLookup"?
+    const { pillar, pillars, regionLookup, goalDatasets } = pillarData;
 
     if (!pillar) return null; // TODO loader
 
@@ -71,7 +100,16 @@ export default function Pillar(props) {
                 <img src={TempPillarExplore} alt="Explore" />
             </div>
             {pillar.goals.map(goal => (
-                <Goal key={goal.label} goal={goal} pillar={pillar} pillarData={pillarData} />
+                <Goal
+                    key={goal.label}
+                    goal={goal}
+                    pillar={pillar}
+                    pillars={pillars}
+                    regionLookup={regionLookup}
+                    goalDatasets={goalDatasets}
+                    goalData={goalDatasets[goal.sheet]}
+                    pillarLoading={pillarData.loading}
+                />
             ))}
             <div className={styles.tempGoalHeader}>
                 <h2>Other things countries are tracking</h2>

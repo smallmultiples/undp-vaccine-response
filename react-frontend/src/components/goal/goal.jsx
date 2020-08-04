@@ -1,31 +1,7 @@
-import axios from "axios";
 import React from "react";
-import { DATA_SHEET_URL, STATIC_DATA_BASE_URL, USE_SHEET } from "../../config/constants";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
 import TimeSliderTemp from "./time-slider-temp.svg";
-
-const useGoalData = goal => {
-    const [goalData, setGoalData] = React.useState(null);
-    const [goalLoading, setGoalLoading] = React.useState(true);
-
-    React.useEffect(() => {
-        if (!goal) return;
-        axios(
-            USE_SHEET
-                ? `${DATA_SHEET_URL}?range=${goal.sheet}`
-                : `${STATIC_DATA_BASE_URL}/${goal.sheet}.json`
-        )
-            .then(res => res.data)
-            .then(setGoalData)
-            .then(() => setGoalLoading(false));
-    }, [goal]);
-
-    return {
-        goalData,
-        goalLoading,
-    };
-};
 
 export const TIMELINE_SCALES = {
     Yearly: 1,
@@ -34,41 +10,43 @@ export const TIMELINE_SCALES = {
 };
 
 export default function Goal(props) {
-    const { goal, pillar, pillarData } = props;
-    const { pillars, regionLookup, loading } = pillarData;
-
-    const { goalData, goalLoading } = useGoalData(goal);
+    const { goal, pillar, pillars, regionLookup, pillarLoading, pillarData, goalDatasets } = props;
 
     const [currentTime, setCurrentTime] = React.useState(new Date());
     const [timelineRange, setTimelineRange] = React.useState();
 
     const countryData = React.useMemo(() => {
-        if (!goalData) return {};
+        if (!goalDatasets) return {};
 
         let newData = {};
 
         // Prefill the object.
         Object.values(regionLookup).forEach(region => {
-            newData[region["ISO-alpha3 Code"]] = region;
+            newData[region["ISO-alpha3 Code"]] = { ...region };
         });
 
-        goalData
-            .filter(d => d.Year <= currentTime)
-            .sort((a, b) => a.Year - b.Year)
-            .forEach(row => {
-                const rowKey = row["Alpha-3 code"];
-                newData[rowKey] = newData[rowKey] || {};
+        // TODO: don't go through _all_ datasets. Intelligently select based on indicators.
+        // TODO: filter to within range.
+        Object.values(goalDatasets).forEach(dataset => {
+            dataset
+                .filter(d => d.Year <= currentTime)
+                .sort((a, b) => a.Year - b.Year)
+                .forEach(row => {
+                    const rowKey = row["Alpha-3 code"];
+                    newData[rowKey] = newData[rowKey] || {};
 
-                Object.entries(row)
-                    .filter(([key, value]) => Boolean(value))
-                    .forEach(([key, value]) => {
-                        newData[rowKey][key] = value;
-                    });
-            });
+                    Object.entries(row)
+                        .filter(([key, value]) => Boolean(value))
+                        .forEach(([key, value]) => {
+                            newData[rowKey][key] = value;
+                        });
+                });
+        });
+
         return newData;
-    }, [goalData, loading, regionLookup]);
+    }, [goalDatasets, regionLookup]);
 
-    console.log(goal.label, goalData, countryData);
+    console.log({ goal, countryData });
 
     return (
         <div className={styles.goal}>
@@ -93,7 +71,7 @@ export default function Goal(props) {
                 <div className={styles.mapContainer}>
                     <Map
                         countryData={countryData}
-                        countryDataLoading={loading}
+                        countryDataLoading={pillarLoading}
                         pillar={pillar}
                         pillars={pillars}
                         goal={goal}
