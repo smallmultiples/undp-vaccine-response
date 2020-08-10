@@ -32,14 +32,19 @@ export default function Timeline(props) {
 
     return (
         <div className={styles.timeline}>
-            <TimelineControls />
+            <TimelineControls timelineState={timelineState} />
             <TimelineVis timelineState={timelineState} tickData={tickData} scale={scale} />
         </div>
     );
 }
 
 function TimelineControls(props) {
-    return <div className={styles.controls}>Play button and date picker placeholder</div>;
+    const { timelineState } = props;
+    return (
+        <div className={styles.controls} onClick={() => timelineState.setPlaying(d => !d)}>
+            Playing: {timelineState.playing ? "yes" : "no"}
+        </div>
+    );
 }
 
 function TimelineVis(props) {

@@ -10,7 +10,38 @@ export const TIMELINE_SCALE = {
     Daily: 3,
 };
 
+function useTimelinePlaying(setCurrentTime) {
+    const [playing, setPlaying] = React.useState(false);
+    const frameRef = React.useRef(null);
+    const lastFrameTime = React.useRef(null);
+
+    React.useEffect(() => {
+        if (!playing) return;
+
+        const frameCallback = now => {
+            const dt = lastFrameTime.current ? (now - lastFrameTime.current) / 1000 : 1 / 60;
+
+            lastFrameTime.current = now;
+            frameRef.current = requestAnimationFrame(frameCallback);
+        };
+
+        frameRef.current = requestAnimationFrame(frameCallback);
+
+        return () => {
+            if (frameRef.current) {
+                cancelAnimationFrame(frameRef.current);
+                frameRef.current = null;
+                lastFrameTime.current = null;
+            }
+        };
+    }, [playing]);
+
+    return [playing, setPlaying];
+}
+
 export default function useTimelineState(selectedIndicatorData) {
+    const [currentTime, setCurrentTime] = React.useState(null);
+
     const timelineScale = React.useMemo(() => {
         // TODO: pick an appropriate scale based on indicators.
         return TIMELINE_SCALE.Yearly;
@@ -28,7 +59,7 @@ export default function useTimelineState(selectedIndicatorData) {
         }
     }, [timelineScale, selectedIndicatorData]);
 
-    const [currentTime, setCurrentTime] = React.useState(null);
+    const [playing, setPlaying] = useTimelinePlaying(timespan, setCurrentTime);
 
     React.useEffect(() => {
         if (!currentTime && isDateValid(timespan[1])) {
@@ -45,5 +76,7 @@ export default function useTimelineState(selectedIndicatorData) {
         setCurrentTime,
         timespan,
         timelineScale,
+        playing,
+        setPlaying,
     };
 }
