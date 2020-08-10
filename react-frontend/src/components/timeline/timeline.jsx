@@ -51,7 +51,8 @@ function TimelineVis(props) {
             timelineState.setCurrentTime(tick);
         };
 
-        const selected = timelineState.currentTime === tick;
+        const selected =
+            timelineState.currentTime && timelineState.currentTime.getTime() === tick.getTime();
 
         // TODO: format based on timeline scale.
         return (
