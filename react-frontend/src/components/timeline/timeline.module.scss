@@ -8,6 +8,37 @@
 
 .controls {
     margin-bottom: 8px;
+
+    .playButtonContainer {
+        display: flex;
+        align-items: center;
+        .playButton {
+            background: white;
+            border-radius: 50%;
+            border: 2px solid $color-blue-bg;
+            outline: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            &:hover {
+                opacity: 0.9;
+            }
+
+            &[data-playing="false"] {
+                svg {
+                    transform: translateX(1px);
+                }
+            }
+        }
+
+        label {
+            font-size: 13px;
+        }
+    }
 }
 
 // ----
@@ -37,6 +68,7 @@
     }
     .visBarStepFill {
         opacity: 0.25;
+        transition: width 0.1s;
     }
 }
 

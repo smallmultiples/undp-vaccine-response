@@ -21,11 +21,37 @@ export default function Timeline(props) {
     );
 }
 
+const IconPlay = () => (
+    <svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M12.5885 8.31958C12.8705 8.14433 12.8705 7.85567 12.5885 7.68042L0.509362 0.0723391C0.227394 -0.102915 0 0.0517206 0 0.412537V15.5875C0 15.9483 0.227394 16.1029 0.509362 15.9277L12.5885 8.31958Z"
+            fill="#110848"
+        />
+    </svg>
+);
+
+const IconPause = () => (
+    <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="4" height="16" rx="1" fill="#110848" />
+        <rect x="8" width="4" height="16" rx="1" fill="#110848" />
+    </svg>
+);
+
 function TimelineControls(props) {
     const { timelineState } = props;
+    const { playing } = timelineState;
     return (
-        <div className={styles.controls} onClick={() => timelineState.setPlaying(d => !d)}>
-            Playing: {timelineState.playing ? "yes" : "no"}
+        <div className={styles.controls}>
+            <div className={styles.playButtonContainer}>
+                <button
+                    className={styles.playButton}
+                    onClick={() => timelineState.setPlaying(d => !d)}
+                    data-playing={playing}
+                >
+                    {playing ? <IconPause /> : <IconPlay />}
+                </button>
+                <label>Select or play through historical data</label>
+            </div>
         </div>
     );
 }
