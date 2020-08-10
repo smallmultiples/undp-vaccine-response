@@ -1,7 +1,6 @@
-import { flatten } from "lodash";
 import React from "react";
 import { extent } from "d3";
-import { startOfYear } from "date-fns";
+import { startOfYear, eachYearOfInterval } from "date-fns";
 import { isDateValid } from "../../modules/utils";
 
 export const TIMELINE_SCALE = {
@@ -59,6 +58,15 @@ export default function useTimelineState(selectedIndicatorData) {
         }
     }, [timelineScale, selectedIndicatorData]);
 
+    // TODO: different scales, not just yearly.
+    const ticks = React.useMemo(() => {
+        if (timespan.some(d => !isDateValid(d))) return null;
+        return eachYearOfInterval({
+            start: timespan[0],
+            end: timespan[1],
+        });
+    }, [timespan, timelineScale]);
+
     const [playing, setPlaying] = useTimelinePlaying(timespan, setCurrentTime);
 
     React.useEffect(() => {
@@ -78,5 +86,6 @@ export default function useTimelineState(selectedIndicatorData) {
         timelineScale,
         playing,
         setPlaying,
+        ticks,
     };
 }

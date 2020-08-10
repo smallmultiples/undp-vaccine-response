@@ -1,20 +1,6 @@
 import React from "react";
-import { eachYearOfInterval } from "date-fns";
 import styles from "./timeline.module.scss";
-import { isDateValid } from "../../modules/utils";
-import { scaleTime, style } from "d3";
-
-function useTickData(timelineState) {
-    // TODO: different scales, not just yearly.
-    return React.useMemo(() => {
-        const { timespan } = timelineState;
-        if (timespan.some(d => !isDateValid(d))) return null;
-        return eachYearOfInterval({
-            start: timespan[0],
-            end: timespan[1],
-        });
-    }, [timelineState.timespan, timelineState.timelineScale]);
-}
+import { scaleTime } from "d3";
 
 function useScale(timelineState) {
     return React.useMemo(() => {
@@ -25,15 +11,12 @@ function useScale(timelineState) {
 export default function Timeline(props) {
     const { timelineState } = props;
 
-    const tickData = useTickData(timelineState);
     const scale = useScale(timelineState);
-
-    if (!tickData) return null;
 
     return (
         <div className={styles.timeline}>
             <TimelineControls timelineState={timelineState} />
-            <TimelineVis timelineState={timelineState} tickData={tickData} scale={scale} />
+            <TimelineVis timelineState={timelineState} scale={scale} />
         </div>
     );
 }
@@ -48,9 +31,11 @@ function TimelineControls(props) {
 }
 
 function TimelineVis(props) {
-    const { timelineState, tickData, scale } = props;
+    const { timelineState, scale } = props;
 
-    const ticks = tickData.map(tick => {
+    if (!timelineState.ticks) return null;
+
+    const ticks = timelineState.ticks.map(tick => {
         const x = scale(tick) * 100 + "%";
         const onClick = () => {
             timelineState.setCurrentTime(tick);
