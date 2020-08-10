@@ -57,11 +57,21 @@ function TimelineVis(props) {
         );
     });
 
-    const fillWidth = scale(timelineState.currentTime) * 100 + "%";
+    const tickAmt = 1 / (timelineState.ticks.length - 1);
+    const fillStart = scale(timelineState.currentTime);
+    const fillWidth = fillStart * 100 + "%";
+    const stepEnd = fillStart + timelineState.stepProgress * tickAmt;
+    const stepWidth = stepEnd * 100 + "%";
 
     return (
         <div className={styles.vis}>
             <div className={styles.visBarOuter}>
+                <div
+                    className={styles.visBarStepFill}
+                    style={{
+                        width: stepWidth,
+                    }}
+                />
                 <div
                     className={styles.visBarFill}
                     style={{
