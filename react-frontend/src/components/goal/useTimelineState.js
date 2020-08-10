@@ -69,7 +69,7 @@ function useTimelinePlaying(ticks, setCurrentTime) {
                 setStepProgress(0);
             }
         };
-    }, [playing, ticks]);
+    }, [playing, ticks, setCurrentTime]);
 
     return { playing, setPlaying, stepProgress };
 }
@@ -80,7 +80,7 @@ export default function useTimelineState(selectedIndicatorData) {
     const timelineScale = React.useMemo(() => {
         // TODO: pick an appropriate scale based on indicators.
         return TIMELINE_SCALE.Yearly;
-    }, [selectedIndicatorData]);
+    }, []);
 
     const timespan = React.useMemo(() => {
         const rawExtent = extent(selectedIndicatorData, d => d.Year);
@@ -101,7 +101,7 @@ export default function useTimelineState(selectedIndicatorData) {
             start: timespan[0],
             end: timespan[1],
         });
-    }, [timespan, timelineScale]);
+    }, [timespan]);
 
     const { playing, setPlaying, stepProgress } = useTimelinePlaying(ticks, setCurrentTime);
 
@@ -113,7 +113,7 @@ export default function useTimelineState(selectedIndicatorData) {
         } else if (currentTime < timespan[0]) {
             setCurrentTime(timespan[0]);
         }
-    }, [timespan]);
+    }, [timespan, currentTime]);
 
     return {
         currentTime,

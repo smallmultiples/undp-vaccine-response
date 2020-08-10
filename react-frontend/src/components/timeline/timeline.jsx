@@ -74,6 +74,7 @@ function TimelineVis(props) {
         return (
             <div
                 className={styles.tick}
+                key={tick.getTime()}
                 data-selected={selected}
                 style={{ left: x }}
                 onClick={onClick}
