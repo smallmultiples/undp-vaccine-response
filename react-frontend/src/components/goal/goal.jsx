@@ -58,7 +58,12 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
     return selectedIndicatorData;
 }
 
-function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineState) {
+function useTimeFilteredData(
+    selectedIndicatorData,
+    currentIndicators,
+    regionLookup,
+    timelineState
+) {
     // Take only matching rows.
     // TODO: split up by timespan and current time?
     // TODO: use a binary search. sortedIndex?
@@ -74,12 +79,13 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
     // Take the rows and put them into a {[key]: {values}} map.
     const outputMap = React.useMemo(() => {
         let ret = {};
-
         const selectedDatums = Object.values(currentIndicators).filter(isObject);
 
         Object.entries(countryGrouped).forEach(([rowKey, rows]) => {
+            const region = regionLookup.find(r => r["ISO-alpha3 Code"] === rowKey);
             ret[rowKey] = {
                 [ROW_KEY]: rowKey,
+                ...region,
             };
 
             let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
@@ -102,7 +108,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
             }
         });
         return ret;
-    }, [countryGrouped]);
+    }, [countryGrouped, currentIndicators, regionLookup]);
 
     return outputMap;
 }
@@ -123,6 +129,7 @@ export default function Goal(props) {
     const timeFilteredData = useTimeFilteredData(
         selectedIndicatorData,
         currentIndicators,
+        regionLookup,
         timelineState
     );
 
