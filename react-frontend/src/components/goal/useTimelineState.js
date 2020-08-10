@@ -66,6 +66,7 @@ function useTimelinePlaying(ticks, setCurrentTime) {
                 cancelAnimationFrame(frameRef.current);
                 frameRef.current = null;
                 lastFrameTime.current = null;
+                setStepProgress(0);
             }
         };
     }, [playing, ticks]);
