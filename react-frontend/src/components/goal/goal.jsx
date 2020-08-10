@@ -2,7 +2,7 @@ import React from "react";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
 import { useIndicatorState } from "./useIndicatorState";
-import { isObject, groupBy, uniq } from "lodash";
+import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 
@@ -26,7 +26,8 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
         );
 
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
-            const dateSorted = goalDatasets[sheet].sort((a, b) => a[TIME_KEY] - b[TIME_KEY]);
+            // NEWEST data is first. This let's us build the map faster.
+            const dateSorted = goalDatasets[sheet].sort((a, b) => b[TIME_KEY] - a[TIME_KEY]);
             const uniqueDataKeysForSheet = uniq(datums.map(d => d.dataKey));
 
             // Just extract required datums.
@@ -57,7 +58,7 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
     return selectedIndicatorData;
 }
 
-function useTimeFilteredData(selectedIndicatorData, timelineState) {
+function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineState) {
     // Take only matching rows.
     // TODO: split up by timespan and current time?
     // TODO: use a binary search. sortedIndex?
@@ -66,19 +67,42 @@ function useTimeFilteredData(selectedIndicatorData, timelineState) {
         [selectedIndicatorData, timelineState]
     );
 
+    const countryGrouped = React.useMemo(() => groupBy(timeFiltered, d => d[ROW_KEY]), [
+        timeFiltered,
+    ]);
+
     // Take the rows and put them into a {[key]: {values}} map.
-    // TODO: we could reverse the sort, and then keep going until all fields are filled instead of overwriting.
     const outputMap = React.useMemo(() => {
         let ret = {};
-        timeFiltered.forEach(row => {
-            const rowKey = row[ROW_KEY];
+
+        const selectedDatums = Object.values(currentIndicators).filter(isObject);
+
+        Object.entries(countryGrouped).forEach(([rowKey, rows]) => {
             ret[rowKey] = {
-                ...ret[rowKey],
-                ...row,
-            } || { ...row };
+                [ROW_KEY]: rowKey,
+            };
+
+            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
+
+            for (let row of rows) {
+                for (let dataKey of keysToFill.slice()) {
+                    const rowValue = row[dataKey];
+                    if (!isNil(rowValue)) {
+                        // If it is a non nil value, copy to the output object
+                        ret[rowKey][dataKey] = rowValue;
+                        // And remove the key from the list  we need to fill
+                        keysToFill = keysToFill.filter(d => d !== dataKey);
+                    }
+                }
+
+                // If filled all keys, we can stop iterating.
+                if (keysToFill.length === 0) {
+                    break;
+                }
+            }
         });
         return ret;
-    }, [timeFiltered]);
+    }, [countryGrouped]);
 
     return outputMap;
 }
@@ -96,7 +120,11 @@ export default function Goal(props) {
         regionLookup
     );
     const timelineState = useTimelineState(selectedIndicatorData);
-    const timeFilteredData = useTimeFilteredData(selectedIndicatorData, timelineState);
+    const timeFilteredData = useTimeFilteredData(
+        selectedIndicatorData,
+        currentIndicators,
+        timelineState
+    );
 
     return (
         <div className={styles.goal}>
