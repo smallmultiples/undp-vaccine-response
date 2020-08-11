@@ -10,6 +10,8 @@ import styles from "./map-vis.module.scss";
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
 
+const HIGHLIGHT_COLOUR = [243, 213, 22]; // #F3D516
+
 const useGeoData = () => {
     const [shapeData, setShapeData] = React.useState(null);
 
@@ -33,7 +35,14 @@ const useGeoData = () => {
 };
 
 const MapVis = props => {
-    const { normalizedData, countryDataLoading, scales, currentIndicators, goal } = props;
+    const {
+        normalizedData,
+        selectedCountry,
+        countryDataLoading,
+        scales,
+        currentIndicators,
+        goal,
+    } = props;
     const [
         mapContainerRef,
         viewport,
@@ -56,6 +65,12 @@ const MapVis = props => {
             },
             stroked: true,
             getLineColor: shape => {
+                if (
+                    selectedCountry &&
+                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
+                ) {
+                    return HIGHLIGHT_COLOUR;
+                }
                 const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
@@ -63,13 +78,13 @@ const MapVis = props => {
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             onClick: info => {
-                if (info.object.properties.ISO3 === "NPL") {
-                    window.location = "./html2/nepal.html";
+                if (info.object) {
+                    props.onCountryClicked(info.object.properties);
                 }
             },
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
-                getLineColor: [normalizedData, currentIndicators],
+                getLineColor: [normalizedData, currentIndicators, selectedCountry],
             },
         }),
     ];

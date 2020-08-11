@@ -121,6 +121,12 @@ export default function Goal(props) {
         [selectedCountry]
     );
 
+    const handleCountryClicked = React.useCallback(country => {
+        setSelectedCountry(existing =>
+            existing && existing.ISO3 === country.ISO3 ? null : country
+        );
+    }, []);
+
     // Hooks
     // TODO: make this context?
     const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
@@ -167,6 +173,8 @@ export default function Goal(props) {
                         goal={goal}
                         currentIndicators={currentIndicators}
                         setCurrentIndicators={setCurrentIndicators}
+                        onCountryClicked={handleCountryClicked}
+                        selectedCountry={selectedCountry}
                     />
                 </div>
             </div>
