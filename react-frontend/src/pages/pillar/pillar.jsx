@@ -17,8 +17,9 @@ import TempPillarNews from "./temp-pillar-news.png";
 import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
 import TempPillarPartnership from "./temp-pillar-partnerships.svg";
 import { parseSheetDate } from "../../modules/utils";
+import { useParams } from "react-router-dom";
 
-const usePillarData = () => {
+const usePillarData = pillarSlug => {
     const [pillars, setPillars] = React.useState(null);
     const [regionLookup, setRegionLookup] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
@@ -38,7 +39,7 @@ const usePillarData = () => {
 
     const pillar = React.useMemo(() => {
         if (!pillars) return null;
-        return pillars[2]; // TODO: pass in prop
+        return pillars.find(p => p.slug.toLowerCase() === pillarSlug.toLowerCase());
     }, [pillars]);
 
     React.useEffect(() => {
@@ -75,7 +76,10 @@ const usePillarData = () => {
 };
 
 export default function Pillar(props) {
-    const pillarData = usePillarData();
+    const params = useParams();
+    const { pillarSlug } = params;
+
+    const pillarData = usePillarData(pillarSlug);
     // TODO: pillar must be global state.
     // TODO: remove "regionLookup"?
     const { pillar, regionLookup, goalDatasets } = pillarData;

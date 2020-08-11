@@ -16,7 +16,7 @@ export default function Root() {
             <Header />
             <div className={styles.container}>
                 <Router>
-                    <Route exact path="/">
+                    <Route exact path="/:pillarSlug">
                         <Pillar />
                     </Route>
                     <Route exact path="/country/:countryCode">
