@@ -115,6 +115,11 @@ function useTimeFilteredData(
 
 export default function Goal(props) {
     const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
+    const [selectedCountry, setSelectedCountry] = React.useState(null);
+    const selectedCountryLabel = React.useMemo(
+        () => (selectedCountry ? selectedCountry : "Global"),
+        [selectedCountry]
+    );
 
     // Hooks
     // TODO: make this context?
@@ -133,6 +138,12 @@ export default function Goal(props) {
     );
 
     const extraBlocks = goal.indicators.filter(d => d.blockVisOnly);
+    const blockProps = {
+        selectedCountry,
+        selectedCountryLabel,
+        timeFilteredData,
+        selectedIndicatorData,
+    };
 
     return (
         <div className={styles.goal}>
@@ -142,10 +153,10 @@ export default function Goal(props) {
             </div>
             <div className={styles.mapArea}>
                 <div className={styles.mapSidebar}>
-                    <MapBlockVis indicator={currentIndicators.bivariateX} />
-                    <MapBlockVis indicator={currentIndicators.bivariateY} />
+                    <MapBlockVis indicator={currentIndicators.bivariateX} {...blockProps} />
+                    <MapBlockVis indicator={currentIndicators.bivariateY} {...blockProps} />
                     {extraBlocks.map(ind => (
-                        <MapBlockVis indicator={ind} key={ind.label} />
+                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
                     ))}
                 </div>
                 <div className={styles.mapContainer}>
