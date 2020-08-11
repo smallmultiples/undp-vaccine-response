@@ -32,7 +32,6 @@ export const parseMetaSheet = raw => {
                 description: row["Goal description"],
                 indicators: {},
                 hidden: qs === "-",
-                comingSoon: row["Goal coming soon"],
                 sheet: row["Sheet"],
             };
         }
@@ -95,6 +94,8 @@ export const parseMetaSheet = raw => {
                         ? formats[row["Tooltip Format"]](tooltipDecimals)
                         : mapFormat,
                 },
+                blockVisType: row["Block Visualisation Type"],
+                blockVisOnly: row["Block Vis Only"],
                 flipped: row["Invert Scale"],
                 categorical: row["Data Format"] === "category",
                 categoryFormat: row["Category Format"],

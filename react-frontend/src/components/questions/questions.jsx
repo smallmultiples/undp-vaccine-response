@@ -14,8 +14,6 @@ const Question = props => {
     const [isPreviewShown, setIsPreviewShown] = React.useState(false);
     const { isMobile } = useMediaQuery();
 
-    if (question.comingSoon) return null;
-
     const covidIndicators = flatten(covidPillar.goals.map(d => d.indicators));
 
     const headers = ["Country", "Region"];
