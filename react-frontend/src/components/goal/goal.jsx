@@ -5,6 +5,7 @@ import { useIndicatorState } from "./useIndicatorState";
 import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
+import Donut from "../block-visualisations/donut-vis/donut";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -119,7 +120,7 @@ export default function Goal(props) {
     const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
     const [selectedCountry, setSelectedCountry] = React.useState(null);
     const selectedCountryLabel = React.useMemo(
-        () => (selectedCountry ? selectedCountry : "Global"),
+        () => (selectedCountry ? selectedCountry.NAME : "Global"),
         [selectedCountry]
     );
 
@@ -190,10 +191,12 @@ export default function Goal(props) {
     );
 }
 
-const BlockVisualisations = {};
+const BlockVisualisations = {
+    donut: Donut,
+};
 function MapBlockVis(props) {
     const { indicator } = props;
-    const Vis = BlockVisualisations[indicator.label];
+    const Vis = BlockVisualisations[indicator.blockVisType];
     const content = Vis ? (
         <Vis {...props} />
     ) : (
