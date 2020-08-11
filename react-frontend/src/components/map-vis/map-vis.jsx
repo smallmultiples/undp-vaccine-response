@@ -74,7 +74,16 @@ const MapVis = props => {
                 const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
-            lineWidthMinPixels: 0.5,
+            getLineWidth: shape => {
+                if (
+                    selectedCountry &&
+                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
+                ) {
+                    return 1.5;
+                }
+                return 0.5;
+            },
+            lineWidthUnits: "pixels",
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             onClick: info => {
@@ -85,6 +94,7 @@ const MapVis = props => {
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
                 getLineColor: [normalizedData, currentIndicators, selectedCountry],
+                getLineWidth: [selectedCountry],
             },
         }),
     ];
