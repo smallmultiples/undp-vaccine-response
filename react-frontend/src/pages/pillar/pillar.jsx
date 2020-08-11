@@ -40,7 +40,7 @@ const usePillarData = pillarSlug => {
     const pillar = React.useMemo(() => {
         if (!pillars) return null;
         return pillars.find(p => p.slug.toLowerCase() === pillarSlug.toLowerCase());
-    }, [pillars]);
+    }, [pillars, pillarSlug]);
 
     React.useEffect(() => {
         if (!pillar) return;
