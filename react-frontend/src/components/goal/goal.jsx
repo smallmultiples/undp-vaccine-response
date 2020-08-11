@@ -25,6 +25,8 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
             d => d.sheet
         );
 
+        // TODO: also extract for "blockVisOnly"
+
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
             // NEWEST data is first. This let's us build the map faster.
             const dateSorted = goalDatasets[sheet].sort((a, b) => b[TIME_KEY] - a[TIME_KEY]);
@@ -188,13 +190,21 @@ export default function Goal(props) {
     );
 }
 
+const BlockVisualisations = {};
 function MapBlockVis(props) {
     const { indicator } = props;
-    return (
-        <div className={styles.sidebarBlock}>
-            {indicator.label} = {indicator.blockVisType}
+    const Vis = BlockVisualisations[indicator.label];
+    const content = Vis ? (
+        <Vis {...props} />
+    ) : (
+        <div>
+            Missing "Block Visualisation Type" column.
+            <br />
+            <br />
+            {indicator.label}
         </div>
     );
+    return <div className={styles.sidebarBlock}>{content}</div>;
 }
 
 function PlaceholderGraphs(props) {
