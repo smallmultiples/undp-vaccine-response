@@ -1,0 +1,13 @@
+@import "../../../variables.scss";
+
+.factoid {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.factoidNumber {
+    @include h1();
+    margin: 0;
+}

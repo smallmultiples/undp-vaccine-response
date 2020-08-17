@@ -6,6 +6,7 @@ import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import Donut from "../block-visualisations/donut-vis/donut";
+import Factoid from "../block-visualisations/factoid/factoid";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -188,21 +189,32 @@ export default function Goal(props) {
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
-            <div className={styles.graphArea}>
+            {belowVisualisationBlocks.length > 0 && <div className={styles.graphArea}>
                 {belowVisualisationBlocks.map(ind => (
-                    <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
+                    <MapBlockVis
+                        indicator={ind}
+                        key={ind.label}
+                        {...blockProps}
+                        isHorizontal={true}
+                    />
                 ))}
-            </div>
+            </div>}
         </div>
     );
 }
 
 const BlockVisualisations = {
     donut: Donut,
+    factoid: Factoid,
 };
 function MapBlockVis(props) {
-    const { indicator } = props;
+    const { indicator, isHorizontal } = props;
     const Vis = BlockVisualisations[indicator.visType];
+    const start = indicator.visualisationConfig.start;
+    const size = indicator.visualisationConfig.size;
+    const style = isHorizontal
+        ? { gridColumnStart: start, gridColumnEnd: `span ${size}` }
+        : { gridRowStart: start, gridRowEnd: `span ${size}` };
     const content = Vis ? (
         <Vis {...props} />
     ) : (
@@ -213,5 +225,9 @@ function MapBlockVis(props) {
             {indicator.label}
         </div>
     );
-    return <div className={styles.sidebarBlock}>{content}</div>;
+    return (
+        <div className={styles.sidebarBlock} style={style}>
+            {content}
+        </div>
+    );
 }
