@@ -1,7 +1,17 @@
 import { formats } from "../../modules/format";
 import { last } from "lodash";
+import { json } from "d3";
 
 const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
+
+const parseVisConfig = rawConfig => {
+    if (!rawConfig) return {};
+    try {
+        return JSON.parse(rawConfig);
+    } catch (e) {
+        throw new Error("Error parsing visualisation config", rawConfig);
+    }
+};
 
 export const parseMetaSheet = raw => {
     const out = {};
@@ -94,8 +104,10 @@ export const parseMetaSheet = raw => {
                         ? formats[row["Tooltip Format"]](tooltipDecimals)
                         : mapFormat,
                 },
-                blockVisType: row["Block Visualisation Type"],
-                blockVisOnly: row["Block Vis Only"],
+                isVisualised: row["Visualise"],
+                visType: row["Visualisation Type"],
+                visualisationLocation: row["Visualisation Location"],
+                visualisationConfig: parseVisConfig(row["Visualisation Config"]),
                 flipped: row["Invert Scale"],
                 categorical: row["Data Format"] === "category",
                 categoryFormat: row["Category Format"],
