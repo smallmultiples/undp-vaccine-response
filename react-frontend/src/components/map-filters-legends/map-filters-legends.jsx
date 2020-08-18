@@ -6,6 +6,7 @@ import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
 import { categorySplit } from "../../modules/utils";
+import { getBivariateOptions } from "../goal/useIndicatorState";
 
 // TODO: rename "normalizedData"
 const MapFiltersLegends = props => {
@@ -58,17 +59,10 @@ const Checkbox = props => {
 
 const BivariateIndicatorSelection = props => {
     const { pillar, goal, setCurrentIndicators, currentIndicators } = props;
-    const bivariateYOptions = React.useMemo(
-        () => flatten(pillar.goals.map(d => d.indicators)).filter(d => !d.categorical),
-        [pillar]
-    );
-    const bivariateXOptions = React.useMemo(
-        () => (isMapOnly ? bivariateYOptions : goal.indicators.filter(d => !d.categorical)),
-        [goal, bivariateYOptions]
-    );
+    const bivariateOptions = React.useMemo(() => getBivariateOptions(goal), [goal]);
 
     // Disable Y axis if there is only one indicator.
-    const disableY = bivariateYOptions.length === 1;
+    const disableY = bivariateOptions.length === 1;
 
     return (
         <div className={styles.bivariateIndicatorSelection}>
@@ -88,7 +82,7 @@ const BivariateIndicatorSelection = props => {
                         {isMapOnly ? "Indicator Y" : "Other indicators in this pillar:"}
                     </p>
                     <Select
-                        options={bivariateYOptions}
+                        options={bivariateOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
@@ -115,7 +109,7 @@ const BivariateIndicatorSelection = props => {
                         {isMapOnly ? "Indicator X" : "Other indicators in this goal:"}
                     </p>
                     <Select
-                        options={bivariateXOptions}
+                        options={bivariateOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }

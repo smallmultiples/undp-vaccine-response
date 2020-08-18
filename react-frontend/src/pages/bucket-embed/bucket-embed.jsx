@@ -74,21 +74,22 @@ export default function BucketEmbed(props) {
 
     if (!pillar) return null; // TODO loader
 
+    const goal = pillar.goals[bucketIndex];
+
     return (
         <div>
             asd
-            {!pillarData.loading &&
-                pillar.goals.map(goal => (
-                    <Goal
-                        key={goal.label}
-                        goal={goal}
-                        pillar={pillar}
-                        regionLookup={regionLookup}
-                        goalDatasets={goalDatasets}
-                        goalData={goalDatasets && goalDatasets[goal.sheet]}
-                        pillarLoading={pillarData.loading}
-                    />
-                ))}
+            {!pillarData.loading && (
+                <Goal
+                    key={goal.label}
+                    goal={goal}
+                    pillar={pillar}
+                    regionLookup={regionLookup}
+                    goalDatasets={goalDatasets}
+                    goalData={goalDatasets && goalDatasets[goal.sheet]}
+                    pillarLoading={pillarData.loading}
+                />
+            )}
         </div>
     );
 }
