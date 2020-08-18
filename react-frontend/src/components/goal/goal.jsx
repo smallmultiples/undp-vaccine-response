@@ -162,10 +162,6 @@ export default function Goal(props) {
 
     return (
         <div className={styles.goal}>
-            <div className={styles.tempGoalHeader}>
-                <h2>{goal.label}</h2>
-                <p>{goal.description}</p>
-            </div>
             <div className={styles.mapArea}>
                 <div className={styles.mapSidebar}>
                     {sideVisualisationBlocks.map(ind => (

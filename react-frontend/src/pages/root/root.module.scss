@@ -9,6 +9,7 @@
     max-width: $container-width;
     margin: 0 auto;
     padding: 0 32px;
+    margin-top: 48px;
 
     @media (max-width: $width-mobile) {
         width: calc(100% - 24px);
