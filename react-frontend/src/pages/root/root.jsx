@@ -17,7 +17,12 @@ export default function Root() {
                         <Pillar />
                     </Route>
                     <Route exact path="/bucket/:pillarSlug/:bucketIndex">
-                        <BucketEmbed />
+                        {({ match }) => (
+                            <BucketEmbed
+                                pillarSlug={match.params.pillarSlug}
+                                bucketIndex={match.params.bucketIndex}
+                            />
+                        )}
                     </Route>
                     <Route exact path="/country/:countryCode">
                         <Country />

@@ -66,9 +66,7 @@ const usePillarData = (pillarSlug, bucketIndex) => {
 };
 
 export default function BucketEmbed(props) {
-    const params = useParams();
-    const pillarSlug = props.pillarSlug || params.pillarSlug;
-    const bucketIndex = props.bucketIndex || params.bucketIndex;
+    const { pillarSlug, bucketIndex } = props;
     const pillarData = usePillarData(pillarSlug, bucketIndex);
     const { pillar, regionLookup, goalDatasets } = pillarData;
 
