@@ -78,7 +78,6 @@ export default function BucketEmbed(props) {
 
     return (
         <div>
-            asd
             {!pillarData.loading && (
                 <Goal
                     key={goal.label}
