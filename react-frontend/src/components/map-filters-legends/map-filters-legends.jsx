@@ -58,7 +58,7 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { pillar, goal, setCurrentIndicators, currentIndicators } = props;
+    const { goal, setCurrentIndicators, currentIndicators } = props;
     const bivariateOptions = React.useMemo(() => getBivariateOptions(goal), [goal]);
 
     // Disable Y axis if there is only one indicator.

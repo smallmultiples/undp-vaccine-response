@@ -1,4 +1,3 @@
-import { flatten } from "lodash";
 import React from "react";
 
 export const getBivariateOptions = goal => goal.indicators.filter(d => !d.categorical);

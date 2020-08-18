@@ -10,7 +10,6 @@ import {
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import { parseSheetDate } from "../../modules/utils";
-import { useParams } from "react-router-dom";
 
 // TODO: de-duplicate this logic from "pillar" page.
 const usePillarData = (pillarSlug, bucketIndex) => {
