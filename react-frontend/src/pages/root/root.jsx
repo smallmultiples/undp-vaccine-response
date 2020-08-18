@@ -5,6 +5,7 @@ import Header from "../../components/header/header";
 import Country from "../country/country";
 import Pillar from "../pillar/pillar";
 import styles from "./root.module.scss";
+import BucketEmbed from "../bucket-embed/bucket-embed";
 
 export default function Root() {
     return (
@@ -12,8 +13,11 @@ export default function Root() {
             <Header />
             <div className={styles.container}>
                 <Router>
-                    <Route exact path="/:pillarSlug">
+                    <Route exact path="/pillar/:pillarSlug">
                         <Pillar />
+                    </Route>
+                    <Route exact path="/bucket/:pillarSlug/:bucketIndex">
+                        <BucketEmbed />
                     </Route>
                     <Route exact path="/country/:countryCode">
                         <Country />

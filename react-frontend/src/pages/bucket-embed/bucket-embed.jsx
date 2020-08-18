@@ -13,7 +13,7 @@ import { parseSheetDate } from "../../modules/utils";
 import { useParams } from "react-router-dom";
 
 // TODO: de-duplicate this logic from "pillar" page.
-const usePillarData = pillarSlug => {
+const usePillarData = (pillarSlug, bucketIndex) => {
     const [pillars, setPillars] = React.useState(null);
     const [regionLookup, setRegionLookup] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
@@ -39,24 +39,20 @@ const usePillarData = pillarSlug => {
     React.useEffect(() => {
         if (!pillar) return;
         let newGoalData = {};
-        const sheets = Object.values(pillar.goals).map(goal => goal.sheet);
-        Promise.all(
-            sheets.map(sheet =>
-                axios(
-                    USE_SHEET
-                        ? `${DATA_SHEET_URL}?range=${sheet}`
-                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
-                )
-                    .then(d => d.data)
-                    .then(data =>
-                        data.map(d => ({
-                            ...d,
-                            Year: parseSheetDate(d.Year),
-                        }))
-                    )
-                    .then(d => (newGoalData[sheet] = d))
-            )
+
+        const sheet = pillar.goals[bucketIndex].sheet;
+
+        axios(
+            USE_SHEET ? `${DATA_SHEET_URL}?range=${sheet}` : `${STATIC_DATA_BASE_URL}/${sheet}.json`
         )
+            .then(d => d.data)
+            .then(data =>
+                data.map(d => ({
+                    ...d,
+                    Year: parseSheetDate(d.Year),
+                }))
+            )
+            .then(d => (newGoalData[sheet] = d))
             .then(() => setGoalDatasets(newGoalData))
             .then(() => setLoading(false));
     }, [pillar]);
@@ -70,8 +66,10 @@ const usePillarData = pillarSlug => {
 };
 
 export default function BucketEmbed(props) {
-    const { pillarSlug, bucketIndex } = props;
-    const pillarData = usePillarData(pillarSlug);
+    const params = useParams();
+    const pillarSlug = props.pillarSlug || params.pillarSlug;
+    const bucketIndex = props.bucketIndex || params.bucketIndex;
+    const pillarData = usePillarData(pillarSlug, bucketIndex);
     const { pillar, regionLookup, goalDatasets } = pillarData;
 
     if (!pillar) return null; // TODO loader
