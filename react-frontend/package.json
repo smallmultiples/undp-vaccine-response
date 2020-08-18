@@ -8,6 +8,7 @@
         "@testing-library/user-event": "^7.1.2",
         "@turf/bbox": "^6.0.1",
         "axios": "^0.19.2",
+        "craco": "^0.0.3",
         "d3": "^5.16.0",
         "date-fns": "^2.15.0",
         "deck.gl": "^8.1.8",
@@ -24,9 +25,9 @@
         "topojson-client": "^3.1.0"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
+        "start": "craco start",
+        "build": "craco build",
+        "test": "craco test",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
