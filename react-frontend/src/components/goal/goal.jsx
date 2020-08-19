@@ -151,9 +151,6 @@ export default function Goal(props) {
     const sideVisualisationBlocks = goal.indicators.filter(
         d => d.isVisualised && d.visualisationLocation === "side"
     );
-    const belowVisualisationBlocks = goal.indicators.filter(
-        d => d.isVisualised && d.visualisationLocation === "below"
-    );
     const blockProps = {
         selectedCountry,
         selectedCountryLabel,
@@ -189,16 +186,6 @@ export default function Goal(props) {
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
-            {belowVisualisationBlocks.length > 0 && <div className={styles.graphArea}>
-                {belowVisualisationBlocks.map(ind => (
-                    <MapBlockVis
-                        indicator={ind}
-                        key={ind.label}
-                        {...blockProps}
-                        isHorizontal={true}
-                    />
-                ))}
-            </div>}
         </div>
     );
 }

@@ -4,13 +4,51 @@ import styles from "./donut.module.scss";
 
 export default function Donut(props) {
     const { indicator, selectedCountry, selectedCountryLabel, timeFilteredData } = props;
-    const val = getBlockVisValue(timeFilteredData, indicator, selectedCountry);
+    const val = Math.round(getBlockVisValue(timeFilteredData, indicator, selectedCountry));
 
     return (
         <div className={styles.donut}>
-            <h3>{indicator.label}</h3>
-            <h2>{indicator.format(val)}</h2>
-            <h4>{selectedCountryLabel} average</h4>
+            <p><strong>{indicator.label}</strong></p>
+            {!isNaN(val) && <Chart value={val} />}
+            <p><span className={styles.highlight}>{selectedCountryLabel}</span> average</p>
         </div>
     );
 }
+
+const PADDING = 5;
+const CENTER = 150 / 2;
+const RADIUS = CENTER - PADDING;
+
+const Chart = props => {
+    const { value } = props;
+
+    const startX = CENTER;
+    const startY = PADDING;
+
+    const angle = Math.min(value, 99.99) * 3.6;
+    const angleRadians = (angle - 90) * (Math.PI / 180);
+
+    const endX = CENTER + Math.cos(angleRadians) * RADIUS;
+    const endY = CENTER + Math.sin(angleRadians) * RADIUS;
+
+    const largeFlag = angle > 180 ? "1" : "0";
+
+    const path = `
+        M ${startX} ${startY}
+        A ${RADIUS} ${RADIUS} 0 ${largeFlag} 1 ${endX} ${endY}
+    `;
+
+    return (
+        <div className={styles.container}>
+            <svg className={styles.svg}>
+                <circle className={styles.pathEmpty} r={RADIUS} cx={CENTER} cy={CENTER} />
+                <path className={styles.pathFill} d={path} />
+            </svg>
+            <div className={styles.textOverlay}>
+                <span className={styles.valueText}>
+                    {value}%
+                </span>
+            </div>
+        </div>
+    );
+};

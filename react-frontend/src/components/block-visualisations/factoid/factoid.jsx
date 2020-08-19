@@ -7,9 +7,9 @@ export default function Factoid(props) {
     const val = getBlockVisValue(timeFilteredData, indicator, selectedCountry);
     return (
         <div className={styles.factoid}>
-            <h3>{indicator.label}</h3>
+            <p><strong>{indicator.label}</strong></p>
             <h1 className={styles.factoidNumber}>{indicator.format(val)}</h1>
-            <p>{selectedCountryLabel} average</p>
+            <p><span className={styles.highlight}>{selectedCountryLabel}</span> average</p>
         </div>
     );
 }
