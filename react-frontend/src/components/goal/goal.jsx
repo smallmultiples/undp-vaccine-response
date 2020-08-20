@@ -5,9 +5,6 @@ import { useIndicatorState } from "./useIndicatorState";
 import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
-import Donut from "../block-visualisations/donut-vis/donut";
-import Factoid from "../block-visualisations/factoid/factoid";
-import { getBlockVisValue } from "../block-visualisations/block-vis-utils";
 import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualisation";
 
 const ROW_KEY = "Alpha-3 code";

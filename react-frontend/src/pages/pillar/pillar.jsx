@@ -51,7 +51,7 @@ const usePillarData = pillarSlug => {
     const keyStatsPerPillar = React.useMemo(() => {
         if (!pillar || !keyStats) return null;
         return keyStats.filter(s => s["Pillar Slug"] === pillar.slug);
-    });
+    }, [pillar, keyStats]);
 
     React.useEffect(() => {
         if (!pillar) return;
@@ -142,6 +142,8 @@ export default function Pillar(props) {
                             if (indic) {
                                 ind = indic;
                                 return true;
+                            } else {
+                                return false;
                             }
                         })
                         if (!ind) return null;

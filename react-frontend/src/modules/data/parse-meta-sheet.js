@@ -1,6 +1,5 @@
 import { formats } from "../../modules/format";
 import { last } from "lodash";
-import { json } from "d3";
 
 const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 
