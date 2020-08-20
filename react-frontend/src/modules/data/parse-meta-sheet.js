@@ -43,6 +43,7 @@ export const parseMetaSheet = raw => {
                 indicators: {},
                 hidden: qs === "-",
                 sheet: row["Sheet"],
+                id: "",
             };
         }
         // ------------
@@ -126,10 +127,11 @@ export const parseMetaSheet = raw => {
 
     const asArrays = Object.values(out).map(pillar => {
         const goals = Object.values(pillar.goals)
-            .map(goal => {
+            .map((goal, i) => {
                 const indicators = Object.values(goal.indicators);
                 return {
                     ...goal,
+                    id: i + 1,
                     indicators,
                 };
             })

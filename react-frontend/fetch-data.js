@@ -18,6 +18,10 @@ async function main() {
         `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:L`
     ).then(d => d.data);
 
+    const keyStatsPromise = await axios(
+        `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=pillars-key-stats`
+    ).then(d => d.data);
+
     const sheetsToFetch = _.uniq(_.flatten(pillarsRaw.map(p => p["Sheet"]).filter(Boolean)));
 
     await Promise.all(
@@ -29,10 +33,12 @@ async function main() {
         })
     );
     const regionLookup = await regionsPromise;
+    const keyStats = await keyStatsPromise;
 
     await Promise.all([
         fs.writeFile("public/data/meta.json", JSON.stringify(pillarsRaw)),
         fs.writeFile("public/data/regions.json", JSON.stringify(regionLookup)),
+        fs.writeFile("public/data/key-stats.json", JSON.stringify(keyStats)),
     ]);
     console.log("Done saving data.");
 }

@@ -20,6 +20,10 @@ export const REGIONS_URL = USE_SHEET
     ? `${SHEET_SERVER_URL}/sheet/${META_SHEET_ID}?range=regions!D:L`
     : `${STATIC_DATA_BASE_URL}/regions.json`;
 
+export const KEY_STATS_URL = USE_SHEET
+    ? `${SHEET_SERVER_URL}/sheet/${META_SHEET_ID}?range=pillars-key-stats`
+    : `${STATIC_DATA_BASE_URL}/key-stats.json`;
+
 /**
  * Sheet server URL for the country/subregion data
  */

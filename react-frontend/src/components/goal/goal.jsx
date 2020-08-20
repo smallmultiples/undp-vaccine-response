@@ -7,6 +7,8 @@ import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import Donut from "../block-visualisations/donut-vis/donut";
 import Factoid from "../block-visualisations/factoid/factoid";
+import { getBlockVisValue } from "../block-visualisations/block-vis-utils";
+import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualisation";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -118,7 +120,7 @@ function useTimeFilteredData(
 }
 
 export default function Goal(props) {
-    const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
+    const { goal, pillar, regionLookup, pillarLoading, goalDatasets, keyStats } = props;
     const [selectedCountry, setSelectedCountry] = React.useState(null);
     const selectedCountryLabel = React.useMemo(
         () => (selectedCountry ? selectedCountry.NAME : "Global"),
@@ -147,10 +149,7 @@ export default function Goal(props) {
         timelineState
     );
 
-    // TODO: enum
-    const sideVisualisationBlocks = goal.indicators.filter(
-        d => d.isVisualised && d.visualisationLocation === "side"
-    );
+    const sideBlocks = keyStats.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
     const blockProps = {
         selectedCountry,
         selectedCountryLabel,
@@ -166,9 +165,34 @@ export default function Goal(props) {
             </div>
             <div className={styles.mapArea}>
                 <div className={styles.mapSidebar}>
-                    {sideVisualisationBlocks.map(ind => (
-                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                    ))}
+                    {sideBlocks.map((s, i) => {
+                        if (s["Indicator"] === "Manual entry") {
+                            return (
+                                <ManualBlockVis
+                                    type={s["Chart type"]}
+                                    key={`manual-chart-${i}`}
+                                    configuration={s["Configuration"]}
+                                    manualEntry={{
+                                        value: formatManualValue(s["Stat A value"], s["Stat A type"]),
+                                        secondaryLabel: s["Stat A label"],
+                                    }}
+                                />
+                            );
+                        }
+                        const ind = goal.indicators.find(
+                            x => x.dataKey === s["Indicator"].split(";")[0]
+                        );
+                        if (!ind) return null;
+                        return (
+                            <MapBlockVis
+                                indicator={ind}
+                                type={s["Chart type"]}
+                                configuration={s["Configuration"]}
+                                key={ind.label}
+                                {...blockProps}
+                            />
+                        );
+                    })}
                 </div>
                 <div className={styles.mapContainer}>
                     <Map
@@ -186,35 +210,6 @@ export default function Goal(props) {
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
-        </div>
-    );
-}
-
-const BlockVisualisations = {
-    donut: Donut,
-    factoid: Factoid,
-};
-function MapBlockVis(props) {
-    const { indicator, isHorizontal } = props;
-    const Vis = BlockVisualisations[indicator.visType];
-    const start = indicator.visualisationConfig.start;
-    const size = indicator.visualisationConfig.size;
-    const style = isHorizontal
-        ? { gridColumnStart: start, gridColumnEnd: `span ${size}` }
-        : { gridRowStart: start, gridRowEnd: `span ${size}` };
-    const content = Vis ? (
-        <Vis {...props} />
-    ) : (
-        <div>
-            Missing "Block Visualisation Type" column.
-            <br />
-            <br />
-            {indicator.label}
-        </div>
-    );
-    return (
-        <div className={styles.sidebarBlock} style={style}>
-            {content}
         </div>
     );
 }
