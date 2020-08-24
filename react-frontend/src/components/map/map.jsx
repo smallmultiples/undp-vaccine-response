@@ -324,7 +324,7 @@ const useScales = (domains, currentIndicators, pillar) => {
 };
 
 const Map = props => {
-    const { currentIndicators, setCurrentIndicators, countryData, pillar } = props;
+    const { currentIndicators, countryData, pillar } = props;
 
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar);
