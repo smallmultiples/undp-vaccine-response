@@ -250,8 +250,6 @@ const MapVisualisationIndicatorSelection = props => {
     const { setCurrentIndicators, currentIndicators, goal } = props;
     const options = React.useMemo(() => getMapVisualisationOptions(goal), [goal]);
 
-    console.log({ ind: currentIndicators.mapVisualisation, options });
-
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
             <Checkbox
