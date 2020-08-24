@@ -200,7 +200,7 @@ const nullValue = val => isNil(val) || val === "";
 
 const useScales = (domains, currentIndicators, pillar) => {
     return React.useMemo(() => {
-        const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.mapVisualisation);
+        const circleScale = scaleLinear().range([3, 20]).domain(domains.extents.mapVisualisation);
         const mapVisualisationRadiusScale = row =>
             circleScale(getRowIndicatorValue(row, currentIndicators.mapVisualisation));
         mapVisualisationRadiusScale.range = circleScale.range;
