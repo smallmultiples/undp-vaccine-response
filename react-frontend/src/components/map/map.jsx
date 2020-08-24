@@ -324,7 +324,7 @@ const useScales = (domains, currentIndicators, pillar) => {
 };
 
 const Map = props => {
-    const { currentIndicators, setCurrentIndicators, countryData, pillar, goal } = props;
+    const { currentIndicators, setCurrentIndicators, countryData, pillar } = props;
 
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar);
@@ -337,26 +337,15 @@ const Map = props => {
                 <MapFiltersLegends
                     domains={domains}
                     scales={scales}
-                    currentIndicators={currentIndicators}
-                    setCurrentIndicators={setCurrentIndicators}
                     normalizedData={countryData}
                     {...props}
                 />
             )}
-            <MapVis
-                {...props}
-                domains={domains}
-                scales={scales}
-                normalizedData={countryData}
-                currentIndicators={currentIndicators}
-                goal={goal}
-            />
+            <MapVis {...props} domains={domains} scales={scales} normalizedData={countryData} />
             {isMobile && (
                 <MapFiltersLegendMobile
                     domains={domains}
                     scales={scales}
-                    currentIndicators={currentIndicators}
-                    setCurrentIndicators={setCurrentIndicators}
                     normalizedData={countryData}
                     {...props}
                 />

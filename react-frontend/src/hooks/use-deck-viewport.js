@@ -1,22 +1,38 @@
 import { WebMercatorViewport } from "deck.gl";
 import React from "react";
 import useDimensions from "./use-dimensions";
+import turfBbox from "@turf/bbox";
 
-// Bounds we zoom to on load.
-// North west lng lat
-// South east lng lat
-const INITIAL_BOUNDS = [
-    [-180, 76],
-    [180, -60],
-];
-const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
+const getInitialBounds = initialBoundsOrFeature => {
+    if (Array.isArray(initialBoundsOrFeature)) {
+        return initialBoundsOrFeature;
+    } else if (initialBoundsOrFeature.type === "Feature") {
+        const bbox = turfBbox(initialBoundsOrFeature);
+
+        const [minX, minY, maxX, maxY] = bbox;
+
+        return [
+            [minX, minY],
+            [maxX, maxY],
+        ];
+    }
+};
+
+const useDeckViewport = (initialBoundsOrFeature, padding = 8) => {
     const [mapContainerRef, mapContainerDimensions] = useDimensions();
     const [viewport, setViewport] = React.useState(null);
+
+    const initialBounds = React.useMemo(() => {
+        if (!initialBoundsOrFeature) return null;
+        return getInitialBounds(initialBoundsOrFeature);
+    }, [initialBoundsOrFeature]);
 
     // Initial ONLY
     React.useEffect(() => {
         if (viewport) return;
         if (!mapContainerDimensions) return;
+        if (!initialBounds) return;
+
         setViewport(
             new WebMercatorViewport({
                 longitude: 0,
@@ -46,12 +62,13 @@ const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
     }, [initialBounds, padding]);
 
     const handleViewStateChange = React.useCallback(newState => {
-        setViewport(
-            v =>
-                new WebMercatorViewport({
-                    ...v,
-                    ...newState.viewState,
-                })
+        setViewport(v =>
+            v
+                ? new WebMercatorViewport({
+                      ...v,
+                      ...newState.viewState,
+                  })
+                : null
         );
     }, []);
 
