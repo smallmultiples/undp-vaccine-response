@@ -1,11 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Root from "./pages/root/root";
-import * as serviceWorker from "./serviceWorker";
 import ReactGA from "react-ga";
 import Country from "./pages/country/country";
 import BucketEmbed from "./pages/bucket-embed/bucket-embed";
 import qs from "qs";
+import regionLookup from "./modules/data/region-lookup.json";
 
 const trackingId = "UA-25119617-15";
 ReactGA.initialize(trackingId);
@@ -25,25 +24,30 @@ function getUrlParams() {
     // Pillar ->
     if (pathname.startsWith("/undps-response")) {
         const split = pathname.replace("/undps-response/", "").split("/");
-        const pillar = split[0];
-        const bucketSlug = split[1];
+        const pillarSlug = split[0];
+        const bucketSlug = split[1] || null;
         const query = qs.parse(search.replace("?", ""));
 
-        if (!pillar) return null;
-
-        // TODO: convert pillar
-        const pillarSlug = pillar;
-
-        // TODO: slug to index.
-        const bucketIndex = bucketSlug ? 0 : 0;
+        if (!pillarSlug) {
+            console.error(`Could not parse pillar "${pillarSlug}".`);
+            return null;
+        }
 
         // TODO: slug to country code.
-        const countryCode = query.country;
+        let countryCode = null;
+        if (query.country) {
+            const countryRow = regionLookup.find(d => d["CMS slug"] === query.country);
+            if (!countryRow) {
+                console.error(`Could not find country code for slug "${query.country}".`);
+                return null;
+            }
+            countryCode = countryRow["ISO-alpha3 Code"];
+        }
 
         return {
             type: "bucket",
-            pillarSlug: pillar,
-            bucketIndex: bucketSlug,
+            pillarSlug,
+            bucketSlug,
             countryCode,
         };
     }
@@ -51,6 +55,9 @@ function getUrlParams() {
 
 window.addEventListener("DOMContentLoaded", () => {
     const params = getUrlParams();
+
+    console.log("Embed Params");
+    console.table(params);
 
     if (params) {
         if (params.type === "bucket") {

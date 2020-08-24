@@ -6,6 +6,7 @@ import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import Donut from "../block-visualisations/donut-vis/donut";
+import regionLookup from "../../modules/data/region-lookup.json";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -61,12 +62,7 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
     return selectedIndicatorData;
 }
 
-function useTimeFilteredData(
-    selectedIndicatorData,
-    currentIndicators,
-    regionLookup,
-    timelineState
-) {
+function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineState) {
     // Take only matching rows.
     // TODO: split up by timespan and current time?
     // TODO: use a binary search. sortedIndex?
@@ -111,13 +107,13 @@ function useTimeFilteredData(
             }
         });
         return ret;
-    }, [countryGrouped, currentIndicators, regionLookup]);
+    }, [countryGrouped, currentIndicators]);
 
     return outputMap;
 }
 
 export default function Goal(props) {
-    const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
+    const { goal, pillar, pillarLoading, goalDatasets } = props;
     const [selectedCountry, setSelectedCountry] = React.useState(null);
     const selectedCountryLabel = React.useMemo(
         () => (selectedCountry ? selectedCountry.NAME : "Global"),
@@ -142,7 +138,6 @@ export default function Goal(props) {
     const timeFilteredData = useTimeFilteredData(
         selectedIndicatorData,
         currentIndicators,
-        regionLookup,
         timelineState
     );
 

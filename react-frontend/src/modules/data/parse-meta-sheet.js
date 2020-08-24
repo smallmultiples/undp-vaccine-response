@@ -39,6 +39,7 @@ export const parseMetaSheet = raw => {
             out[currentPillar].goals[qs] = {
                 label: qs,
                 description: row["Goal description"],
+                slug: row["Goal Slug"],
                 indicators: {},
                 hidden: qs === "-",
                 sheet: row["Sheet"],

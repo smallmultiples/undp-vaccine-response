@@ -32,7 +32,7 @@ async function main() {
 
     await Promise.all([
         fs.writeFile("public/data/meta.json", JSON.stringify(pillarsRaw)),
-        fs.writeFile("public/data/regions.json", JSON.stringify(regionLookup)),
+        fs.writeFile("src/modules/data/region-lookup.json", JSON.stringify(regionLookup)),
     ]);
     console.log("Done saving data.");
 }
