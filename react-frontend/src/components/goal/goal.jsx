@@ -114,15 +114,17 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
 
 export default function Goal(props) {
     const { goal, pillar, pillarLoading, goalDatasets, missingBucket, countryCode } = props;
-    const [selectedCountry, setSelectedCountry] = React.useState(null);
-    const selectedCountryLabel = React.useMemo(
-        () => (selectedCountry ? selectedCountry.NAME : "Global"),
-        [selectedCountry]
-    );
+    const [selectedCountryCode, setSelectedCountryCode] = React.useState(null);
+    const selectedCountryLabel = React.useMemo(() => {
+        if (!selectedCountryCode) return "Global";
+        const row = regionLookup.find(row => row["ISO-alpha3 Code"] === selectedCountryCode);
+        if (!row) throw new Error("Could not find country code row " + selectedCountryCode);
+        return row["Country or Area"];
+    }, [selectedCountryCode]);
 
     const handleCountryClicked = React.useCallback(country => {
-        setSelectedCountry(existing =>
-            existing && existing.ISO3 === country.ISO3 ? null : country
+        setSelectedCountryCode(existing =>
+            existing && existing === country.ISO3 ? null : country.ISO3
         );
     }, []);
 
@@ -149,7 +151,7 @@ export default function Goal(props) {
         ? []
         : goal.indicators.filter(d => d.isVisualised && d.visualisationLocation === "below");
     const blockProps = {
-        selectedCountry,
+        selectedCountryCode,
         selectedCountryLabel,
         timeFilteredData,
         selectedIndicatorData,
@@ -174,7 +176,7 @@ export default function Goal(props) {
                         currentIndicators={currentIndicators}
                         setCurrentIndicators={setCurrentIndicators}
                         onCountryClicked={handleCountryClicked}
-                        selectedCountry={selectedCountry}
+                        selectedCountryCode={selectedCountryCode}
                         countryCode={countryCode}
                     />
                 </div>

@@ -1,8 +1,8 @@
 import { mean } from "lodash";
 
-export function getBlockVisValue(timeFilteredData, indicator, selectedCountry) {
-    if (selectedCountry) {
-        const countryData = timeFilteredData[selectedCountry.ISO3];
+export function getBlockVisValue(timeFilteredData, indicator, selectedCountryCode) {
+    if (selectedCountryCode) {
+        const countryData = timeFilteredData[selectedCountryCode];
         return countryData[indicator.dataKey];
     } else {
         // Return the *average* for global

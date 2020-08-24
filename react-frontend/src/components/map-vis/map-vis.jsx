@@ -45,7 +45,7 @@ const useGeoData = () => {
 const MapVis = props => {
     const {
         normalizedData,
-        selectedCountry,
+        selectedCountryCode,
         countryDataLoading,
         scales,
         currentIndicators,
@@ -85,20 +85,14 @@ const MapVis = props => {
             },
             stroked: true,
             getLineColor: shape => {
-                if (
-                    selectedCountry &&
-                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
-                ) {
+                if (selectedCountryCode && selectedCountryCode === shape.properties[GEO_SHAPE_ID]) {
                     return HIGHLIGHT_COLOUR;
                 }
                 const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
             getLineWidth: shape => {
-                if (
-                    selectedCountry &&
-                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
-                ) {
+                if (selectedCountryCode && selectedCountryCode === shape.properties[GEO_SHAPE_ID]) {
                     return 1.5;
                 }
                 return 0.5;
@@ -113,8 +107,8 @@ const MapVis = props => {
             },
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
-                getLineColor: [normalizedData, currentIndicators, selectedCountry],
-                getLineWidth: [selectedCountry],
+                getLineColor: [normalizedData, currentIndicators, selectedCountryCode],
+                getLineWidth: [selectedCountryCode],
             },
         }),
     ];

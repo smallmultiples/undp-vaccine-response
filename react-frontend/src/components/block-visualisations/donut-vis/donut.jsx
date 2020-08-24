@@ -3,8 +3,8 @@ import { getBlockVisValue } from "../block-vis-utils";
 import styles from "./donut.module.scss";
 
 export default function Donut(props) {
-    const { indicator, selectedCountry, selectedCountryLabel, timeFilteredData } = props;
-    const val = getBlockVisValue(timeFilteredData, indicator, selectedCountry);
+    const { indicator, selectedCountryCode, selectedCountryLabel, timeFilteredData } = props;
+    const val = getBlockVisValue(timeFilteredData, indicator, selectedCountryCode);
 
     return (
         <div className={styles.donut}>
