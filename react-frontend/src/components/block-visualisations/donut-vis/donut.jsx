@@ -1,5 +1,4 @@
 import React from "react";
-import { getBlockVisValue } from "../block-vis-utils";
 import styles from "./donut.module.scss";
 
 export default function Donut(props) {

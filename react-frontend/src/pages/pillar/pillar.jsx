@@ -116,7 +116,7 @@ export default function Pillar(props) {
                 </div>
             </div>
             <div className={styles.pillarExplore}>
-                <img src={TempPillarExplore} />
+                <img src={TempPillarExplore} alt="Factoids with link" />
             </div>
             {!pillarData.loading &&
                 pillar.goals.map(goal => (
