@@ -9,6 +9,7 @@ import {
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import { parseSheetDate } from "../../modules/utils";
+import styles from "./bucket-embed.module.scss";
 
 // TODO: de-duplicate this logic from "pillar" page.
 const usePillarData = (pillarSlug, bucketSlug) => {
@@ -75,7 +76,7 @@ export default function BucketEmbed(props) {
     if (!goal) return null; // TODO loader
 
     return (
-        <div>
+        <div className={styles.bucketEmbed}>
             {!pillarData.loading && (
                 <Goal
                     key={goal.label}

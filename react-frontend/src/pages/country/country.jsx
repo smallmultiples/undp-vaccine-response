@@ -115,7 +115,7 @@ export default function Country(props) {
     ];
 
     return (
-        <div>
+        <div className={styles.countryEmbed}>
             <h1>{countryName}</h1>
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 {!loading && (
