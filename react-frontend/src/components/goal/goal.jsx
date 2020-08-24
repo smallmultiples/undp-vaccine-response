@@ -114,7 +114,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
 
 export default function Goal(props) {
     const { goal, pillar, pillarLoading, goalDatasets, missingBucket, countryCode } = props;
-    const [selectedCountryCode, setSelectedCountryCode] = React.useState(null);
+    const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
     const selectedCountryLabel = React.useMemo(() => {
         if (!selectedCountryCode) return "Global";
         const row = regionLookup.find(row => row["ISO-alpha3 Code"] === selectedCountryCode);
