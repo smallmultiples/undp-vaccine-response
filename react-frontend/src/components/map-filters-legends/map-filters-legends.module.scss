@@ -6,7 +6,7 @@ $mapVisualisationControlsWidth: 220px;
 .mapFiltersLegends {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     @include mobileOnly() {
         justify-content: space-around;
@@ -19,7 +19,6 @@ $mapVisualisationControlsWidth: 220px;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    padding-top: 16px;
     padding-right: 36px;
     margin-right: 30px;
     border-right: 1px solid $color-blue-bg;
@@ -192,7 +191,6 @@ $mapVisualisationControlsWidth: 220px;
 
 .mapVisualisationControls {
     width: $mapVisualisationControlsWidth;
-    padding-top: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -289,7 +287,6 @@ $mapVisualisationControlsWidth: 220px;
     flex-direction: column;
     align-items: flex-end;
     margin-right: 30px;
-    padding-top: 16px;
 
     @include mobileOnly() {
         width: 30%;
