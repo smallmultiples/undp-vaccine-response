@@ -2,7 +2,6 @@ import axios from "axios";
 import DeckGL, { GeoJsonLayer, MapView } from "deck.gl";
 import React from "react";
 import { StaticMap } from "react-map-gl";
-import { useRouteMatch } from "react-router-dom";
 import { feature as topojsonParse } from "topojson-client";
 import {
     DATA_SHEET_ID,
@@ -18,8 +17,7 @@ import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import { hexToRgb } from "../../modules/utils";
 
 export default function Country(props) {
-    const match = useRouteMatch();
-    const countryCode = match.params.countryCode;
+    const { countryCode } = props;
 
     const [subdivisionGeo, setSubdivisionGeo] = React.useState(null);
     const [hdiData, setHdiData] = React.useState(null);
@@ -117,7 +115,7 @@ export default function Country(props) {
     ];
 
     return (
-        <div>
+        <div className={styles.countryEmbed}>
             <h1>{countryName}</h1>
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 {!loading && (

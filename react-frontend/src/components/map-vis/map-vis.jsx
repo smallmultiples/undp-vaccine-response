@@ -12,6 +12,14 @@ const GEO_SHAPE_ID = "ISO3";
 
 const HIGHLIGHT_COLOUR = [243, 213, 22]; // #F3D516
 
+// Bounds we zoom to on load.
+// North west lng lat
+// South east lng lat
+const INITIAL_BOUNDS = [
+    [-180, 76],
+    [180, -60],
+];
+
 const useGeoData = () => {
     const [shapeData, setShapeData] = React.useState(null);
 
@@ -37,20 +45,32 @@ const useGeoData = () => {
 const MapVis = props => {
     const {
         normalizedData,
-        selectedCountry,
+        selectedCountryCode,
         countryDataLoading,
         scales,
         currentIndicators,
         goal,
+        countryCode,
     } = props;
+
+    const [tooltip, setTooltip] = React.useState(null);
+    const { shapeData, loading: geoLoading } = useGeoData();
+
+    const initialBoundsOrFeature = React.useMemo(() => {
+        if (countryCode) {
+            if (!shapeData) return undefined;
+            return shapeData.features.find(f => f.properties[GEO_SHAPE_ID] === countryCode);
+        } else {
+            return INITIAL_BOUNDS;
+        }
+    }, [countryCode, shapeData]);
+
     const [
         mapContainerRef,
         viewport,
         handleViewStateChange,
         mapContainerDimensions,
-    ] = useDeckViewport();
-    const [tooltip, setTooltip] = React.useState(null);
-    const { shapeData, loading: geoLoading } = useGeoData();
+    ] = useDeckViewport(initialBoundsOrFeature);
 
     const loading = [geoLoading, countryDataLoading].some(d => d);
 
@@ -65,20 +85,14 @@ const MapVis = props => {
             },
             stroked: true,
             getLineColor: shape => {
-                if (
-                    selectedCountry &&
-                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
-                ) {
+                if (selectedCountryCode && selectedCountryCode === shape.properties[GEO_SHAPE_ID]) {
                     return HIGHLIGHT_COLOUR;
                 }
                 const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
             getLineWidth: shape => {
-                if (
-                    selectedCountry &&
-                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
-                ) {
+                if (selectedCountryCode && selectedCountryCode === shape.properties[GEO_SHAPE_ID]) {
                     return 1.5;
                 }
                 return 0.5;
@@ -93,8 +107,8 @@ const MapVis = props => {
             },
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
-                getLineColor: [normalizedData, currentIndicators, selectedCountry],
-                getLineWidth: [selectedCountry],
+                getLineColor: [normalizedData, currentIndicators, selectedCountryCode],
+                getLineWidth: [selectedCountryCode],
             },
         }),
     ];

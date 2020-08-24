@@ -1,20 +1,19 @@
-import { flatten } from "lodash";
 import React from "react";
 
-const getDefaultIndicatorState = (pillar, goal) => {
-    // TODO: module? expose possible options in context?
-    const bivariateYOptions = flatten(pillar.goals.map(d => d.indicators)).filter(
-        d => !d.categorical
-    );
+export const getBivariateOptions = goal => goal.indicators.filter(d => !d.categorical);
+export const getMapVisualisationOptions = goal =>
+    goal.indicators.filter(d => d.isProgressIndicator);
 
-    const mapVisualisationOptions = goal.indicators.filter(d => d.isProgressIndicator);
+const getDefaultIndicatorState = (pillar, goal) => {
+    const mapVisualisationOptions = getMapVisualisationOptions(goal);
+    const bivariateOptions = getBivariateOptions(goal);
 
     return {
         // Question indicator is the X axis
-        bivariateX: goal.indicators.filter(d => !d.categorical)[0],
+        bivariateX: bivariateOptions[0],
         bivariateXEnabled: true,
         // Any indicator for the pillar on the Y axis
-        bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
+        bivariateY: bivariateOptions.length > 1 ? bivariateOptions[1] : bivariateOptions[0],
         bivariateYEnabled: false,
         // "above-map" layer, be it simple circles or whatever. Is a "progress indicator".
         mapVisualisation: mapVisualisationOptions[0],

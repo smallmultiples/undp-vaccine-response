@@ -6,6 +6,7 @@ import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import Donut from "../block-visualisations/donut-vis/donut";
+import regionLookup from "../../modules/data/region-lookup.json";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -61,12 +62,7 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
     return selectedIndicatorData;
 }
 
-function useTimeFilteredData(
-    selectedIndicatorData,
-    currentIndicators,
-    regionLookup,
-    timelineState
-) {
+function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineState) {
     // Take only matching rows.
     // TODO: split up by timespan and current time?
     // TODO: use a binary search. sortedIndex?
@@ -111,22 +107,24 @@ function useTimeFilteredData(
             }
         });
         return ret;
-    }, [countryGrouped, currentIndicators, regionLookup]);
+    }, [countryGrouped, currentIndicators]);
 
     return outputMap;
 }
 
 export default function Goal(props) {
-    const { goal, pillar, regionLookup, pillarLoading, goalDatasets } = props;
-    const [selectedCountry, setSelectedCountry] = React.useState(null);
-    const selectedCountryLabel = React.useMemo(
-        () => (selectedCountry ? selectedCountry.NAME : "Global"),
-        [selectedCountry]
-    );
+    const { goal, pillar, pillarLoading, goalDatasets, missingBucket, countryCode } = props;
+    const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
+    const selectedCountryLabel = React.useMemo(() => {
+        if (!selectedCountryCode) return "Global";
+        const row = regionLookup.find(row => row["ISO-alpha3 Code"] === selectedCountryCode);
+        if (!row) throw new Error("Could not find country code row " + selectedCountryCode);
+        return row["Country or Area"];
+    }, [selectedCountryCode]);
 
     const handleCountryClicked = React.useCallback(country => {
-        setSelectedCountry(existing =>
-            existing && existing.ISO3 === country.ISO3 ? null : country
+        setSelectedCountryCode(existing =>
+            existing && existing === country.ISO3 ? null : country.ISO3
         );
     }, []);
 
@@ -142,7 +140,6 @@ export default function Goal(props) {
     const timeFilteredData = useTimeFilteredData(
         selectedIndicatorData,
         currentIndicators,
-        regionLookup,
         timelineState
     );
 
@@ -150,11 +147,11 @@ export default function Goal(props) {
     const sideVisualisationBlocks = goal.indicators.filter(
         d => d.isVisualised && d.visualisationLocation === "side"
     );
-    const belowVisualisationBlocks = goal.indicators.filter(
-        d => d.isVisualised && d.visualisationLocation === "below"
-    );
+    const belowVisualisationBlocks = missingBucket
+        ? []
+        : goal.indicators.filter(d => d.isVisualised && d.visualisationLocation === "below");
     const blockProps = {
-        selectedCountry,
+        selectedCountryCode,
         selectedCountryLabel,
         timeFilteredData,
         selectedIndicatorData,
@@ -162,16 +159,14 @@ export default function Goal(props) {
 
     return (
         <div className={styles.goal}>
-            <div className={styles.tempGoalHeader}>
-                <h2>{goal.label}</h2>
-                <p>{goal.description}</p>
-            </div>
             <div className={styles.mapArea}>
-                <div className={styles.mapSidebar}>
-                    {sideVisualisationBlocks.map(ind => (
-                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                    ))}
-                </div>
+                {sideVisualisationBlocks.length > 0 && (
+                    <div className={styles.mapSidebar}>
+                        {sideVisualisationBlocks.map(ind => (
+                            <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
+                        ))}
+                    </div>
+                )}
                 <div className={styles.mapContainer}>
                     <Map
                         countryData={timeFilteredData}
@@ -181,18 +176,21 @@ export default function Goal(props) {
                         currentIndicators={currentIndicators}
                         setCurrentIndicators={setCurrentIndicators}
                         onCountryClicked={handleCountryClicked}
-                        selectedCountry={selectedCountry}
+                        selectedCountryCode={selectedCountryCode}
+                        countryCode={countryCode}
                     />
                 </div>
             </div>
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
-            <div className={styles.graphArea}>
-                {belowVisualisationBlocks.map(ind => (
-                    <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                ))}
-            </div>
+            {belowVisualisationBlocks.length > 0 && (
+                <div className={styles.graphArea}>
+                    {belowVisualisationBlocks.map(ind => (
+                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
