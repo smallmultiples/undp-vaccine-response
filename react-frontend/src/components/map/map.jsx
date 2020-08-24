@@ -198,12 +198,18 @@ const getColorMatrices = (pillar, currentIndicators) => {
 
 const nullValue = val => isNil(val) || val === "";
 
+const areaToRadius = area => Math.sqrt(area / Math.PI);
+
 const useScales = (domains, currentIndicators, pillar) => {
     return React.useMemo(() => {
-        const circleScale = scaleLinear().range([3, 20]).domain(domains.extents.mapVisualisation);
-        const mapVisualisationRadiusScale = row =>
-            circleScale(getRowIndicatorValue(row, currentIndicators.mapVisualisation));
-        mapVisualisationRadiusScale.range = circleScale.range;
+        const circleScale = scaleLinear()
+            .range([30, 1000])
+            .domain(domains.extents.mapVisualisation);
+        const mapVisualisationRadiusScale = row => {
+            const area = circleScale(getRowIndicatorValue(row, currentIndicators.mapVisualisation));
+            return areaToRadius(area);
+        };
+        mapVisualisationRadiusScale.range = () => circleScale.range().map(areaToRadius);
         mapVisualisationRadiusScale.domain = circleScale.domain;
 
         let { colorMatrix, colorMatrixHex } = getColorMatrices(pillar, currentIndicators);
