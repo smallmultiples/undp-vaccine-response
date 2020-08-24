@@ -6,7 +6,7 @@ import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
 import { categorySplit } from "../../modules/utils";
-import { getBivariateOptions } from "../goal/useIndicatorState";
+import { getBivariateOptions, getMapVisualisationOptions } from "../goal/useIndicatorState";
 
 // TODO: rename "normalizedData"
 const MapFiltersLegends = props => {
@@ -88,7 +88,6 @@ const BivariateIndicatorSelection = props => {
                         }
                         value={currentIndicators.bivariateY}
                         styles={dropdownStyle}
-                        isOptionSelected={isOptionSelected}
                         isDisabled={disableY || !currentIndicators.bivariateYEnabled}
                         isSearchable={false}
                     />
@@ -247,49 +246,12 @@ const MapVisualisationRadiusLegend = props => {
     );
 };
 
-const Toggle = props => {
-    const { options, onChange, value } = props;
-
-    const widths = [27, 30, 43];
-
-    const optionsButtons = options.map((option, i) => {
-        return (
-            <button
-                key={option.label}
-                className={styles.toggleOption}
-                style={{ width: widths[i] + "%" }}
-                onClick={() => onChange && onChange(option)}
-                data-active={option === value}
-            >
-                {option.label}
-            </button>
-        );
-    });
-    const slideLeft = widths.reduce((a, b, i) => {
-        if (i < options.indexOf(value)) {
-            return a + b;
-        }
-        return a;
-    }, 0);
-    const optWidth = widths[options.indexOf(value)];
-
-    const bgSlide = (
-        <div
-            className={styles.toggleSlide}
-            style={{ width: `calc(${optWidth}% - 4px)`, left: `calc(${slideLeft}% + 2px)` }}
-        />
-    );
-    return (
-        <div className={styles.toggle}>
-            {bgSlide}
-            {optionsButtons}
-        </div>
-    );
-};
-
 const MapVisualisationIndicatorSelection = props => {
     const { setCurrentIndicators, currentIndicators, goal } = props;
-    const options = goal.indicators.filter(d => d.isProgressIndicator);
+    const options = React.useMemo(() => getMapVisualisationOptions(goal), [goal]);
+
+    console.log({ ind: currentIndicators.mapVisualisation, options });
+
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
             <Checkbox
@@ -301,16 +263,18 @@ const MapVisualisationIndicatorSelection = props => {
                     }))
                 }
             />
-            <Toggle
-                options={options}
-                value={currentIndicators.mapVisualisation}
-                onChange={v =>
-                    setCurrentIndicators(d => ({
-                        ...d,
-                        mapVisualisation: v,
-                    }))
-                }
-            />
+            <div className={styles.mapVisualisationIndicatorDropdownWrap}>
+                <Select
+                    options={options}
+                    onChange={indicator =>
+                        setCurrentIndicators(d => ({ ...d, mapVisualisation: indicator }))
+                    }
+                    value={currentIndicators.mapVisualisation}
+                    styles={dropdownStyle}
+                    isSearchable={false}
+                    noGap
+                />
+            </div>
         </div>
     );
 };

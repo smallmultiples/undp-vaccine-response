@@ -32,7 +32,7 @@ export default {
         color: navy,
         opacity: state.isDisabled ? 0.25 : 1,
         transform: "translateY(-50%) translateY(2px)",
-        paddingLeft: 18,
+        paddingLeft: state.selectProps.noGap ? 0 : 18,
     }),
 
     dropdownIndicator: (provided, state) => ({
