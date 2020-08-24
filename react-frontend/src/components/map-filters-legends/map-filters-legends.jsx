@@ -239,9 +239,9 @@ const MapVisualisationRadiusLegend = props => {
                 <span>{currentIndicators.mapVisualisation.formatLegend(domain[0])}</span>
                 <span>{currentIndicators.mapVisualisation.formatLegend(domain[1])}</span>
             </div>
-            <div className={styles.mapVisualisationIndicatorFineprint}>
+            {/* <div className={styles.mapVisualisationIndicatorFineprint}>
                 <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
-            </div>
+            </div> */}
         </div>
     );
 };

@@ -1,7 +1,7 @@
 @import "../../variables.scss";
 
 $bottomPadding: 27px;
-$covidToggleWidth: 220px;
+$mapVisualisationControlsWidth: 220px;
 
 .mapFiltersLegends {
     display: flex;
@@ -191,6 +191,7 @@ $covidToggleWidth: 220px;
 // -----
 
 .mapVisualisationControls {
+    width: $mapVisualisationControlsWidth;
     padding-top: 16px;
     display: flex;
     flex-direction: column;
@@ -201,7 +202,7 @@ $covidToggleWidth: 220px;
 .mapVisualisationLegend {
     display: flex;
     flex-direction: column;
-    margin-bottom: 12px;
+    align-items: center;
 
     .legendSvg {
         width: 105px;
@@ -220,6 +221,7 @@ $covidToggleWidth: 220px;
 
     .legendLabels {
         width: 100%;
+        max-width: 105px;
         display: flex;
         justify-content: space-between;
         font-size: 12px;
@@ -244,7 +246,7 @@ $covidToggleWidth: 220px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-bottom: 10px;
+    padding-bottom: 16px;
     width: 100%;
 
     .mapVisualisationIndicatorDropdownWrap {
@@ -267,7 +269,7 @@ $covidToggleWidth: 220px;
 .mapVisualisationIndicatorFineprint {
     p {
         font-size: 12px;
-        width: $covidToggleWidth;
+        width: $mapVisualisationControlsWidth;
         margin: 0 0 0 30px;
         padding: 0;
 
