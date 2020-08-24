@@ -6,11 +6,11 @@
     flex-direction: column;
     text-align: center;
     height: 100%;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 .factoidNumber {
-    @include h1();
+    @include h2();
     margin: 0;
 }
 

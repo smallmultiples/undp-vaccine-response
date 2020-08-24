@@ -3,14 +3,13 @@ import { getBlockVisValue } from "../block-vis-utils";
 import styles from "./donut.module.scss";
 
 export default function Donut(props) {
-    const { indicator, selectedCountry, selectedCountryLabel, timeFilteredData } = props;
-    const val = Math.round(getBlockVisValue(timeFilteredData, indicator, selectedCountry));
+    const { value, primaryLabel, secondaryLabel} = props;
 
     return (
         <div className={styles.donut}>
-            <p><strong>{indicator.label}</strong></p>
-            {!isNaN(val) && <Chart value={val} />}
-            <p><span className={styles.highlight}>{selectedCountryLabel}</span> average</p>
+            <p><strong>{primaryLabel}</strong></p>
+            {!isNaN(value) && <Chart value={value} />}
+            {secondaryLabel}
         </div>
     );
 }

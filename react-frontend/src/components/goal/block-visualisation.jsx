@@ -1,12 +1,14 @@
 import React from "react";
 import Donut from "../block-visualisations/donut-vis/donut";
 import Factoid from "../block-visualisations/factoid/factoid";
+import LineChart from "../block-visualisations/line-chart/line-chart";
 import { getBlockVisValue } from "../block-visualisations/block-vis-utils";
 import styles from "./goal.module.scss";
 
 const BlockVisualisations = {
     Donut: Donut,
     Factoid: Factoid,
+    "Line chart": LineChart,
 };
 
 export function MapBlockVis(props) {
@@ -56,7 +58,14 @@ export function ManualBlockVis(props) {
     const style = getVisStyle(configuration);
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     const content = Vis ? (
-        <Vis value={manualEntry.value || ""} secondaryLabel={<p>{manualEntry.secondaryLabel}</p>} />
+        <Vis
+            value={manualEntry.value || ""}
+            primaryLabel={manualEntry.primaryLabel}
+            secondaryLabel={
+                manualEntry.secondaryLabel ? <p>{manualEntry.secondaryLabel}</p> : undefined
+            }
+            format={manualEntry.format}
+        />
     ) : (
         missingChart
     );

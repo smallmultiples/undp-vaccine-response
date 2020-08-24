@@ -48,7 +48,9 @@
 }
 
 .sidebarBlock {
-    padding: 20px;
+    padding: 0 20px;
+    width: 260px;
+    box-sizing: border-box;
     background-color: $color-light-blue;
     border-radius: 10px;
 }

@@ -12,13 +12,13 @@ import {
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./pillar.module.scss";
 import TempPillarAllData from "./temp-pillar-all-data.svg";
+import TempPillarExplore from "./temp-pillar-explore.svg";
 import TempPillarIcon from "./temp-pillar-icon.svg";
 import TempPillarNews from "./temp-pillar-news.png";
 import TempPillarOtherTracking from "./temp-pillar-other-tracking.svg";
 import TempPillarPartnership from "./temp-pillar-partnerships.svg";
 import { parseSheetDate } from "../../modules/utils";
 import { useParams } from "react-router-dom";
-import { MapBlockVis, formatManualValue, ManualBlockVis } from "../../components/goal/block-visualisation";
 
 const usePillarData = pillarSlug => {
     const [pillars, setPillars] = React.useState(null);
@@ -116,47 +116,7 @@ export default function Pillar(props) {
                 </div>
             </div>
             <div className={styles.pillarExplore}>
-                {keyStats
-                    .filter(s => s["Bucket"] === 0 && s["Chart type"] !== "")
-                    .map((s, i) => {
-                        if (s["Indicator"] === "Manual entry") {
-                            return (
-                                <ManualBlockVis
-                                    type={s["Chart type"]}
-                                    key={`manual-chart-${i}`}
-                                    configuration={s["Configuration"]}
-                                    manualEntry={{
-                                        value: formatManualValue(s["Stat A value"], s["Stat A type"]),
-                                        secondaryLabel: s["Stat A label"],
-                                    }}
-                                />
-                            );
-                        }
-                        let ind;
-                        pillar.goals.some(goal => {
-                            const indic = goal.indicators.find(
-                                indd => {
-                                    return indd.dataKey === s["Indicator"].split(";")[0];
-                                }
-                            );
-                            if (indic) {
-                                ind = indic;
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        })
-                        if (!ind) return null;
-                        return (
-                            <MapBlockVis
-                                indicator={ind}
-                                type={s["Chart type"]}
-                                configuration={s["Configuration"]}
-                                key={ind.label}
-                                // {...blockProps}
-                            />
-                        );
-                    })}
+                <img src={TempPillarExplore} />
             </div>
             {!pillarData.loading &&
                 pillar.goals.map(goal => (

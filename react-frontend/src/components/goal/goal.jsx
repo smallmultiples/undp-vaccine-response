@@ -146,7 +146,7 @@ export default function Goal(props) {
         timelineState
     );
 
-    const sideBlocks = keyStats.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
+    const sideBlocks = keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
     const blockProps = {
         selectedCountry,
         selectedCountryLabel,
@@ -162,7 +162,7 @@ export default function Goal(props) {
             </div>
             <div className={styles.mapArea}>
                 <div className={styles.mapSidebar}>
-                    {sideBlocks.map((s, i) => {
+                    {sideBlocks?.map((s, i) => {
                         if (s["Indicator"] === "Manual entry") {
                             return (
                                 <ManualBlockVis
@@ -170,12 +170,21 @@ export default function Goal(props) {
                                     key={`manual-chart-${i}`}
                                     configuration={s["Configuration"]}
                                     manualEntry={{
-                                        value: formatManualValue(s["Stat A value"], s["Stat A type"]),
-                                        secondaryLabel: s["Stat A label"],
+                                        value:
+                                            s["Chart type"] === "Factoid"
+                                                ? formatManualValue(
+                                                      s["Stat A value"],
+                                                      s["Stat A type"]
+                                                  )
+                                                : s["Stat A value"],
+                                        primaryLabel: s["Primary label"],
+                                        secondaryLabel: s["Secondary label"],
+                                        format: s["Stat A type"],
                                     }}
                                 />
                             );
                         }
+                        console.log(goal.indicators, s["Indicator"]);
                         const ind = goal.indicators.find(
                             x => x.dataKey === s["Indicator"].split(";")[0]
                         );
