@@ -113,7 +113,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
 }
 
 export default function Goal(props) {
-    const { goal, pillar, pillarLoading, goalDatasets } = props;
+    const { goal, pillar, pillarLoading, goalDatasets, missingBucket } = props;
     const [selectedCountry, setSelectedCountry] = React.useState(null);
     const selectedCountryLabel = React.useMemo(
         () => (selectedCountry ? selectedCountry.NAME : "Global"),
@@ -145,9 +145,9 @@ export default function Goal(props) {
     const sideVisualisationBlocks = goal.indicators.filter(
         d => d.isVisualised && d.visualisationLocation === "side"
     );
-    const belowVisualisationBlocks = goal.indicators.filter(
-        d => d.isVisualised && d.visualisationLocation === "below"
-    );
+    const belowVisualisationBlocks = missingBucket
+        ? []
+        : goal.indicators.filter(d => d.isVisualised && d.visualisationLocation === "below");
     const blockProps = {
         selectedCountry,
         selectedCountryLabel,
@@ -158,11 +158,13 @@ export default function Goal(props) {
     return (
         <div className={styles.goal}>
             <div className={styles.mapArea}>
-                <div className={styles.mapSidebar}>
-                    {sideVisualisationBlocks.map(ind => (
-                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                    ))}
-                </div>
+                {sideVisualisationBlocks.length > 0 && (
+                    <div className={styles.mapSidebar}>
+                        {sideVisualisationBlocks.map(ind => (
+                            <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
+                        ))}
+                    </div>
+                )}
                 <div className={styles.mapContainer}>
                     <Map
                         countryData={timeFilteredData}
@@ -179,11 +181,13 @@ export default function Goal(props) {
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
-            <div className={styles.graphArea}>
-                {belowVisualisationBlocks.map(ind => (
-                    <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                ))}
-            </div>
+            {belowVisualisationBlocks.length > 0 && (
+                <div className={styles.graphArea}>
+                    {belowVisualisationBlocks.map(ind => (
+                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
