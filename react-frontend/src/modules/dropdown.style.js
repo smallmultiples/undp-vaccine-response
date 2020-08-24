@@ -1,4 +1,4 @@
-const lightBlue = "#E9ECF6";
+const lightBlue = "#F3F7FE";
 const navy = "#110848";
 const font = `"proxima-nova"`;
 

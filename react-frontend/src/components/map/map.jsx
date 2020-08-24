@@ -13,7 +13,7 @@ import styles from "./map.module.scss";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
-const NULL_SHAPE_STROKE = [233, 236, 246]; // #E9ECF6
+const NULL_SHAPE_STROKE = [243, 247, 254]; // #F3F7FE
 // If true, pink is left, if false pink is right
 const FLIP_COLOURS_HORIZONTALLY = true;
 // Whether to use a quantile scale. Uses linear ranges if false.

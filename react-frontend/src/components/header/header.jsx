@@ -36,7 +36,7 @@ const Header = () => {
                             y1="23.5"
                             x2="673.5"
                             y2="23.5"
-                            stroke="#E9ECF6"
+                            stroke="#eff3fa"
                             strokeLinecap="round"
                         />
                         <path
