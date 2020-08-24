@@ -1,55 +1,26 @@
 import { flatten, isNil, last, uniq } from "lodash";
 import React from "react";
 import Select from "react-select";
-import useDimensions from "../../hooks/use-dimensions";
 import dropdownStyle from "../../modules/dropdown.style";
 import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
+import { categorySplit } from "../../modules/utils";
 
+// TODO: rename "normalizedData"
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
-            {!isMapOnly && <QuestionInfo {...props} />}
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            <RadiusControls {...props} />
-            <CategoricalLegend {...props} />
+            <MapVisualisationControls {...props} />
         </div>
     );
-};
-
-export const QuestionInfoMobile = props => {
-    return <QuestionInfo {...props} />;
 };
 
 export const MapFiltersLegendMobile = props => {
-    return (
-        <div className={styles.mapFiltersLegends}>
-            <BivariateLegend {...props} />
-            <RadiusControls {...props} />
-            <BivariateIndicatorSelection {...props} />
-            <CategoricalLegend {...props} />
-        </div>
-    );
-};
-
-const QuestionInfo = props => {
-    const { activeQuestion } = props;
-    const [descriptionRef] = useDimensions();
-
-    return (
-        <div className={styles.questionInfo}>
-            <div className={styles.questionInfoHeading}>{activeQuestion.label}</div>
-            <div className={styles.questionInfoDescriptionContainer}>
-                <p
-                    className={styles.questionInfoDescription}
-                    ref={descriptionRef}
-                    dangerouslySetInnerHTML={{ __html: activeQuestion.description }}
-                />
-            </div>
-        </div>
-    );
+    // TODO: redo this.
+    return <MapFiltersLegends {...props} />;
 };
 
 const isOptionSelected = (item, selections) => {
@@ -86,32 +57,18 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const {
-        activePillar,
-        activeQuestion,
-        setCurrentIndicators,
-        currentIndicators,
-        pillars,
-    } = props;
+    const { pillar, goal, setCurrentIndicators, currentIndicators } = props;
     const bivariateYOptions = React.useMemo(
-        () =>
-            isMapOnly
-                ? flatten(flatten(pillars.map(p => p.questions)).map(q => q.indicators))
-                : flatten(activePillar.questions.map(d => d.indicators)).filter(
-                      d => !d.categorical
-                  ),
-        [activePillar, pillars]
+        () => flatten(pillar.goals.map(d => d.indicators)).filter(d => !d.categorical),
+        [pillar]
     );
     const bivariateXOptions = React.useMemo(
-        () =>
-            isMapOnly ? bivariateYOptions : activeQuestion.indicators.filter(d => !d.categorical),
-        [activeQuestion, bivariateYOptions]
+        () => (isMapOnly ? bivariateYOptions : goal.indicators.filter(d => !d.categorical)),
+        [goal, bivariateYOptions]
     );
 
     // Disable Y axis if there is only one indicator.
     const disableY = bivariateYOptions.length === 1;
-
-    //TODO the labels for the dropdowns are not very accessible, I don't think?
 
     return (
         <div className={styles.bivariateIndicatorSelection}>
@@ -155,7 +112,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator X" : "Other indicators in this question:"}
+                        {isMapOnly ? "Indicator X" : "Other indicators in this goal:"}
                     </p>
                     <Select
                         options={bivariateXOptions}
@@ -174,42 +131,35 @@ const BivariateIndicatorSelection = props => {
     );
 };
 
-const categorySplit = val => val.split(";").map(d => d.trim());
 const CategoricalLegend = props => {
-    const { activeQuestion, normalizedData, setCurrentIndicators, currentIndicators } = props;
+    const { normalizedData, currentIndicators } = props;
 
-    const categoryIndicator = React.useMemo(
-        () => activeQuestion.indicators.find(d => d.categorical),
-        [activeQuestion]
-    );
+    const indicator = currentIndicators.mapVisualisation;
 
     // TODO: this should be in the radius extents maybe.
     const uniqueVals = React.useMemo(() => {
-        if (!categoryIndicator) return null;
+        if (!indicator) return null;
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[categoryIndicator.dataKey];
+                    const val = d[indicator.dataKey];
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
-    }, [normalizedData, categoryIndicator]);
+    }, [normalizedData, indicator]);
 
-    if (!categoryIndicator) return null;
+    if (!indicator) return null;
 
-    // TODO: "support" is hardcoded in here.
     const items = uniqueVals.map((val, index) => {
+        const fmtString = indicator.categoryFormat || "{v}";
+        const categoryString = fmtString.replace("{v}", val);
         return (
             <tr className={styles.categoryItemRow} key={val}>
                 <td className={styles.categoryItemCell}>
-                    <div className={styles.categoryIcon} data-i={index} />
-                    <span className={styles.categoryText}>No {val} support</span>
-                </td>
-                <td className={styles.categoryItemCell}>
                     <div className={styles.categoryIcon} data-i={index} data-selected />
-                    <span className={styles.categoryText}>{val} support</span>
+                    <span className={styles.categoryText}>{categoryString}</span>
                 </td>
             </tr>
         );
@@ -217,45 +167,45 @@ const CategoricalLegend = props => {
 
     return (
         <div className={styles.categoryLegend}>
-            <div className={styles.categoryLegendHeader}>
-                <Checkbox
-                    value={currentIndicators.radiusEnabled}
-                    onChange={v =>
-                        setCurrentIndicators(d => ({
-                            ...d,
-                            radiusEnabled: v,
-                        }))
-                    }
-                />
-                <div className={styles.categoryLegendHeading}>
-                    {categoryIndicator && "Show " + categoryIndicator.label}
-                </div>
-            </div>
-            <table className={styles.categoryList} data-visible={currentIndicators.radiusEnabled}>
-                <tbody>{items}</tbody>
+            <table
+                className={styles.categoryList}
+                data-visible={currentIndicators.mapVisualisationEnabled}
+            >
+                <tbody>
+                    {items}
+                    <tr className={styles.categoryItemRow}>
+                        <td className={styles.categoryItemCell}>
+                            <div className={styles.categoryIcon} />
+                            <span className={styles.categoryText}>Not available</span>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     );
 };
 
-const RadiusControls = props => {
-    if (props.activeQuestion.categorical) return null;
+const MapVisualisationControls = props => {
+    const mapVisIndicator = props.currentIndicators.mapVisualisation;
+    if (!mapVisIndicator) return null;
+
     return (
-        <div className={styles.radiusControls}>
-            <RadiusIndicatorSelection {...props} />
-            <RadiusLegend {...props} />
-            <div className={styles.radiusIndicatorFineprint}>
-                <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
-            </div>
+        <div className={styles.mapVisualisationControls}>
+            <MapVisualisationIndicatorSelection {...props} />
+            {mapVisIndicator.categorical ? (
+                <CategoricalLegend {...props} />
+            ) : (
+                <MapVisualisationRadiusLegend {...props} />
+            )}
         </div>
     );
 };
 
-const RadiusLegend = props => {
+const MapVisualisationRadiusLegend = props => {
     const { currentIndicators } = props;
-    if (!props.scales.radius) return null;
-    const domain = props.scales.radius.domain();
-    const range = props.scales.radius.range();
+    if (!props.scales.mapVisualisationRadius) return null;
+    const domain = props.scales.mapVisualisationRadius.domain();
+    const range = props.scales.mapVisualisationRadius.range();
 
     const stroke = 2;
     const hs = stroke / 2;
@@ -286,15 +236,18 @@ const RadiusLegend = props => {
         .join(" ");
 
     return (
-        <div className={styles.radiusLegend}>
+        <div className={styles.mapVisualisationLegend}>
             <svg className={styles.legendSvg}>
                 <polygon className={styles.legendPoly} points={polyPoints} />
                 <circle className={styles.legendCircle} cx={ax} r={ar} cy={cy} />
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.radius.formatLegend(domain[0])}</span>
-                <span>{currentIndicators.radius.formatLegend(domain[1])}</span>
+                <span>{currentIndicators.mapVisualisation.formatLegend(domain[0])}</span>
+                <span>{currentIndicators.mapVisualisation.formatLegend(domain[1])}</span>
+            </div>
+            <div className={styles.mapVisualisationIndicatorFineprint}>
+                <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
             </div>
         </div>
     );
@@ -340,27 +293,27 @@ const Toggle = props => {
     );
 };
 
-const RadiusIndicatorSelection = props => {
-    const { covidPillar, setCurrentIndicators, currentIndicators } = props;
-    const radiusOptions = flatten(covidPillar.questions.map(d => d.indicators));
+const MapVisualisationIndicatorSelection = props => {
+    const { setCurrentIndicators, currentIndicators, goal } = props;
+    const options = goal.indicators.filter(d => d.isProgressIndicator);
     return (
-        <div className={styles.radiusIndicatorSelection}>
+        <div className={styles.mapVisualisationIndicatorSelection}>
             <Checkbox
-                value={currentIndicators.radiusEnabled}
+                value={currentIndicators.mapVisualisationEnabled}
                 onChange={v =>
                     setCurrentIndicators(d => ({
                         ...d,
-                        radiusEnabled: v,
+                        mapVisualisationEnabled: v,
                     }))
                 }
             />
             <Toggle
-                options={radiusOptions}
-                value={currentIndicators.radius}
+                options={options}
+                value={currentIndicators.mapVisualisation}
                 onChange={v =>
                     setCurrentIndicators(d => ({
                         ...d,
-                        radius: v,
+                        mapVisualisation: v,
                     }))
                 }
             />

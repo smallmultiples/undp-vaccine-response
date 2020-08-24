@@ -1,17 +1,108 @@
 @import "../../variables.scss";
 
-.subHeadings {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 6px;
+.pillarHeading {
+    position: relative;
+    padding: 24px;
+    box-sizing: border-box;
+    margin-top: 24px;
 
-    .updateDate {
-        @include bodyXSmall();
-        em {
-            font-style: normal;
-            font-weight: bold;
+    h5 {
+        margin: 0 0 24px 0;
+        font-weight: normal;
+
+        strong {
+            font-weight: 600;
         }
+    }
+
+    .pillarHeadingMain {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        img {
+            margin-right: 34px;
+        }
+
+        h1 {
+            max-width: 300px;
+            margin: 0 36px 0 0;
+            font-size: 60px;
+        }
+    }
+
+    &:after {
+        content: "";
+        background: $color-blue-bg;
+        position: absolute;
+        width: 100vw;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: -1;
+    }
+}
+
+.pillarExplore {
+    width: 100%;
+    padding: 48px;
+    box-sizing: border-box;
+    img {
+        width: 100%;
+    }
+}
+
+// ---
+
+.tempGoalHeader {
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    margin: 24px 0;
+
+    &:after {
+        content: "";
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: $color-blue-bg;
+        z-index: -1;
+    }
+}
+
+.tempAllData,
+.tempNews,
+.tempPartnership,
+.tempOtherTracking {
+    width: 100%;
+    padding: 48px;
+    box-sizing: border-box;
+    img {
+        width: 100%;
+    }
+}
+
+.tempAllData,
+.tempPartnership {
+    padding: 48px 0;
+    position: relative;
+
+    &:after {
+        content: "";
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: $color-blue-bg;
+        z-index: -1;
     }
 }

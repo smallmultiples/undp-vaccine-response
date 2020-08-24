@@ -131,31 +131,39 @@
 
     .visCategoryCircle {
         fill: none;
-        stroke: $color-navy;
+        stroke: $color-grey-c3;
         stroke-width: 2px;
-        &[data-i="0"] {
-            stroke: $color-navy;
-        }
-
-        &[data-i="1"] {
-            stroke: $color-yellow;
-        }
-
-        &[data-i="2"] {
-            stroke: $color-red;
-        }
 
         &[data-active="true"] {
+            stroke-width: 1px;
+            fill: $color-grey-c3;
             &[data-i="0"] {
                 fill: $color-navy;
+                stroke: $color-navy;
             }
-
             &[data-i="1"] {
                 fill: $color-yellow;
+                stroke: $color-yellow;
             }
-
             &[data-i="2"] {
                 fill: $color-red;
+                stroke: $color-red;
+            }
+            &[data-i="3"] {
+                fill: $color-green;
+                stroke: $color-green;
+            }
+            &[data-i="4"] {
+                fill: $color-blue;
+                stroke: $color-blue;
+            }
+            &[data-i="5"] {
+                fill: $color-purple;
+                stroke: $color-purple;
+            }
+            &[data-i="6"] {
+                fill: $color-cerise;
+                stroke: $color-cerise;
             }
         }
     }

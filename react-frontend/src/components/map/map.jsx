@@ -1,14 +1,15 @@
-import React from "react";
-import styles from "./map.module.scss";
 import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
-import MapVis from "../map-vis/map-vis";
+import { isNil, last } from "lodash";
+import React from "react";
+import { HDI_BUCKETS } from "../../config/scales";
+import useMediaQuery from "../../hooks/use-media-query";
+import { hexToRgb } from "../../modules/utils";
 import MapFiltersLegends, {
-    QuestionInfoMobile,
     MapFiltersLegendMobile,
 } from "../map-filters-legends/map-filters-legends";
-import { flatten, isNil, last } from "lodash";
-import useMediaQuery from "../../hooks/use-media-query";
+import MapVis from "../map-vis/map-vis";
+import styles from "./map.module.scss";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -24,7 +25,7 @@ const useDomains = (countryData, currentIndicators) => {
             countryData &&
             currentIndicators.bivariateX &&
             currentIndicators.bivariateY &&
-            currentIndicators.radius;
+            currentIndicators.mapVisualisation;
 
         const valuesX = ready
             ? Object.values(countryData)
@@ -38,9 +39,9 @@ const useDomains = (countryData, currentIndicators) => {
                   .filter(d => d !== undefined && d !== "")
                   .sort((a, b) => a - b)
             : [];
-        const valuesRadius = ready
+        const valuesMapVis = ready
             ? Object.values(countryData)
-                  .map(raw => raw[currentIndicators.radius.dataKey])
+                  .map(raw => raw[currentIndicators.mapVisualisation.dataKey])
                   .filter(d => d !== undefined && d !== "")
             : [];
 
@@ -52,7 +53,7 @@ const useDomains = (countryData, currentIndicators) => {
             const yHdi = currentIndicators.bivariateY.hdi;
 
             if (xHdi) {
-                jenksX = [0, 0.55, 0.7, 0.8, 1.0];
+                jenksX = HDI_BUCKETS;
             } else {
                 if (USE_QUANTILE) {
                     jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
@@ -64,7 +65,7 @@ const useDomains = (countryData, currentIndicators) => {
             }
 
             if (yHdi) {
-                jenksY = [0, 0.55, 0.7, 0.8, 1.0];
+                jenksY = HDI_BUCKETS;
             } else {
                 if (USE_QUANTILE) {
                     jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
@@ -80,10 +81,10 @@ const useDomains = (countryData, currentIndicators) => {
             values: {
                 x: valuesX,
                 y: valuesY,
-                radius: valuesRadius,
+                mapVisualisation: valuesMapVis,
             },
             extents: {
-                radius: extent(valuesRadius),
+                mapVisualisation: extent(valuesMapVis),
             },
             categories: {
                 x: jenksX,
@@ -92,11 +93,6 @@ const useDomains = (countryData, currentIndicators) => {
         };
     }, [countryData, currentIndicators]);
 };
-
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? result.slice(1, 4).map(n => parseInt(n, 16)) : null;
-}
 
 const blueLightColourMatrixHex = [
     ["#5C61DA", "#8061C8", "#A961B3", "#D2619F", "#F4618D"],
@@ -171,11 +167,10 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - clamped : clamped;
 };
 
-const getColorMatrices = (activePillar, currentIndicators) => {
+const getColorMatrices = (pillar, currentIndicators) => {
     const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
     const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
-
-    let colorMatrixHex = colourMatricesHex[activePillar.label];
+    let colorMatrixHex = colourMatricesHex[pillar.label];
 
     if (xHdi && yHdi) {
         colorMatrixHex = [
@@ -203,15 +198,15 @@ const getColorMatrices = (activePillar, currentIndicators) => {
 
 const nullValue = val => isNil(val) || val === "";
 
-const useScales = (domains, currentIndicators, activePillar) => {
+const useScales = (domains, currentIndicators, pillar) => {
     return React.useMemo(() => {
-        const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.radius);
-        const circleRadiusScale = row =>
-            circleScale(getRowIndicatorValue(row, currentIndicators.radius));
-        circleRadiusScale.range = circleScale.range;
-        circleRadiusScale.domain = circleScale.domain;
+        const circleScale = scaleLinear().range([4, 50]).domain(domains.extents.mapVisualisation);
+        const mapVisualisationRadiusScale = row =>
+            circleScale(getRowIndicatorValue(row, currentIndicators.mapVisualisation));
+        mapVisualisationRadiusScale.range = circleScale.range;
+        mapVisualisationRadiusScale.domain = circleScale.domain;
 
-        let { colorMatrix, colorMatrixHex } = getColorMatrices(activePillar, currentIndicators);
+        let { colorMatrix, colorMatrixHex } = getColorMatrices(pillar, currentIndicators);
         const maxIndexX = colorMatrix[0].length - 1;
         const maxIndexY = colorMatrix.length - 1;
 
@@ -318,81 +313,27 @@ const useScales = (domains, currentIndicators, activePillar) => {
         };
 
         return {
-            radius: circleRadiusScale,
+            mapVisualisationRadius: mapVisualisationRadiusScale,
             color: bivariateColourScale,
             stroke: strokeScale,
             colorMatrix: colorMatrixHex,
             colorX: xColourScale,
             colorY: yColourScale,
         };
-    }, [domains, currentIndicators, activePillar]);
-};
-
-const getDefaultIndicatorState = (activePillar, activeQuestion, covidPillar) => {
-    // TODO: module
-    const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators));
-
-    return {
-        // Question indicator is the X axis
-        bivariateX: activeQuestion.indicators[0],
-        bivariateXEnabled: true,
-        // Any indicator for the pillar on the Y axis
-        bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
-        bivariateYEnabled: false,
-        // Radius indicator is the circle radius
-        radius: covidPillar.questions[0].indicators[0],
-        radiusEnabled: true,
-    };
+    }, [domains, currentIndicators, pillar]);
 };
 
 const Map = props => {
-    const { countryData, covidPillar, activePillar, activeQuestion } = props;
-
-    const [currentIndicators, setCurrentIndicators] = React.useState(
-        getDefaultIndicatorState(activePillar, activeQuestion, covidPillar)
-    );
-
-    React.useEffect(() => {
-        if (!activePillar) return;
-        // Whenever active pillar changes, set the pillar indicator (Y) to the first avail.
-        const bivariateYOptions = flatten(activePillar.questions.map(d => d.indicators)).filter(
-            d => !d.categorical
-        );
-        setCurrentIndicators(d => ({
-            ...d,
-            bivariateY: bivariateYOptions.length > 1 ? bivariateYOptions[1] : bivariateYOptions[0],
-        }));
-    }, [activePillar]);
-
-    React.useEffect(() => {
-        if (!activeQuestion) return;
-        if (activeQuestion.categorical) {
-            setCurrentIndicators(d => ({
-                ...d,
-                bivariateX: activeQuestion.indicators.filter(d => !d.categorical)[0],
-                bivariateXEnabled: false,
-                bivariateYEnabled: false,
-                radiusEnabled: true,
-            }));
-        } else {
-            // Whenever active QUESTION changes, set the pillar indicator to the first for the question
-            setCurrentIndicators(d => ({
-                ...d,
-                bivariateX: activeQuestion.indicators[0],
-                bivariateXEnabled: true,
-                bivariateYEnabled: false,
-            }));
-        }
-    }, [activeQuestion]);
+    const { currentIndicators, setCurrentIndicators, countryData, pillar, goal } = props;
 
     const domains = useDomains(countryData, currentIndicators);
-    const scales = useScales(domains, currentIndicators, activePillar);
+    const scales = useScales(domains, currentIndicators, pillar);
 
     const { isMobile } = useMediaQuery();
 
     return (
         <div className={styles.map}>
-            {!isMobile && scales && (
+            {!isMobile && scales && countryData && (
                 <MapFiltersLegends
                     domains={domains}
                     scales={scales}
@@ -402,14 +343,13 @@ const Map = props => {
                     {...props}
                 />
             )}
-            {isMobile && <QuestionInfoMobile activeQuestion={activeQuestion} />}
             <MapVis
                 {...props}
                 domains={domains}
                 scales={scales}
                 normalizedData={countryData}
                 currentIndicators={currentIndicators}
-                activeQuestion={activeQuestion}
+                goal={goal}
             />
             {isMobile && (
                 <MapFiltersLegendMobile

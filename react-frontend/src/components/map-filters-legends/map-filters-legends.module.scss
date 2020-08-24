@@ -13,80 +13,20 @@ $covidToggleWidth: 220px;
     }
 }
 
-// ----
-
-.questionInfo {
-    width: 290px;
-    margin-right: 54px;
-
-    @include mobileOnly() {
-        width: 100%;
-        margin-right: 0;
-    }
-
-    .questionInfoHeading {
-        @include h3();
-    }
-
-    .questionInfoDescriptionContainer {
-        margin-top: 8px;
-        overflow: hidden;
-        position: relative;
-        &:after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-        }
-
-        &[data-open="true"] {
-            &:after {
-                opacity: 0;
-            }
-        }
-    }
-
-    .questionInfoDescription {
-        @include body();
-        margin: 0;
-        text-overflow: ellipsis;
-
-        strong {
-            font-weight: 700;
-        }
-    }
-
-    .questionInfoSeeMore {
-        background: none;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        opacity: 0.8;
-        text-decoration: underline;
-        margin: 0;
-        padding: 0;
-        @include buttonFont();
-        font-weight: bold;
-        font-size: 12px;
-
-        &:hover {
-            opacity: 1;
-        }
-    }
-}
-
 // ------
 
 .bivariateIndicatorSelection {
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     padding-top: 16px;
-    margin-right: 24px;
+    padding-right: 36px;
+    margin-right: 30px;
+    border-right: 1px solid $color-blue-bg;
 
     @include mobileOnly() {
         width: 100%;
+        border-right: none;
     }
 
     .bivariateIndicatorItem {
@@ -120,7 +60,8 @@ $covidToggleWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            width: 280px;
+            min-width: 280px;
+            flex-grow: 1;
             margin-left: 8px;
             position: relative;
             &:after {
@@ -177,18 +118,6 @@ $covidToggleWidth: 220px;
 
 .categoryLegend {
     padding-top: 12px;
-
-    .categoryLegendHeader {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        .categoryLegendHeading {
-            margin-left: 8px;
-            @include body();
-            font-weight: $weight-semi;
-        }
-    }
 }
 
 .categoryList {
@@ -212,32 +141,38 @@ $covidToggleWidth: 220px;
             min-width: 9px;
             min-height: 9px;
             border-radius: 50%;
-            border: 2px solid $color-navy;
+            border: 2px solid $color-grey-c3;
             margin-right: 8px;
 
-            &[data-i="0"] {
-                border-color: $color-navy;
-            }
-
-            &[data-i="1"] {
-                border-color: $color-yellow;
-            }
-
-            &[data-i="2"] {
-                border-color: $color-red;
-            }
-
             &[data-selected="true"] {
+                background: $color-grey-c3;
                 &[data-i="0"] {
                     background: $color-navy;
+                    border-color: $color-navy;
                 }
-
                 &[data-i="1"] {
                     background: $color-yellow;
+                    border-color: $color-yellow;
                 }
-
                 &[data-i="2"] {
                     background: $color-red;
+                    border-color: $color-red;
+                }
+                &[data-i="3"] {
+                    background: $color-green;
+                    border-color: $color-green;
+                }
+                &[data-i="4"] {
+                    background: $color-blue;
+                    border-color: $color-blue;
+                }
+                &[data-i="5"] {
+                    background: $color-purple;
+                    border-color: $color-purple;
+                }
+                &[data-i="6"] {
+                    background: $color-cerise;
+                    border-color: $color-cerise;
                 }
             }
         }
@@ -255,7 +190,7 @@ $covidToggleWidth: 220px;
 
 // -----
 
-.radiusControls {
+.mapVisualisationControls {
     padding-top: 16px;
     display: flex;
     flex-direction: column;
@@ -263,7 +198,7 @@ $covidToggleWidth: 220px;
     justify-content: flex-start;
 }
 
-.radiusLegend {
+.mapVisualisationLegend {
     display: flex;
     flex-direction: column;
     margin-bottom: 12px;
@@ -305,14 +240,14 @@ $covidToggleWidth: 220px;
 }
 // -----
 
-.radiusIndicatorSelection {
+.mapVisualisationIndicatorSelection {
     display: flex;
     flex-direction: row;
     align-items: center;
     padding-bottom: 10px;
 }
 
-.radiusIndicatorFineprint {
+.mapVisualisationIndicatorFineprint {
     p {
         font-size: 12px;
         width: $covidToggleWidth;
@@ -377,7 +312,7 @@ $covidToggleWidth: 220px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 12px;
+    margin-right: 30px;
     padding-top: 16px;
 
     @include mobileOnly() {

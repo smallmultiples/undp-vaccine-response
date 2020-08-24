@@ -4,8 +4,6 @@ import styles from "./footer.module.scss";
 import { ReactComponent as Logo } from "./logo.svg";
 
 const Footer = props => {
-    const { lastUpdatedDate } = props;
-
     return (
         <>
             <footer>

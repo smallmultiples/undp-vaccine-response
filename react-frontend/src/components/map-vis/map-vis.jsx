@@ -1,14 +1,16 @@
-import React from "react";
-import DeckGL, { GeoJsonLayer, WebMercatorViewport } from "deck.gl";
-import useDimensions from "../../hooks/use-dimensions";
 import axios from "axios";
-import { isNil, flatten, uniq } from "lodash";
+import DeckGL, { GeoJsonLayer } from "deck.gl";
+import { flatten, isNil, uniq } from "lodash";
+import React from "react";
 import { feature as topojsonParse } from "topojson-client";
+import useDeckViewport from "../../hooks/use-deck-viewport";
+import { categorySplit } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
-import isMapOnly from "../../modules/is-map-only";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
+
+const HIGHLIGHT_COLOUR = [243, 213, 22]; // #F3D516
 
 const useGeoData = () => {
     const [shapeData, setShapeData] = React.useState(null);
@@ -32,50 +34,15 @@ const useGeoData = () => {
     };
 };
 
-// Bounds we zoom to on load.
-// North west lng lat
-// South east lng lat
-const INITIAL_BOUNDS = [
-    [-180, 76],
-    [180, -60],
-];
-const useDeckViewport = (initialBounds = INITIAL_BOUNDS, padding = 8) => {
-    const [mapContainerRef, mapContainerDimensions] = useDimensions();
-    const [viewport, setViewport] = React.useState(null);
-
-    React.useEffect(() => {
-        if (viewport) return;
-        if (!mapContainerDimensions) return;
-        setViewport(
-            new WebMercatorViewport({
-                longitude: 0,
-                latitude: 0,
-                zoom: 1,
-                pitch: 0,
-                bearing: 0,
-                width: mapContainerDimensions.width,
-                height: mapContainerDimensions.height,
-            }).fitBounds(initialBounds, {
-                padding,
-            })
-        );
-    }, [mapContainerDimensions, viewport, initialBounds, padding]);
-
-    const handleViewStateChange = React.useCallback(newState => {
-        setViewport(
-            v =>
-                new WebMercatorViewport({
-                    ...v,
-                    ...newState.viewState,
-                })
-        );
-    }, []);
-
-    return [mapContainerRef, viewport, handleViewStateChange, mapContainerDimensions];
-};
-
 const MapVis = props => {
-    const { normalizedData, countryDataLoading, scales, currentIndicators, activeQuestion } = props;
+    const {
+        normalizedData,
+        selectedCountry,
+        countryDataLoading,
+        scales,
+        currentIndicators,
+        goal,
+    } = props;
     const [
         mapContainerRef,
         viewport,
@@ -98,20 +65,36 @@ const MapVis = props => {
             },
             stroked: true,
             getLineColor: shape => {
+                if (
+                    selectedCountry &&
+                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
+                ) {
+                    return HIGHLIGHT_COLOUR;
+                }
                 const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
-            lineWidthMinPixels: 0.5,
+            getLineWidth: shape => {
+                if (
+                    selectedCountry &&
+                    selectedCountry[GEO_SHAPE_ID] === shape.properties[GEO_SHAPE_ID]
+                ) {
+                    return 1.5;
+                }
+                return 0.5;
+            },
+            lineWidthUnits: "pixels",
             pickable: true,
             onHover: info => (info.object ? setTooltip(info) : setTooltip(null)),
             onClick: info => {
-                if (info.object.properties.ISO3 === "NPL") {
-                    window.location = "./html2/nepal.html";
+                if (info.object) {
+                    props.onCountryClicked(info.object.properties);
                 }
             },
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
-                getLineColor: [normalizedData, currentIndicators],
+                getLineColor: [normalizedData, currentIndicators, selectedCountry],
+                getLineWidth: [selectedCountry],
             },
         }),
     ];
@@ -133,14 +116,14 @@ const MapVis = props => {
                         scales={scales}
                         normalizedData={normalizedData}
                         currentIndicators={currentIndicators}
-                        activeQuestion={activeQuestion}
+                        goal={goal}
                     />
                 )}
                 <MapTooltip
                     tooltip={tooltip}
                     normalizedData={normalizedData}
                     currentIndicators={currentIndicators}
-                    activeQuestion={activeQuestion}
+                    goal={goal}
                     scales={scales}
                     mapContainerDimensions={mapContainerDimensions}
                 />
@@ -149,14 +132,6 @@ const MapVis = props => {
                     <h4>Loading...</h4>
                 </div>
             </div>
-            {!isMapOnly && (
-                <button
-                    className={styles.button3D}
-                    onClick={() => (window.location = "./html2/hdi.html")}
-                >
-                    View in 3D mode
-                </button>
-            )}
         </div>
     );
 };
@@ -173,14 +148,7 @@ const getFormattedTooltipValue = (row, indicator) => {
 };
 
 const MapTooltip = props => {
-    const {
-        tooltip,
-        normalizedData,
-        currentIndicators,
-        activeQuestion,
-        scales,
-        mapContainerDimensions,
-    } = props;
+    const { tooltip, normalizedData, currentIndicators, scales, mapContainerDimensions } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -190,18 +158,19 @@ const MapTooltip = props => {
     if (!data) return null;
 
     let category = null;
-    const categoricalIndicator = isMapOnly
-        ? Object.values(currentIndicators).find(d => d.categorical)
-        : activeQuestion.indicators.find(d => d.categorical);
+    const mapVisualisationIndicator = currentIndicators.mapVisualisation;
 
-    if (categoricalIndicator) {
+    // TODO: tidy up Map VIsualisation Indicator tooltip.
+    if (mapVisualisationIndicator && mapVisualisationIndicator.categorical) {
         category = (
             <div className={styles.tooltipDatum}>
                 <div className={styles.tooltipDatumIcon} data-category />
                 <div className={styles.tooltipDatumText}>
-                    <div className={styles.tooltipDatumLabel}>{categoricalIndicator.label}</div>
+                    <div className={styles.tooltipDatumLabel}>
+                        {mapVisualisationIndicator.label}
+                    </div>
                     <div className={styles.tooltipDatumValue}>
-                        {getFormattedMapValue(data, categoricalIndicator)}
+                        {getFormattedMapValue(data, mapVisualisationIndicator)}
                     </div>
                 </div>
             </div>
@@ -224,30 +193,35 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                {!categoricalIndicator && currentIndicators.radiusEnabled && (
-                    <div className={styles.tooltipDatum}>
-                        <div className={styles.tooltipDatumIcon} data-radius />
-                        <div className={styles.tooltipDatumText}>
-                            <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.radius.label}
-                            </div>
-                            <div className={styles.tooltipDatumValue}>
-                                {getFormattedMapValue(data, currentIndicators.radius)}
-                            </div>
-                        </div>
-                    </div>
-                )}
-                {!categoricalIndicator &&
-                    currentIndicators.radiusEnabled &&
-                    currentIndicators.radius.tooltipExtra && (
+                {currentIndicators.mapVisualisationEnabled &&
+                    mapVisualisationIndicator &&
+                    !mapVisualisationIndicator.categorical && (
                         <div className={styles.tooltipDatum}>
                             <div className={styles.tooltipDatumIcon} data-radius />
                             <div className={styles.tooltipDatumText}>
                                 <div className={styles.tooltipDatumLabel}>
-                                    {currentIndicators.radius.tooltipExtra.label}
+                                    {currentIndicators.mapVisualisation.label}
                                 </div>
                                 <div className={styles.tooltipDatumValue}>
-                                    {getFormattedTooltipValue(data, currentIndicators.radius)}
+                                    {getFormattedMapValue(data, currentIndicators.mapVisualisation)}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                {!mapVisualisationIndicator &&
+                    currentIndicators.mapVisualisationEnabled &&
+                    currentIndicators.mapVisualisation.tooltipExtra && (
+                        <div className={styles.tooltipDatum}>
+                            <div className={styles.tooltipDatumIcon} data-radius />
+                            <div className={styles.tooltipDatumText}>
+                                <div className={styles.tooltipDatumLabel}>
+                                    {currentIndicators.mapVisualisation.tooltipExtra.label}
+                                </div>
+                                <div className={styles.tooltipDatumValue}>
+                                    {getFormattedTooltipValue(
+                                        data,
+                                        currentIndicators.mapVisualisation
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -338,33 +312,27 @@ const MapTooltip = props => {
     );
 };
 
-const categorySplit = val => val.split(";").map(d => d.trim());
-
-const groupRadius = 7;
+const circlePadding = 4; // this includes the stroke
+const circleRadius = 4;
+const circleRadiusInactive = 3;
 
 const CircleVis = props => {
-    const { viewport, scales, normalizedData, currentIndicators, activeQuestion } = props;
+    const { viewport, scales, normalizedData, currentIndicators } = props;
 
-    const categoryIndicator = React.useMemo(() => {
-        if (isMapOnly) {
-            return Object.values(currentIndicators).find(d => d.categorical);
-        } else {
-            return activeQuestion.indicators.find(d => d.categorical);
-        }
-    }, [activeQuestion, currentIndicators]);
+    const indicator = React.useMemo(() => currentIndicators.mapVisualisation, [currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
-        if (!categoryIndicator) return null;
+        if (!indicator.categorical) return null;
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[categoryIndicator.dataKey];
+                    const val = d[indicator.dataKey];
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
-    }, [normalizedData, categoryIndicator]);
+    }, [normalizedData, indicator]);
 
     const rowXY = row => {
         const [lng, lat] = [row["Longitude (average)"], row["Latitude (average)"]];
@@ -372,21 +340,22 @@ const CircleVis = props => {
         return viewport.project([lng, lat]);
     };
 
-    if (!currentIndicators.radiusEnabled) return null;
+    if (!currentIndicators.mapVisualisationEnabled) return null;
 
     let content = null;
 
-    if (categoryIndicator) {
-        // TODO: this is assuming one categorical per question. will need code later.
-        const angleEach = 360 / uniqueVals.length;
+    if (indicator.categorical) {
+        const numCircles = uniqueVals.length;
+        const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
+        const groupRadius = minimumCircumference / (Math.PI * 2);
+        const angleEach = 360 / numCircles;
 
         const groups = Object.values(normalizedData).map(row => {
-            const val = row[categoryIndicator.dataKey];
+            const val = row[indicator.dataKey];
             if (isNil(val)) return null;
             const cats = categorySplit(val);
             const xy = rowXY(row);
             if (!xy) return null;
-            const r = 4;
 
             const groupCircles = uniqueVals.map((cat, i) => {
                 const a = i * angleEach - 90;
@@ -397,7 +366,7 @@ const CircleVis = props => {
                         className={styles.visCategoryCircle}
                         data-i={i}
                         data-active={active}
-                        r={r}
+                        r={active ? circleRadius : circleRadiusInactive}
                         style={{
                             transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
                         }}
@@ -417,12 +386,12 @@ const CircleVis = props => {
             );
         });
         content = <g>{groups}</g>;
-    } else if (currentIndicators.radiusEnabled) {
+    } else if (currentIndicators.mapVisualisationEnabled) {
         const circles = Object.values(normalizedData).map(row => {
             const xy = rowXY(row);
             if (!xy) return null;
             const [x, y] = xy;
-            const r = scales.radius(row);
+            const r = scales.mapVisualisationRadius(row);
             if (isNaN(r)) return null;
             return (
                 <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />
