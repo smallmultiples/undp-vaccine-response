@@ -3,10 +3,10 @@
 ## Script + style tags
 
 In the `<head>`
-`<link href="https://undp-covid.visualise.today/static/css/main.css" rel="stylesheet">`
+`<link href="https://production--undp-response-data-platform.netlify.app/static/css/main.css" rel="stylesheet">`
 
 And end of `<body>`
-`<script src="https://undp-covid.visualise.today/static/js/main.js"></script>`
+`<script src="https://production--undp-response-data-platform.netlify.app/static/js/main.js"></script>`
 
 All visualisations automatically embed themselves into a div with a specific data-attribute on page load, inferring the required configuration from the URL. The configuration is logged at load (for now) to help debug.
 
