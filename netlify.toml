@@ -1,4 +1,4 @@
 [context.timeline]
     environment = { REACT_APP_USE_SHEET = "true" }
-[context.undp-production]
+[context.production]
     environment = { REACT_APP_USE_SHEET = "true" }
