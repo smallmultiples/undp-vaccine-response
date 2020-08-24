@@ -12,6 +12,7 @@ ReactGA.initialize(trackingId);
 function getEl(embedSelector) {
     if (typeof embedSelector === "string") {
         const el = document.querySelector(embedSelector);
+        if (!el) throw new Error(`No div matching selector "${embedSelector}"`);
         return el;
     } else {
         return embedSelector;
@@ -80,7 +81,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         if (params.type === "country") {
-            // TODO: ignoring for now.
             ReactDOM.render(<Country {...params} />, getEl("[data-country-embed]"));
         }
     }
