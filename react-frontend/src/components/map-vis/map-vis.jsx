@@ -336,7 +336,7 @@ const CircleVis = props => {
     const indicator = React.useMemo(() => currentIndicators.mapVisualisation, [currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
-        if (!indicator.categorical) return null;
+        if (!indicator || !indicator.categorical) return null;
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {

@@ -60,12 +60,14 @@ const Checkbox = props => {
 const BivariateIndicatorSelection = props => {
     const { goal, setCurrentIndicators, currentIndicators } = props;
     const bivariateOptions = React.useMemo(() => getBivariateOptions(goal), [goal]);
+    const mapVisOptions = React.useMemo(() => getMapVisualisationOptions(goal), [goal]);
+    const hideMapVisOptions = React.useMemo(() => mapVisOptions.length === 0, [mapVisOptions]);
 
     // Disable Y axis if there is only one indicator.
     const disableY = bivariateOptions.length === 1;
 
     return (
-        <div className={styles.bivariateIndicatorSelection}>
+        <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
                     value={currentIndicators.bivariateYEnabled}
