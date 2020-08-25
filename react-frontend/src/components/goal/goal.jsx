@@ -7,6 +7,7 @@ import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import Donut from "../block-visualisations/donut-vis/donut";
 import regionLookup from "../../modules/data/region-lookup.json";
+import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualisation";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -113,7 +114,15 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
 }
 
 export default function Goal(props) {
-    const { goal, pillar, pillarLoading, goalDatasets, missingBucket, countryCode } = props;
+    const {
+        goal,
+        pillar,
+        pillarLoading,
+        goalDatasets,
+        missingBucket,
+        countryCode,
+        keyStats,
+    } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
     const selectedCountryLabel = React.useMemo(() => {
         if (!selectedCountryCode) return "Global";
@@ -143,13 +152,7 @@ export default function Goal(props) {
         timelineState
     );
 
-    // TODO: enum
-    const sideVisualisationBlocks = goal.indicators.filter(
-        d => d.isVisualised && d.visualisationLocation === "side"
-    );
-    const belowVisualisationBlocks = missingBucket
-        ? []
-        : goal.indicators.filter(d => d.isVisualised && d.visualisationLocation === "below");
+    const sideBlocks = keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
     const blockProps = {
         selectedCountryCode,
         selectedCountryLabel,
@@ -160,11 +163,44 @@ export default function Goal(props) {
     return (
         <div className={styles.goal}>
             <div className={styles.mapArea}>
-                {sideVisualisationBlocks.length > 0 && (
+                {sideBlocks && sideBlocks.length > 0 && (
                     <div className={styles.mapSidebar}>
-                        {sideVisualisationBlocks.map(ind => (
-                            <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                        ))}
+                        {sideBlocks?.map((s, i) => {
+                            if (s["Indicator"] === "Manual entry") {
+                                return (
+                                    <ManualBlockVis
+                                        type={s["Chart type"]}
+                                        key={`manual-chart-${i}`}
+                                        configuration={s["Configuration"]}
+                                        manualEntry={{
+                                            value:
+                                                s["Chart type"] === "Factoid"
+                                                    ? formatManualValue(
+                                                          s["Stat A value"],
+                                                          s["Stat A type"]
+                                                      )
+                                                    : s["Stat A value"],
+                                            primaryLabel: s["Primary label"],
+                                            secondaryLabel: s["Secondary label"],
+                                            format: s["Stat A type"],
+                                        }}
+                                    />
+                                );
+                            }
+                            const ind = goal.indicators.find(
+                                x => x.dataKey === s["Indicator"].split(";")[0]
+                            );
+                            if (!ind) return null;
+                            return (
+                                <MapBlockVis
+                                    indicator={ind}
+                                    type={s["Chart type"]}
+                                    configuration={s["Configuration"]}
+                                    key={ind.label}
+                                    {...blockProps}
+                                />
+                            );
+                        })}
                     </div>
                 )}
                 <div className={styles.mapContainer}>
@@ -184,32 +220,6 @@ export default function Goal(props) {
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
-            {belowVisualisationBlocks.length > 0 && (
-                <div className={styles.graphArea}>
-                    {belowVisualisationBlocks.map(ind => (
-                        <MapBlockVis indicator={ind} key={ind.label} {...blockProps} />
-                    ))}
-                </div>
-            )}
         </div>
     );
-}
-
-const BlockVisualisations = {
-    donut: Donut,
-};
-function MapBlockVis(props) {
-    const { indicator } = props;
-    const Vis = BlockVisualisations[indicator.visType];
-    const content = Vis ? (
-        <Vis {...props} />
-    ) : (
-        <div>
-            Missing "Block Visualisation Type" column.
-            <br />
-            <br />
-            {indicator.label}
-        </div>
-    );
-    return <div className={styles.sidebarBlock}>{content}</div>;
 }

@@ -1,0 +1,29 @@
+@import "../../../variables.scss";
+
+.lineChart {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.svg {
+    width: 100%;
+}
+
+.thinLine {
+    fill: $color-navy;
+}
+
+.chartLabel, .chartDataLabel {
+    @include bodyXSmall();
+    color: $color-navy;
+    text-align: center;
+}
+
+.chartDataLabel {
+    @include h4();
+    font-weight: bold;
+}
