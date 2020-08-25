@@ -9,6 +9,8 @@ const getDefaultIndicatorState = (pillar, goal) => {
     const bivariateOptions = getBivariateOptions(goal);
 
     return {
+        mapVisualisationOptions,
+        bivariateOptions,
         // Question indicator is the X axis
         bivariateX: bivariateOptions[0],
         bivariateXEnabled: true,

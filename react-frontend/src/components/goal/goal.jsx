@@ -19,7 +19,7 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
 
         const selectedDatums = groupBy(
             Object.values(currentIndicators)
-                .filter(isObject)
+                .filter(d => d.label)
                 .map(indicator => ({
                     dataKey: indicator.dataKey,
                     sheet: indicator.goal.sheet,
