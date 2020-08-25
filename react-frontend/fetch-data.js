@@ -15,7 +15,7 @@ async function main() {
     ).then(d => d.data);
 
     const regionsPromise = await axios(
-        `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:L`
+        `https://holy-sheet.visualise.today/sheet/${META_SHEET_ID}?range=regions!D:M`
     ).then(d => d.data);
 
     const keyStatsPromise = await axios(
