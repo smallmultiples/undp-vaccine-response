@@ -1,6 +1,6 @@
 import React from "react";
 import { scaleLinear, scaleBand } from "d3-scale";
-import { range, extent } from "d3-array";
+import { range } from "d3-array";
 import styles from "./bar-chart.module.scss";
 import useDimensions from "../../../hooks/use-dimensions";
 import { formatManualValue } from "../../goal/block-visualisation";

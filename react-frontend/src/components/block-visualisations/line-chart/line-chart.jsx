@@ -1,9 +1,10 @@
 import React from "react";
 import { scaleLinear, scaleBand } from "d3-scale";
-import { range, extent } from "d3-array";
+import { range } from "d3-array";
 import styles from "./line-chart.module.scss";
 import useDimensions from "../../../hooks/use-dimensions";
 import { formatManualValue } from "../../goal/block-visualisation";
+import { max } from "d3";
 
 export default function LineChart(props) {
     const { value, primaryLabel, secondaryLabel, format } = props;
@@ -55,17 +56,17 @@ export default function LineChart(props) {
 
 const padding = {
     top: 30,
-    bottom: 60,
+    bottom: 20,
     left: 10,
     right: 10,
 };
 
 const useDomains = (data, dataLength) => {
     const x = range(0, dataLength);
-    const y = extent(data, d => d.value);
+    const y = max(data, d => d.value);
     return {
         x,
-        y,
+        y: [0, y],
     };
 };
 
@@ -186,14 +187,14 @@ const Data = props => {
 
     return (
         <g>
-            <g>{lineWithDots(rawData[0].data, rawData[0].color, "above")}</g>
-            {rawData[1] && <g>{lineWithDots(rawData[1].data, rawData[1].color, "below")}</g>}
+            <g>{lineWithDots(rawData[0].data, rawData[0].color, rawData[1] ? "below" : "above")}</g>
+            {rawData[1] && <g>{lineWithDots(rawData[1].data, rawData[1].color, "above")}</g>}
             <g>
                 <rect
                     className={styles.thinLine}
                     x={padding.left + 10}
                     width={scales.frame.width - 20}
-                    y={scales.frame.height + padding.bottom + 10}
+                    y={scales.y(0)}
                     height={2}
                 />
             </g>
