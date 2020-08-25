@@ -94,8 +94,6 @@ export const formatManualValue = (value, type) => {
 const getVisStyle = configuration => {
     const conf = configuration !== "" ? JSON.parse(configuration) : undefined;
     if (conf) {
-        return conf.type === "vertical"
-            ? { gridRowStart: conf.start, gridRowEnd: `span ${conf.size}` }
-            : { gridColumnStart: conf.start, gridColumnEnd: `span ${conf.size}` };
+        return { gridRowStart: conf.start, gridRowEnd: `span ${conf.size}` };
     }
 };
