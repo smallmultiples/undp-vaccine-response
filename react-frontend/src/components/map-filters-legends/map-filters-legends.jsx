@@ -6,7 +6,6 @@ import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
 import { categorySplit } from "../../modules/utils";
-import { getBivariateOptions, getMapVisualisationOptions } from "../goal/useIndicatorState";
 
 // TODO: rename "normalizedData"
 const MapFiltersLegends = props => {
@@ -58,13 +57,14 @@ const Checkbox = props => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { goal, setCurrentIndicators, currentIndicators } = props;
-    const bivariateOptions = React.useMemo(() => getBivariateOptions(goal), [goal]);
-    const mapVisOptions = React.useMemo(() => getMapVisualisationOptions(goal), [goal]);
-    const hideMapVisOptions = React.useMemo(() => mapVisOptions.length === 0, [mapVisOptions]);
+    const { setCurrentIndicators, currentIndicators } = props;
+    const hideMapVisOptions = React.useMemo(
+        () => currentIndicators.mapVisualisationOptions.length === 0,
+        [currentIndicators.mapVisualisationOptions]
+    );
 
     // Disable Y axis if there is only one indicator.
-    const disableY = bivariateOptions.length === 1;
+    const disableY = currentIndicators.bivariateOptions.length === 1;
 
     return (
         <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
@@ -84,7 +84,7 @@ const BivariateIndicatorSelection = props => {
                         {isMapOnly ? "Indicator Y" : "Other indicators in this pillar:"}
                     </p>
                     <Select
-                        options={bivariateOptions}
+                        options={currentIndicators.bivariateOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
@@ -110,7 +110,7 @@ const BivariateIndicatorSelection = props => {
                         {isMapOnly ? "Indicator X" : "Other indicators in this goal:"}
                     </p>
                     <Select
-                        options={bivariateOptions}
+                        options={currentIndicators.bivariateOptions}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }
@@ -249,8 +249,7 @@ const MapVisualisationRadiusLegend = props => {
 };
 
 const MapVisualisationIndicatorSelection = props => {
-    const { setCurrentIndicators, currentIndicators, goal } = props;
-    const options = React.useMemo(() => getMapVisualisationOptions(goal), [goal]);
+    const { setCurrentIndicators, currentIndicators } = props;
 
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
@@ -265,7 +264,7 @@ const MapVisualisationIndicatorSelection = props => {
             />
             <div className={styles.mapVisualisationIndicatorDropdownWrap}>
                 <Select
-                    options={options}
+                    options={currentIndicators.mapVisualisationOptions}
                     onChange={indicator =>
                         setCurrentIndicators(d => ({ ...d, mapVisualisation: indicator }))
                     }
