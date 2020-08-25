@@ -184,7 +184,6 @@ export default function Goal(props) {
                                 />
                             );
                         }
-                        console.log(goal.indicators, s["Indicator"]);
                         const ind = goal.indicators.find(
                             x => x.dataKey === s["Indicator"].split(";")[0]
                         );

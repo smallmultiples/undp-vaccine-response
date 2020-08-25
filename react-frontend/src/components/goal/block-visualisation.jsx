@@ -1,6 +1,7 @@
 import React from "react";
 import Donut from "../block-visualisations/donut-vis/donut";
 import Factoid from "../block-visualisations/factoid/factoid";
+import BarChart from "../block-visualisations/bar-chart/bar-chart";
 import LineChart from "../block-visualisations/line-chart/line-chart";
 import { getBlockVisValue } from "../block-visualisations/block-vis-utils";
 import styles from "./goal.module.scss";
@@ -9,6 +10,7 @@ const BlockVisualisations = {
     Donut: Donut,
     Factoid: Factoid,
     "Line chart": LineChart,
+    "Bar chart": BarChart,
 };
 
 export function MapBlockVis(props) {
