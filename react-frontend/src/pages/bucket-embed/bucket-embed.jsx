@@ -44,12 +44,12 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         if (!pillar || !commonPillar) return;
         let newGoalData = {};
 
-        const goal = pillar.goals.find(d => d.slug === bucketSlug);
+        const goal = bucketSlug ? pillar.goals.find(d => d.slug === bucketSlug) : pillar.goals[0];
         if (!goal) return console.error(`Missing bucket "${bucketSlug}"`);
 
         const commonPillarSheets = commonPillar.goals.map(g => g.sheet);
 
-        const sheets = [goal.sheet, ...commonPillarSheets];
+        const sheets = [goal?.sheet, ...commonPillarSheets].filter(Boolean);
 
         Promise.all(
             sheets.map(sheet =>
