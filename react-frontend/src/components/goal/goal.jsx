@@ -67,7 +67,13 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
     // TODO: split up by timespan and current time?
     // TODO: use a binary search. sortedIndex?
     const timeFiltered = React.useMemo(
-        () => selectedIndicatorData.filter(d => d[TIME_KEY] <= timelineState.currentTime),
+        () =>
+            selectedIndicatorData.filter(
+                d =>
+                    d[TIME_KEY] &&
+                    timelineState.currentTime &&
+                    d[TIME_KEY].getYear() <= timelineState.currentTime.getYear()
+            ),
         [selectedIndicatorData, timelineState]
     );
 
