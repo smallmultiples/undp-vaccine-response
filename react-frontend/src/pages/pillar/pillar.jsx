@@ -7,6 +7,7 @@ import {
     REGIONS_URL,
     STATIC_DATA_BASE_URL,
     USE_SHEET,
+    KEY_STATS_URL,
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./pillar.module.scss";
@@ -22,6 +23,7 @@ import { useParams } from "react-router-dom";
 const usePillarData = pillarSlug => {
     const [pillars, setPillars] = React.useState(null);
     const [regionLookup, setRegionLookup] = React.useState(null);
+    const [keyStats, setKeyStats] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [goalDatasets, setGoalDatasets] = React.useState(null);
 
@@ -34,6 +36,10 @@ const usePillarData = pillarSlug => {
             axios(REGIONS_URL)
                 .then(res => res.data)
                 .then(setRegionLookup),
+
+            axios(KEY_STATS_URL)
+                .then(res => res.data)
+                .then(setKeyStats),
         ]);
     }, []);
 
@@ -41,6 +47,11 @@ const usePillarData = pillarSlug => {
         if (!pillars) return null;
         return pillars.find(p => p.slug.toLowerCase() === pillarSlug.toLowerCase());
     }, [pillars, pillarSlug]);
+
+    const keyStatsPerPillar = React.useMemo(() => {
+        if (!pillar || !keyStats) return null;
+        return keyStats.filter(s => s["Pillar Slug"] === pillar.slug);
+    }, [pillar, keyStats]);
 
     React.useEffect(() => {
         if (!pillar) return;
@@ -72,6 +83,7 @@ const usePillarData = pillarSlug => {
         pillarLoading: loading,
         goalDatasets,
         regionLookup,
+        keyStats: keyStatsPerPillar,
     };
 };
 
@@ -82,7 +94,7 @@ export default function Pillar(props) {
     const pillarData = usePillarData(pillarSlug);
     // TODO: pillar must be global state.
     // TODO: remove "regionLookup"?
-    const { pillar, regionLookup, goalDatasets } = pillarData;
+    const { pillar, regionLookup, goalDatasets, keyStats } = pillarData;
 
     if (!pillar) return null; // TODO loader
 
@@ -104,7 +116,7 @@ export default function Pillar(props) {
                 </div>
             </div>
             <div className={styles.pillarExplore}>
-                <img src={TempPillarExplore} alt="Explore" />
+                <img src={TempPillarExplore} alt="Factoids with link" />
             </div>
             {!pillarData.loading &&
                 pillar.goals.map(goal => (
@@ -112,6 +124,7 @@ export default function Pillar(props) {
                         key={goal.label}
                         goal={goal}
                         pillar={pillar}
+                        keyStats={keyStats}
                         regionLookup={regionLookup}
                         goalDatasets={goalDatasets}
                         goalData={goalDatasets && goalDatasets[goal.sheet]}

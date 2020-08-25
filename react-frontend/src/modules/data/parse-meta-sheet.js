@@ -3,15 +3,6 @@ import { last } from "lodash";
 
 const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 
-const parseVisConfig = rawConfig => {
-    if (!rawConfig) return {};
-    try {
-        return JSON.parse(rawConfig);
-    } catch (e) {
-        throw new Error("Error parsing visualisation config", rawConfig);
-    }
-};
-
 export const parseMetaSheet = raw => {
     const out = {};
     let currentPillar = null;
@@ -43,6 +34,7 @@ export const parseMetaSheet = raw => {
                 indicators: {},
                 hidden: qs === "-",
                 sheet: row["Sheet"],
+                id: "",
             };
         }
         // ------------
@@ -104,10 +96,6 @@ export const parseMetaSheet = raw => {
                         ? formats[row["Tooltip Format"]](tooltipDecimals)
                         : mapFormat,
                 },
-                isVisualised: row["Visualise"],
-                visType: row["Visualisation Type"],
-                visualisationLocation: row["Visualisation Location"],
-                visualisationConfig: parseVisConfig(row["Visualisation Config"]),
                 flipped: row["Invert Scale"],
                 categorical: row["Data Format"] === "category",
                 categoryFormat: row["Category Format"],
@@ -126,10 +114,11 @@ export const parseMetaSheet = raw => {
 
     const asArrays = Object.values(out).map(pillar => {
         const goals = Object.values(pillar.goals)
-            .map(goal => {
+            .map((goal, i) => {
                 const indicators = Object.values(goal.indicators);
                 return {
                     ...goal,
+                    id: i + 1,
                     indicators,
                 };
             })

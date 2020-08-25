@@ -1,0 +1,49 @@
+@import "../../../variables.scss";
+
+.lineChart {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.svg {
+    width: 100%;
+}
+
+.thinLine {
+    fill: $color-navy;
+}
+
+.chartLabel, .chartDataLabel {
+    @include bodyXSmall();
+    color: $color-navy;
+    text-align: center;
+}
+
+.chartDataLabel {
+    font-weight: bold;
+}
+
+.legend {
+    @include bodyXSmall();
+    color: $color-navy;
+    font-weight: bold;
+    text-align: end;
+    padding-right: 20px;
+    margin-bottom: 20px;
+
+    .legendItem {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+
+        .legendLine {
+            width: 50px;
+            height: 2px;
+            margin-right: 10px;
+        }
+    }
+}

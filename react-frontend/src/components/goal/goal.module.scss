@@ -10,29 +10,23 @@
     .mapSidebar {
         width: 260px;
         margin-right: 20px;
-
-        .sidebarBlock {
-            padding: 20px;
-            border: 1px solid $color-blue-bg;
-            &:not(:last-child) {
-                margin-bottom: 20px;
-            }
-
-            // Placeholder:
-            h3 {
-                text-align: center;
-            }
-
-            // Placeholder:
-            svg {
-                width: 100%;
-            }
-        }
+        display: grid;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+        row-gap: 20px;
+        margin-bottom: 25px;
     }
 
     .mapContainer {
         flex-grow: 1;
     }
+}
+
+.sidebarBlock {
+    padding: 0 20px;
+    width: 260px;
+    box-sizing: border-box;
+    background-color: $color-light-blue;
+    border-radius: 10px;
 }
 
 .timeArea {
@@ -48,10 +42,7 @@
     }
 }
 
-.graphArea {
-    // Placeholder:
-    width: 100%;
-    svg {
-        width: 100%;
-    }
+.highlight {
+    color: $color-highlight-blue;
+    font-weight: bold;
 }
