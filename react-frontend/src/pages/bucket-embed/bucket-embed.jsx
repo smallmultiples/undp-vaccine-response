@@ -6,6 +6,7 @@ import {
     PILLAR_URL,
     STATIC_DATA_BASE_URL,
     USE_SHEET,
+    KEY_STATS_URL,
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import { parseSheetDate } from "../../modules/utils";
@@ -14,13 +15,20 @@ import styles from "./bucket-embed.module.scss";
 // TODO: de-duplicate this logic from "pillar" page.
 const usePillarData = (pillarSlug, bucketSlug) => {
     const [pillars, setPillars] = React.useState(null);
+    const [keyStats, setKeyStats] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [goalDatasets, setGoalDatasets] = React.useState(null);
 
     React.useEffect(() => {
-        axios(PILLAR_URL)
-            .then(res => parseMetaSheet(res.data))
-            .then(setPillars);
+        Promise.all([
+            axios(PILLAR_URL)
+                .then(res => parseMetaSheet(res.data))
+                .then(setPillars),
+
+            axios(KEY_STATS_URL)
+                .then(res => res.data)
+                .then(setKeyStats),
+        ]);
     }, []);
 
     const pillar = React.useMemo(() => {
@@ -51,17 +59,23 @@ const usePillarData = (pillarSlug, bucketSlug) => {
             .then(() => setLoading(false));
     }, [pillar, bucketSlug]);
 
+    const keyStatsPerPillar = React.useMemo(() => {
+        if (!pillar || !keyStats) return null;
+        return keyStats.filter(s => s["Pillar Slug"] === pillar.slug);
+    }, [pillar, keyStats]);
+
     return {
         pillar,
         pillarLoading: loading,
         goalDatasets,
+        keyStats: keyStatsPerPillar,
     };
 };
 
 export default function BucketEmbed(props) {
     const { pillarSlug, bucketSlug, countryCode } = props;
     const pillarData = usePillarData(pillarSlug, bucketSlug);
-    const { pillar, goalDatasets } = pillarData;
+    const { pillar, goalDatasets, keyStats } = pillarData;
 
     const missingBucket = React.useMemo(() => {
         return !Boolean(bucketSlug);
@@ -87,6 +101,7 @@ export default function BucketEmbed(props) {
                     pillarLoading={pillarData.loading}
                     missingBucket={missingBucket}
                     countryCode={countryCode}
+                    keyStats={keyStats}
                 />
             )}
         </div>
