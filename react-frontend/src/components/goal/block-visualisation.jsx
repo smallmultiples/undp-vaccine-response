@@ -19,7 +19,7 @@ export function MapBlockVis(props) {
         type,
         configuration,
         timeFilteredData,
-        selectedCountry,
+        selectedCountryCode,
         selectedCountryLabel,
     } = props;
     const Vis = BlockVisualisations[type];
@@ -32,7 +32,7 @@ export function MapBlockVis(props) {
             </div>
         );
     }
-    const val = getBlockVisValue(timeFilteredData, indicator, selectedCountry);
+    const val = getBlockVisValue(timeFilteredData, indicator, selectedCountryCode);
     const content = Vis ? (
         <Vis
             value={indicator ? indicator.format(val) : val}
