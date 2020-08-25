@@ -113,7 +113,15 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
 }
 
 export default function Goal(props) {
-    const { goal, pillar, pillarLoading, goalDatasets, countryCode, keyStats } = props;
+    const {
+        goal,
+        pillar,
+        pillarLoading,
+        goalDatasets,
+        countryCode,
+        keyStats,
+        commonPillar,
+    } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
     const selectedCountryLabel = React.useMemo(() => {
         if (!selectedCountryCode) return "Global";
@@ -130,7 +138,7 @@ export default function Goal(props) {
 
     // Hooks
     // TODO: make this context?
-    const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
+    const [currentIndicators, setCurrentIndicators] = useIndicatorState(goal, commonPillar);
     const selectedIndicatorData = useSelectedIndicatorData(
         goalDatasets,
         pillarLoading,

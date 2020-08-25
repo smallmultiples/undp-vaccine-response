@@ -11,8 +11,8 @@ import {
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import { parseSheetDate } from "../../modules/utils";
 import styles from "./bucket-embed.module.scss";
+import { flatten } from "lodash";
 
-// TODO: de-duplicate this logic from "pillar" page.
 const usePillarData = (pillarSlug, bucketSlug) => {
     const [pillars, setPillars] = React.useState(null);
     const [keyStats, setKeyStats] = React.useState(null);
@@ -36,25 +36,39 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         return pillars.find(p => p.slug.toLowerCase() === pillarSlug.toLowerCase());
     }, [pillars, pillarSlug]);
 
+    const commonPillar = React.useMemo(() => {
+        if (!pillars) return null;
+        return pillars.find(p => p.slug === "common");
+    }, [pillars]);
+
     React.useEffect(() => {
-        if (!pillar) return;
+        if (!pillar || !commonPillar) return;
         let newGoalData = {};
 
         const goal = pillar.goals.find(d => d.slug === bucketSlug);
         if (!goal) return console.error(`Missing bucket "${bucketSlug}"`);
-        const sheet = goal.sheet;
 
-        axios(
-            USE_SHEET ? `${DATA_SHEET_URL}?range=${sheet}` : `${STATIC_DATA_BASE_URL}/${sheet}.json`
-        )
-            .then(d => d.data)
-            .then(data =>
-                data.map(d => ({
-                    ...d,
-                    Year: parseSheetDate(d.Year),
-                }))
+        const commonPillarSheets = commonPillar.goals.map(g => g.sheet);
+
+        const sheets = [goal.sheet, ...commonPillarSheets];
+
+        Promise.all(
+            sheets.map(sheet =>
+                axios(
+                    USE_SHEET
+                        ? `${DATA_SHEET_URL}?range=${sheet}`
+                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
+                )
+                    .then(d => d.data)
+                    .then(data =>
+                        data.map(d => ({
+                            ...d,
+                            Year: parseSheetDate(d.Year),
+                        }))
+                    )
+                    .then(d => (newGoalData[sheet] = d))
             )
-            .then(d => (newGoalData[sheet] = d))
+        )
             .then(() => setGoalDatasets(newGoalData))
             .then(() => setLoading(false));
     }, [pillar, bucketSlug]);
@@ -69,17 +83,14 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         pillarLoading: loading,
         goalDatasets,
         keyStats: keyStatsPerPillar,
+        commonPillar,
     };
 };
 
 export default function BucketEmbed(props) {
     const { pillarSlug, bucketSlug, countryCode } = props;
     const pillarData = usePillarData(pillarSlug, bucketSlug);
-    const { pillar, goalDatasets, keyStats } = pillarData;
-
-    const missingBucket = React.useMemo(() => {
-        return !Boolean(bucketSlug);
-    }, [bucketSlug]);
+    const { pillar, goalDatasets, keyStats, commonPillar } = pillarData;
 
     const goal = React.useMemo(() => {
         if (!pillar) return null;
@@ -99,9 +110,9 @@ export default function BucketEmbed(props) {
                     goalDatasets={goalDatasets}
                     goalData={goalDatasets && goalDatasets[goal.sheet]}
                     pillarLoading={pillarData.loading}
-                    missingBucket={missingBucket}
                     countryCode={countryCode}
                     keyStats={keyStats}
+                    commonPillar={commonPillar}
                 />
             )}
         </div>
