@@ -26,9 +26,6 @@ export default function BarChart(props) {
             data: dataFinal,
         });
     });
-
-    console.log(data);
-
     return (
         <div className={styles.lineChart}>
             <p>
@@ -111,12 +108,11 @@ const Chart = props => {
 const Data = props => {
     const { scales, rawData, format } = props;
 
-    const lineWithDots = (data, labelPosition) => {
+    const bars = (data) => {
         const columns = values => {
             return values.map((d, i) => {
                 const left = scales.x(i);
                 const top = scales.y(d.value);
-                console.log(scales.y(d.value), scales.y(0), scales.frame.height);
                 return (
                     <g key={i}>
                         <foreignObject
@@ -146,7 +142,7 @@ const Data = props => {
 
     return (
         <g>
-            <g>{lineWithDots(rawData[0].data)}</g>
+            <g>{bars(rawData[0].data)}</g>
             <g>
                 <foreignObject
                     x={scales.frame.left - 40}

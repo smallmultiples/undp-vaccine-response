@@ -27,23 +27,3 @@
     @include h4();
     font-weight: bold;
 }
-
-.legend {
-    @include bodyXSmall();
-    color: $color-navy;
-    font-weight: bold;
-    text-align: end;
-    padding-right: 20px;
-
-    .legendItem {
-        display: flex;
-        flex-direction: row-reverse;
-        align-items: center;
-
-        .legendLine {
-            width: 50px;
-            height: 2px;
-            margin-right: 10px;
-        }
-    }
-}
