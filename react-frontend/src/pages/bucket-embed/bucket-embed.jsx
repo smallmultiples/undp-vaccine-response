@@ -11,7 +11,6 @@ import {
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import { parseSheetDate } from "../../modules/utils";
 import styles from "./bucket-embed.module.scss";
-import { flatten } from "lodash";
 
 const usePillarData = (pillarSlug, bucketSlug) => {
     const [pillars, setPillars] = React.useState(null);
@@ -71,7 +70,7 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         )
             .then(() => setGoalDatasets(newGoalData))
             .then(() => setLoading(false));
-    }, [pillar, bucketSlug]);
+    }, [pillar, bucketSlug, commonPillar]);
 
     const keyStatsPerPillar = React.useMemo(() => {
         if (!pillar || !keyStats) return null;
