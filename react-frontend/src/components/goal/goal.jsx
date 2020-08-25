@@ -5,7 +5,6 @@ import { useIndicatorState } from "./useIndicatorState";
 import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
-import Donut from "../block-visualisations/donut-vis/donut";
 import regionLookup from "../../modules/data/region-lookup.json";
 import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualisation";
 
@@ -114,15 +113,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
 }
 
 export default function Goal(props) {
-    const {
-        goal,
-        pillar,
-        pillarLoading,
-        goalDatasets,
-        missingBucket,
-        countryCode,
-        keyStats,
-    } = props;
+    const { goal, pillar, pillarLoading, goalDatasets, countryCode, keyStats } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
     const selectedCountryLabel = React.useMemo(() => {
         if (!selectedCountryCode) return "Global";
