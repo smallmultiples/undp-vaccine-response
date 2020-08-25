@@ -143,11 +143,11 @@ const hdiColorMatrixHex = [
 ];
 
 const colourMatricesHex = {
-    Health: blueLightColourMatrixHex,
-    Protect: blueMidColourMatrixHex,
-    Economic: yellowColourMatrixHex,
-    Macro: greenColourMatrixHex,
-    Cohesion: blueDarkMatrixHex,
+    "health-first": blueLightColourMatrixHex,
+    "protect-people": blueMidColourMatrixHex,
+    "economic-recovery": yellowColourMatrixHex,
+    "macro-response": greenColourMatrixHex,
+    "social-cohesion": blueDarkMatrixHex,
 };
 
 const getRowIndicatorValue = (row, indicator) => {

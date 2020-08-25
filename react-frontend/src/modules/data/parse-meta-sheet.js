@@ -9,16 +9,17 @@ export const parseMetaSheet = raw => {
     let currentGoal = null;
     for (let row of raw) {
         // Pillar
-        if (row.col0) {
-            currentPillar = last(row.col0.split(" "));
+        const pillarSlug = row["Pillar slug"];
+        if (pillarSlug) {
+            currentPillar = pillarSlug;
             out[currentPillar] = {
                 label: currentPillar,
                 labelLong: row["Pillar long"],
                 tagline: row["Pillar tagline"],
                 description: row["Pillar Description"],
-                slug: row["Pillar slug"],
+                slug: pillarSlug,
                 goals: {},
-                visible: currentPillar !== "ALL",
+                visible: currentPillar !== "common",
             };
         }
         // -----------
