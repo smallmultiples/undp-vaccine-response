@@ -153,6 +153,7 @@ const Data = props => {
             });
         };
         const line = (dataSet, numberStart, numberEnd) => {
+            console.log(dataSet);
             const start = {
                 x: scales.x(numberStart) + scales.x.bandwidth() / 2,
                 y: scales.y(dataSet[numberStart].value),
@@ -174,12 +175,13 @@ const Data = props => {
         };
 
         const dotsSet = dots(data);
-        const line1 = line(data, 0, 1);
-        const line2 = line(data, 1, 2);
+        const lines = [];
+        for (let i = 0; i < data.length - 1; i++) {
+            lines.push(line(data, i, i+1));
+        }
         return (
             <g>
-                {line1}
-                {line2}
+                {lines}
                 {dotsSet}
             </g>
         );
