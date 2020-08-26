@@ -153,7 +153,6 @@ const Data = props => {
             });
         };
         const line = (dataSet, numberStart, numberEnd) => {
-            console.log(dataSet);
             const start = {
                 x: scales.x(numberStart) + scales.x.bandwidth() / 2,
                 y: scales.y(dataSet[numberStart].value),
