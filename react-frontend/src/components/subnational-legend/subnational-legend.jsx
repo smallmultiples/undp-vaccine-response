@@ -1,13 +1,13 @@
-import { flatten, isNil, last, uniq } from "lodash";
+import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import Select from "react-select";
+import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import dropdownStyle from "../../modules/dropdown.style";
 import isMapOnly from "../../modules/is-map-only";
-import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
-import styles from "./subnational-legend.module.scss";
 import { categorySplit } from "../../modules/utils";
-import { HDI_COLOURS, HDI_BUCKETS } from "../../config/scales";
 import Checkbox from "../controls/checkbox";
+import { IconArrowLeft, IconArrowRight } from "../icons/icons";
+import styles from "./subnational-legend.module.scss";
 
 const SubnationalLegend = props => {
     return (
@@ -249,12 +249,8 @@ const MapVisualisationIndicatorSelection = props => {
 };
 
 const BivariateLegend = props => {
-    const { currentIndicators } = props;
-
-    const x0 = "Less";
-    const x1 = "More";
-    const y0 = "Less";
-    const y1 = "More";
+    const x0 = "Lower";
+    const x1 = "Higher";
 
     return (
         <div className={styles.bivariateLegend}>

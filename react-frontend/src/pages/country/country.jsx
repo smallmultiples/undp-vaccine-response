@@ -55,12 +55,12 @@ export default function Country(props) {
         return hdiData.filter(row => row["Alpha-3 code"] === countryCode);
     }, [countryCode, hdiData]);
 
-    const countryName = React.useMemo(() => {
-        if (!countryHdiData.length) return "";
-        const row = countryHdiData.find(c => c["Country or Area"]);
-        if (!row) return "-";
-        return row["Country or Area"];
-    }, [countryHdiData]);
+    // const countryName = React.useMemo(() => {
+    //     if (!countryHdiData.length) return "";
+    //     const row = countryHdiData.find(c => c["Country or Area"]);
+    //     if (!row) return "-";
+    //     return row["Country or Area"];
+    // }, [countryHdiData]);
 
     const colourScaleHex = React.useMemo(() => {
         return hdi => {
