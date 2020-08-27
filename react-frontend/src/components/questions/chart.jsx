@@ -8,7 +8,7 @@ import useMediaQuery from "../../hooks/use-media-query";
 const padding = {
     top: 10,
     bottom: 10,
-    left: 30,
+    left: 110,
     right: 0,
 };
 
@@ -69,10 +69,6 @@ const Chart = props => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.infoContainer}>
-                <div className={styles.title}>{indicator.tableLabel || indicator.label}</div>
-                <p className={styles.info}>{indicator.description}</p>
-            </div>
             <svg className={styles.svg} ref={ref} onMouseLeave={() => setHoveredData(null)}>
                 {chartContent}
             </svg>
@@ -134,9 +130,9 @@ const Data = props => {
                     y={scales.y(midVal)}
                     height={1}
                 />
-                <text className={styles.tick} x={0} y={scales.y(midVal) + 5}>
+                <foreignObject className={styles.tick} x={0} y={scales.y(midVal) - 8}>
                     {indicator.format(midVal)}
-                </text>
+                </foreignObject>
                 <rect
                     className={styles.thinLine}
                     x={padding.left}
@@ -144,9 +140,9 @@ const Data = props => {
                     y={scales.y(absMaxVal)}
                     height={1}
                 />
-                <text className={styles.tick} x={0} y={scales.y(absMaxVal) + 5}>
+                <foreignObject className={styles.tick} x={0} y={scales.y(absMaxVal) - 8}>
                     {indicator.format(absMaxVal)}
-                </text>
+                </foreignObject>
                 {!isOnlyPositive && (
                     <>
                         <rect
@@ -156,9 +152,9 @@ const Data = props => {
                             y={scales.y(-midVal)}
                             height={1}
                         />
-                        <text className={styles.tick} x={0} y={scales.y(-midVal) + 5}>
+                        <foreignObject className={styles.tick} x={0} y={scales.y(-midVal) - 8}>
                             {indicator.format(-midVal)}
-                        </text>
+                        </foreignObject>
                         <rect
                             className={styles.thinLine}
                             x={padding.left}
@@ -166,9 +162,9 @@ const Data = props => {
                             y={scales.y(-absMaxVal)}
                             height={1}
                         />
-                        <text className={styles.tick} x={0} y={scales.y(-absMaxVal) + 5}>
+                        <foreignObject className={styles.tick} x={0} y={scales.y(-absMaxVal) - 8}>
                             {indicator.format(-absMaxVal)}
-                        </text>
+                        </foreignObject>
                     </>
                 )}
             </g>
@@ -181,9 +177,9 @@ const Data = props => {
                     y={scales.y(0) - 2}
                     height={2}
                 />
-                <text className={styles.tick} x={0} y={scales.y(0) + 5}>
+                <foreignObject className={styles.tick} x={0} y={scales.y(0) - 8}>
                     0
-                </text>
+                </foreignObject>
             </g>
             {!isMobile && hoveredData && (
                 <CountryData hoveredData={hoveredData} frame={scales.frame} indicator={indicator} />
