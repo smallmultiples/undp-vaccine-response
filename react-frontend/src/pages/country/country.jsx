@@ -15,6 +15,7 @@ import bbox from "@turf/bbox";
 import styles from "./country.module.scss";
 import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import { hexToRgb } from "../../modules/utils";
+import SubnationalLegend from "../../components/subnational-legend/subnational-legend";
 
 export default function Country(props) {
     const { countryCode } = props;
@@ -54,12 +55,12 @@ export default function Country(props) {
         return hdiData.filter(row => row["Alpha-3 code"] === countryCode);
     }, [countryCode, hdiData]);
 
-    const countryName = React.useMemo(() => {
-        if (!countryHdiData.length) return "";
-        const row = countryHdiData.find(c => c["Country or Area"]);
-        if (!row) return "-";
-        return row["Country or Area"];
-    }, [countryHdiData]);
+    // const countryName = React.useMemo(() => {
+    //     if (!countryHdiData.length) return "";
+    //     const row = countryHdiData.find(c => c["Country or Area"]);
+    //     if (!row) return "-";
+    //     return row["Country or Area"];
+    // }, [countryHdiData]);
 
     const colourScaleHex = React.useMemo(() => {
         return hdi => {
@@ -116,7 +117,7 @@ export default function Country(props) {
 
     return (
         <div className={styles.countryEmbed}>
-            <h1>{countryName}</h1>
+            <SubnationalLegend />
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 {!loading && (
                     <DeckGL
