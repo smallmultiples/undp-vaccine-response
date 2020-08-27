@@ -15,6 +15,7 @@ import { useChartIndicatorState } from "./useChartIndicatorState";
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
 
+// TODO: include the charts indicators too
 function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators) {
     const selectedIndicatorData = React.useMemo(() => {
         if (pillarLoading || !goalDatasets) return [];
@@ -30,8 +31,6 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
                 })),
             d => d.sheet
         );
-
-        // TODO: also extract for "blockVisOnly"
 
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
             // NEWEST data is first. This let's us build the map faster.
