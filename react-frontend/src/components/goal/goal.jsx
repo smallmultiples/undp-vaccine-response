@@ -10,6 +10,7 @@ import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualis
 import Chart from "../questions/chart";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
+import { useChartIndicatorState } from "./useChartIndicatorState";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -240,17 +241,18 @@ export default function Goal(props) {
 }
 
 const ChartArea = props => {
-    const { pillar, goal, goalDatasets, pillarLoading, regionLookup } = props;
+    const { goal, goalDatasets, pillarLoading, regionLookup } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
-    const [selectedIndicator, setSelectedIndicator] = React.useState(goal.indicators[0]);
     const [year, setYear] = React.useState(undefined);
 
-    const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
+    const [currentIndicators, setCurrentIndicators] = useChartIndicatorState(goal);
     const selectedIndicatorData = useSelectedIndicatorData(
         goalDatasets,
         pillarLoading,
         currentIndicators
     );
+
+    const selectedIndicator = React.useMemo(() => currentIndicators.chart, [currentIndicators]);
 
     React.useEffect(() => {
         const yeArr = [];
@@ -279,7 +281,9 @@ const ChartArea = props => {
             );
             for (const d of pppp || []) {
                 if (d[selectedIndicator.dataKey] !== undefined) {
-                    const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d["Alpha-3 code"]);
+                    const region = regionLookup.find(
+                        r => r["ISO-alpha3 Code"] === d["Alpha-3 code"]
+                    );
                     tmp.push({
                         country: region ? region["Country or Area"] : d["Alpha-3 code"],
                         data: d[selectedIndicator.dataKey],
@@ -303,10 +307,8 @@ const ChartArea = props => {
                 <Select
                     options={goal.indicators.filter(d => !d.categorical)}
                     onChange={indicator => {
-                        setSelectedIndicator(indicator);
-                        setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
-                    }
-                    }
+                        setCurrentIndicators(d => ({ ...d, chart: indicator }));
+                    }}
                     value={selectedIndicator}
                     styles={dropdownStyle}
                     isOptionSelected={false}
