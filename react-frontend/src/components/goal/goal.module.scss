@@ -72,3 +72,17 @@
     color: $color-highlight-blue;
     font-weight: bold;
 }
+
+.chartArea {
+    .chartSelectors {
+        display: flex;
+        margin-bottom: 20px;
+        .indicatorSelector {
+            width: 400px;
+        }
+        .yearSelector{
+            margin-left: 16px;
+            width: 150px;
+        }
+    }
+}

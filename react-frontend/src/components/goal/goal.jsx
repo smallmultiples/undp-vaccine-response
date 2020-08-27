@@ -6,6 +6,9 @@ import { isObject, groupBy, uniq, isNil } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualisation";
+import Chart from "../questions/chart";
+import Select from "react-select";
+import dropdownStyle from "../../modules/dropdown.style";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -215,6 +218,104 @@ export default function Goal(props) {
             <div className={styles.timeArea}>
                 <Timeline timelineState={timelineState} />
             </div>
+            <ChartArea
+                pillar={pillar}
+                goalDatasets={goalDatasets}
+                goal={goal}
+                pillarLoading={pillarLoading}
+                regionLookup={regionLookup}
+            />
         </div>
     );
 }
+
+const ChartArea = props => {
+    const { pillar, goal, goalDatasets, pillarLoading, regionLookup } = props;
+    const [yearsArray, setYearsArray] = React.useState([]);
+    const [selectedIndicator, setSelectedIndicator] = React.useState(goal.indicators[0]);
+    const [year, setYear] = React.useState(undefined);
+
+    const [currentIndicators, setCurrentIndicators] = useIndicatorState(pillar, goal);
+    const selectedIndicatorData = useSelectedIndicatorData(
+        goalDatasets,
+        pillarLoading,
+        currentIndicators
+    );
+
+    React.useEffect(() => {
+        const yeArr = [];
+        for (const p of selectedIndicatorData || []) {
+            const date = new Date(p["Year"]);
+            const yer = date.getFullYear();
+            if (yeArr.every(x => x.label !== yer)) {
+                yeArr.push({
+                    label: yer,
+                    value: yer,
+                });
+            }
+        }
+        if (yeArr.length !== 0) {
+            setYearsArray(yeArr);
+            setYear(yeArr[0]);
+        }
+    }, [selectedIndicatorData]);
+
+    const chart = React.useMemo(() => {
+        const tmp = [];
+        let data = undefined;
+        if (year) {
+            const pppp = selectedIndicatorData.filter(
+                o => new Date(o["Year"]).getFullYear() === year.value
+            );
+            for (const d of pppp || []) {
+                if (d[selectedIndicator.dataKey] !== undefined) {
+                    const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d["Alpha-3 code"]);
+                    tmp.push({
+                        country: region ? region["Country or Area"] : d["Alpha-3 code"],
+                        data: d[selectedIndicator.dataKey],
+                        hdi: undefined,
+                    });
+                }
+            }
+            if (tmp.length > 0) {
+                data = {
+                    indicator: selectedIndicator,
+                    data: tmp.filter(d => d.data !== ""),
+                };
+            }
+        }
+        return data ? <Chart indicator={data.indicator} data={data.data} /> : undefined;
+    }, [selectedIndicatorData, year, selectedIndicator, regionLookup]);
+
+    return (
+        <div className={styles.chartArea}>
+            <div className={styles.chartSelectors}>
+                <Select
+                    options={goal.indicators.filter(d => !d.categorical)}
+                    onChange={indicator => {
+                        setSelectedIndicator(indicator);
+                        setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
+                    }
+                    }
+                    value={selectedIndicator}
+                    styles={dropdownStyle}
+                    isOptionSelected={false}
+                    isDisabled={false}
+                    isSearchable={false}
+                    className={styles.indicatorSelector}
+                />
+                <Select
+                    options={yearsArray}
+                    onChange={x => setYear(x)}
+                    value={year}
+                    styles={dropdownStyle}
+                    isOptionSelected={false}
+                    isDisabled={false}
+                    isSearchable={false}
+                    className={styles.yearSelector}
+                />
+            </div>
+            {chart}
+        </div>
+    );
+};
