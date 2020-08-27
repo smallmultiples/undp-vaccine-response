@@ -86,39 +86,6 @@ $mapVisualisationControlsWidth: 220px;
     }
 }
 
-// ----
-
-.checkbox {
-    width: 14px;
-    height: 14px;
-    padding: 0;
-    border: 2px solid $color-blue-bg;
-    background: transparent;
-    outline: none;
-    cursor: pointer;
-    border-radius: 2px;
-    position: relative;
-    transition: background 0.2s, border-color 0.2s;
-
-    &[data-selected="true"] {
-        background: $color-navy;
-        border-color: $color-navy;
-    }
-
-    svg {
-        min-width: 11px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    &:disabled {
-        opacity: 0.25;
-        cursor: not-allowed;
-    }
-}
-
 // -----
 
 .categoryLegend {
