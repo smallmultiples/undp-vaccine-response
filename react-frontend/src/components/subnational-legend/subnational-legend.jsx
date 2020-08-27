@@ -3,7 +3,6 @@ import React from "react";
 import Select from "react-select";
 import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import dropdownStyle from "../../modules/dropdown.style";
-import isMapOnly from "../../modules/is-map-only";
 import { categorySplit } from "../../modules/utils";
 import Checkbox from "../controls/checkbox";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
@@ -13,7 +12,7 @@ const SubnationalLegend = props => {
     return (
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
-            {/* <BivariateIndicatorSelection {...props} /> */}
+            <BivariateIndicatorSelection {...props} />
             {/* <MapVisualisationControls {...props} /> */}
         </div>
     );
@@ -27,67 +26,20 @@ const isOptionSelected = (item, selections) => {
 };
 
 const BivariateIndicatorSelection = props => {
-    const { setCurrentIndicators, currentIndicators } = props;
-    const hideMapVisOptions = React.useMemo(
-        () => currentIndicators.mapVisualisationOptions.length === 0,
-        [currentIndicators.mapVisualisationOptions]
-    );
-
-    // Disable Y axis if there is only one indicator.
-    const disableY = currentIndicators.bivariateOptions.length === 1;
-
+    const options = [{ label: "HDI" }];
     return (
-        <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
-            <div className={styles.bivariateIndicatorItem} data-y>
-                <Checkbox
-                    value={currentIndicators.bivariateYEnabled}
-                    onChange={v =>
-                        setCurrentIndicators(d => ({
-                            ...d,
-                            bivariateYEnabled: v,
-                        }))
-                    }
-                    disabled={disableY}
-                />
-                <div className={styles.bivariateIndicatorDropdownWrap}>
-                    <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator Y" : "Other indicators in this pillar:"}
-                    </p>
-                    <Select
-                        options={currentIndicators.bivariateOptions}
-                        onChange={indicator =>
-                            setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
-                        }
-                        value={currentIndicators.bivariateY}
-                        styles={dropdownStyle}
-                        isDisabled={disableY || !currentIndicators.bivariateYEnabled}
-                        isSearchable={false}
-                    />
-                </div>
-            </div>
+        <div className={styles.bivariateIndicatorSelection}>
+            <div className={styles.bivariateIndicatorItem} data-y></div>
             <div className={styles.bivariateIndicatorItem} data-x>
-                <Checkbox
-                    value={currentIndicators.bivariateXEnabled}
-                    onChange={v =>
-                        setCurrentIndicators(d => ({
-                            ...d,
-                            bivariateXEnabled: v,
-                        }))
-                    }
-                />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
-                    <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator X" : "Other indicators in this goal:"}
-                    </p>
+                    <p className={styles.bivariateIndicatorDropdownLabel}>{""}</p>
                     <Select
-                        options={currentIndicators.bivariateOptions}
-                        onChange={indicator =>
-                            setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
-                        }
-                        value={currentIndicators.bivariateX}
+                        options={options}
+                        onChange={indicator => {}}
+                        value={options[0]}
                         styles={dropdownStyle}
                         isOptionSelected={isOptionSelected}
-                        isDisabled={!currentIndicators.bivariateXEnabled}
+                        isDisabled
                         isSearchable={false}
                     />
                 </div>

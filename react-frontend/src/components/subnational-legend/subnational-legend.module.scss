@@ -23,12 +23,6 @@ $mapVisualisationControlsWidth: 220px;
     margin-right: 30px;
     border-right: 1px solid $color-blue-bg;
 
-    &[data-fullwidth="true"] {
-        border-right: none;
-        padding-right: 0;
-        margin-right: 0;
-    }
-
     @include mobileOnly() {
         width: 100%;
         border-right: none;
