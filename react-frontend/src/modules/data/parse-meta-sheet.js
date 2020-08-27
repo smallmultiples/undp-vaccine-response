@@ -36,6 +36,8 @@ export const parseMetaSheet = raw => {
                 hidden: qs === "-",
                 sheet: row["Sheet"],
                 id: "",
+                prioritizeCommonTrackingIndicators:
+                    row["Prioritize Common Tracking Indicators"] || false,
             };
         }
         // ------------
