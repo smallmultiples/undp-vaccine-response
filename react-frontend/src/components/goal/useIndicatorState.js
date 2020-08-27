@@ -6,6 +6,10 @@ export const getMapVisualisationOptions = (goal, commonPillar) => {
     const goalOpts = goal.indicators.filter(d => d.isProgressIndicator);
     const commonOpts = flatten(commonPillar.goals.map(goal => goal.indicators));
 
+    if (goal.prioritizeCommonTrackingIndicators) {
+        return [...commonOpts, ...goalOpts];
+    }
+
     return [...goalOpts, ...commonOpts];
 };
 
