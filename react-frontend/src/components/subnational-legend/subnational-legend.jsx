@@ -13,7 +13,7 @@ const SubnationalLegend = props => {
         <div className={styles.mapFiltersLegends}>
             <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
-            {/* <MapVisualisationControls {...props} /> */}
+            <MapVisualisationControls {...props} />
         </div>
     );
 };
@@ -103,7 +103,7 @@ const CategoricalLegend = props => {
 };
 
 const MapVisualisationControls = props => {
-    const mapVisIndicator = props.currentIndicators.mapVisualisation;
+    const mapVisIndicator = null;
     if (!mapVisIndicator) return null;
 
     return (

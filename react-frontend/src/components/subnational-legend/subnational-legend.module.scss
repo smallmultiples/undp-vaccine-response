@@ -46,7 +46,7 @@ $mapVisualisationControlsWidth: 220px;
         &[data-x="true"] {
             .bivariateIndicatorDropdownWrap:after {
                 content: "↔";
-                transform: translateY(-4%) translateY(-1px);
+                transform: translateY(-50%) translateY(3px) translateY(-1px);
             }
         }
 
