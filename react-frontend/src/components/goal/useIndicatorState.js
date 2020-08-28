@@ -16,10 +16,12 @@ export const getMapVisualisationOptions = (goal, commonPillar) => {
 const getDefaultIndicatorState = (goal, commonPillar) => {
     const mapVisualisationOptions = getMapVisualisationOptions(goal, commonPillar);
     const bivariateOptions = getBivariateOptions(goal);
+    const chartOptions = getBivariateOptions(goal);
 
     return {
         mapVisualisationOptions,
         bivariateOptions,
+        chartOptions,
         // Question indicator is the X axis
         bivariateX: bivariateOptions[0],
         bivariateXEnabled: true,
@@ -29,6 +31,7 @@ const getDefaultIndicatorState = (goal, commonPillar) => {
         // "above-map" layer, be it simple circles or whatever. Is a "progress indicator".
         mapVisualisation: mapVisualisationOptions[0],
         mapVisualisationEnabled: mapVisualisationOptions.length > 0,
+        chart: chartOptions[0],
     };
 };
 

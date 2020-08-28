@@ -10,7 +10,6 @@ import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualis
 import Chart from "../questions/chart";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
-import { useChartIndicatorState } from "./useChartIndicatorState";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -146,7 +145,6 @@ export default function Goal(props) {
     }, []);
 
     // Hooks
-    // TODO: make this context?
     const [currentIndicators, setCurrentIndicators] = useIndicatorState(goal, commonPillar);
     const selectedIndicatorData = useSelectedIndicatorData(
         goalDatasets,
@@ -234,22 +232,24 @@ export default function Goal(props) {
                 goal={goal}
                 pillarLoading={pillarLoading}
                 regionLookup={regionLookup}
+                currentIndicators={currentIndicators}
+                setCurrentIndicators={setCurrentIndicators}
+                selectedIndicatorData={selectedIndicatorData}
             />
         </div>
     );
 }
 
 const ChartArea = props => {
-    const { goal, goalDatasets, pillarLoading, regionLookup } = props;
+    const {
+        goal,
+        regionLookup,
+        currentIndicators,
+        setCurrentIndicators,
+        selectedIndicatorData,
+    } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
-
-    const [currentIndicators, setCurrentIndicators] = useChartIndicatorState(goal);
-    const selectedIndicatorData = useSelectedIndicatorData(
-        goalDatasets,
-        pillarLoading,
-        currentIndicators
-    );
 
     const selectedIndicator = React.useMemo(() => currentIndicators.chart, [currentIndicators]);
 
