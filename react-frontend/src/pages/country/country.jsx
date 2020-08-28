@@ -16,6 +16,7 @@ import styles from "./country.module.scss";
 import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import { hexToRgb } from "../../modules/utils";
 import SubnationalLegend from "../../components/subnational-legend/subnational-legend";
+import DataSources from "../../components/data-sources/data-sources";
 
 export default function Country(props) {
     const { countryCode } = props;
@@ -85,6 +86,24 @@ export default function Country(props) {
         };
     }, [colourScaleHex]);
 
+    const countryDataSourceIndicator = React.useMemo(() => {
+        return {
+            hdi: {
+                label: "Human Development Index",
+                meta: {
+                    timePeriod: 2018,
+                    lastUpdated: "2018",
+                    sources: [
+                        {
+                            name: "Global Data Lab",
+                            url: "https://globaldatalab.org/shdi/",
+                        },
+                    ],
+                },
+            },
+        };
+    }, []);
+
     const [
         mapContainerRef,
         viewport,
@@ -144,6 +163,7 @@ export default function Country(props) {
                     mapContainerDimensions={mapContainerDimensions}
                 />
             </div>
+            <DataSources currentIndicators={countryDataSourceIndicator} />
         </div>
     );
 }
