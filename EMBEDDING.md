@@ -13,6 +13,7 @@ All visualisations automatically embed themselves into a div with a specific dat
 ## Available Embeds
 
 Pillar/Bucket - world map with accompanying charts and timeline
+Bucket Indicator Table - table with source information for all indicators in the bucket
 Country - subnational map with accompanying visualisations
 
 Currently the embed selected is based on the URL. (See rules below)
@@ -29,6 +30,8 @@ Pages must follow one of these patterns
 On window event `DOMContentLoaded` the embed will initialize itself into the first element with the attribute `data-bucket-embed` e.g. `<div id="root" data-bucket-embed></div>`
 
 The embed will automatically adjust the displayed content depending on the URL structure.
+
+In addition to this, if a `bucketSlug` is provided, the _bucket indicator table_ will attempt to load into the first element with the attribute `data-bucket-table-embed` e.g. `<div data-bucket-table-embed></div>`
 
 ## Country embed
 
