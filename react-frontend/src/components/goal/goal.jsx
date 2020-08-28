@@ -10,6 +10,7 @@ import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualis
 import Chart from "../questions/chart";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
+import DataSources from "../data-sources/data-sources";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -235,6 +236,7 @@ export default function Goal(props) {
                 setCurrentIndicators={setCurrentIndicators}
                 selectedIndicatorData={selectedIndicatorData}
             />
+            <DataSources currentIndicators={currentIndicators} />
         </div>
     );
 }

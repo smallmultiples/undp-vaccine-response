@@ -51,29 +51,23 @@ export const parseMetaSheet = raw => {
                 row["Data source name"] ||
                 row["Data source link"] ||
                 row["Number of Countries"] ||
-                row["How often updated"]
+                row["Last updated"]
             ) {
-                const names = row["Data source name"].split(";").map(d => d.trim());
-                const urls = row["Data source link"].split(";").map(d => d.trim());
+                const names = (row["Data source name"] || "").split(";").map(d => d.trim());
+                const urls = (row["Data source link"] || "").split(";").map(d => d.trim());
                 const sources = names.map((name, i) => {
                     return {
                         name,
                         url: urls[i],
                     };
                 });
-                const countryCount = row["Number of Countries"];
+                const countryCount = row["Number of Countries"] || 0;
                 meta = {
-                    currency: row["Time period"],
-                    updateFrequency: row["How often updated"],
+                    timePeriod: row["Time period"],
+                    lastUpdated: row["Last updated"],
                     sources,
                     countryCount,
                 };
-            } else {
-                const lastGoalIndicator = last(out[currentPillar].goals[currentGoal].indicators);
-                if (lastGoalIndicator) {
-                    // Copy the previous meta
-                    meta = lastGoalIndicator.meta;
-                }
             }
 
             const decimals = numOrUndef(row["Decimal Places"]);

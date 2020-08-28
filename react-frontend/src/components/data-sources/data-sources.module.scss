@@ -1,0 +1,40 @@
+@import "../../variables.scss";
+
+.dataSources {
+    h5 {
+        margin-bottom: 16px;
+    }
+}
+
+.dataSourcesList {
+    list-style: none;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    .dataSourceRow {
+        &:not(:last-child) {
+            margin-bottom: 16px;
+        }
+
+        .indicatorName {
+            height: 36px;
+            border: 1px solid $color-blue-bg;
+            border-radius: 18px;
+            padding: 10px 20px;
+            margin-right: 16px;
+
+            font-size: 14px;
+
+            svg {
+                margin-right: 8px;
+            }
+        }
+
+        .indicatorSource {
+            font-size: 16px;
+            color: rbga($color-navy, 0.5);
+        }
+    }
+}
