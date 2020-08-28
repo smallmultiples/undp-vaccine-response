@@ -79,7 +79,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (params.type === "bucket") {
             ReactDOM.render(<BucketEmbed {...params} />, getEl("[data-bucket-embed]"));
-            ReactDOM.render(<IndicatorTable {...params} />, getEl("[data-bucket-table-embed]"));
+            if (params.bucketSlug) {
+                ReactDOM.render(<IndicatorTable {...params} />, getEl("[data-bucket-table-embed]"));
+            }
         }
 
         if (params.type === "country") {
