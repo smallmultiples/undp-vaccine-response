@@ -126,31 +126,25 @@ const CategoricalLegend = props => {
         const fmtString = indicator.categoryFormat || "{v}";
         const categoryString = fmtString.replace("{v}", val);
         return (
-            <tr className={styles.categoryItemRow} key={val}>
-                <td className={styles.categoryItemCell}>
-                    <div className={styles.categoryIcon} data-i={index} data-selected />
-                    <span className={styles.categoryText}>{categoryString}</span>
-                </td>
-            </tr>
+            <li className={styles.categoryItemRow} key={val}>
+                <div className={styles.categoryIcon} data-i={index} data-selected />
+                <span className={styles.categoryText}>{categoryString}</span>
+            </li>
         );
     });
 
     return (
         <div className={styles.categoryLegend}>
-            <table
+            <ul
                 className={styles.categoryList}
                 data-visible={currentIndicators.mapVisualisationEnabled}
             >
-                <tbody>
-                    {items}
-                    <tr className={styles.categoryItemRow}>
-                        <td className={styles.categoryItemCell}>
-                            <div className={styles.categoryIcon} />
-                            <span className={styles.categoryText}>Not available</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                {items}
+                <li className={styles.categoryItemRow}>
+                    <div className={styles.categoryIcon} />
+                    <span className={styles.categoryText}>Not available</span>
+                </li>
+            </ul>
         </div>
     );
 };

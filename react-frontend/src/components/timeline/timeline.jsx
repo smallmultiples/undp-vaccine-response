@@ -43,13 +43,13 @@ function TimelineControls(props) {
     return (
         <div className={styles.controls}>
             <div className={styles.playButtonContainer}>
-                <button
+                <div
                     className={styles.playButton}
                     onClick={() => timelineState.setPlaying(d => !d)}
                     data-playing={playing}
                 >
                     {playing ? <IconPause /> : <IconPlay />}
-                </button>
+                </div>
                 <label>Select or play through historical data</label>
             </div>
         </div>
