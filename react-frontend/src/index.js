@@ -5,6 +5,7 @@ import Country from "./pages/country/country";
 import BucketEmbed from "./pages/bucket-embed/bucket-embed";
 import qs from "qs";
 import regionLookup from "./modules/data/region-lookup.json";
+import IndicatorTable from "./pages/indicator-table/indicator-table";
 
 const trackingId = "UA-25119617-15";
 ReactGA.initialize(trackingId);
@@ -78,6 +79,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (params.type === "bucket") {
             ReactDOM.render(<BucketEmbed {...params} />, getEl("[data-bucket-embed]"));
+            ReactDOM.render(<IndicatorTable {...params} />, getEl("[data-bucket-table-embed]"));
         }
 
         if (params.type === "country") {
