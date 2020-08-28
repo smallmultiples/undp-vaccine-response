@@ -133,10 +133,12 @@
         fill: none;
         stroke: $color-grey-c3;
         stroke-width: 2px;
+        opacity: 30%;
 
         &[data-active="true"] {
             stroke-width: 1px;
             fill: $color-grey-c3;
+            opacity: 90%;
             &[data-i="0"] {
                 fill: $color-navy;
                 stroke: $color-navy;

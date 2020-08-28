@@ -326,7 +326,7 @@ const MapTooltip = props => {
     );
 };
 
-const circlePadding = 4; // this includes the stroke
+const circlePadding = 2; // this includes the stroke
 const circleRadius = 4;
 const circleRadiusInactive = 3;
 
