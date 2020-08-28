@@ -1,5 +1,4 @@
 import { formats } from "../../modules/format";
-import { last } from "lodash";
 
 const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 
