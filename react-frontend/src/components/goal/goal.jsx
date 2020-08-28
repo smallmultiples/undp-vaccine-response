@@ -14,7 +14,6 @@ import dropdownStyle from "../../modules/dropdown.style";
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
 
-// TODO: include the charts indicators too
 function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators) {
     const selectedIndicatorData = React.useMemo(() => {
         if (pillarLoading || !goalDatasets) return [];
@@ -304,7 +303,7 @@ const ChartArea = props => {
         <div className={styles.chartArea}>
             <div className={styles.chartSelectors}>
                 <Select
-                    options={goal.indicators.filter(d => !d.categorical)}
+                    options={currentIndicators.chartOptions}
                     onChange={indicator => {
                         setCurrentIndicators(d => ({ ...d, chart: indicator }));
                     }}
