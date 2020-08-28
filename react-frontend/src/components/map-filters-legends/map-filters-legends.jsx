@@ -43,6 +43,33 @@ const BivariateIndicatorSelection = props => {
 
     return (
         <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
+            <div className={styles.bivariateIndicatorItem} data-x>
+                <Checkbox
+                    value={currentIndicators.bivariateXEnabled}
+                    onChange={v =>
+                        setCurrentIndicators(d => ({
+                            ...d,
+                            bivariateXEnabled: v,
+                        }))
+                    }
+                />
+                <div className={styles.bivariateIndicatorDropdownWrap}>
+                    <p className={styles.bivariateIndicatorDropdownLabel}>
+                        {isMapOnly ? "Indicator X" : "Choose an indicator"}
+                    </p>
+                    <Select
+                        options={currentIndicators.bivariateOptions}
+                        onChange={indicator =>
+                            setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
+                        }
+                        value={currentIndicators.bivariateX}
+                        styles={dropdownStyle}
+                        isOptionSelected={isOptionSelected}
+                        isDisabled={!currentIndicators.bivariateXEnabled}
+                        isSearchable={false}
+                    />
+                </div>
+            </div>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
                     value={currentIndicators.bivariateYEnabled}
@@ -56,7 +83,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator Y" : "Other indicators in this pillar:"}
+                        {isMapOnly ? "Indicator Y" : "Choose another indicator"}
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
@@ -66,33 +93,6 @@ const BivariateIndicatorSelection = props => {
                         value={currentIndicators.bivariateY}
                         styles={dropdownStyle}
                         isDisabled={disableY || !currentIndicators.bivariateYEnabled}
-                        isSearchable={false}
-                    />
-                </div>
-            </div>
-            <div className={styles.bivariateIndicatorItem} data-x>
-                <Checkbox
-                    value={currentIndicators.bivariateXEnabled}
-                    onChange={v =>
-                        setCurrentIndicators(d => ({
-                            ...d,
-                            bivariateXEnabled: v,
-                        }))
-                    }
-                />
-                <div className={styles.bivariateIndicatorDropdownWrap}>
-                    <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator X" : "Other indicators in this goal:"}
-                    </p>
-                    <Select
-                        options={currentIndicators.bivariateOptions}
-                        onChange={indicator =>
-                            setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
-                        }
-                        value={currentIndicators.bivariateX}
-                        styles={dropdownStyle}
-                        isOptionSelected={isOptionSelected}
-                        isDisabled={!currentIndicators.bivariateXEnabled}
                         isSearchable={false}
                     />
                 </div>
