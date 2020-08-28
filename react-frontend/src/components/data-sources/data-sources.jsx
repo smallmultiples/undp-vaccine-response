@@ -2,7 +2,8 @@ import React from "react";
 import styles from "./data-sources.module.scss";
 import { uniqBy } from "lodash";
 
-const COUNTRIES_TOTAL = 249;
+import regionsLookup from "../../modules/data/region-lookup.json";
+const COUNTRIES_TOTAL = regionsLookup.length;
 
 const IconData = props => (
     <svg
