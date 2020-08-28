@@ -5,7 +5,7 @@ import styles from "./checkbox.module.scss";
 const Checkbox = props => {
     const { value, onChange, disabled } = props;
     return (
-        <button
+        <div
             className={styles.checkbox}
             data-selected={value === true}
             onClick={() => onChange(!value)}
@@ -23,7 +23,7 @@ const Checkbox = props => {
                     fill="white"
                 />
             </svg>
-        </button>
+        </div>
     );
 };
 
