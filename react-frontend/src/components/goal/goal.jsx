@@ -240,13 +240,7 @@ export default function Goal(props) {
 }
 
 const ChartArea = props => {
-    const {
-        goal,
-        regionLookup,
-        currentIndicators,
-        setCurrentIndicators,
-        selectedIndicatorData,
-    } = props;
+    const { regionLookup, currentIndicators, setCurrentIndicators, selectedIndicatorData } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
 
