@@ -41,43 +41,44 @@ export default function IndicatorTable(props) {
 
     if (!goal) return null; // TODO loader
 
-    const rowsForOverviewTable = goal.indicators.map(ind => {
-        const label = ind.tableLabel || ind.label;
-        const countryCount = ind.meta ? ind.meta.countryCount : "";
+    const rowsForOverviewTable = goal.indicators
+        .filter(d => d.meta)
+        .map(ind => {
+            const label = ind.tableLabel || ind.label;
+            const countryCount = ind.meta.countryCount || 0;
 
-        const cc = (
-            <div className={styles.countryCount}>
-                <div
-                    className={styles.label}
-                >{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
-            </div>
-        );
+            const cc = (
+                <div className={styles.countryCount}>
+                    <div
+                        className={styles.label}
+                    >{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
+                </div>
+            );
 
-        const currency = ind.meta ? ind.meta.lastUpdated : "";
+            const currency = ind.meta.lastUpdated || "";
 
-        const sources = (
-            <div>
-                {ind.meta?.sources.map((s, i) => {
-                    return (
-                        <span key={`link_${i}`}>
-                            <a href={s.url} target="_blank" rel="noopener noreferrer">
-                                {s.name}
-                            </a>
-                            {i < ind.meta.sources.length - 1 && ", "}
-                        </span>
-                    );
-                })}
-            </div>
-        );
+            const sources = (
+                <div>
+                    {ind.meta?.sources.map((s, i) => {
+                        return (
+                            <span key={`link_${i}`}>
+                                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                                    {s.name}
+                                </a>
+                                {i < ind.meta.sources.length - 1 && ", "}
+                            </span>
+                        );
+                    })}
+                </div>
+            );
 
-        const quality = ind.meta ? ind.meta.quality : "";
-        return [label, cc, currency, sources, quality];
-    });
+            return [label, cc, currency, sources];
+        });
 
     return (
         <div className={styles.indicatorTable}>
             <Table
-                headings={["Data", "Coverage", "Currency", "Data source", "Quality"]}
+                headings={["Data", "Coverage", "Currency", "Data source"]}
                 rows={rowsForOverviewTable}
                 fixedColumns={2}
                 fixedColumnsWidth={30}
