@@ -400,6 +400,7 @@ const BivariateLegendGrid = props => {
                                         background: last(bivariateColourMatrixHex)[colIndex],
                                     }}
                                 />
+                                
                                 <div className={styles.legendColourTooltipText}>
                                     <div className={styles.legendColourTooltipLabel}>
                                         {currentIndicators.bivariateX.label}
