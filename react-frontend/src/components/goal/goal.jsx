@@ -188,6 +188,8 @@ export default function Goal(props) {
                                                     : s["Stat A value"],
                                             primaryLabel: s["Primary label"],
                                             secondaryLabel: s["Secondary label"],
+                                            dataSource: s["Data source"],
+                                            dataSourceLink: s["Data source link"],
                                             format: s["Stat A type"],
                                         }}
                                     />
@@ -297,6 +299,11 @@ const ChartArea = props => {
 
     return (
         <div className={styles.chartArea}>
+            <h3>Explore indicators</h3>
+            <p>
+                Select an indicator and a year to plot to see how countries compare. Hover to see
+                the country’s data.
+            </p>
             <div className={styles.chartSelectors}>
                 <Select
                     options={currentIndicators.chartOptions}
@@ -309,6 +316,7 @@ const ChartArea = props => {
                     isDisabled={false}
                     isSearchable={false}
                     className={styles.indicatorSelector}
+                    noGap
                 />
                 <Select
                     options={yearsArray}
@@ -319,6 +327,7 @@ const ChartArea = props => {
                     isDisabled={false}
                     isSearchable={false}
                     className={styles.yearSelector}
+                    noGap
                 />
             </div>
             {chart}

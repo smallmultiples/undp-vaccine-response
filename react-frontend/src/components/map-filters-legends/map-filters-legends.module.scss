@@ -4,12 +4,10 @@ $bottomPadding: 27px;
 $mapVisualisationControlsWidth: 220px;
 
 .mapFiltersLegends {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    flex-wrap: wrap;
+    width: 20%;
+
     @include mobileOnly() {
-        justify-content: space-around;
+        width: 100%;
     }
 }
 
@@ -19,9 +17,6 @@ $mapVisualisationControlsWidth: 220px;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    padding-right: 36px;
-    margin-right: 30px;
-    border-right: 1px solid $color-blue-bg;
 
     &[data-fullwidth="true"] {
         border-right: none;
@@ -58,15 +53,11 @@ $mapVisualisationControlsWidth: 220px;
 
         .bivariateIndicatorDropdownLabel {
             font-size: 12px;
-            margin: 0 0 7px 10px;
-            @include mobileOnly() {
-                display: none;
-            }
+            margin: 0 0 7px -26px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            min-width: 280px;
-            flex-grow: 1;
+            max-width: calc(100% - 70px);
             margin-left: 8px;
             position: relative;
             &:after {
@@ -75,7 +66,7 @@ $mapVisualisationControlsWidth: 220px;
                 left: 12px;
                 top: 50%;
                 @include mobileOnly() {
-                    top: 25%;
+                    top: 48%;
                 }
             }
 
@@ -159,11 +150,17 @@ $mapVisualisationControlsWidth: 220px;
 // -----
 
 .mapVisualisationControls {
-    width: $mapVisualisationControlsWidth;
+    width: calc(100% - 20px);
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+
+    .mapVisualisationControlsLabel {
+        font-size: 12px;
+        margin: 0 0 7px -75px;
+    }
 }
 
 .mapVisualisationLegend {
@@ -256,11 +253,10 @@ $mapVisualisationControlsWidth: 220px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 30px;
-    margin-left: 54px;
+    margin: 40px 30px 20px 54px;
 
     @include mobileOnly() {
-        width: 30%;
+        width: 50%;
     }
 }
 
@@ -432,4 +428,49 @@ $lc-w-hdi: $l-w / 4;
     left: 0;
     transform-origin: center center;
     transform: translateY(-50%) rotate(-90deg) translateY(-100%) translateY(-34px);
+}
+
+.indicatorTooltip {
+    position: relative; /* making the .tooltip span a container for the tooltip text */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    background: $color-blue-bg;
+    top: 10px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+.indicatorTooltip:hover {
+    cursor: pointer;
+}
+
+.indicatorTooltip:before {
+    content: attr(data-text); /* here's the magic */
+    position: absolute;
+
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+
+    /* move to right */
+    left: 150%;
+    margin-left: 15px; /* and add a small left margin */
+
+    /* basic styles */
+    width: 200px;
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px 9px 16px 16px;
+    z-index: 23;
+    display: none; /* hide by default */
+    text-align: left;
+
+    opacity: 0;
+    transition: 0.3s opacity;
+}
+
+.indicatorTooltip:hover:before {
+    display: block;
+    opacity: 1;
 }

@@ -19,7 +19,8 @@ const getDefaultIndicatorState = (goal, commonPillar) => {
     const chartOptions = getBivariateOptions(goal);
 
     return {
-        mapVisualisationOptions,
+        // Remove duplicates in tracking indicator drop-down
+        mapVisualisationOptions: [...new Map(mapVisualisationOptions.map(item => [item.dataKey, item])).values()],
         bivariateOptions,
         chartOptions,
         // Question indicator is the X axis

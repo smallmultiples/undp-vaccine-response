@@ -5,15 +5,18 @@
 }
 
 .mapArea {
-    display: flex;
-
     .mapSidebar {
-        width: 260px;
-        margin-right: 20px;
+        width: 100%;
         display: grid;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-        row-gap: 20px;
-        margin-bottom: 25px;
+        grid-template-columns: 1fr auto auto;
+        margin-bottom: 40px;
+        column-gap: 20px;
+        justify-content: space-between;
+
+        @include mobileOnly() {
+            grid-template-columns: 1fr;
+            row-gap: 20px;
+        }
     }
 
     .mapContainer {
@@ -22,8 +25,7 @@
 }
 
 .sidebarBlock {
-    padding: 0 20px;
-    width: 260px;
+    padding: 10px 20px;
     box-sizing: border-box;
     background-color: $color-light-blue;
     border-radius: 10px;
@@ -54,9 +56,18 @@
         .indicatorSelector {
             width: 400px;
         }
-        .yearSelector{
+        .yearSelector {
             margin-left: 16px;
             width: 150px;
+        }
+
+        @include mobileOnly() {
+            display: block;
+            .indicatorSelector,
+            .yearSelector {
+                width: 100%;
+                margin: 10px 0;
+            }
         }
     }
 }

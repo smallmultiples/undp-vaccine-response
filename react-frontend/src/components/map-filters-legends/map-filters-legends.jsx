@@ -12,8 +12,8 @@ import Checkbox from "../controls/checkbox";
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
-            <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
+            <BivariateLegend {...props} />
             <MapVisualisationControls {...props} />
         </div>
     );
@@ -29,6 +29,16 @@ const isOptionSelected = (item, selections) => {
     if (item.label === selection.label) return true;
 
     return false;
+};
+
+const truncate = (str, n, useWordBoundary) => {
+    if (str.length <= n) {
+        return str;
+    }
+    const subString = str.substr(0, n - 1); // the original check
+    return (
+        (useWordBoundary ? subString.substr(0, subString.lastIndexOf(" ")) : subString) + "&hellip;"
+    );
 };
 
 const BivariateIndicatorSelection = props => {
@@ -55,7 +65,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator X" : "Choose an indicator"}
+                        {isMapOnly ? "Indicator X" : "Choose an indicator to color regions"}
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
@@ -69,6 +79,7 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
+                <span className={styles.indicatorTooltip} data-text={currentIndicators.bivariateX.description} >?</span>
             </div>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
@@ -83,7 +94,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator Y" : "Choose another indicator"}
+                        {isMapOnly ? "Indicator Y" : "Choose another indicator to color regions"}
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
@@ -96,6 +107,7 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
+                <span className={styles.indicatorTooltip} data-text={currentIndicators.bivariateY.description} >?</span>
             </div>
         </div>
     );
@@ -155,6 +167,7 @@ const MapVisualisationControls = props => {
 
     return (
         <div className={styles.mapVisualisationControls}>
+            <p className={styles.mapVisualisationControlsLabel}>Choose an indicator to overlay</p>
             <MapVisualisationIndicatorSelection {...props} />
             {mapVisIndicator.categorical ? (
                 <CategoricalLegend {...props} />
@@ -243,6 +256,7 @@ const MapVisualisationIndicatorSelection = props => {
                     noGap
                 />
             </div>
+            <span className={styles.indicatorTooltip} data-text={currentIndicators.mapVisualisation.description} >?</span>
         </div>
     );
 };
@@ -262,9 +276,13 @@ const BivariateLegend = props => {
                     className={styles.legendYLabelContainer}
                     data-visible={currentIndicators.bivariateYEnabled}
                 >
-                    <div className={styles.bivariateAxisLabelY}>
-                        {currentIndicators.bivariateY.label}
-                    </div>
+                    <div
+                        className={styles.bivariateAxisLabelY}
+                        title={currentIndicators.bivariateY.label}
+                        dangerouslySetInnerHTML={{
+                            __html: truncate(currentIndicators.bivariateY.label, 40, true),
+                        }}
+                    />
                     <div className={styles.legendColourSpan} data-y>
                         <div className={styles.legendColourSpanValue} data-y>
                             <IconArrowUp />
@@ -292,9 +310,13 @@ const BivariateLegend = props => {
                         <IconArrowRight />
                     </div>
                 </div>
-                <div className={styles.bivariateAxisLabelX}>
-                    {currentIndicators.bivariateX.label}
-                </div>
+                <div
+                    className={styles.bivariateAxisLabelX}
+                    title={currentIndicators.bivariateX.label}
+                    dangerouslySetInnerHTML={{
+                        __html: truncate(currentIndicators.bivariateX.label, 40, true),
+                    }}
+                />
             </div>
         </div>
     );

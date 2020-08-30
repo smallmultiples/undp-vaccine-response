@@ -3,4 +3,9 @@
 // ------
 
 .map {
+    display: flex;
+
+    @include mobileOnly() {
+        display: block;
+    }
 }

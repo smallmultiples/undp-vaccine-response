@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./donut.module.scss";
 
 export default function Donut(props) {
-    const { value, primaryLabel, secondaryLabel } = props;
+    const { value, primaryLabel, secondaryLabel, dataSource, dataSourceLink } = props;
 
     return (
         <div className={styles.donut}>
@@ -10,7 +10,8 @@ export default function Donut(props) {
                 <strong>{primaryLabel}</strong>
             </p>
             {!isNaN(value) && <Chart value={value} />}
-            {secondaryLabel}
+            <p className={styles.secondaryLabel}>{secondaryLabel.props.children}</p>
+            <small><a target="_parent" className={styles.dataSource} href={dataSourceLink}>{dataSource}</a></small>
         </div>
     );
 }

@@ -14,23 +14,11 @@ const BlockVisualisations = {
 };
 
 export function MapBlockVis(props) {
-    const {
-        indicator,
-        type,
-        configuration,
-        timeFilteredData,
-        selectedCountryCode,
-        selectedCountryLabel,
-    } = props;
+    const { indicator, type, timeFilteredData, selectedCountryCode, selectedCountryLabel } = props;
     const Vis = BlockVisualisations[type];
-    const style = getVisStyle(configuration);
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     if (!timeFilteredData) {
-        return (
-            <div className={styles.sidebarBlock} style={style}>
-                Missing data
-            </div>
-        );
+        return <div className={styles.sidebarBlock}>Missing data</div>;
     }
     const val = getBlockVisValue(timeFilteredData, indicator, selectedCountryCode);
     const content = Vis ? (
@@ -47,17 +35,12 @@ export function MapBlockVis(props) {
         missingChart
     );
 
-    return (
-        <div className={styles.sidebarBlock} style={style}>
-            {content}
-        </div>
-    );
+    return <div className={styles.sidebarBlock}>{content}</div>;
 }
 
 export function ManualBlockVis(props) {
-    const { type, configuration, manualEntry } = props;
+    const { type, manualEntry } = props;
     const Vis = BlockVisualisations[type];
-    const style = getVisStyle(configuration);
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     const content = Vis ? (
         <Vis
@@ -66,17 +49,15 @@ export function ManualBlockVis(props) {
             secondaryLabel={
                 manualEntry.secondaryLabel ? <p>{manualEntry.secondaryLabel}</p> : undefined
             }
+            dataSource={manualEntry.dataSource ? manualEntry.dataSource : undefined}
+            dataSourceLink={manualEntry.dataSourceLink ? manualEntry.dataSourceLink : undefined}
             format={manualEntry.format}
         />
     ) : (
         missingChart
     );
 
-    return (
-        <div className={styles.sidebarBlock} style={style}>
-            {content}
-        </div>
-    );
+    return <div className={styles.sidebarBlock}>{content}</div>;
 }
 
 export const formatManualValue = (value, type) => {
@@ -88,12 +69,5 @@ export const formatManualValue = (value, type) => {
         case "decimal":
         default:
             return value;
-    }
-};
-
-const getVisStyle = configuration => {
-    const conf = configuration !== "" ? JSON.parse(configuration) : undefined;
-    if (conf) {
-        return { gridRowStart: conf.start, gridRowEnd: `span ${conf.size}` };
     }
 };

@@ -114,7 +114,7 @@ const MapVis = props => {
     ];
 
     return (
-        <div>
+        <div className={styles.mapOuterContainer}>
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 {viewport && (
                     <DeckGL

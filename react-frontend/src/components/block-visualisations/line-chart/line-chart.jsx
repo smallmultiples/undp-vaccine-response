@@ -7,7 +7,7 @@ import { formatManualValue } from "../../goal/block-visualisation";
 import { max } from "d3";
 
 export default function LineChart(props) {
-    const { value, primaryLabel, secondaryLabel, format } = props;
+    const { value, primaryLabel, secondaryLabel, format, dataSource, dataSourceLink } = props;
     const data = [];
     const dataParsed = JSON.parse(value);
     dataParsed.forEach((d, i) => {
@@ -49,7 +49,8 @@ export default function LineChart(props) {
                 </div>
                 <Chart data={data} format={format} />
             </div>
-            {secondaryLabel}
+            <p className={styles.secondaryLabel}>{secondaryLabel.props.children}</p>
+            <small><a target="_parent" className={styles.dataSource} href={dataSourceLink}>{dataSource}</a></small>
         </div>
     );
 }
