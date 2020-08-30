@@ -23,11 +23,10 @@ export function MapBlockVis(props) {
         selectedCountryLabel,
     } = props;
     const Vis = BlockVisualisations[type];
-    const style = getVisStyle(configuration);
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     if (!timeFilteredData) {
         return (
-            <div className={styles.sidebarBlock} style={style}>
+            <div className={styles.sidebarBlock}>
                 Missing data
             </div>
         );
@@ -48,7 +47,7 @@ export function MapBlockVis(props) {
     );
 
     return (
-        <div className={styles.sidebarBlock} style={style}>
+        <div className={styles.sidebarBlock}>
             {content}
         </div>
     );
@@ -57,7 +56,6 @@ export function MapBlockVis(props) {
 export function ManualBlockVis(props) {
     const { type, configuration, manualEntry } = props;
     const Vis = BlockVisualisations[type];
-    const style = getVisStyle(configuration);
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     const content = Vis ? (
         <Vis
@@ -73,7 +71,7 @@ export function ManualBlockVis(props) {
     );
 
     return (
-        <div className={styles.sidebarBlock} style={style}>
+        <div className={styles.sidebarBlock}>
             {content}
         </div>
     );
@@ -88,12 +86,5 @@ export const formatManualValue = (value, type) => {
         case "decimal":
         default:
             return value;
-    }
-};
-
-const getVisStyle = configuration => {
-    const conf = configuration !== "" ? JSON.parse(configuration) : undefined;
-    if (conf) {
-        return { gridRowStart: conf.start, gridRowEnd: `span ${conf.size}` };
     }
 };
