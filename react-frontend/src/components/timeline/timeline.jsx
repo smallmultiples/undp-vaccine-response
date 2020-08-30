@@ -50,7 +50,7 @@ function TimelineControls(props) {
                 >
                     {playing ? <IconPause /> : <IconPlay />}
                 </div>
-                <label>Select or play through historical data</label>
+                <label>Select or play through historical and forecast data</label>
             </div>
         </div>
     );
