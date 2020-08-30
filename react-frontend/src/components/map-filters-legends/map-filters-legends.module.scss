@@ -164,6 +164,14 @@ $mapVisualisationControlsWidth: 220px;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+
+    .mapVisualisationControlsLabel {
+        font-size: 12px;
+        margin: 0 0 7px 10px;
+        @include mobileOnly() {
+            display: none;
+        }
+    }
 }
 
 .mapVisualisationLegend {

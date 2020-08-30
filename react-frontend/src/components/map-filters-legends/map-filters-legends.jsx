@@ -55,7 +55,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator X" : "Choose an indicator"}
+                        {isMapOnly ? "Indicator X" : "Choose an indicator to color regions"}
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
@@ -83,7 +83,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator Y" : "Choose another indicator"}
+                        {isMapOnly ? "Indicator Y" : "Choose another indicator to color regions"}
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
@@ -155,6 +155,7 @@ const MapVisualisationControls = props => {
 
     return (
         <div className={styles.mapVisualisationControls}>
+            <p className={styles.mapVisualisationControlsLabel}>Choose an indicator to overlay</p>
             <MapVisualisationIndicatorSelection {...props} />
             {mapVisIndicator.categorical ? (
                 <CategoricalLegend {...props} />
