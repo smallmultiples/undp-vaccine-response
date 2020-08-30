@@ -188,6 +188,8 @@ export default function Goal(props) {
                                                     : s["Stat A value"],
                                             primaryLabel: s["Primary label"],
                                             secondaryLabel: s["Secondary label"],
+                                            dataSource: s["Data source"],
+                                            dataSourceLink: s["Data source link"],
                                             format: s["Stat A type"],
                                         }}
                                     />

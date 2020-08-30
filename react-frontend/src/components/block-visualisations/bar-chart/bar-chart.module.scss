@@ -27,3 +27,16 @@
     @include h4();
     font-weight: bold;
 }
+
+.secondaryLabel {
+    margin-bottom: 5px;
+}
+
+.dataSource {
+    color: $color-navy;
+    text-decoration: none;
+}
+
+.dataSource:hover {
+    cursor: pointer;
+}

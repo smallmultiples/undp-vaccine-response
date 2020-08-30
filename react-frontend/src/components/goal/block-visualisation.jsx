@@ -64,6 +64,8 @@ export function ManualBlockVis(props) {
             secondaryLabel={
                 manualEntry.secondaryLabel ? <p>{manualEntry.secondaryLabel}</p> : undefined
             }
+            dataSource={manualEntry.dataSource ? manualEntry.dataSource : undefined}
+            dataSourceLink={manualEntry.dataSourceLink ? manualEntry.dataSourceLink : undefined}
             format={manualEntry.format}
         />
     ) : (
