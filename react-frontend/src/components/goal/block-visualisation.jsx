@@ -14,22 +14,11 @@ const BlockVisualisations = {
 };
 
 export function MapBlockVis(props) {
-    const {
-        indicator,
-        type,
-        configuration,
-        timeFilteredData,
-        selectedCountryCode,
-        selectedCountryLabel,
-    } = props;
+    const { indicator, type, timeFilteredData, selectedCountryCode, selectedCountryLabel } = props;
     const Vis = BlockVisualisations[type];
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     if (!timeFilteredData) {
-        return (
-            <div className={styles.sidebarBlock}>
-                Missing data
-            </div>
-        );
+        return <div className={styles.sidebarBlock}>Missing data</div>;
     }
     const val = getBlockVisValue(timeFilteredData, indicator, selectedCountryCode);
     const content = Vis ? (
@@ -46,15 +35,11 @@ export function MapBlockVis(props) {
         missingChart
     );
 
-    return (
-        <div className={styles.sidebarBlock}>
-            {content}
-        </div>
-    );
+    return <div className={styles.sidebarBlock}>{content}</div>;
 }
 
 export function ManualBlockVis(props) {
-    const { type, configuration, manualEntry } = props;
+    const { type, manualEntry } = props;
     const Vis = BlockVisualisations[type];
     const missingChart = <div>{`Missing chart type: ${type}.`}</div>;
     const content = Vis ? (
@@ -72,11 +57,7 @@ export function ManualBlockVis(props) {
         missingChart
     );
 
-    return (
-        <div className={styles.sidebarBlock}>
-            {content}
-        </div>
-    );
+    return <div className={styles.sidebarBlock}>{content}</div>;
 }
 
 export const formatManualValue = (value, type) => {
