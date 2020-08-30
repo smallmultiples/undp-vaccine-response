@@ -31,6 +31,14 @@ const isOptionSelected = (item, selections) => {
     return false;
 };
 
+const truncate = ( str, n, useWordBoundary ) => {
+  if (str.length <= n) { return str; }
+  const subString = str.substr(0, n-1); // the original check
+  return (useWordBoundary 
+    ? subString.substr(0, subString.lastIndexOf(" ")) 
+    : subString) + "&hellip;";
+};
+
 const BivariateIndicatorSelection = props => {
     const { setCurrentIndicators, currentIndicators } = props;
     const hideMapVisOptions = React.useMemo(
@@ -263,9 +271,9 @@ const BivariateLegend = props => {
                     className={styles.legendYLabelContainer}
                     data-visible={currentIndicators.bivariateYEnabled}
                 >
-                    <div className={styles.bivariateAxisLabelY}>
-                        {currentIndicators.bivariateY.label}
-                    </div>
+                    <div className={styles.bivariateAxisLabelY}
+                        dangerouslySetInnerHTML={{__html: truncate(currentIndicators.bivariateY.label, 40, true)}}
+                    />
                     <div className={styles.legendColourSpan} data-y>
                         <div className={styles.legendColourSpanValue} data-y>
                             <IconArrowUp />
@@ -293,9 +301,9 @@ const BivariateLegend = props => {
                         <IconArrowRight />
                     </div>
                 </div>
-                <div className={styles.bivariateAxisLabelX}>
-                    {currentIndicators.bivariateX.label}
-                </div>
+                <div className={styles.bivariateAxisLabelX}
+                    dangerouslySetInnerHTML={{__html: truncate(currentIndicators.bivariateX.label, 40, true)}}
+                />
             </div>
         </div>
     );
