@@ -2,6 +2,10 @@
 
 .mapOuterContainer {
     width: 80%;
+
+    @include mobileOnly() {
+        width: 100%;
+    }
 }
 
 .mapContainer {
@@ -13,6 +17,9 @@
 
     @include mobileOnly() {
         height: 360px;
+        width: calc(100% + 64px);
+        margin-left: -32px;
+        margin-right: -32px;
     }
 }
 

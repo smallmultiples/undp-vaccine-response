@@ -5,6 +5,10 @@ $mapVisualisationControlsWidth: 220px;
 
 .mapFiltersLegends {
     width: 20%;
+
+    @include mobileOnly() {
+        width: 100%;
+    }
 }
 
 // ------
@@ -50,9 +54,6 @@ $mapVisualisationControlsWidth: 220px;
         .bivariateIndicatorDropdownLabel {
             font-size: 12px;
             margin: 0 0 7px -26px;
-            @include mobileOnly() {
-                display: none;
-            }
         }
 
         .bivariateIndicatorDropdownWrap {
@@ -65,7 +66,7 @@ $mapVisualisationControlsWidth: 220px;
                 left: 12px;
                 top: 50%;
                 @include mobileOnly() {
-                    top: 25%;
+                    top: 48%;
                 }
             }
 
@@ -159,9 +160,6 @@ $mapVisualisationControlsWidth: 220px;
     .mapVisualisationControlsLabel {
         font-size: 12px;
         margin: 0 0 7px -75px;
-        @include mobileOnly() {
-            display: none;
-        }
     }
 }
 
@@ -258,7 +256,7 @@ $mapVisualisationControlsWidth: 220px;
     margin: 40px 30px 20px 54px;
 
     @include mobileOnly() {
-        width: 30%;
+        width: 50%;
     }
 }
 
