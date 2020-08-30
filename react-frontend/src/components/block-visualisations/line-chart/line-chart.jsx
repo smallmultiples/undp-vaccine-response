@@ -23,7 +23,7 @@ export default function LineChart(props) {
         });
         data.push({
             label,
-            color: dataParsed.length === 1 ? "#0969FA" : i === 0 ? "#110848" : "#0969FA",
+            color: dataParsed.length === 1 ? "#110848" : i === 0 ? "#110848" : "#0969FA",
             data: dataFinal,
         });
     });
