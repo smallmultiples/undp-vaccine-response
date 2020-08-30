@@ -271,6 +271,7 @@ const BivariateLegend = props => {
                     data-visible={currentIndicators.bivariateYEnabled}
                 >
                     <div className={styles.bivariateAxisLabelY}
+                        title={currentIndicators.bivariateY.label}
                         dangerouslySetInnerHTML={{__html: truncate(currentIndicators.bivariateY.label, 40, true)}}
                     />
                     <div className={styles.legendColourSpan} data-y>
@@ -301,6 +302,7 @@ const BivariateLegend = props => {
                     </div>
                 </div>
                 <div className={styles.bivariateAxisLabelX}
+                    title={currentIndicators.bivariateX.label}
                     dangerouslySetInnerHTML={{__html: truncate(currentIndicators.bivariateX.label, 40, true)}}
                 />
             </div>
