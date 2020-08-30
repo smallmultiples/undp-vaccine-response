@@ -79,6 +79,7 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
+                <span className={styles.indicatorTooltip} data-text={currentIndicators.bivariateX.description} >?</span>
             </div>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
@@ -106,6 +107,7 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
+                <span className={styles.indicatorTooltip} data-text={currentIndicators.bivariateY.description} >?</span>
             </div>
         </div>
     );
@@ -254,6 +256,7 @@ const MapVisualisationIndicatorSelection = props => {
                     noGap
                 />
             </div>
+            <span className={styles.indicatorTooltip} data-text={currentIndicators.mapVisualisation.description} >?</span>
         </div>
     );
 };
@@ -275,6 +278,7 @@ const BivariateLegend = props => {
                 >
                     <div
                         className={styles.bivariateAxisLabelY}
+                        title={currentIndicators.bivariateY.label}
                         dangerouslySetInnerHTML={{
                             __html: truncate(currentIndicators.bivariateY.label, 40, true),
                         }}
@@ -308,6 +312,7 @@ const BivariateLegend = props => {
                 </div>
                 <div
                     className={styles.bivariateAxisLabelX}
+                    title={currentIndicators.bivariateX.label}
                     dangerouslySetInnerHTML={{
                         __html: truncate(currentIndicators.bivariateX.label, 40, true),
                     }}
@@ -400,7 +405,6 @@ const BivariateLegendGrid = props => {
                                         background: last(bivariateColourMatrixHex)[colIndex],
                                     }}
                                 />
-                                
                                 <div className={styles.legendColourTooltipText}>
                                     <div className={styles.legendColourTooltipLabel}>
                                         {currentIndicators.bivariateX.label}

@@ -57,7 +57,7 @@ $mapVisualisationControlsWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            min-width: calc(100% - 40px);
+            max-width: calc(100% - 70px);
             margin-left: 8px;
             position: relative;
             &:after {
@@ -428,4 +428,49 @@ $lc-w-hdi: $l-w / 4;
     left: 0;
     transform-origin: center center;
     transform: translateY(-50%) rotate(-90deg) translateY(-100%) translateY(-34px);
+}
+
+.indicatorTooltip {
+  position:relative; /* making the .tooltip span a container for the tooltip text */
+  border-radius:50%;
+  width: 20px;
+  height: 20px;
+  background: $color-blue-bg;
+  top: 10px;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.indicatorTooltip:hover {
+    cursor: pointer;
+}
+
+.indicatorTooltip:before {
+  content: attr(data-text); /* here's the magic */
+  position:absolute;
+  
+  /* vertically center */
+  top:50%;
+  transform:translateY(-50%);
+  
+  /* move to right */
+  left:150%;
+  margin-left:15px; /* and add a small left margin */
+  
+  /* basic styles */
+  width:200px;
+  background: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 16px 9px 16px 16px;
+  z-index: 23;
+  display:none; /* hide by default */
+  text-align: left;
+
+  opacity:0;
+  transition:.3s opacity;  
+}
+
+.indicatorTooltip:hover:before {
+  display:block;
+  opacity:1;
 }
