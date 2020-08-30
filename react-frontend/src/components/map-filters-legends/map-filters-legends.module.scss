@@ -88,14 +88,10 @@ $mapVisualisationControlsWidth: 220px;
 
 // -----
 
-.categoryLegend {
-    padding-top: 12px;
-}
-
 .categoryList {
     list-style: none;
     padding: 0;
-    padding-top: 12px;
+    margin: 0;
 
     transition: opacity 0.2s;
     &[data-visible="false"] {
