@@ -4,13 +4,7 @@ $bottomPadding: 27px;
 $mapVisualisationControlsWidth: 220px;
 
 .mapFiltersLegends {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    @include mobileOnly() {
-        justify-content: space-around;
-    }
+    width: 20%;
 }
 
 // ------
@@ -19,9 +13,6 @@ $mapVisualisationControlsWidth: 220px;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    padding-right: 36px;
-    margin-right: 30px;
-    border-right: 1px solid $color-blue-bg;
 
     &[data-fullwidth="true"] {
         border-right: none;
@@ -58,15 +49,14 @@ $mapVisualisationControlsWidth: 220px;
 
         .bivariateIndicatorDropdownLabel {
             font-size: 12px;
-            margin: 0 0 7px 10px;
+            margin: 0 0 7px -26px;
             @include mobileOnly() {
                 display: none;
             }
         }
 
         .bivariateIndicatorDropdownWrap {
-            min-width: 280px;
-            flex-grow: 1;
+            min-width: calc(100% - 40px);
             margin-left: 8px;
             position: relative;
             &:after {
@@ -159,7 +149,8 @@ $mapVisualisationControlsWidth: 220px;
 // -----
 
 .mapVisualisationControls {
-    width: $mapVisualisationControlsWidth;
+    width: calc(100% - 20px);
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -167,7 +158,7 @@ $mapVisualisationControlsWidth: 220px;
 
     .mapVisualisationControlsLabel {
         font-size: 12px;
-        margin: 0 0 7px 10px;
+        margin: 0 0 7px -75px;
         @include mobileOnly() {
             display: none;
         }
@@ -264,8 +255,7 @@ $mapVisualisationControlsWidth: 220px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin-right: 30px;
-    margin-left: 54px;
+    margin: 40px 30px 20px 54px;
 
     @include mobileOnly() {
         width: 30%;

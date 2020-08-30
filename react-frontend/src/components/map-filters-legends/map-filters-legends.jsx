@@ -12,8 +12,8 @@ import Checkbox from "../controls/checkbox";
 const MapFiltersLegends = props => {
     return (
         <div className={styles.mapFiltersLegends}>
-            <BivariateLegend {...props} />
             <BivariateIndicatorSelection {...props} />
+            <BivariateLegend {...props} />
             <MapVisualisationControls {...props} />
         </div>
     );
@@ -31,12 +31,14 @@ const isOptionSelected = (item, selections) => {
     return false;
 };
 
-const truncate = ( str, n, useWordBoundary ) => {
-  if (str.length <= n) { return str; }
-  const subString = str.substr(0, n-1); // the original check
-  return (useWordBoundary 
-    ? subString.substr(0, subString.lastIndexOf(" ")) 
-    : subString) + "&hellip;";
+const truncate = (str, n, useWordBoundary) => {
+    if (str.length <= n) {
+        return str;
+    }
+    const subString = str.substr(0, n - 1); // the original check
+    return (
+        (useWordBoundary ? subString.substr(0, subString.lastIndexOf(" ")) : subString) + "&hellip;"
+    );
 };
 
 const BivariateIndicatorSelection = props => {
@@ -271,8 +273,11 @@ const BivariateLegend = props => {
                     className={styles.legendYLabelContainer}
                     data-visible={currentIndicators.bivariateYEnabled}
                 >
-                    <div className={styles.bivariateAxisLabelY}
-                        dangerouslySetInnerHTML={{__html: truncate(currentIndicators.bivariateY.label, 40, true)}}
+                    <div
+                        className={styles.bivariateAxisLabelY}
+                        dangerouslySetInnerHTML={{
+                            __html: truncate(currentIndicators.bivariateY.label, 40, true),
+                        }}
                     />
                     <div className={styles.legendColourSpan} data-y>
                         <div className={styles.legendColourSpanValue} data-y>
@@ -301,8 +306,11 @@ const BivariateLegend = props => {
                         <IconArrowRight />
                     </div>
                 </div>
-                <div className={styles.bivariateAxisLabelX}
-                    dangerouslySetInnerHTML={{__html: truncate(currentIndicators.bivariateX.label, 40, true)}}
+                <div
+                    className={styles.bivariateAxisLabelX}
+                    dangerouslySetInnerHTML={{
+                        __html: truncate(currentIndicators.bivariateX.label, 40, true),
+                    }}
                 />
             </div>
         </div>
