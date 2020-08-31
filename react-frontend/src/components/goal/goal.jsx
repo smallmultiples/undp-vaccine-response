@@ -292,7 +292,10 @@ const ChartArea = props => {
                 if (d[selectedIndicator.dataKey] !== undefined) {
                     const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
                     const hdiRow = selectedIndicatorData.find(
-                        r => r[ROW_KEY] === d[ROW_KEY] && r["Human development index (HDI)"]
+                        r =>
+                            r[ROW_KEY] === d[ROW_KEY] &&
+                            r["Human development index (HDI)"] &&
+                            r.Year.getFullYear() === 2018
                     );
                     const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
 
@@ -345,8 +348,39 @@ const ChartArea = props => {
                     className={styles.yearSelector}
                     noGap
                 />
+                <Legend />
             </div>
             {chart}
+        </div>
+    );
+};
+
+const Legend = props => {
+    return (
+        <div className={styles.legendContainer}>
+            <div className={styles.legendTitle}>Human Development Group (2018)</div>
+            <div className={styles.legend}>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-na={true} />
+                    <span>N/A</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-low={true} />
+                    <span>Low</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-medium={true} />
+                    <span>Medium</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-high={true} />
+                    <span>High</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-very-high={true} />
+                    <span>Very high</span>
+                </div>
+            </div>
         </div>
     );
 };
