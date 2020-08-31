@@ -45,7 +45,6 @@ export default function IndicatorTable(props) {
         .filter(d => d.meta)
         .map(ind => {
             const label = ind.tableLabel || ind.label;
-            console.log('ind', ind);
             const countryCount = ind.meta.countryCount || 0;
 
             const cc = (
