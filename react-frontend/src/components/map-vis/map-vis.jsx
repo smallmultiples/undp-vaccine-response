@@ -1,11 +1,12 @@
 import axios from "axios";
-import DeckGL, { GeoJsonLayer } from "deck.gl";
+import DeckGL, { GeoJsonLayer, MapController } from "deck.gl";
 import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import { feature as topojsonParse } from "topojson-client";
 import useDeckViewport from "../../hooks/use-deck-viewport";
 import { categorySplit } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
+import useMediaQuery from "../../hooks/use-media-query";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -55,6 +56,7 @@ const MapVis = props => {
 
     const [tooltip, setTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
+    const { isMobile } = useMediaQuery();
 
     const initialBoundsOrFeature = React.useMemo(() => {
         if (countryCode) {
@@ -119,7 +121,7 @@ const MapVis = props => {
                 {viewport && (
                     <DeckGL
                         viewState={viewport}
-                        controller
+                        controller={{ type: MapController, dragPan: !isMobile }}
                         layers={layers}
                         onViewStateChange={handleViewStateChange}
                     />

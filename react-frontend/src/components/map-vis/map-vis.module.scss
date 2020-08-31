@@ -18,6 +18,15 @@
     @include mobileOnly() {
         height: 360px;
     }
+
+    :global {
+        #deckgl-wrapper {
+            @include mobileOnly {
+                user-select: initial !important;
+                touch-action: initial !important;
+            }
+        }
+    }
 }
 
 // ----
