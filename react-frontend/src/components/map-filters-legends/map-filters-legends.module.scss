@@ -83,6 +83,9 @@ $mapVisualisationControlsWidth: 220px;
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 130px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
     transition: opacity 0.2s;
     &[data-visible="false"] {
@@ -250,7 +253,7 @@ $mapVisualisationControlsWidth: 220px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin: 40px 30px 20px 54px;
+    margin: 40px 30px 20px 30px;
 
     @include mobileOnly() {
         width: 50%;
