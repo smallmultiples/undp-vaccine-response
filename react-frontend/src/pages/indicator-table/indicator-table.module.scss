@@ -4,3 +4,15 @@
     font-family: $font-proxima;
     color: $color-navy;
 }
+
+.downloadButton {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: $color-blue-bg;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border: 2px solid $color-blue-bg;
+    color: $color-navy;
+}

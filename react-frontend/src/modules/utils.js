@@ -23,3 +23,14 @@ export function parseSheetDate(raw) {
 }
 
 export const isDateValid = d => Boolean(d && !isNaN(d.getTime()));
+
+export function saveBlob(filename, blob) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = url;
+    a.download = filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
