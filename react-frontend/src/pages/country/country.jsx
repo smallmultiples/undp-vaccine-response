@@ -1,5 +1,5 @@
 import axios from "axios";
-import DeckGL, { GeoJsonLayer, MapView } from "deck.gl";
+import DeckGL, { GeoJsonLayer, MapView, MapController } from "deck.gl";
 import React from "react";
 import { StaticMap } from "react-map-gl";
 import { feature as topojsonParse } from "topojson-client";
@@ -17,6 +17,7 @@ import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import { hexToRgb } from "../../modules/utils";
 import SubnationalLegend from "../../components/subnational-legend/subnational-legend";
 import DataSources from "../../components/data-sources/data-sources";
+import useMediaQuery from "../../hooks/use-media-query";
 
 export default function Country(props) {
     const { countryCode } = props;
@@ -24,6 +25,7 @@ export default function Country(props) {
     const [subdivisionGeo, setSubdivisionGeo] = React.useState(null);
     const [hdiData, setHdiData] = React.useState(null);
     const [tooltip, setTooltip] = React.useState(null);
+    const { isMobile } = useMediaQuery();
 
     React.useEffect(() => {
         axios(`${STATIC_DATA_BASE_URL}/geo/subdivisions/${countryCode}.topojson`).then(res => {
@@ -141,7 +143,7 @@ export default function Country(props) {
                 {!loading && (
                     <DeckGL
                         viewState={viewport}
-                        controller
+                        controller={{ type: MapController, dragPan: !isMobile }}
                         layers={layers}
                         onViewStateChange={handleViewStateChange}
                         views={new MapView({ repeat: true })}
