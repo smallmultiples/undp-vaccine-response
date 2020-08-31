@@ -146,6 +146,8 @@ export default function Goal(props) {
         return row["Country or Area"];
     }, [selectedCountryCode]);
 
+    const onCountryPage = React.useMemo(() => Boolean(props.countryCode), [props.countryCode]);
+
     const handleCountryClicked = React.useCallback(country => {
         setSelectedCountryCode(existing =>
             existing && existing === country.ISO3 ? null : country.ISO3
@@ -166,7 +168,8 @@ export default function Goal(props) {
         timelineState
     );
 
-    const sideBlocks = keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
+    const sideBlocks =
+        !onCountryPage && keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
     const blockProps = {
         selectedCountryCode,
         selectedCountryLabel,
