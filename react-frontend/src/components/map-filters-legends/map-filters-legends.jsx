@@ -79,7 +79,12 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
-                <span className={styles.indicatorTooltip} data-text={currentIndicators.bivariateX.description} >?</span>
+                <span
+                    className={styles.indicatorTooltip}
+                    data-text={currentIndicators.bivariateX.description}
+                >
+                    ?
+                </span>
             </div>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
@@ -94,7 +99,7 @@ const BivariateIndicatorSelection = props => {
                 />
                 <div className={styles.bivariateIndicatorDropdownWrap}>
                     <p className={styles.bivariateIndicatorDropdownLabel}>
-                        {isMapOnly ? "Indicator Y" : "Choose another indicator to color regions"}
+                        {isMapOnly ? "Indicator Y" : "Choose a secondary indicator"}
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
@@ -107,7 +112,12 @@ const BivariateIndicatorSelection = props => {
                         isSearchable={false}
                     />
                 </div>
-                <span className={styles.indicatorTooltip} data-text={currentIndicators.bivariateY.description} >?</span>
+                <span
+                    className={styles.indicatorTooltip}
+                    data-text={currentIndicators.bivariateY.description}
+                >
+                    ?
+                </span>
             </div>
         </div>
     );
@@ -167,7 +177,6 @@ const MapVisualisationControls = props => {
 
     return (
         <div className={styles.mapVisualisationControls}>
-            <p className={styles.mapVisualisationControlsLabel}>Choose an indicator to overlay</p>
             <MapVisualisationIndicatorSelection {...props} />
             {mapVisIndicator.categorical ? (
                 <CategoricalLegend {...props} />
@@ -245,6 +254,9 @@ const MapVisualisationIndicatorSelection = props => {
                 }
             />
             <div className={styles.mapVisualisationIndicatorDropdownWrap}>
+                <p className={styles.mapVisualisationControlsLabel}>
+                    Choose an indicator to overlay
+                </p>
                 <Select
                     options={currentIndicators.mapVisualisationOptions}
                     onChange={indicator =>
@@ -256,7 +268,12 @@ const MapVisualisationIndicatorSelection = props => {
                     noGap
                 />
             </div>
-            <span className={styles.indicatorTooltip} data-text={currentIndicators.mapVisualisation.description} >?</span>
+            <span
+                className={styles.indicatorTooltip}
+                data-text={currentIndicators.mapVisualisation.description}
+            >
+                ?
+            </span>
         </div>
     );
 };

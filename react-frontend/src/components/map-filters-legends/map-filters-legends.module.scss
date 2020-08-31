@@ -57,7 +57,7 @@ $mapVisualisationControlsWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            max-width: calc(100% - 70px);
+            width: calc(100% - 70px);
             margin-left: 8px;
             position: relative;
             &:after {
@@ -150,16 +150,14 @@ $mapVisualisationControlsWidth: 220px;
 // -----
 
 .mapVisualisationControls {
-    width: calc(100% - 20px);
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
 
     .mapVisualisationControlsLabel {
         font-size: 12px;
-        margin: 0 0 7px -75px;
+        margin: 0 0 7px -26px;
     }
 }
 
@@ -215,8 +213,7 @@ $mapVisualisationControlsWidth: 220px;
     width: 100%;
 
     .mapVisualisationIndicatorDropdownWrap {
-        width: 100%;
-        flex-grow: 1;
+        width: calc(100% - 70px);
         margin-left: 8px;
         position: relative;
         &:after {
@@ -431,14 +428,15 @@ $lc-w-hdi: $l-w / 4;
 }
 
 .indicatorTooltip {
-  position:relative; /* making the .tooltip span a container for the tooltip text */
-  border-radius:50%;
-  width: 20px;
-  height: 20px;
-  background: $color-blue-bg;
-  top: 10px;
-  text-align: center;
-  margin-left: 10px;
+    position: relative; /* making the .tooltip span a container for the tooltip text */
+    border-radius: 50%;
+    border: 1px solid $color-blue-bg;
+    width: 20px;
+    height: 20px;
+    top: 10px;
+    text-align: center;
+    margin-left: 10px;
+    font-weight: bold;
 }
 
 .indicatorTooltip:hover {
@@ -446,31 +444,31 @@ $lc-w-hdi: $l-w / 4;
 }
 
 .indicatorTooltip:before {
-  content: attr(data-text); /* here's the magic */
-  position:absolute;
-  
-  /* vertically center */
-  top:50%;
-  transform:translateY(-50%);
-  
-  /* move to right */
-  left:150%;
-  margin-left:15px; /* and add a small left margin */
-  
-  /* basic styles */
-  width:200px;
-  background: white;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  padding: 16px 9px 16px 16px;
-  z-index: 23;
-  display:none; /* hide by default */
-  text-align: left;
+    content: attr(data-text); /* here's the magic */
+    position: absolute;
 
-  opacity:0;
-  transition:.3s opacity;  
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+
+    /* move to right */
+    left: 150%;
+    margin-left: 15px; /* and add a small left margin */
+
+    /* basic styles */
+    width: 200px;
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px 9px 16px 16px;
+    z-index: 23;
+    display: none; /* hide by default */
+    text-align: left;
+
+    opacity: 0;
+    transition: 0.3s opacity;
 }
 
 .indicatorTooltip:hover:before {
-  display:block;
-  opacity:1;
+    display: block;
+    opacity: 1;
 }
