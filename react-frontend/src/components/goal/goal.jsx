@@ -2,7 +2,7 @@ import React from "react";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
 import { useIndicatorState } from "./useIndicatorState";
-import { isObject, groupBy, uniq, isNil } from "lodash";
+import { isObject, groupBy, uniq, isNil, uniqBy } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import regionLookup from "../../modules/data/region-lookup.json";
@@ -259,21 +259,23 @@ const ChartArea = props => {
     const selectedIndicator = React.useMemo(() => currentIndicators.chart, [currentIndicators]);
 
     React.useEffect(() => {
-        const yeArr = [];
-        for (const p of selectedIndicatorData || []) {
-            const date = new Date(p["Year"]);
-            const yer = date.getFullYear();
-            if (yeArr.every(x => x.label !== yer)) {
-                yeArr.push({
-                    label: yer,
-                    value: yer,
-                });
-            }
-        }
-        if (yeArr.length !== 0) {
-            setYearsArray(yeArr);
-            setYear(yeArr[0]);
-        }
+        const uniqueYearDatums = selectedIndicatorData
+            ? uniqBy(
+                  selectedIndicatorData.filter(d => !isNil(d[selectedIndicator.dataKey])),
+                  d => d.Year.getFullYear()
+              )
+            : [];
+
+        const yearsArray = uniqueYearDatums.map(row => {
+            const v = row.Year.getFullYear();
+            return {
+                label: v,
+                value: v,
+            };
+        });
+
+        setYearsArray(yearsArray);
+        setYear(yearsArray[0]);
     }, [selectedIndicatorData]);
 
     const chart = React.useMemo(() => {
