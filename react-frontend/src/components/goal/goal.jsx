@@ -27,7 +27,13 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
                 .map(indicator => ({
                     dataKey: indicator.dataKey,
                     sheet: indicator.goal.sheet,
-                })),
+                }))
+                .concat([
+                    {
+                        dataKey: "Human development index (HDI)",
+                        sheet: "BASELINE-01",
+                    },
+                ]),
             d => d.sheet
         );
 
@@ -95,7 +101,9 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                 ...region,
             };
 
-            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
+            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey)).concat([
+                "Human development index (HDI)",
+            ]);
 
             for (let row of rows) {
                 for (let dataKey of keysToFill.slice()) {
@@ -272,18 +280,21 @@ const ChartArea = props => {
         const tmp = [];
         let data = undefined;
         if (year) {
-            const pppp = selectedIndicatorData.filter(
+            const selectedYearData = selectedIndicatorData.filter(
                 o => new Date(o["Year"]).getFullYear() === year.value
             );
-            for (const d of pppp || []) {
+            for (const d of selectedYearData || []) {
                 if (d[selectedIndicator.dataKey] !== undefined) {
-                    const region = regionLookup.find(
-                        r => r["ISO-alpha3 Code"] === d["Alpha-3 code"]
+                    const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
+                    const hdiRow = selectedIndicatorData.find(
+                        r => r[ROW_KEY] === d[ROW_KEY] && r["Human development index (HDI)"]
                     );
+                    const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
+
                     tmp.push({
-                        country: region ? region["Country or Area"] : d["Alpha-3 code"],
+                        country: region ? region["Country or Area"] : d[ROW_KEY],
                         data: d[selectedIndicator.dataKey],
-                        hdi: undefined,
+                        hdi,
                     });
                 }
             }

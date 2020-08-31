@@ -110,8 +110,8 @@ const Data = props => {
                         className={styles.hoverableBar}
                         x={left}
                         width={width}
-                        y={0}
-                        height={150}
+                        y={scales.frame.top}
+                        height={scales.frame.height}
                         onMouseEnter={e =>
                             !isMobile &&
                             setHoveredData({ item: d, left, top, isWithNegativeData: minVal < 0 })
