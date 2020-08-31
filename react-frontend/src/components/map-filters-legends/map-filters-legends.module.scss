@@ -57,7 +57,7 @@ $mapVisualisationControlsWidth: 220px;
         }
 
         .bivariateIndicatorDropdownWrap {
-            max-width: calc(100% - 70px);
+            width: calc(100% - 70px);
             margin-left: 8px;
             position: relative;
             &:after {
@@ -83,6 +83,9 @@ $mapVisualisationControlsWidth: 220px;
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 130px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
     transition: opacity 0.2s;
     &[data-visible="false"] {
@@ -150,16 +153,14 @@ $mapVisualisationControlsWidth: 220px;
 // -----
 
 .mapVisualisationControls {
-    width: calc(100% - 20px);
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
 
     .mapVisualisationControlsLabel {
         font-size: 12px;
-        margin: 0 0 7px -75px;
+        margin: 0 0 7px -26px;
     }
 }
 
@@ -215,8 +216,7 @@ $mapVisualisationControlsWidth: 220px;
     width: 100%;
 
     .mapVisualisationIndicatorDropdownWrap {
-        width: 100%;
-        flex-grow: 1;
+        width: calc(100% - 70px);
         margin-left: 8px;
         position: relative;
         &:after {
@@ -253,7 +253,7 @@ $mapVisualisationControlsWidth: 220px;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    margin: 40px 30px 20px 54px;
+    margin: 40px 30px 20px 30px;
 
     @include mobileOnly() {
         width: 50%;
@@ -433,12 +433,13 @@ $lc-w-hdi: $l-w / 4;
 .indicatorTooltip {
     position: relative; /* making the .tooltip span a container for the tooltip text */
     border-radius: 50%;
+    border: 1px solid $color-blue-bg;
     width: 20px;
     height: 20px;
-    background: $color-blue-bg;
     top: 10px;
     text-align: center;
     margin-left: 10px;
+    font-weight: bold;
 }
 
 .indicatorTooltip:hover {

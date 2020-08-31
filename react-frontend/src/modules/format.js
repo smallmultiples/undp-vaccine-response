@@ -62,9 +62,9 @@ export const formatUSD = decimals => {
 export const formatCategory = () => raw => {
     if (isNil(raw) || raw === "") return "-";
 
-    const split = raw.split(";").map(d => d.trim());
+    const split = raw.split(";").map(d => d.trim()).filter(Boolean);
     if (split.length === 1) return split;
-    return split.slice(0, -1).join(", ") + " and " + last(split);
+    return split.slice(0, -1).join(", ") + ", and " + last(split);
 };
 
 export const formats = {

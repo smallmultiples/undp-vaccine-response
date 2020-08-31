@@ -29,6 +29,14 @@
     box-sizing: border-box;
     background-color: $color-light-blue;
     border-radius: 10px;
+
+    small {
+        padding-bottom: 10px;
+        a {
+            color: $color-highlight-blue;
+            text-decoration: underline;
+        }
+    }
 }
 
 .timeArea {

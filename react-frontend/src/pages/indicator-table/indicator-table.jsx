@@ -45,13 +45,14 @@ export default function IndicatorTable(props) {
         .filter(d => d.meta)
         .map(ind => {
             const label = ind.tableLabel || ind.label;
+            console.log('ind', ind);
             const countryCount = ind.meta.countryCount || 0;
 
             const cc = (
                 <div className={styles.countryCount}>
                     <div
                         className={styles.label}
-                    >{`${countryCount} / ${COUNTRIES_TOTAL} countries`}</div>
+                    >{`${countryCount} / ${COUNTRIES_TOTAL} countries and areas`}</div>
                 </div>
             );
 
@@ -72,13 +73,13 @@ export default function IndicatorTable(props) {
                 </div>
             );
 
-            return [label, cc, currency, sources];
+            return [label, currency, sources];
         });
 
     return (
         <div className={styles.indicatorTable}>
             <Table
-                headings={["Data", "Coverage", "Currency", "Data source"]}
+                headings={["Data", "Currency", "Data source"]}
                 rows={rowsForOverviewTable}
                 fixedColumns={2}
                 fixedColumnsWidth={30}
