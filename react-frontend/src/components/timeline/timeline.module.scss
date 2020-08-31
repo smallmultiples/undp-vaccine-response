@@ -2,6 +2,10 @@
 
 .timeline {
     width: 100%;
+
+    @include mobileOnly {
+        display: none;
+    }
 }
 
 // ----
