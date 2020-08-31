@@ -73,7 +73,8 @@
                 &[data-bivariate="true"] {
                     min-width: 9px;
                     min-height: 9px;
-                    background: $color-blue-bg;
+                    background: white;
+                    border: 1px solid #e1e1e1;
                 }
                 &[data-radius="true"] {
                     min-width: 9px;

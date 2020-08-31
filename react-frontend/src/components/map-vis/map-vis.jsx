@@ -257,6 +257,7 @@ const MapTooltip = props => {
                             data-bivariate
                             style={{
                                 background: scales.colorX(data),
+                                borderColor: scales.colorX(data),
                             }}
                         />
                         <div className={styles.tooltipDatumText}>
@@ -278,6 +279,7 @@ const MapTooltip = props => {
                                 data-bivariate
                                 style={{
                                     background: scales.colorX(data),
+                                    borderColor: scales.colorX(data),
                                 }}
                             />
                             <div className={styles.tooltipDatumText}>
@@ -297,6 +299,7 @@ const MapTooltip = props => {
                             data-bivariate
                             style={{
                                 background: scales.colorY(data),
+                                borderColor: scales.colorY(data),
                             }}
                         />
                         <div className={styles.tooltipDatumText}>
@@ -318,6 +321,7 @@ const MapTooltip = props => {
                                 data-bivariate
                                 style={{
                                     background: scales.colorY(data),
+                                    borderColor: scales.colorY(data),
                                 }}
                             />
                             <div className={styles.tooltipDatumText}>
