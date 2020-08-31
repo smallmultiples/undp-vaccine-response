@@ -41,6 +41,10 @@
         .indicatorSource {
             font-size: 14px;
             color: rbga($color-navy, 0.5);
+
+            a {
+                color: $color-highlight-blue;
+            }
         }
     }
 }

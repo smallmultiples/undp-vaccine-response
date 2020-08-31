@@ -50,6 +50,10 @@
         font-weight: bold;
     }
 
+    a {
+        color: $color-highlight-blue;
+    }
+
     @media (max-width: $width-mobile) {
         padding: 10px;
         font-size: 12px;
