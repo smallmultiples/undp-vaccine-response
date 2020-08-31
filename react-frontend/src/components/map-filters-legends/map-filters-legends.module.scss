@@ -5,6 +5,7 @@ $mapVisualisationControlsWidth: 220px;
 
 .mapFiltersLegends {
     width: 20%;
+    min-width: 256px;
 
     @include mobileOnly() {
         width: 100%;
