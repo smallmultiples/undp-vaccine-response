@@ -13,13 +13,10 @@
     height: 560px;
     position: relative;
     border: 1px solid $color-blue-bg;
-    margin: 24px 0;
+    margin: 24px 0 10px;
 
     @include mobileOnly() {
         height: 360px;
-        width: calc(100% + 64px);
-        margin-left: -32px;
-        margin-right: -32px;
     }
 }
 
@@ -187,4 +184,13 @@
 .button3D {
     @include button();
     width: fit-content;
+}
+
+.mapDisclaimer {
+    color: $color-grey;
+
+    @include mobileOnly() {
+        display: block;
+        margin-bottom: 30px;
+    }
 }
