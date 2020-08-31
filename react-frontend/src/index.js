@@ -39,8 +39,8 @@ function getUrlParams() {
     const { pathname, search } = window.location;
 
     // Pillars
-    if (pathname.startsWith("/undps-response")) {
-        const split = pathname.replace("/undps-response/", "").split("/");
+    if (pathname.startsWith("/undps-response/") || pathname.startsWith("/covid-19/")) {
+        const split = pathname.replace("/undps-response/", "").replace("/covid-19/", "").split("/");
         const pillarSlug = split[0];
         const bucketSlug = split[1] || null;
         const query = qs.parse(search.replace("?", ""));

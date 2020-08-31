@@ -115,6 +115,13 @@ export default function useTimelineState(selectedIndicatorData) {
         }
     }, [timespan, currentTime]);
 
+    React.useEffect(() => {
+        // If timespan changes, set to the most recent
+        if (isDateValid(timespan[1])) {
+            setCurrentTime(timespan[1]);
+        }
+    }, [timespan]);
+
     return {
         currentTime,
         setCurrentTime,
