@@ -250,13 +250,7 @@ export default function Goal(props) {
 const isDef = d => !isNil(d) && d !== "";
 
 const ChartArea = props => {
-    const {
-        regionLookup,
-        currentIndicators,
-        setCurrentIndicators,
-        selectedIndicatorData,
-        goalDatasets,
-    } = props;
+    const { regionLookup, currentIndicators, setCurrentIndicators, goalDatasets } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
 
@@ -270,7 +264,7 @@ const ChartArea = props => {
     ]);
 
     React.useEffect(() => {
-        const uniqueYearDatums = goalDatasets
+        const uniqueYearDatums = indicatorDataset
             ? uniqBy(
                   indicatorDataset.filter(d => isDef(d[selectedIndicator.dataKey])),
                   d => d.Year.getFullYear()
@@ -287,10 +281,9 @@ const ChartArea = props => {
 
         setYearsArray(yearsArray);
         setYear(yearsArray[0]);
-    }, [selectedIndicatorData]);
+    }, [indicatorDataset, selectedIndicator]);
 
     const chart = React.useMemo(() => {
-        const tmp = [];
         if (year) {
             const selectedYearData = indicatorDataset
                 .filter(o => new Date(o["Year"]).getFullYear() === year.value)
@@ -317,7 +310,7 @@ const ChartArea = props => {
             }
         }
         return undefined;
-    }, [selectedIndicatorData, year, selectedIndicator, regionLookup]);
+    }, [indicatorDataset, year, selectedIndicator, regionLookup, commonData]);
 
     return (
         <div className={styles.chartArea}>
