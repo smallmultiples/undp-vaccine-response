@@ -247,23 +247,26 @@ export default function Goal(props) {
     );
 }
 
+const isDef = d => !isNil(d) && d !== "";
+
 const ChartArea = props => {
-    const {
-        regionLookup,
-        currentIndicators,
-        setCurrentIndicators,
-        selectedIndicatorData,
-        goalDatasets,
-    } = props;
+    const { regionLookup, currentIndicators, setCurrentIndicators, goalDatasets } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
 
     const selectedIndicator = React.useMemo(() => currentIndicators.chart, [currentIndicators]);
+    const indicatorDataset = React.useMemo(
+        () => goalDatasets && goalDatasets[selectedIndicator.goal.sheet],
+        [goalDatasets, selectedIndicator]
+    );
+    const commonData = React.useMemo(() => goalDatasets && goalDatasets["BASELINE-01"], [
+        goalDatasets,
+    ]);
 
     React.useEffect(() => {
-        const uniqueYearDatums = selectedIndicatorData
+        const uniqueYearDatums = indicatorDataset
             ? uniqBy(
-                  selectedIndicatorData.filter(d => !isNil(d[selectedIndicator.dataKey])),
+                  indicatorDataset.filter(d => isDef(d[selectedIndicator.dataKey])),
                   d => d.Year.getFullYear()
               )
             : [];
@@ -278,44 +281,36 @@ const ChartArea = props => {
 
         setYearsArray(yearsArray);
         setYear(yearsArray[0]);
-    }, [selectedIndicatorData]);
-
-    const commonData = React.useMemo(() => goalDatasets && goalDatasets["BASELINE-01"]);
+    }, [indicatorDataset, selectedIndicator]);
 
     const chart = React.useMemo(() => {
-        const tmp = [];
-        let data = undefined;
         if (year) {
-            const selectedYearData = selectedIndicatorData.filter(
-                o => new Date(o["Year"]).getFullYear() === year.value
-            );
-            for (const d of selectedYearData || []) {
-                if (d[selectedIndicator.dataKey] !== undefined) {
-                    const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
-                    const hdiRow = commonData.find(
-                        r =>
-                            r[ROW_KEY] === d[ROW_KEY] &&
-                            r["Human development index (HDI)"] &&
-                            r.Year.getFullYear() === 2018
-                    );
-                    const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
+            const selectedYearData = indicatorDataset
+                .filter(o => new Date(o["Year"]).getFullYear() === year.value)
+                .filter(d => isDef(d[selectedIndicator.dataKey]));
+            const data = selectedYearData.map(d => {
+                const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
+                const hdiRow = commonData.find(
+                    r =>
+                        r[ROW_KEY] === d[ROW_KEY] &&
+                        r["Human development index (HDI)"] &&
+                        r.Year.getFullYear() === 2018
+                );
+                const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
 
-                    tmp.push({
-                        country: region ? region["Country or Area"] : d[ROW_KEY],
-                        data: d[selectedIndicator.dataKey],
-                        hdi,
-                    });
-                }
-            }
-            if (tmp.length > 0) {
-                data = {
-                    indicator: selectedIndicator,
-                    data: tmp.filter(d => d.data !== ""),
+                return {
+                    country: region ? region["Country or Area"] : d[ROW_KEY],
+                    data: d[selectedIndicator.dataKey],
+                    hdi,
                 };
+            });
+
+            if (data.length > 0) {
+                return <Chart indicator={selectedIndicator} data={data} />;
             }
         }
-        return data ? <Chart indicator={data.indicator} data={data.data} /> : undefined;
-    }, [selectedIndicatorData, year, selectedIndicator, regionLookup]);
+        return undefined;
+    }, [indicatorDataset, year, selectedIndicator, regionLookup, commonData]);
 
     return (
         <div className={styles.chartArea}>
