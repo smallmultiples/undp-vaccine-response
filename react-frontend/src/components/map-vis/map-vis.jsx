@@ -11,8 +11,6 @@ import useMediaQuery from "../../hooks/use-media-query";
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
 
-const HIGHLIGHT_COLOUR = [243, 213, 22]; // #F3D516
-
 // Bounds we zoom to on load.
 // North west lng lat
 // South east lng lat
