@@ -16,47 +16,61 @@ function useTimelinePlaying(ticks, setCurrentTime) {
     const lastFrameTime = React.useRef(null);
     const [stepProgress, setStepProgress] = React.useState(0);
 
+    const internalStepProgressRef = React.useRef(0);
+
     React.useEffect(() => {
-        if (!playing) return;
+        if (!playing) {
+            cancelAnimationFrame(frameRef.current);
+            frameRef.current = null;
+            lastFrameTime.current = null;
+            setStepProgress(0);
+            internalStepProgressRef.current = 0;
+            return;
+        }
 
         setCurrentTime(current => {
             // If we start playing and we're at the end, go back to the start
-            if (current.getTime() === last(ticks).getTime()) {
+            if (current.getYear() === last(ticks).getYear()) {
                 return ticks[0];
             }
             return current;
         });
 
         const frameCallback = now => {
+            const current = internalStepProgressRef.current;
+            if (!playing) return;
+
+            let continuePlaying = true;
             const dt = lastFrameTime.current ? (now - lastFrameTime.current) / 1000 : 1 / 60;
 
             const addProgress = (1 / 2.0) * dt; // 2 seconds per step
+            let newProg = Math.min(1, current + addProgress);
 
-            setStepProgress(current => {
-                const newProg = Math.min(1, current + addProgress);
+            if (newProg >= 1) {
+                // Go to next step.
+                setCurrentTime(currentTime => {
+                    const currentIndex = ticks.findIndex(
+                        t => t.getYear() === currentTime.getYear()
+                    );
+                    const nextIndex = currentIndex + 1;
+                    const nextTime = ticks[nextIndex];
+                    if (nextIndex === ticks.length - 1) {
+                        // Stop playing if we're moving to the last time
+                        setPlaying(false);
+                        continuePlaying = false;
+                    }
+                    return nextTime;
+                });
+                newProg = 0;
+            }
 
-                if (newProg >= 1) {
-                    // Go to next step.
-                    setCurrentTime(currentTime => {
-                        const currentIndex = ticks.findIndex(
-                            t => t.getTime() === currentTime.getTime()
-                        );
-                        const nextIndex = currentIndex + 1;
-                        const nextTime = ticks[nextIndex];
-                        if (nextIndex === ticks.length - 1) {
-                            // Stop playing if we're moving to the last time
-                            setPlaying(false);
-                        }
-                        return nextTime;
-                    });
-                    return 0;
-                } else {
-                    return newProg;
-                }
-            });
+            internalStepProgressRef.current = newProg;
+            setStepProgress(newProg);
 
-            lastFrameTime.current = now;
-            frameRef.current = requestAnimationFrame(frameCallback);
+            if (continuePlaying) {
+                lastFrameTime.current = now;
+                frameRef.current = requestAnimationFrame(frameCallback);
+            }
         };
 
         frameRef.current = requestAnimationFrame(frameCallback);
@@ -67,6 +81,7 @@ function useTimelinePlaying(ticks, setCurrentTime) {
                 frameRef.current = null;
                 lastFrameTime.current = null;
                 setStepProgress(0);
+                internalStepProgressRef.current = 0;
             }
         };
     }, [playing, ticks, setCurrentTime]);

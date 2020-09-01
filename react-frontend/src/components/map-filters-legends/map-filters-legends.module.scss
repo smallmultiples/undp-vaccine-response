@@ -5,6 +5,7 @@ $mapVisualisationControlsWidth: 220px;
 
 .mapFiltersLegends {
     width: 20%;
+    min-width: 256px;
 
     @include mobileOnly() {
         width: 100%;
@@ -79,12 +80,16 @@ $mapVisualisationControlsWidth: 220px;
 
 // -----
 
+.categoryLegend {
+    width: calc(100% - 60px);
+}
+
 .categoryList {
     list-style: none;
     padding: 0;
     margin: 0;
     max-height: 130px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 
     transition: opacity 0.2s;
@@ -440,6 +445,8 @@ $lc-w-hdi: $l-w / 4;
     text-align: center;
     margin-left: 10px;
     font-weight: bold;
+    font-size: 14px;
+    line-height: 1.4em;
 }
 
 .indicatorTooltip:hover {

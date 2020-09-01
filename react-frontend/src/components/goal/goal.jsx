@@ -21,19 +21,17 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
 
         let newData = [];
 
+        const enabledIndicators = [
+            currentIndicators.bivariateXEnabled && currentIndicators.bivariateX,
+            currentIndicators.bivariateYEnabled && currentIndicators.bivariateY,
+            currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
+        ].filter(Boolean);
+
         const selectedDatums = groupBy(
-            Object.values(currentIndicators)
-                .filter(d => d.label)
-                .map(indicator => ({
-                    dataKey: indicator.dataKey,
-                    sheet: indicator.goal.sheet,
-                }))
-                .concat([
-                    {
-                        dataKey: "Human development index (HDI)",
-                        sheet: "BASELINE-01",
-                    },
-                ]),
+            enabledIndicators.map(indicator => ({
+                dataKey: indicator.dataKey,
+                sheet: indicator.goal.sheet,
+            })),
             d => d.sheet
         );
 
@@ -101,9 +99,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                 ...region,
             };
 
-            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey)).concat([
-                "Human development index (HDI)",
-            ]);
+            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
 
             for (let row of rows) {
                 for (let dataKey of keysToFill.slice()) {
@@ -240,10 +236,7 @@ export default function Goal(props) {
                 <Timeline timelineState={timelineState} />
             </div>
             <ChartArea
-                pillar={pillar}
                 goalDatasets={goalDatasets}
-                goal={goal}
-                pillarLoading={pillarLoading}
                 regionLookup={regionLookup}
                 currentIndicators={currentIndicators}
                 setCurrentIndicators={setCurrentIndicators}
@@ -254,17 +247,26 @@ export default function Goal(props) {
     );
 }
 
+const isDef = d => !isNil(d) && d !== "";
+
 const ChartArea = props => {
-    const { regionLookup, currentIndicators, setCurrentIndicators, selectedIndicatorData } = props;
+    const { regionLookup, currentIndicators, setCurrentIndicators, goalDatasets } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
 
     const selectedIndicator = React.useMemo(() => currentIndicators.chart, [currentIndicators]);
+    const indicatorDataset = React.useMemo(
+        () => goalDatasets && goalDatasets[selectedIndicator.goal.sheet],
+        [goalDatasets, selectedIndicator]
+    );
+    const commonData = React.useMemo(() => goalDatasets && goalDatasets["BASELINE-01"], [
+        goalDatasets,
+    ]);
 
     React.useEffect(() => {
-        const uniqueYearDatums = selectedIndicatorData
+        const uniqueYearDatums = indicatorDataset
             ? uniqBy(
-                  selectedIndicatorData.filter(d => !isNil(d[selectedIndicator.dataKey])),
+                  indicatorDataset.filter(d => isDef(d[selectedIndicator.dataKey])),
                   d => d.Year.getFullYear()
               )
             : [];
@@ -279,39 +281,36 @@ const ChartArea = props => {
 
         setYearsArray(yearsArray);
         setYear(yearsArray[0]);
-    }, [selectedIndicatorData]);
+    }, [indicatorDataset, selectedIndicator]);
 
     const chart = React.useMemo(() => {
-        const tmp = [];
-        let data = undefined;
         if (year) {
-            const selectedYearData = selectedIndicatorData.filter(
-                o => new Date(o["Year"]).getFullYear() === year.value
-            );
-            for (const d of selectedYearData || []) {
-                if (d[selectedIndicator.dataKey] !== undefined) {
-                    const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
-                    const hdiRow = selectedIndicatorData.find(
-                        r => r[ROW_KEY] === d[ROW_KEY] && r["Human development index (HDI)"]
-                    );
-                    const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
+            const selectedYearData = indicatorDataset
+                .filter(o => new Date(o["Year"]).getFullYear() === year.value)
+                .filter(d => isDef(d[selectedIndicator.dataKey]));
+            const data = selectedYearData.map(d => {
+                const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
+                const hdiRow = commonData.find(
+                    r =>
+                        r[ROW_KEY] === d[ROW_KEY] &&
+                        r["Human development index (HDI)"] &&
+                        r.Year.getFullYear() === 2018
+                );
+                const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
 
-                    tmp.push({
-                        country: region ? region["Country or Area"] : d[ROW_KEY],
-                        data: d[selectedIndicator.dataKey],
-                        hdi,
-                    });
-                }
-            }
-            if (tmp.length > 0) {
-                data = {
-                    indicator: selectedIndicator,
-                    data: tmp.filter(d => d.data !== ""),
+                return {
+                    country: region ? region["Country or Area"] : d[ROW_KEY],
+                    data: d[selectedIndicator.dataKey],
+                    hdi,
                 };
+            });
+
+            if (data.length > 0) {
+                return <Chart indicator={selectedIndicator} data={data} />;
             }
         }
-        return data ? <Chart indicator={data.indicator} data={data.data} /> : undefined;
-    }, [selectedIndicatorData, year, selectedIndicator, regionLookup]);
+        return undefined;
+    }, [indicatorDataset, year, selectedIndicator, regionLookup, commonData]);
 
     return (
         <div className={styles.chartArea}>
@@ -345,8 +344,39 @@ const ChartArea = props => {
                     className={styles.yearSelector}
                     noGap
                 />
+                <Legend />
             </div>
             {chart}
+        </div>
+    );
+};
+
+const Legend = props => {
+    return (
+        <div className={styles.legendContainer}>
+            <div className={styles.legendTitle}>Human Development Group (2018)</div>
+            <div className={styles.legend}>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-na={true} />
+                    <span>N/A</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-low={true} />
+                    <span>Low</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-medium={true} />
+                    <span>Medium</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-high={true} />
+                    <span>High</span>
+                </div>
+                <div className={styles.legendItem}>
+                    <div className={styles.box} data-very-high={true} />
+                    <span>Very high</span>
+                </div>
+            </div>
         </div>
     );
 };

@@ -87,9 +87,6 @@ const MapVis = props => {
             },
             stroked: true,
             getLineColor: shape => {
-                if (selectedCountryCode && selectedCountryCode === shape.properties[GEO_SHAPE_ID]) {
-                    return HIGHLIGHT_COLOUR;
-                }
                 const row = normalizedData && normalizedData[shape.properties[GEO_SHAPE_ID]];
                 return scales.stroke(row);
             },
@@ -109,7 +106,7 @@ const MapVis = props => {
             },
             updateTriggers: {
                 getFillColor: [normalizedData, currentIndicators],
-                getLineColor: [normalizedData, currentIndicators, selectedCountryCode],
+                getLineColor: [normalizedData, currentIndicators],
                 getLineWidth: [selectedCountryCode],
             },
         }),
@@ -257,6 +254,7 @@ const MapTooltip = props => {
                             data-bivariate
                             style={{
                                 background: scales.colorX(data),
+                                borderColor: scales.colorX(data),
                             }}
                         />
                         <div className={styles.tooltipDatumText}>
@@ -278,6 +276,7 @@ const MapTooltip = props => {
                                 data-bivariate
                                 style={{
                                     background: scales.colorX(data),
+                                    borderColor: scales.colorX(data),
                                 }}
                             />
                             <div className={styles.tooltipDatumText}>
@@ -297,6 +296,7 @@ const MapTooltip = props => {
                             data-bivariate
                             style={{
                                 background: scales.colorY(data),
+                                borderColor: scales.colorY(data),
                             }}
                         />
                         <div className={styles.tooltipDatumText}>
@@ -318,6 +318,7 @@ const MapTooltip = props => {
                                 data-bivariate
                                 style={{
                                     background: scales.colorY(data),
+                                    borderColor: scales.colorY(data),
                                 }}
                             />
                             <div className={styles.tooltipDatumText}>
