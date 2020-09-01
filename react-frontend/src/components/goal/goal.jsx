@@ -265,7 +265,9 @@ const ChartArea = props => {
         () => goalDatasets && goalDatasets[selectedIndicator.goal.sheet],
         [goalDatasets, selectedIndicator]
     );
-    const commonData = React.useMemo(() => goalDatasets && goalDatasets["BASELINE-01"]);
+    const commonData = React.useMemo(() => goalDatasets && goalDatasets["BASELINE-01"], [
+        goalDatasets,
+    ]);
 
     React.useEffect(() => {
         const uniqueYearDatums = goalDatasets
