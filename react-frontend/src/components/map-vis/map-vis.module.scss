@@ -37,7 +37,7 @@
     background: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     pointer-events: none;
-    width: 200px;
+    width: 240px;
     box-sizing: content-box;
     z-index: 23;
     left: 0;
@@ -110,7 +110,8 @@
                     @include body();
                     font-size: 12px;
                     line-height: 12px;
-                    margin-top: 6px;
+                    margin-bottom: 6px;
+                    color: rgba($color-navy, 0.5);
                 }
             }
         }
