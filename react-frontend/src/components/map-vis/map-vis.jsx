@@ -160,12 +160,14 @@ const getFormattedMapValue = (row, indicator) => {
     if (isNil(val) || val === "") return "-";
     return indicator.format(val);
 };
-const getFormattedMapDate = (row, indicator) => {
+const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
     const year = date ? date.getFullYear() : null;
+    if (!year) return null;
     const lastUpdated =
         indicator.meta && indicator.meta.lastUpdated ? " (" + indicator.meta.lastUpdated + ")" : "";
-    return `${year}${lastUpdated}`;
+    const dateStr = `${year}${lastUpdated}`;
+    return <div className={styles.tooltipDatumDate}>{dateStr}</div>;
 };
 
 const MapTooltip = props => {
@@ -178,32 +180,68 @@ const MapTooltip = props => {
 
     if (!data) return null;
 
-    let category = null;
-    const mapVisualisationIndicator = currentIndicators.mapVisualisation;
-
-    // TODO: tidy up Map VIsualisation Indicator tooltip.
-    if (mapVisualisationIndicator && mapVisualisationIndicator.categorical) {
-        category = (
+    const mapVisRow = currentIndicators.mapVisualisationEnabled &&
+        currentIndicators.mapVisualisation && (
             <div className={styles.tooltipDatum}>
-                <div className={styles.tooltipDatumIcon} data-category />
+                <div
+                    className={styles.tooltipDatumIcon}
+                    data-radius={!currentIndicators.mapVisualisation.categorical}
+                    data-category={currentIndicators.mapVisualisation.categorical}
+                />
                 <div className={styles.tooltipDatumText}>
-                    <div className={styles.tooltipDatumDate}>
-                        {getFormattedMapDate(data, mapVisualisationIndicator)}
-                    </div>
+                    {renderFormattedMapDate(data, currentIndicators.mapVisualisation)}
                     <div className={styles.tooltipDatumLabel}>
-                        {mapVisualisationIndicator.label}
+                        {currentIndicators.mapVisualisation.label}
                     </div>
                     <div className={styles.tooltipDatumValue}>
-                        {getFormattedMapValue(data, mapVisualisationIndicator)}
+                        {getFormattedMapValue(data, currentIndicators.mapVisualisation)}
                     </div>
                 </div>
             </div>
         );
-    }
+
+    const bivariateXRow = currentIndicators.bivariateXEnabled && (
+        <div className={styles.tooltipDatum}>
+            <div
+                className={styles.tooltipDatumIcon}
+                data-bivariate
+                style={{
+                    background: scales.colorX(data),
+                    borderColor: scales.colorX(data),
+                }}
+            />
+            <div className={styles.tooltipDatumText}>
+                {renderFormattedMapDate(data, currentIndicators.bivariateX)}
+                <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateX.label}</div>
+                <div className={styles.tooltipDatumValue}>
+                    {getFormattedMapValue(data, currentIndicators.bivariateX)}
+                </div>
+            </div>
+        </div>
+    );
+
+    const bivariateYRow = currentIndicators.bivariateYEnabled && (
+        <div className={styles.tooltipDatum}>
+            <div
+                className={styles.tooltipDatumIcon}
+                data-bivariate
+                style={{
+                    background: scales.colorY(data),
+                    borderColor: scales.colorY(data),
+                }}
+            />
+            <div className={styles.tooltipDatumText}>
+                {renderFormattedMapDate(data, currentIndicators.bivariateY)}
+                <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateY.label}</div>
+                <div className={styles.tooltipDatumValue}>
+                    {getFormattedMapValue(data, currentIndicators.bivariateY)}
+                </div>
+            </div>
+        </div>
+    );
 
     const clampedLeft = `min(${tooltip.x}px, calc(${mapContainerDimensions.width}px - 100%))`;
     const clampedY = `min(${tooltip.y}px, calc(${mapContainerDimensions.height}px - 100%))`;
-
     const transform = `translate(${clampedLeft}, ${clampedY})`;
 
     return (
@@ -217,73 +255,9 @@ const MapTooltip = props => {
                 <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
             </div>
             <div className={styles.tooltipBody}>
-                {currentIndicators.mapVisualisationEnabled &&
-                    mapVisualisationIndicator &&
-                    !mapVisualisationIndicator.categorical && (
-                        <div className={styles.tooltipDatum}>
-                            <div className={styles.tooltipDatumIcon} data-radius />
-                            <div className={styles.tooltipDatumText}>
-                                <div className={styles.tooltipDatumDate}>
-                                    {getFormattedMapDate(data, currentIndicators.mapVisualisation)}
-                                </div>
-                                <div className={styles.tooltipDatumLabel}>
-                                    {currentIndicators.mapVisualisation.label}
-                                </div>
-                                <div className={styles.tooltipDatumValue}>
-                                    {getFormattedMapValue(data, currentIndicators.mapVisualisation)}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                {category}
-                {currentIndicators.bivariateXEnabled && (
-                    <div className={styles.tooltipDatum}>
-                        <div
-                            className={styles.tooltipDatumIcon}
-                            data-bivariate
-                            style={{
-                                background: scales.colorX(data),
-                                borderColor: scales.colorX(data),
-                            }}
-                        />
-                        <div className={styles.tooltipDatumText}>
-                            <div className={styles.tooltipDatumDate}>
-                                {getFormattedMapDate(data, currentIndicators.bivariateX)}
-                            </div>
-                            <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.bivariateX.label}
-                            </div>
-                            <div className={styles.tooltipDatumValue}>
-                                {getFormattedMapValue(data, currentIndicators.bivariateX)}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {currentIndicators.bivariateYEnabled && (
-                    <div className={styles.tooltipDatum}>
-                        <div
-                            className={styles.tooltipDatumIcon}
-                            data-bivariate
-                            style={{
-                                background: scales.colorY(data),
-                                borderColor: scales.colorY(data),
-                            }}
-                        />
-                        <div className={styles.tooltipDatumText}>
-                            <div className={styles.tooltipDatumDate}>
-                                {getFormattedMapDate(data, currentIndicators.bivariateY)}
-                            </div>
-                            <div className={styles.tooltipDatumLabel}>
-                                {currentIndicators.bivariateY.label}
-                            </div>
-                            <div className={styles.tooltipDatumValue}>
-                                {getFormattedMapValue(data, currentIndicators.bivariateY)}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {mapVisRow}
+                {bivariateXRow}
+                {bivariateYRow}
             </div>
         </div>
     );
