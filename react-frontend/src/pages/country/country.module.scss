@@ -126,3 +126,12 @@
         }
     }
 }
+
+.mapDisclaimer {
+    color: $color-grey;
+
+    @include mobileOnly() {
+        display: block;
+        margin-bottom: 30px;
+    }
+}
