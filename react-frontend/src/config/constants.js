@@ -31,4 +31,6 @@ if (!MAPBOX_TOKEN) {
 }
 
 export const MAPBOX_BASEMAP_STYLE_ID =
-    process.env.REACT_APP_BASEMAP_ID || "mapbox://styles/smallmultiples/ckce9r0ee0kj31jrz4t34myuj";
+    process.env.REACT_APP_BASEMAP_ID ||
+    "mapbox://styles/undpdata/ckeiht18j4tgz19nxgiw55toy" ||
+    "mapbox://styles/smallmultiples/ckce9r0ee0kj31jrz4t34myuj";
