@@ -106,6 +106,12 @@
                     @include body();
                     font-weight: bold;
                 }
+                .tooltipDatumDate {
+                    @include body();
+                    font-size: 12px;
+                    line-height: 12px;
+                    margin-top: 6px;
+                }
             }
         }
     }

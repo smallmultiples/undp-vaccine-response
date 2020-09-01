@@ -97,6 +97,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
             ret[rowKey] = {
                 [ROW_KEY]: rowKey,
                 ...region,
+                dates: {},
             };
 
             let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
@@ -107,6 +108,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                     if (!isNil(rowValue)) {
                         // If it is a non nil value, copy to the output object
                         ret[rowKey][dataKey] = rowValue;
+                        ret[rowKey].dates[dataKey] = row[TIME_KEY];
                         // And remove the key from the list  we need to fill
                         keysToFill = keysToFill.filter(d => d !== dataKey);
                     }
