@@ -22,13 +22,15 @@
         "react-scripts": "3.4.1",
         "react-select": "^3.1.0",
         "react-spring": "^8.0.27",
+        "source-map-explorer": "^2.5.0",
         "topojson-client": "^3.1.0"
     },
     "scripts": {
         "start": "craco start",
         "build": "craco build",
         "test": "craco test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "analyze": "source-map-explorer 'build/static/js/*.js'"
     },
     "eslintConfig": {
         "extends": "react-app"
