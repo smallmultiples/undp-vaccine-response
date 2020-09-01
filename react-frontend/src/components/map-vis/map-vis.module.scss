@@ -2,6 +2,7 @@
 
 .mapOuterContainer {
     width: 80%;
+    line-height: 1.2em;
 
     @include mobileOnly() {
         width: 100%;

@@ -32,9 +32,12 @@
 
     small {
         padding-bottom: 10px;
+        line-height: 1.6em;
         a {
             color: $color-highlight-blue;
             text-decoration: underline;
+            font-size: 1em;
+            font-weight: normal;
         }
     }
 }

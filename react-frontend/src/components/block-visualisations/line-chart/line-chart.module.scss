@@ -17,7 +17,8 @@
     fill: $color-navy;
 }
 
-.chartLabel, .chartDataLabel {
+.chartLabel,
+.chartDataLabel {
     @include bodyXSmall();
     color: $color-navy;
     text-align: center;
@@ -50,7 +51,7 @@
 }
 
 .secondaryLabel {
-    margin-bottom: 5px;
+    margin: 15px 0 5px;
 }
 
 .dataSource {
