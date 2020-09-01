@@ -177,16 +177,64 @@ export default function Goal(props) {
         <div className={styles.goal}>
             {goal.incomplete ? (
                 <div className={styles.comingSoonBanner}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
                         <path
-                            d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
+                            d="M12 2V6"
                             stroke="#0969FA"
                             stroke-width="2"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                         />
                         <path
-                            d="M16 8.00036V13.0004C16 13.796 16.3161 14.5591 16.8787 15.1217C17.4413 15.6843 18.2044 16.0004 19 16.0004C19.7957 16.0004 20.5587 15.6843 21.1213 15.1217C21.6839 14.5591 22 13.796 22 13.0004V12.0004C21.9999 9.74339 21.2362 7.55283 19.8333 5.78489C18.4303 4.01694 16.4706 2.77558 14.2726 2.26265C12.0747 1.74973 9.76794 1.9954 7.72736 2.95972C5.68677 3.92405 4.03241 5.55031 3.03327 7.57408C2.03413 9.59785 1.74898 11.9001 2.22418 14.1065C2.69938 16.3128 3.90699 18.2936 5.65064 19.7266C7.39429 21.1597 9.57144 21.9607 11.8281 21.9995C14.0847 22.0383 16.2881 21.3126 18.08 19.9404"
+                            d="M12 18V22"
+                            stroke="#0969FA"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M4.93018 4.93005L7.76018 7.76005"
+                            stroke="#0969FA"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M16.2402 16.24L19.0702 19.07"
+                            stroke="#0969FA"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M2 12H6"
+                            stroke="#0969FA"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M18 12H22"
+                            stroke="#0969FA"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M4.93018 19.07L7.76018 16.24"
+                            stroke="#0969FA"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                        <path
+                            d="M16.2402 7.76005L19.0702 4.93005"
                             stroke="#0969FA"
                             stroke-width="2"
                             stroke-linecap="round"
@@ -195,11 +243,8 @@ export default function Goal(props) {
                     </svg>
 
                     <p>
-                        <strong>
-                            <a href="/get-involved/">Get notified</a>
-                            <br />
-                        </strong>{" "}
-                        when more indicators are added to this tool.
+                        <strong>We're still working</strong> on adding more more indicators are
+                        added to this tool.
                     </p>
                 </div>
             ) : null}
