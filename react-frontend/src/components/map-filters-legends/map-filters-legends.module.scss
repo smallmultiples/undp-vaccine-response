@@ -98,11 +98,12 @@ $mapVisualisationControlsWidth: 220px;
     }
 
     .categoryItemRow {
-        .categoryItemCell {
-            margin-right: 8px;
-        }
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
         .categoryIcon {
-            display: inline-block;
+            display: block;
             max-width: 9px;
             max-height: 9px;
             min-width: 9px;
@@ -148,9 +149,9 @@ $mapVisualisationControlsWidth: 220px;
             @include body();
             font-weight: $weight-medium;
             font-size: 12px;
-            padding-bottom: 4px;
             display: inline-block;
-            transform: translateY(-2px);
+            padding: 6px 0 6px 4px;
+            line-height: 1.2;
         }
     }
 }
