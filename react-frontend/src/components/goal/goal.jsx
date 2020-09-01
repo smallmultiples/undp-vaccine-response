@@ -21,19 +21,17 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
 
         let newData = [];
 
+        const enabledIndicators = [
+            currentIndicators.bivariateXEnabled && currentIndicators.bivariateX,
+            currentIndicators.bivariateYEnabled && currentIndicators.bivariateY,
+            currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
+        ].filter(Boolean);
+
         const selectedDatums = groupBy(
-            Object.values(currentIndicators)
-                .filter(d => d.label)
-                .map(indicator => ({
-                    dataKey: indicator.dataKey,
-                    sheet: indicator.goal.sheet,
-                }))
-                .concat([
-                    {
-                        dataKey: "Human development index (HDI)",
-                        sheet: "BASELINE-01",
-                    },
-                ]),
+            enabledIndicators.map(indicator => ({
+                dataKey: indicator.dataKey,
+                sheet: indicator.goal.sheet,
+            })),
             d => d.sheet
         );
 
@@ -101,9 +99,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                 ...region,
             };
 
-            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey)).concat([
-                "Human development index (HDI)",
-            ]);
+            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
 
             for (let row of rows) {
                 for (let dataKey of keysToFill.slice()) {
@@ -240,10 +236,7 @@ export default function Goal(props) {
                 <Timeline timelineState={timelineState} />
             </div>
             <ChartArea
-                pillar={pillar}
                 goalDatasets={goalDatasets}
-                goal={goal}
-                pillarLoading={pillarLoading}
                 regionLookup={regionLookup}
                 currentIndicators={currentIndicators}
                 setCurrentIndicators={setCurrentIndicators}
@@ -255,7 +248,13 @@ export default function Goal(props) {
 }
 
 const ChartArea = props => {
-    const { regionLookup, currentIndicators, setCurrentIndicators, selectedIndicatorData } = props;
+    const {
+        regionLookup,
+        currentIndicators,
+        setCurrentIndicators,
+        selectedIndicatorData,
+        goalDatasets,
+    } = props;
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
 
@@ -281,6 +280,8 @@ const ChartArea = props => {
         setYear(yearsArray[0]);
     }, [selectedIndicatorData]);
 
+    const commonData = React.useMemo(() => goalDatasets && goalDatasets["BASELINE-01"]);
+
     const chart = React.useMemo(() => {
         const tmp = [];
         let data = undefined;
@@ -291,7 +292,7 @@ const ChartArea = props => {
             for (const d of selectedYearData || []) {
                 if (d[selectedIndicator.dataKey] !== undefined) {
                     const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
-                    const hdiRow = selectedIndicatorData.find(
+                    const hdiRow = commonData.find(
                         r =>
                             r[ROW_KEY] === d[ROW_KEY] &&
                             r["Human development index (HDI)"] &&
