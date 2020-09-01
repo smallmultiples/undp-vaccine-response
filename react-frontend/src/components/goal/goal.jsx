@@ -196,7 +196,7 @@ export default function Goal(props) {
 
                     <p>
                         <strong>
-                            <a href="#">Get notified</a>
+                            <a href="/get-involved/">Get notified</a>
                             <br />
                         </strong>{" "}
                         when more indicators are added to this tool.
