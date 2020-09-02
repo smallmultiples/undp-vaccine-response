@@ -242,7 +242,7 @@ const MapTooltip = props => {
             />
             <div className={styles.tooltipDatumText}>
                 {renderFormattedMapDate(data, currentIndicators.bivariateX)}
-                <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateX.label}</div>
+                <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateX.tableLabel ? currentIndicators.bivariateX.tableLabel : currentIndicators.bivariateX.label}</div>
                 <div className={styles.tooltipDatumValue}>
                     {getFormattedMapValue(data, currentIndicators.bivariateX)}
                 </div>
