@@ -129,7 +129,7 @@ const MapVis = props => {
                 {viewport && (
                     <DeckGL
                         viewState={viewport}
-                        controller={{ type: MapController, dragPan: !isMobile }}
+                        controller={{ type: MapController, dragPan: !isMobile, scrollZoom: false }}
                         layers={layers}
                         onViewStateChange={handleViewStateChange}
                     />
