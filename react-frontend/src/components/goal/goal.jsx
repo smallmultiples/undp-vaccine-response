@@ -245,8 +245,7 @@ export default function Goal(props) {
                     </svg>
 
                     <p>
-                        <strong>We're still working</strong> on adding more more indicators are
-                        added to this tool.
+                        <strong>We're still working</strong> on adding more indicators to this tool.
                     </p>
                 </div>
             ) : null}
@@ -397,7 +396,9 @@ const ChartArea = props => {
             <div className={styles.chartSelectors}>
                 <Select
                     options={currentIndicators.chartOptions}
-                    getOptionLabel={option => option.tableLabel ? option.tableLabel : option.label}
+                    getOptionLabel={option =>
+                        option.tableLabel ? option.tableLabel : option.label
+                    }
                     onChange={indicator => {
                         setCurrentIndicators(d => ({ ...d, chart: indicator }));
                     }}
