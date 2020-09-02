@@ -1,5 +1,5 @@
 import axios from "axios";
-import DeckGL, { GeoJsonLayer, MapController, FlyToInterpolator } from "deck.gl";
+import DeckGL, { GeoJsonLayer, MapController } from "deck.gl";
 import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import { feature as topojsonParse } from "topojson-client";
@@ -82,7 +82,7 @@ const MapVis = props => {
                 },
             });
         },
-        [viewport]
+        [viewport, handleViewStateChange]
     );
 
     const loading = [geoLoading, countryDataLoading].some(d => d);
