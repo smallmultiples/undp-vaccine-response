@@ -69,6 +69,7 @@ const BivariateIndicatorSelection = props => {
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
+                        getOptionLabel={option => option.tableLabel ? option.tableLabel : option.label}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }
@@ -103,6 +104,7 @@ const BivariateIndicatorSelection = props => {
                     </p>
                     <Select
                         options={currentIndicators.bivariateOptions}
+                        getOptionLabel={option => option.tableLabel ? option.tableLabel : option.label}
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }

@@ -397,6 +397,7 @@ const ChartArea = props => {
             <div className={styles.chartSelectors}>
                 <Select
                     options={currentIndicators.chartOptions}
+                    getOptionLabel={option => option.tableLabel ? option.tableLabel : option.label}
                     onChange={indicator => {
                         setCurrentIndicators(d => ({ ...d, chart: indicator }));
                     }}
