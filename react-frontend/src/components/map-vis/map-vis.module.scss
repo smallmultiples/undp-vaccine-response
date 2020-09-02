@@ -32,6 +32,42 @@
 
 // ----
 
+.mapControls {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    border: 2px solid $color-blue-bg;
+    border-radius: 4px;
+
+    .mapZoomButton {
+        width: 30px;
+        height: 30px;
+        border-radius: 0;
+        background: white;
+        outline: none;
+        cursor: pointer;
+        color: $color-navy;
+        border: none;
+
+        svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 2px solid $color-blue-bg;
+        }
+
+        &:hover {
+            background: $color-blue-bg;
+        }
+    }
+}
+
+// ----
+
 .tooltip {
     position: absolute;
     background: white;

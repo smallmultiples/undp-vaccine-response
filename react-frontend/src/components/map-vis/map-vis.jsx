@@ -1,5 +1,5 @@
 import axios from "axios";
-import DeckGL, { GeoJsonLayer, MapController } from "deck.gl";
+import DeckGL, { GeoJsonLayer, MapController, FlyToInterpolator } from "deck.gl";
 import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import { feature as topojsonParse } from "topojson-client";
@@ -72,6 +72,19 @@ const MapVis = props => {
         mapContainerDimensions,
     ] = useDeckViewport(initialBoundsOrFeature);
 
+    const zoomIncrement = React.useCallback(
+        amt => {
+            const newZoom = Math.min(Math.max(viewport.zoom + amt, 0.001), 10);
+            handleViewStateChange({
+                viewState: {
+                    zoom: newZoom,
+                    transitionDuration: 5000,
+                },
+            });
+        },
+        [viewport]
+    );
+
     const loading = [geoLoading, countryDataLoading].some(d => d);
 
     const layers = [
@@ -138,6 +151,23 @@ const MapVis = props => {
                     scales={scales}
                     mapContainerDimensions={mapContainerDimensions}
                 />
+                <div className={styles.mapControls}>
+                    <button className={styles.mapZoomButton} onClick={() => zoomIncrement(0.5)}>
+                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M13 17V30H17V17H30V13H17V0H13V13H0V17H13Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </button>
+                    <button className={styles.mapZoomButton} onClick={() => zoomIncrement(-0.5)}>
+                        <svg width="30" height="4" viewBox="0 0 30 4" fill="none">
+                            <rect width="30" height="4" fill="currentColor" />
+                        </svg>
+                    </button>
+                </div>
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
                     <h4>Loading...</h4>
