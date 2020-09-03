@@ -152,7 +152,7 @@ const MapVis = props => {
                     mapContainerDimensions={mapContainerDimensions}
                 />
                 <div className={styles.mapControls}>
-                    <button className={styles.mapZoomButton} onClick={() => zoomIncrement(0.5)}>
+                    <div className={styles.mapZoomButton} onClick={() => zoomIncrement(0.5)}>
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
                             <path
                                 fill-rule="evenodd"
@@ -161,12 +161,12 @@ const MapVis = props => {
                                 fill="currentColor"
                             />
                         </svg>
-                    </button>
-                    <button className={styles.mapZoomButton} onClick={() => zoomIncrement(-0.5)}>
+                    </div>
+                    <div className={styles.mapZoomButton} onClick={() => zoomIncrement(-0.5)}>
                         <svg width="30" height="4" viewBox="0 0 30 4" fill="none">
                             <rect width="30" height="4" fill="currentColor" />
                         </svg>
-                    </button>
+                    </div>
                 </div>
                 <div className={styles.loader} data-visible={loading}>
                     {/* todo: nicer loader. move up? */}
@@ -242,7 +242,11 @@ const MapTooltip = props => {
             />
             <div className={styles.tooltipDatumText}>
                 {renderFormattedMapDate(data, currentIndicators.bivariateX)}
-                <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateX.tableLabel ? currentIndicators.bivariateX.tableLabel : currentIndicators.bivariateX.label}</div>
+                <div className={styles.tooltipDatumLabel}>
+                    {currentIndicators.bivariateX.tableLabel
+                        ? currentIndicators.bivariateX.tableLabel
+                        : currentIndicators.bivariateX.label}
+                </div>
                 <div className={styles.tooltipDatumValue}>
                     {getFormattedMapValue(data, currentIndicators.bivariateX)}
                 </div>
