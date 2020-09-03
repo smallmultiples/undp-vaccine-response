@@ -21,8 +21,6 @@ const IconData = props => (
     </svg>
 );
 
-
-
 export default function DataSources(props) {
     const { currentIndicators } = props;
 
