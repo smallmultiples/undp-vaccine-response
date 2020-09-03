@@ -50,6 +50,9 @@
         cursor: pointer;
         color: $color-navy;
         border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         svg {
             width: 12px;
