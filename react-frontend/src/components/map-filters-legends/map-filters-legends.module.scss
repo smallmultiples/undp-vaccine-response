@@ -42,13 +42,13 @@ $mapVisualisationControlsWidth: 220px;
         &[data-y="true"] {
             .bivariateIndicatorDropdownWrap:after {
                 content: "↕";
-                transform: translateY(0%) translateY(1px) translateX(6px);
+                transform: translateY(6px) translateX(6px);
             }
         }
         &[data-x="true"] {
             .bivariateIndicatorDropdownWrap:after {
                 content: "↔";
-                transform: translateY(-4%) translateY(-1px);
+                transform: translateY(3px);
             }
         }
 
