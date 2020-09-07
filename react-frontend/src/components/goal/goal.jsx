@@ -406,7 +406,7 @@ const ChartArea = props => {
                     styles={dropdownStyle}
                     isOptionSelected={false}
                     isDisabled={currentIndicators.chartOptions.length <= 1}
-                    isSearchable={false}
+                    isSearchable={true}
                     className={styles.indicatorSelector}
                     noGap
                 />
@@ -417,7 +417,7 @@ const ChartArea = props => {
                     styles={dropdownStyle}
                     isOptionSelected={false}
                     isDisabled={yearsArray.length <= 1}
-                    isSearchable={false}
+                    isSearchable={true}
                     className={styles.yearSelector}
                     noGap
                 />

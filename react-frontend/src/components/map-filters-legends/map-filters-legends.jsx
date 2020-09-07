@@ -77,7 +77,7 @@ const BivariateIndicatorSelection = props => {
                         styles={dropdownStyle}
                         isOptionSelected={isOptionSelected}
                         isDisabled={!currentIndicators.bivariateXEnabled}
-                        isSearchable={false}
+                        isSearchable={true}
                     />
                 </div>
                 <span
@@ -111,7 +111,7 @@ const BivariateIndicatorSelection = props => {
                         value={currentIndicators.bivariateY}
                         styles={dropdownStyle}
                         isDisabled={disableY || !currentIndicators.bivariateYEnabled}
-                        isSearchable={false}
+                        isSearchable={true}
                     />
                 </div>
                 <span
@@ -266,7 +266,7 @@ const MapVisualisationIndicatorSelection = props => {
                     }
                     value={currentIndicators.mapVisualisation}
                     styles={dropdownStyle}
-                    isSearchable={false}
+                    isSearchable={true}
                     noGap
                 />
             </div>
