@@ -33,6 +33,7 @@ export default {
         opacity: state.isDisabled ? 0.25 : 1,
         transform: "translateY(-50%) translateY(2px)",
         paddingLeft: state.selectProps.noGap ? 0 : 18,
+        width: "calc(100% - 16px)",
     }),
 
     dropdownIndicator: (provided, state) => ({
