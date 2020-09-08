@@ -17,9 +17,21 @@ export default {
         zIndex: state.menuIsOpen ? 10 : 8,
     }),
 
+    input: (provided, state) => ({
+        ...provided,
+        padding: "4px 16px 4px 16px",
+        transform: "translate(1px, 1px)",
+        "& input": {
+            fontFamily: font,
+            fontSize: "16px",
+            fontWeight: 700,
+            color: navy,
+        },
+    }),
+
     valueContainer: (provided, state) => ({
         ...provided,
-        padding: "0px 16px 8px 16px",
+        padding: "4px 16px 4px 16px",
         boxSizing: "border-box",
         fontSize: "14px",
         letterSpacing: "0.4px",
