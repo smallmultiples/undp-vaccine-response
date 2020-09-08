@@ -51,6 +51,23 @@ const BivariateIndicatorSelection = props => {
     // Disable Y axis if there is only one indicator.
     const disableY = currentIndicators.bivariateOptions.length === 1;
 
+    const xIsComposite = React.useMemo(() => currentIndicators.bivariateX.isComposite, [
+        currentIndicators.bivariateX,
+    ]);
+    const yIsComposite = React.useMemo(() => currentIndicators.bivariateY.isComposite, [
+        currentIndicators.bivariateY,
+    ]);
+
+    const xOptions = React.useMemo(() => {
+        if (yIsComposite) return currentIndicators.bivariateOptions.filter(d => !d.isComposite);
+        return currentIndicators.bivariateOptions;
+    }, [currentIndicators, yIsComposite]);
+
+    const yOptions = React.useMemo(() => {
+        if (xIsComposite) return currentIndicators.bivariateOptions.filter(d => !d.isComposite);
+        return currentIndicators.bivariateOptions;
+    }, [currentIndicators, xIsComposite]);
+
     return (
         <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
             <div className={styles.bivariateIndicatorItem} data-x>
@@ -68,8 +85,10 @@ const BivariateIndicatorSelection = props => {
                         {isMapOnly ? "Indicator X" : "Choose an indicator to color regions"}
                     </p>
                     <Select
-                        options={currentIndicators.bivariateOptions}
-                        getOptionLabel={option => option.tableLabel ? option.tableLabel : option.label}
+                        options={xOptions}
+                        getOptionLabel={option =>
+                            option.tableLabel ? option.tableLabel : option.label
+                        }
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateX: indicator }))
                         }
@@ -103,8 +122,10 @@ const BivariateIndicatorSelection = props => {
                         {isMapOnly ? "Indicator Y" : "Choose a secondary indicator"}
                     </p>
                     <Select
-                        options={currentIndicators.bivariateOptions}
-                        getOptionLabel={option => option.tableLabel ? option.tableLabel : option.label}
+                        options={yOptions}
+                        getOptionLabel={option =>
+                            option.tableLabel ? option.tableLabel : option.label
+                        }
                         onChange={indicator =>
                             setCurrentIndicators(d => ({ ...d, bivariateY: indicator }))
                         }
@@ -299,7 +320,13 @@ const BivariateLegend = props => {
                         className={styles.bivariateAxisLabelY}
                         title={currentIndicators.bivariateY.label}
                         dangerouslySetInnerHTML={{
-                            __html: truncate(currentIndicators.bivariateY.tableLabel ? currentIndicators.bivariateY.tableLabel : currentIndicators.bivariateY.label, 40, true),
+                            __html: truncate(
+                                currentIndicators.bivariateY.tableLabel
+                                    ? currentIndicators.bivariateY.tableLabel
+                                    : currentIndicators.bivariateY.label,
+                                40,
+                                true
+                            ),
                         }}
                     />
                     <div className={styles.legendColourSpan} data-y>
@@ -333,7 +360,13 @@ const BivariateLegend = props => {
                     className={styles.bivariateAxisLabelX}
                     title={currentIndicators.bivariateX.label}
                     dangerouslySetInnerHTML={{
-                        __html: truncate(currentIndicators.bivariateX.tableLabel ? currentIndicators.bivariateX.tableLabel : currentIndicators.bivariateX.label, 40, true),
+                        __html: truncate(
+                            currentIndicators.bivariateX.tableLabel
+                                ? currentIndicators.bivariateX.tableLabel
+                                : currentIndicators.bivariateX.label,
+                            40,
+                            true
+                        ),
                     }}
                 />
             </div>

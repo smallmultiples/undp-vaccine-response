@@ -103,6 +103,7 @@ export const parseMetaSheet = raw => {
                 hdi: ind === "Human Development Index",
                 meta,
                 goal: out[currentPillar].goals[currentGoal],
+                isComposite: row["Composite Indicator"],
             };
         }
 
