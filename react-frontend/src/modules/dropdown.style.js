@@ -46,6 +46,7 @@ export default {
         transform: "translateY(-50%) translateY(2px)",
         paddingLeft: state.selectProps.noGap ? 0 : 18,
         width: "calc(100% - 16px)",
+        fontSize: "12px",
     }),
 
     dropdownIndicator: (provided, state) => ({

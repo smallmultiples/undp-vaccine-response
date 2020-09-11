@@ -123,8 +123,21 @@ const MapVis = props => {
         }),
     ];
 
+    const mapTitle = () => {
+        let colours = []
+        let titleStart = ""
+        if(currentIndicators.bivariateXEnabled || currentIndicators.bivariateYEnabled || currentIndicators.mapVisualisationEnabled) titleStart = "Map shows "
+        if(currentIndicators.bivariateXEnabled) colours.push(currentIndicators.bivariateX.label.toUpperCase());
+        if(currentIndicators.bivariateYEnabled) colours.push(currentIndicators.bivariateY.label.toUpperCase());
+        let coloursText = colours.length > 0 ? colours.join(" and ") + " as colors" : ""
+        if(currentIndicators.mapVisualisationEnabled) coloursText += ", and "
+        const overlayText = currentIndicators.mapVisualisationEnabled ? currentIndicators.mapVisualisation.label.toUpperCase() + " overlaid on top": "";        
+        return  titleStart + coloursText + overlayText;
+    }
+
     return (
         <div className={styles.mapOuterContainer}>
+            <h5 className={styles.mapTitle}>{mapTitle()}</h5>
             <div className={styles.mapContainer} ref={mapContainerRef}>
                 {viewport && (
                     <DeckGL

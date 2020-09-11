@@ -78,8 +78,6 @@ const BivariateIndicatorSelection = props => {
                     return s.name
         }).join(",");
     const yLastUpdated = currentIndicators.bivariateY.meta?.timePeriod ? " ("+currentIndicators.bivariateY.meta.timePeriod+")" : "";
-    console.log('currentIndicators.bivariateY.meta?.timePeriod', currentIndicators.bivariateY.meta?.timePeriod);
-    console.log('currentIndicators.bivariateY.meta.timePeriod', currentIndicators.bivariateY.meta.timePeriod);
 
     return (
         <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
