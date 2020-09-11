@@ -71,14 +71,15 @@ const BivariateIndicatorSelection = props => {
     const xSources = currentIndicators.bivariateX.meta?.sources.map((s, i) => {
                     return s.name
         }).join(",");
-    const xLastUpdated = currentIndicators.bivariateX.meta?.lastUpdated ? " ("+currentIndicators.bivariateX.meta?.lastUpdated+")" : "";
+    const xLastUpdated = currentIndicators.bivariateX.meta?.timePeriod ? " ("+currentIndicators.bivariateX.meta.timePeriod+")" : "";
 
 
     const ySources = currentIndicators.bivariateY.meta?.sources.map((s, i) => {
                     return s.name
         }).join(",");
-    const yLastUpdated = currentIndicators.bivariateY.meta?.lastUpdated ? " ("+currentIndicators.bivariateY.meta?.lastUpdated+")" : "";
-
+    const yLastUpdated = currentIndicators.bivariateY.meta?.timePeriod ? " ("+currentIndicators.bivariateY.meta.timePeriod+")" : "";
+    console.log('currentIndicators.bivariateY.meta?.timePeriod', currentIndicators.bivariateY.meta?.timePeriod);
+    console.log('currentIndicators.bivariateY.meta.timePeriod', currentIndicators.bivariateY.meta.timePeriod);
 
     return (
         <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
@@ -114,7 +115,7 @@ const BivariateIndicatorSelection = props => {
                 <span
                     className={styles.indicatorTooltip}
                     data-text={currentIndicators.bivariateX.description}
-                    data-meta={xSources ? xSources : "" + xLastUpdated ? xLastUpdated : ""}
+                    data-meta={xSources + " " + xLastUpdated}
                 >
                     ?
                 </span>
@@ -151,7 +152,7 @@ const BivariateIndicatorSelection = props => {
                 <span
                     className={styles.indicatorTooltip}
                     data-text={currentIndicators.bivariateY.description}
-                    data-meta={ySources ? ySources : "" + yLastUpdated ? yLastUpdated : ""}
+                    data-meta={ySources + " " + yLastUpdated}
                 >
                     ?
                 </span>
@@ -283,7 +284,7 @@ const MapVisualisationIndicatorSelection = props => {
                     return s.name
         }).join(",");
 
-    const mapVisualisationLastUpdated = currentIndicators.mapVisualisation.meta?.lastUpdated ? " ("+currentIndicators.mapVisualisation.meta?.lastUpdated+")" : "";
+    const mapVisualisationLastUpdated = currentIndicators.mapVisualisation.meta?.timePeriod ? " ("+currentIndicators.mapVisualisation.meta.timePeriod+")" : "";
 
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
@@ -314,7 +315,7 @@ const MapVisualisationIndicatorSelection = props => {
             <span
                 className={styles.indicatorTooltip}
                 data-text={currentIndicators.mapVisualisation.description}
-                data-meta={mapVisualisationSources ? mapVisualisationSources : "" + mapVisualisationLastUpdated ? mapVisualisationLastUpdated : ""}
+                data-meta={mapVisualisationSources + " " + mapVisualisationLastUpdated}
             >
                 ?
             </span>
