@@ -15,6 +15,13 @@ import DataSources from "../data-sources/data-sources";
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
 
+const isOptionSelected = (item, selections) => {
+    const selection = selections[0];
+    if (item.label === selection.label) return true;
+
+    return false;
+};
+
 function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators) {
     const selectedIndicatorData = React.useMemo(() => {
         if (pillarLoading || !goalDatasets) return [];
@@ -404,7 +411,7 @@ const ChartArea = props => {
                     }}
                     value={selectedIndicator}
                     styles={dropdownStyle}
-                    isOptionSelected={false}
+                    isOptionSelected={isOptionSelected}
                     isDisabled={currentIndicators.chartOptions.length <= 1}
                     isSearchable={true}
                     className={styles.indicatorSelector}
@@ -415,7 +422,7 @@ const ChartArea = props => {
                     onChange={x => setYear(x)}
                     value={year}
                     styles={dropdownStyle}
-                    isOptionSelected={false}
+                    isOptionSelected={isOptionSelected}
                     isDisabled={yearsArray.length <= 1}
                     isSearchable={true}
                     className={styles.yearSelector}
