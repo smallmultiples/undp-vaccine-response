@@ -92,11 +92,12 @@ export default {
     option: (provided, state) => ({
         ...provided,
         padding: "12px 6px 12px 22px",
-        background: "none",
-        color: navy,
+        background: state.isSelected ? navy : "none",
+        color: state.isSelected ? "white" : navy,
         ":hover": {
-            background: lightBlue,
-            color: navy,
+            background: !state.isSelected && lightBlue,
+            color: !state.isSelected && navy,
+            cursor: !state.isSelected && "pointer",
         },
     }),
 };

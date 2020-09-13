@@ -68,16 +68,23 @@ const BivariateIndicatorSelection = props => {
         return currentIndicators.bivariateOptions;
     }, [currentIndicators, xIsComposite]);
 
-    const xSources = currentIndicators.bivariateX.meta?.sources.map((s, i) => {
-                    return s.name
-        }).join(",");
-    const xLastUpdated = currentIndicators.bivariateX.meta?.timePeriod ? " ("+currentIndicators.bivariateX.meta.timePeriod+")" : "";
+    const xSources = currentIndicators.bivariateX.meta?.sources
+        .map((s, i) => {
+            return s.name;
+        })
+        .join(",");
+    const xLastUpdated = currentIndicators.bivariateX.meta?.timePeriod
+        ? " (" + currentIndicators.bivariateX.meta.timePeriod + ")"
+        : "";
 
-
-    const ySources = currentIndicators.bivariateY.meta?.sources.map((s, i) => {
-                    return s.name
-        }).join(",");
-    const yLastUpdated = currentIndicators.bivariateY.meta?.timePeriod ? " ("+currentIndicators.bivariateY.meta.timePeriod+")" : "";
+    const ySources = currentIndicators.bivariateY.meta?.sources
+        .map((s, i) => {
+            return s.name;
+        })
+        .join(",");
+    const yLastUpdated = currentIndicators.bivariateY.meta?.timePeriod
+        ? " (" + currentIndicators.bivariateY.meta.timePeriod + ")"
+        : "";
 
     return (
         <div className={styles.bivariateIndicatorSelection} data-fullwidth={hideMapVisOptions}>
@@ -143,6 +150,7 @@ const BivariateIndicatorSelection = props => {
                         }
                         value={currentIndicators.bivariateY}
                         styles={dropdownStyle}
+                        isOptionSelected={isOptionSelected}
                         isDisabled={disableY || !currentIndicators.bivariateYEnabled}
                         isSearchable={true}
                     />
@@ -278,11 +286,15 @@ const MapVisualisationRadiusLegend = props => {
 const MapVisualisationIndicatorSelection = props => {
     const { setCurrentIndicators, currentIndicators } = props;
 
-    const mapVisualisationSources = currentIndicators.mapVisualisation.meta?.sources.map((s, i) => {
-                    return s.name
-        }).join(",");
+    const mapVisualisationSources = currentIndicators.mapVisualisation.meta?.sources
+        .map((s, i) => {
+            return s.name;
+        })
+        .join(",");
 
-    const mapVisualisationLastUpdated = currentIndicators.mapVisualisation.meta?.timePeriod ? " ("+currentIndicators.mapVisualisation.meta.timePeriod+")" : "";
+    const mapVisualisationLastUpdated = currentIndicators.mapVisualisation.meta?.timePeriod
+        ? " (" + currentIndicators.mapVisualisation.meta.timePeriod + ")"
+        : "";
 
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
@@ -306,6 +318,7 @@ const MapVisualisationIndicatorSelection = props => {
                     }
                     value={currentIndicators.mapVisualisation}
                     styles={dropdownStyle}
+                    isOptionSelected={isOptionSelected}
                     isSearchable={true}
                     noGap
                 />
