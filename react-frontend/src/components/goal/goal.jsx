@@ -322,6 +322,7 @@ export default function Goal(props) {
                 currentIndicators={currentIndicators}
                 setCurrentIndicators={setCurrentIndicators}
                 selectedIndicatorData={selectedIndicatorData}
+                selectedCountryCode={selectedCountryCode}
             />
             <DataSources currentIndicators={currentIndicators} />
         </div>
@@ -331,7 +332,14 @@ export default function Goal(props) {
 const isDef = d => !isNil(d) && d !== "";
 
 const ChartArea = props => {
-    const { regionLookup, currentIndicators, setCurrentIndicators, goalDatasets } = props;
+    const {
+        regionLookup,
+        currentIndicators,
+        setCurrentIndicators,
+        goalDatasets,
+        selectedCountryCode,
+    } = props;
+
     const [yearsArray, setYearsArray] = React.useState([]);
     const [year, setYear] = React.useState(undefined);
 
@@ -378,11 +386,13 @@ const ChartArea = props => {
                         r.Year.getFullYear() === 2018
                 );
                 const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
+                const isSelected = selectedCountryCode === d[ROW_KEY];
 
                 return {
                     country: region ? region["Country or Area"] : d[ROW_KEY],
                     data: d[selectedIndicator.dataKey],
                     hdi,
+                    isSelected,
                 };
             });
 
@@ -391,7 +401,7 @@ const ChartArea = props => {
             }
         }
         return undefined;
-    }, [indicatorDataset, year, selectedIndicator, regionLookup, commonData]);
+    }, [indicatorDataset, year, selectedIndicator, regionLookup, commonData, selectedCountryCode]);
 
     return (
         <div className={styles.chartArea}>
