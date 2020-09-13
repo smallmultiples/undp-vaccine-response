@@ -192,6 +192,7 @@ const MapVisualisationIndicatorSelection = props => {
                     }
                     value={currentIndicators.mapVisualisation}
                     styles={dropdownStyle}
+                    isOptionSelected={isOptionSelected}
                     isSearchable={true}
                     noGap
                 />
