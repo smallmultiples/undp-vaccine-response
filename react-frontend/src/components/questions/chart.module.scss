@@ -39,7 +39,7 @@
 
 .svg {
     width: 100%;
-    height: 250px;
+    height: 260px;
 
     @media (max-width: $width-mobile) {
         width: 100%;
@@ -84,6 +84,16 @@
     &[data-hovered="true"] {
         opacity: 1;
     }
+}
+
+.barSelected {
+    fill: $color-blue-bg;
+}
+
+.barSelectedLabel {
+    text-anchor: middle;
+    font-size: 12px;
+    transform: translateY(12px);
 }
 
 .hoverableBar {
