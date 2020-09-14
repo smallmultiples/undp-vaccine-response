@@ -7,6 +7,7 @@ import useDeckViewport from "../../hooks/use-deck-viewport";
 import { categorySplit } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
 import useMediaQuery from "../../hooks/use-media-query";
+import { Chevron, Plus } from "../icons/icons";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -53,6 +54,7 @@ const MapVis = props => {
     } = props;
 
     const [tooltip, setTooltip] = React.useState(null);
+    const [clickTooltip, setClickTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
     const { isMobile } = useMediaQuery();
 
@@ -113,6 +115,8 @@ const MapVis = props => {
             onClick: info => {
                 if (info.object) {
                     props.onCountryClicked(info.object.properties);
+                    setClickTooltip(info);
+                    setTooltip(null);
                 }
             },
             updateTriggers: {
@@ -166,7 +170,9 @@ const MapVis = props => {
                     />
                 )}
                 <MapTooltip
-                    tooltip={tooltip}
+                    tooltip={clickTooltip || tooltip}
+                    setClickTooltip={setClickTooltip}
+                    isClickTooltip={Boolean(clickTooltip)}
                     normalizedData={normalizedData}
                     currentIndicators={currentIndicators}
                     goal={goal}
@@ -223,7 +229,15 @@ const renderFormattedMapDate = (row, indicator) => {
 };
 
 const MapTooltip = props => {
-    const { tooltip, normalizedData, currentIndicators, scales, mapContainerDimensions } = props;
+    const {
+        tooltip,
+        setClickTooltip,
+        isClickTooltip,
+        normalizedData,
+        currentIndicators,
+        scales,
+        mapContainerDimensions,
+    } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
@@ -300,22 +314,42 @@ const MapTooltip = props => {
     const clampedY = `min(${tooltip.y}px, calc(${mapContainerDimensions.height}px - 100%))`;
     const transform = `translate(${clampedLeft}, ${clampedY})`;
 
+    const clickTrap = isClickTooltip && (
+        <div className={styles.tooltipClickTrap} onClick={() => setClickTooltip(null)} />
+    );
+
+    const link = isClickTooltip && (
+        <a className={styles.tooltipLink} href={`/country/${data["CMS slug"]}`}>
+            View country data <Chevron />
+        </a>
+    );
+
     return (
-        <div
-            className={styles.tooltip}
-            style={{
-                transform,
-            }}
-        >
-            <div className={styles.tooltipHeader}>
-                <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
+        <>
+            {clickTrap}
+            <div
+                className={styles.tooltip}
+                style={{
+                    transform,
+                }}
+                data-click={isClickTooltip}
+            >
+                <div className={styles.tooltipHeader}>
+                    <div className={styles.tooltipHeading}>{data["Country or Area"]}</div>
+                    {isClickTooltip && (
+                        <div className={styles.tooltipClose} onClick={() => setClickTooltip(null)}>
+                            <Plus />
+                        </div>
+                    )}
+                </div>
+                <div className={styles.tooltipBody}>
+                    {mapVisRow}
+                    {bivariateXRow}
+                    {bivariateYRow}
+                </div>
+                {link}
             </div>
-            <div className={styles.tooltipBody}>
-                {mapVisRow}
-                {bivariateXRow}
-                {bivariateYRow}
-            </div>
-        </div>
+        </>
     );
 };
 

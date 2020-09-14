@@ -81,6 +81,15 @@
 
 // ----
 
+.tooltipClickTrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 22;
+}
+
 .tooltip {
     position: absolute;
     background: white;
@@ -92,13 +101,31 @@
     left: 0;
     top: 0;
 
+    &[data-click="true"] {
+        pointer-events: all;
+    }
+
     .tooltipHeader {
         background: $color-yellow;
         width: 100%;
         box-sizing: border-box;
         padding: 16px 20px;
+        padding-right: 40px;
+        position: relative;
         .tooltipHeading {
             @include h4();
+        }
+
+        .tooltipClose {
+            cursor: pointer;
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            transform: translateY(-50%) translateY(3px);
+            padding: 12px;
+            > svg {
+                transform: rotate(45deg);
+            }
         }
     }
 
@@ -163,6 +190,23 @@
                     color: rgba($color-navy, 0.5);
                 }
             }
+        }
+    }
+
+    .tooltipLink {
+        display: block;
+        padding: 0 20px 20px 20px;
+        text-decoration: underline;
+        color: $color-navy;
+        font-size: 12px;
+
+        > svg {
+            height: 8px;
+            transform: rotate(90deg);
+        }
+
+        &:hover {
+            opacity: 0.9;
         }
     }
 }
