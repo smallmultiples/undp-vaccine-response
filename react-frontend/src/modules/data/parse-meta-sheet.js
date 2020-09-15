@@ -2,6 +2,16 @@ import { formats } from "../../modules/format";
 
 const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 
+const parseAggregation = row => {
+    const raw = row["Aggregation"];
+    if (!raw) return null;
+    const prefix = row["Data Key"] + "::";
+    return raw.split(";").map(label => ({
+        key: prefix + label,
+        label,
+    }));
+};
+
 export const parseMetaSheet = raw => {
     const out = {};
     let currentPillar = null;
@@ -104,6 +114,7 @@ export const parseMetaSheet = raw => {
                 meta,
                 goal: out[currentPillar].goals[currentGoal],
                 isComposite: row["Composite Indicator"],
+                aggregations: parseAggregation(row),
             };
         }
 
