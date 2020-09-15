@@ -36,7 +36,7 @@ $mapVisualisationControlsWidth: 220px;
         align-items: center;
 
         &:not(:last-child) {
-            margin-bottom: 24px;
+            // margin-bottom: 6px;
         }
 
         &[data-y="true"] {
@@ -76,6 +76,68 @@ $mapVisualisationControlsWidth: 220px;
             }
         }
     }
+}
+
+.aggregationSelectWrapper {
+    display: block;
+    width: 100%;
+}
+
+.aggregationSelect {
+    width: calc(100% - 74px);
+    margin: 6px 0 12px;
+    padding: 0 24px 0 28px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    @include mobileOnly() {
+        width: calc(100% - 60px);
+    }
+    button {
+        color: $color-navy;
+        font-size: 12px;
+        padding: 5px 0;
+        border-width: 1px;
+        border-color: hsl(0,0%,70%);
+        background:$color-light-blue;
+        border:none;
+    }
+    button:focus {
+        font-weight: bold;
+        border: none;
+    }
+    button:first-child {
+        border-radius: 12px 0 0 12px;
+        margin-left: -1px;
+    }
+    button:last-child {
+        border-radius: 0 12px 12px 0;
+        margin-left: -1px;
+    }
+    > button {
+        flex: 1;
+    }
+    button:only-child {
+        border-radius: 12px;
+        margin-left: 0;
+    }
+    button:not(:first-child) {
+        border-left: 1px solid $color-grey;
+    }
+    button:not(:last-child) {
+        border-right: none; /* Prevent double borders */
+    }
+
+    /* Add a background color on hover */
+    button:hover {
+        border-color: hsl(0,0%,70%);
+    }
+}
+/* Clear floats (clearfix hack) */
+.aggregationSelect:after {
+    content: "";
+    clear: both;
+    display: table;
 }
 
 // -----
@@ -218,7 +280,6 @@ $mapVisualisationControlsWidth: 220px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-bottom: 16px;
     width: 100%;
 
     .mapVisualisationIndicatorDropdownWrap {

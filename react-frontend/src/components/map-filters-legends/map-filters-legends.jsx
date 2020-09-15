@@ -125,6 +125,11 @@ const BivariateIndicatorSelection = props => {
                     ?
                 </span>
             </div>
+            <div className={styles.aggregationSelect}>
+                <button>Total</button>
+                <button>Female</button>
+                <button>Male</button>
+            </div>
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
                     value={currentIndicators.bivariateYEnabled}
@@ -162,6 +167,11 @@ const BivariateIndicatorSelection = props => {
                 >
                     ?
                 </span>
+            </div>
+            <div className={styles.aggregationSelect}>
+                <button>Total</button>
+                <button>Female</button>
+                <button>Male</button>
             </div>
         </div>
     );
@@ -222,6 +232,13 @@ const MapVisualisationControls = props => {
     return (
         <div className={styles.mapVisualisationControls}>
             <MapVisualisationIndicatorSelection {...props} />
+            <div className={styles.aggregationSelectWrapper}>
+                <div className={styles.aggregationSelect}>
+{/*                    <button>Total</button>
+                    <button>Female</button>
+                    <button>Male</button>*/}
+                </div>
+            </div>
             {mapVisIndicator.categorical ? (
                 <CategoricalLegend {...props} />
             ) : (
