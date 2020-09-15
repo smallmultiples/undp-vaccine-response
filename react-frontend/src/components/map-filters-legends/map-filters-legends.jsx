@@ -125,11 +125,14 @@ const BivariateIndicatorSelection = props => {
                     ?
                 </span>
             </div>
-            <div className={styles.aggregationSelect}>
-                <button>Total</button>
-                <button>Female</button>
-                <button>Male</button>
-            </div>
+            {currentIndicators.bivariateX.aggregations && (
+                <div className={styles.aggregationSelect}>
+                    <button>Total</button>
+                    {currentIndicators.bivariateX.aggregations.map(agg => (
+                        <button>{agg.label}</button>
+                    ))}
+                </div>
+            )}
             <div className={styles.bivariateIndicatorItem} data-y>
                 <Checkbox
                     value={currentIndicators.bivariateYEnabled}
@@ -168,11 +171,14 @@ const BivariateIndicatorSelection = props => {
                     ?
                 </span>
             </div>
-            <div className={styles.aggregationSelect}>
-                <button>Total</button>
-                <button>Female</button>
-                <button>Male</button>
-            </div>
+            {currentIndicators.bivariateY.aggregations && (
+                <div className={styles.aggregationSelect}>
+                    <button>Total</button>
+                    {currentIndicators.bivariateY.aggregations.map(agg => (
+                        <button>{agg.label}</button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
@@ -233,11 +239,14 @@ const MapVisualisationControls = props => {
         <div className={styles.mapVisualisationControls}>
             <MapVisualisationIndicatorSelection {...props} />
             <div className={styles.aggregationSelectWrapper}>
-                <div className={styles.aggregationSelect}>
-{/*                    <button>Total</button>
-                    <button>Female</button>
-                    <button>Male</button>*/}
-                </div>
+                {mapVisIndicator.aggregations && (
+                    <div className={styles.aggregationSelect}>
+                        <button>Total</button>
+                        {mapVisIndicator.aggregations.map(agg => (
+                            <button>{agg.label}</button>
+                        ))}
+                    </div>
+                )}
             </div>
             {mapVisIndicator.categorical ? (
                 <CategoricalLegend {...props} />
