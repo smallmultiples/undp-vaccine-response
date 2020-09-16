@@ -129,11 +129,14 @@ const BivariateIndicatorSelection = props => {
                 <div className={styles.aggregationSelect}>
                     {currentIndicators.bivariateX.aggregations.map(agg => (
                         <button
+                            data-selected={
+                                agg.key === currentIndicators.bivariateX.currentAggregation.key
+                            }
                             onClick={() => {
                                 setCurrentIndicators(c => ({
                                     ...c,
                                     bivariateX: {
-                                        ...currentIndicators.bivariateX,
+                                        ...c.bivariateX,
                                         currentAggregation: agg,
                                     },
                                 }));
@@ -186,11 +189,14 @@ const BivariateIndicatorSelection = props => {
                 <div className={styles.aggregationSelect}>
                     {currentIndicators.bivariateY.aggregations.map(agg => (
                         <button
+                            data-selected={
+                                agg.key === currentIndicators.bivariateY.currentAggregation.key
+                            }
                             onClick={() => {
                                 setCurrentIndicators(c => ({
                                     ...c,
                                     bivariateY: {
-                                        ...currentIndicators.bivariateY,
+                                        ...c.bivariateY,
                                         currentAggregation: agg,
                                     },
                                 }));
@@ -266,6 +272,7 @@ const MapVisualisationControls = props => {
                     <div className={styles.aggregationSelect}>
                         {mapVisIndicator.aggregations.map(agg => (
                             <button
+                                data-selected={agg.key === mapVisIndicator.currentAggregation.key}
                                 onClick={() => {
                                     setCurrentIndicators(c => ({
                                         ...c,
