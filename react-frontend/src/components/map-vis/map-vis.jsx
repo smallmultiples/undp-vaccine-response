@@ -4,7 +4,7 @@ import { flatten, isNil, uniq } from "lodash";
 import React from "react";
 import { feature as topojsonParse } from "topojson-client";
 import useDeckViewport from "../../hooks/use-deck-viewport";
-import { categorySplit } from "../../modules/utils";
+import { categorySplit, getRowIndicatorValue } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
 import useMediaQuery from "../../hooks/use-media-query";
 import { Chevron, Plus } from "../icons/icons";
@@ -214,7 +214,7 @@ const MapVis = props => {
 
 // TODO: module these
 const getFormattedMapValue = (row, indicator) => {
-    const val = row[indicator.dataKey];
+    const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
     return indicator.format(val);
 };
@@ -367,7 +367,7 @@ const CircleVis = props => {
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[indicator.dataKey];
+                    const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
@@ -392,7 +392,7 @@ const CircleVis = props => {
         const angleEach = 360 / numCircles;
 
         const groups = Object.values(normalizedData).map(row => {
-            const val = row[indicator.dataKey];
+            const val = getRowIndicatorValue(row, indicator);
             if (isNil(val)) return null;
             const cats = categorySplit(val);
             const xy = rowXY(row);

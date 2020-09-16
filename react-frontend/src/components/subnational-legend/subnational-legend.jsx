@@ -3,7 +3,7 @@ import React from "react";
 import Select from "react-select";
 import { HDI_BUCKETS, HDI_COLOURS } from "../../config/scales";
 import dropdownStyle from "../../modules/dropdown.style";
-import { categorySplit } from "../../modules/utils";
+import { categorySplit, getRowIndicatorValue } from "../../modules/utils";
 import Checkbox from "../controls/checkbox";
 import { IconArrowLeft, IconArrowRight } from "../icons/icons";
 import styles from "./subnational-legend.module.scss";
@@ -59,7 +59,7 @@ const CategoricalLegend = props => {
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[indicator.dataKey];
+                    const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })

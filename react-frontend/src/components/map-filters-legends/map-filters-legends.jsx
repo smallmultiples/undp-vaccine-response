@@ -5,7 +5,7 @@ import dropdownStyle from "../../modules/dropdown.style";
 import isMapOnly from "../../modules/is-map-only";
 import { IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowUp } from "../icons/icons";
 import styles from "./map-filters-legends.module.scss";
-import { categorySplit } from "../../modules/utils";
+import { categorySplit, getRowIndicatorValue } from "../../modules/utils";
 import Checkbox from "../controls/checkbox";
 
 // TODO: rename "normalizedData"
@@ -194,7 +194,7 @@ const CategoricalLegend = props => {
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
-                    const val = d[indicator.dataKey];
+                    const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })

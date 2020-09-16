@@ -1,5 +1,5 @@
 import React from "react";
-import { flatten } from "lodash";
+import { flatten, uniqBy } from "lodash";
 
 export const getBivariateOptions = goal => goal.indicators.filter(d => !d.categorical);
 export const getMapVisualisationOptions = (goal, commonPillar) => {
@@ -14,13 +14,16 @@ export const getMapVisualisationOptions = (goal, commonPillar) => {
 };
 
 const getDefaultIndicatorState = (goal, commonPillar) => {
-    const mapVisualisationOptions = getMapVisualisationOptions(goal, commonPillar);
+    const mapVisualisationOptions = uniqBy(
+        getMapVisualisationOptions(goal, commonPillar),
+        d => d.label
+    );
     const bivariateOptions = getBivariateOptions(goal);
     const chartOptions = getBivariateOptions(goal);
 
     return {
         // Remove duplicates in tracking indicator drop-down
-        mapVisualisationOptions: [...new Map(mapVisualisationOptions.map(item => [item.dataKey, item])).values()],
+        mapVisualisationOptions,
         bivariateOptions,
         chartOptions,
         // Question indicator is the X axis

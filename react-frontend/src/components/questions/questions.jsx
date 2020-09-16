@@ -6,6 +6,7 @@ import Badge from "./badge";
 import Chart from "./chart";
 import useMediaQuery from "../../hooks/use-media-query";
 import { flatten } from "lodash";
+import { getIndicatorDataKey, getRowIndicatorValue } from "../../modules/utils";
 
 const COUNTRIES_TOTAL = 249;
 
@@ -58,12 +59,12 @@ const Question = props => {
         const country = countryData && countryData[x["Alpha-3 code"]];
         const arr = [x["Country or Area"], (country && country["Region Name"]) || ""];
         question.indicators.forEach(ind => {
-            arr.push(ind.format(x[ind.dataKey]));
+            arr.push(ind.format(getRowIndicatorValue(x, ind)));
         });
 
         if (country) {
             covidIndicators.forEach(ind => {
-                arr.push(ind.format(country[ind.dataKey]));
+                arr.push(ind.format(getRowIndicatorValue(country, ind)));
             });
         }
         return arr;
@@ -75,8 +76,10 @@ const Question = props => {
             for (const d of dataset || []) {
                 tmp.push({
                     country: d["Country or Area"],
-                    data: d[ind.dataKey],
-                    hdi: countryData && countryData[d["Alpha-3 code"]][hdiIndicator?.dataKey],
+                    data: getRowIndicatorValue(d, ind),
+                    hdi:
+                        countryData &&
+                        countryData[d["Alpha-3 code"]][getIndicatorDataKey(hdiIndicator)],
                 });
             }
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");

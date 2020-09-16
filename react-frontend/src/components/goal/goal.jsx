@@ -11,6 +11,7 @@ import Chart from "../questions/chart";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
 import DataSources from "../data-sources/data-sources";
+import { getIndicatorDataKey, getRowIndicatorValue } from "../../modules/utils";
 
 const ROW_KEY = "Alpha-3 code";
 const TIME_KEY = "Year";
@@ -36,7 +37,7 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
 
         const selectedDatums = groupBy(
             enabledIndicators.map(indicator => ({
-                dataKey: indicator.dataKey,
+                dataKey: getIndicatorDataKey(indicator),
                 sheet: indicator.goal.sheet,
             })),
             d => d.sheet
@@ -97,7 +98,11 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
     // Take the rows and put them into a {[key]: {values}} map.
     const outputMap = React.useMemo(() => {
         let ret = {};
-        const selectedDatums = Object.values(currentIndicators).filter(isObject);
+        const selectedDatums = [
+            currentIndicators.bivariateXEnabled && currentIndicators.bivariateX,
+            currentIndicators.bivariateYEnabled && currentIndicators.bivariateY,
+            currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
+        ].filter(Boolean);
 
         Object.entries(countryGrouped).forEach(([rowKey, rows]) => {
             const region = regionLookup.find(r => r["ISO-alpha3 Code"] === rowKey);
@@ -107,7 +112,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                 dates: {},
             };
 
-            let keysToFill = uniq(selectedDatums.map(indicator => indicator.dataKey));
+            let keysToFill = uniq(selectedDatums.map(getIndicatorDataKey));
 
             for (let row of rows) {
                 for (let dataKey of keysToFill.slice()) {
@@ -259,39 +264,39 @@ export default function Goal(props) {
             <div className={styles.mapArea}>
                 {sideBlocks && sideBlocks.length > 0 && (
                     <div className={styles.mapSidebar}>
-                        {sideBlocks?.map((s, i) => {
-                            if (s["Indicator"] === "Manual entry") {
+                        {sideBlocks?.map((sideBlock, i) => {
+                            if (sideBlock["Indicator"] === "Manual entry") {
                                 return (
                                     <ManualBlockVis
-                                        type={s["Chart type"]}
+                                        type={sideBlock["Chart type"]}
                                         key={`manual-chart-${i}`}
-                                        configuration={s["Configuration"]}
+                                        configuration={sideBlock["Configuration"]}
                                         manualEntry={{
                                             value:
-                                                s["Chart type"] === "Factoid"
+                                                sideBlock["Chart type"] === "Factoid"
                                                     ? formatManualValue(
-                                                          s["Stat A value"],
-                                                          s["Stat A type"]
+                                                          sideBlock["Stat A value"],
+                                                          sideBlock["Stat A type"]
                                                       )
-                                                    : s["Stat A value"],
-                                            primaryLabel: s["Primary label"],
-                                            secondaryLabel: s["Secondary label"],
-                                            dataSource: s["Data source"],
-                                            dataSourceLink: s["Data source link"],
-                                            format: s["Stat A type"],
+                                                    : sideBlock["Stat A value"],
+                                            primaryLabel: sideBlock["Primary label"],
+                                            secondaryLabel: sideBlock["Secondary label"],
+                                            dataSource: sideBlock["Data source"],
+                                            dataSourceLink: sideBlock["Data source link"],
+                                            format: sideBlock["Stat A type"],
                                         }}
                                     />
                                 );
                             }
                             const ind = goal.indicators.find(
-                                x => x.dataKey === s["Indicator"].split(";")[0]
+                                x => x.dataKey === sideBlock["Indicator"].split(";")[0]
                             );
                             if (!ind) return null;
                             return (
                                 <MapBlockVis
                                     indicator={ind}
-                                    type={s["Chart type"]}
-                                    configuration={s["Configuration"]}
+                                    type={sideBlock["Chart type"]}
+                                    configuration={sideBlock["Configuration"]}
                                     key={ind.label}
                                     {...blockProps}
                                 />
@@ -355,7 +360,7 @@ const ChartArea = props => {
     React.useEffect(() => {
         const uniqueYearDatums = indicatorDataset
             ? uniqBy(
-                  indicatorDataset.filter(d => isDef(d[selectedIndicator.dataKey])),
+                  indicatorDataset.filter(d => isDef(getRowIndicatorValue(d, selectedIndicator))),
                   d => d.Year.getFullYear()
               )
             : [];

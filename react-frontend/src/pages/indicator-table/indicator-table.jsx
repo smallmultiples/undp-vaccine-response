@@ -10,7 +10,7 @@ import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./indicator-table.module.scss";
 import Table from "../../components/questions/table";
 import regionsLookup from "../../modules/data/region-lookup.json";
-import { parseSheetDate, saveBlob } from "../../modules/utils";
+import { getIndicatorDataKey, parseSheetDate, saveBlob } from "../../modules/utils";
 import { isNil } from "lodash";
 import { csvFormat } from "d3";
 
@@ -18,13 +18,14 @@ const COUNTRIES_TOTAL = regionsLookup.length;
 
 async function downloadIndicator(indicator) {
     const sheet = indicator.goal.sheet;
-    const { dataKey } = indicator;
+    const dataKey = getIndicatorDataKey(indicator);
     const res = await axios(
         USE_SHEET ? `${DATA_SHEET_URL}?range=${sheet}` : `${STATIC_DATA_BASE_URL}/${sheet}.json`
     );
     const indicatorData = res.data
         .filter(d => !isNil(d[dataKey]))
         .map(d => ({
+            // TODO: incldue anything starting with dataKey
             country: d["Country or Area"],
             iso: d["Alpha-3 code"],
             date: parseSheetDate(d.Year),

@@ -34,3 +34,11 @@ export function saveBlob(filename, blob) {
     a.click();
     window.URL.revokeObjectURL(url);
 }
+
+export const getIndicatorDataKey = indicator => {
+    return indicator.currentAggregation.key;
+};
+
+export const getRowIndicatorValue = (row, indicator) => {
+    return row[indicator.currentAggregation.key];
+};

@@ -4,7 +4,7 @@ import { isNil, last } from "lodash";
 import React from "react";
 import { HDI_BUCKETS } from "../../config/scales";
 import useMediaQuery from "../../hooks/use-media-query";
-import { hexToRgb } from "../../modules/utils";
+import { hexToRgb, getRowIndicatorValue } from "../../modules/utils";
 import MapFiltersLegends, {
     MapFiltersLegendMobile,
 } from "../map-filters-legends/map-filters-legends";
@@ -29,19 +29,19 @@ const useDomains = (countryData, currentIndicators) => {
 
         const valuesX = ready
             ? Object.values(countryData)
-                  .map(raw => raw[currentIndicators.bivariateX.dataKey])
+                  .map(row => getRowIndicatorValue(row, currentIndicators.bivariateX))
                   .filter(d => d !== undefined && d !== "")
                   .sort((a, b) => a - b)
             : [];
         const valuesY = ready
             ? Object.values(countryData)
-                  .map(raw => raw[currentIndicators.bivariateY.dataKey])
+                  .map(row => getRowIndicatorValue(row, currentIndicators.bivariateY))
                   .filter(d => d !== undefined && d !== "")
                   .sort((a, b) => a - b)
             : [];
         const valuesMapVis = ready
             ? Object.values(countryData)
-                  .map(raw => raw[currentIndicators.mapVisualisation.dataKey])
+                  .map(row => getRowIndicatorValue(row, currentIndicators.mapVisualisation))
                   .filter(d => d !== undefined && d !== "")
             : [];
 
@@ -148,10 +148,6 @@ const colourMatricesHex = {
     "economic-recovery": yellowColourMatrixHex,
     "macro-response": greenColourMatrixHex,
     "social-cohesion": blueDarkMatrixHex,
-};
-
-const getRowIndicatorValue = (row, indicator) => {
-    return row[indicator.dataKey];
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
