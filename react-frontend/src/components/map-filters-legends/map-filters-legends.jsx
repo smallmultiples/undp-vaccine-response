@@ -125,7 +125,7 @@ const BivariateIndicatorSelection = props => {
                     ?
                 </span>
             </div>
-            {currentIndicators.bivariateX.aggregations && (
+            {currentIndicators.bivariateX.aggregations.length > 1 && (
                 <div className={styles.aggregationSelect}>
                     <button>Total</button>
                     {currentIndicators.bivariateX.aggregations.map(agg => (
@@ -171,7 +171,7 @@ const BivariateIndicatorSelection = props => {
                     ?
                 </span>
             </div>
-            {currentIndicators.bivariateY.aggregations && (
+            {currentIndicators.bivariateY.aggregations.length > 1 && (
                 <div className={styles.aggregationSelect}>
                     <button>Total</button>
                     {currentIndicators.bivariateY.aggregations.map(agg => (
@@ -239,7 +239,7 @@ const MapVisualisationControls = props => {
         <div className={styles.mapVisualisationControls}>
             <MapVisualisationIndicatorSelection {...props} />
             <div className={styles.aggregationSelectWrapper}>
-                {mapVisIndicator.aggregations && (
+                {mapVisIndicator.aggregations.length > 1 && (
                     <div className={styles.aggregationSelect}>
                         <button>Total</button>
                         {mapVisIndicator.aggregations.map(agg => (
