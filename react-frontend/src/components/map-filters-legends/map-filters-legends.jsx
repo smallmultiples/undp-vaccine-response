@@ -127,9 +127,20 @@ const BivariateIndicatorSelection = props => {
             </div>
             {currentIndicators.bivariateX.aggregations.length > 1 && (
                 <div className={styles.aggregationSelect}>
-                    <button>Total</button>
                     {currentIndicators.bivariateX.aggregations.map(agg => (
-                        <button>{agg.label}</button>
+                        <button
+                            onClick={() => {
+                                setCurrentIndicators(c => ({
+                                    ...c,
+                                    bivariateX: {
+                                        ...currentIndicators.bivariateX,
+                                        currentAggregation: agg,
+                                    },
+                                }));
+                            }}
+                        >
+                            {agg.label}
+                        </button>
                     ))}
                 </div>
             )}
@@ -173,9 +184,20 @@ const BivariateIndicatorSelection = props => {
             </div>
             {currentIndicators.bivariateY.aggregations.length > 1 && (
                 <div className={styles.aggregationSelect}>
-                    <button>Total</button>
                     {currentIndicators.bivariateY.aggregations.map(agg => (
-                        <button>{agg.label}</button>
+                        <button
+                            onClick={() => {
+                                setCurrentIndicators(c => ({
+                                    ...c,
+                                    bivariateY: {
+                                        ...currentIndicators.bivariateY,
+                                        currentAggregation: agg,
+                                    },
+                                }));
+                            }}
+                        >
+                            {agg.label}
+                        </button>
                     ))}
                 </div>
             )}
@@ -232,6 +254,7 @@ const CategoricalLegend = props => {
 };
 
 const MapVisualisationControls = props => {
+    const { setCurrentIndicators } = props;
     const mapVisIndicator = props.currentIndicators.mapVisualisation;
     if (!mapVisIndicator) return null;
 
@@ -241,9 +264,20 @@ const MapVisualisationControls = props => {
             <div className={styles.aggregationSelectWrapper}>
                 {mapVisIndicator.aggregations.length > 1 && (
                     <div className={styles.aggregationSelect}>
-                        <button>Total</button>
                         {mapVisIndicator.aggregations.map(agg => (
-                            <button>{agg.label}</button>
+                            <button
+                                onClick={() => {
+                                    setCurrentIndicators(c => ({
+                                        ...c,
+                                        mapVisualisation: {
+                                            ...mapVisIndicator,
+                                            currentAggregation: agg,
+                                        },
+                                    }));
+                                }}
+                            >
+                                {agg.label}
+                            </button>
                         ))}
                     </div>
                 )}
