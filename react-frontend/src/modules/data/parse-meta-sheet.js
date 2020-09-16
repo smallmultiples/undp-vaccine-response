@@ -4,12 +4,16 @@ const numOrUndef = val => (isNaN(val) ? undefined : parseFloat(val));
 
 const parseAggregation = row => {
     const raw = row["Aggregation"];
-    if (!raw) return null;
-    const prefix = row["Data Key"] + "::";
-    return raw.split(";").map(label => ({
-        key: prefix + label,
-        label,
-    }));
+    const dataKey = row["Data Key"];
+    const prefix = dataKey + "::";
+    const base = [{ key: dataKey, label: "Total" }];
+    const addditional = raw
+        ? raw.split(";").map(label => ({
+              key: prefix + label,
+              label,
+          }))
+        : [];
+    return [...base, ...addditional];
 };
 
 export const parseMetaSheet = raw => {
@@ -90,6 +94,8 @@ export const parseMetaSheet = raw => {
                 ? formats[row["Data Format"]](decimals)
                 : formats.decimal(decimals);
 
+            const aggregations = parseAggregation(row);
+
             out[currentPillar].goals[currentGoal].indicators[ind] = {
                 label: ind,
                 tableLabel: row["Indicator Label Table"],
@@ -114,7 +120,8 @@ export const parseMetaSheet = raw => {
                 meta,
                 goal: out[currentPillar].goals[currentGoal],
                 isComposite: row["Composite Indicator"],
-                aggregations: parseAggregation(row),
+                aggregations,
+                currentAggregation: aggregations[0],
             };
         }
 
