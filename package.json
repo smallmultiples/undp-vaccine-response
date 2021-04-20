@@ -1,8 +1,8 @@
 {
-    "name": "undp-response-data-platform",
+    "name": "undp-vaccine-response",
     "version": "1.0.0",
     "main": "index.js",
-    "repository": "https://github.com/smallmultiples/undp-response-data-platform.git",
+    "repository": "https://github.com/smallmultiples/undp-vaccine-response.git",
     "author": "Harry Morris <harry@small.mu>",
     "license": "UNLICENSED"
 }
