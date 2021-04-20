@@ -7,8 +7,10 @@ import qs from "qs";
 import regionLookup from "./modules/data/region-lookup.json";
 import IndicatorTable from "./pages/indicator-table/indicator-table";
 
-const trackingId = "UA-25119617-15";
-ReactGA.initialize(trackingId);
+const trackingId = process.env.REACT_APP_GA_TRACKING_ID;
+if (trackingId) {
+    ReactGA.initialize(trackingId);
+}
 
 function getEl(embedSelector) {
     if (typeof embedSelector === "string") {
