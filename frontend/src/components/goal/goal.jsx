@@ -2,7 +2,7 @@ import React from "react";
 import Map from "../map/map";
 import styles from "./goal.module.scss";
 import { useIndicatorState } from "./useIndicatorState";
-import { isObject, groupBy, uniq, isNil, uniqBy } from "lodash";
+import { groupBy, uniq, isNil, uniqBy } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import regionLookup from "../../modules/data/region-lookup.json";

@@ -96,13 +96,13 @@ export default function IndicatorTable(props) {
             const label = ind.tableLabel || ind.label;
             const countryCount = ind.meta.countryCount || 0;
 
-            const cc = (
-                <div className={styles.countryCount}>
-                    <div
-                        className={styles.label}
-                    >{`${countryCount} / ${COUNTRIES_TOTAL} countries and areas`}</div>
-                </div>
-            );
+            // const cc = (
+            //     <div className={styles.countryCount}>
+            //         <div
+            //             className={styles.label}
+            //         >{`${countryCount} / ${COUNTRIES_TOTAL} countries and areas`}</div>
+            //     </div>
+            // );
 
             const currency = ind.meta.lastUpdated || "";
 
