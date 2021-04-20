@@ -1,4 +1,4 @@
-[context.timeline]
+[context.development]
     environment = { REACT_APP_USE_SHEET = "true" }
 [context.production]
-    environment = { PUBLIC_URL = "https://production--undp-response-data-platform.netlify.app" }
+    environment = { PUBLIC_URL = "https://production--undp-vaccine-response.netlify.app" }
