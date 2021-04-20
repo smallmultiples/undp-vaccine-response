@@ -9,12 +9,12 @@ import {
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./indicator-table.module.scss";
 import Table from "../../components/questions/table";
-import regionsLookup from "../../modules/data/region-lookup.json";
+// import regionsLookup from "../../modules/data/region-lookup.json";
 import { getIndicatorDataKey, parseSheetDate, saveBlob } from "../../modules/utils";
 import { isNil } from "lodash";
 import { csvFormat } from "d3";
 
-const COUNTRIES_TOTAL = regionsLookup.length;
+// const COUNTRIES_TOTAL = regionsLookup.length;
 
 async function downloadIndicator(indicator) {
     const sheet = indicator.goal.sheet;
@@ -94,7 +94,7 @@ export default function IndicatorTable(props) {
         .filter(d => d.meta)
         .map(ind => {
             const label = ind.tableLabel || ind.label;
-            const countryCount = ind.meta.countryCount || 0;
+            // const countryCount = ind.meta.countryCount || 0;
 
             // const cc = (
             //     <div className={styles.countryCount}>
