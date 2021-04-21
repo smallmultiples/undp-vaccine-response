@@ -1,5 +1,6 @@
-base = "frontend/"
-publish = "build/"
+[build]
+    base = "frontend/"
+    publish = "build/"
 
 [context.branch-deploy]
     command = "yarn build"
