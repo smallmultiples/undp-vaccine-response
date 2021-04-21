@@ -1,4 +1,11 @@
-[context.development]
-    environment = { REACT_APP_USE_SHEET = "true" }
+[context.branch-deploy]
+    environment = { 
+        REACT_APP_USE_SHEET = "true",
+        REACT_APP_COUNTRY_DATA_SHEET="1xNdgn4Chg6vkElBIrCelz_vtnWGAYQFrJFU7Ms9vvs0",
+        REACT_APP_META_DATA_SHEET="15RM_8zoXQNl5PWYz9KFhFfodBis4wC0xvI_PjRkADzQ"
+    }
 [context.production]
-    environment = { PUBLIC_URL = "https://production--undp-vaccine-response.netlify.app" }
+    environment = { 
+        REACT_APP_COUNTRY_DATA_SHEET="1yztfJzSrPgeyr1GskggxeQ2pxqurZllQ4bW0Pj9SwuM",
+        REACT_APP_META_DATA_SHEET="1MD4kvsD_fNGFm0dZ0k-I73_XHlnYfL1pPokFxALKF8Q"
+    }
