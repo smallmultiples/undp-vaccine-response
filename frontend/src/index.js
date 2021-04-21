@@ -40,39 +40,30 @@ function slugToCountryCode(slug, allowEmpty = true) {
 function getUrlParams() {
     const { pathname, search } = window.location;
 
-    // Pillars
-    if (pathname.startsWith("/undps-response/") || pathname.startsWith("/covid-19/")) {
-        const split = pathname.replace("/undps-response/", "").replace("/covid-19/", "").split("/");
-        const pillarSlug = split[0];
+    const split = pathname.replace("/undps-response/", "").replace("/covid-19/", "").split("/");
+    const pillarSlug = split[0];
+    const bucketSlug = split[1] || null;
+    const query = qs.parse(search.replace("?", ""));
+    const countryCode = slugToCountryCode(query.country);
 
-        if (!pillarSlug) return null;
+    return {
+        type: "bucket",
+        pillarSlug,
+        bucketSlug,
+        countryCode,
+    };
 
-        const bucketSlug = split[1] || null;
-        const query = qs.parse(search.replace("?", ""));
+    // if (pathname.startsWith("/country")) {
+    //     const split = pathname.replace("/country/", "").split("/");
 
-        if (!pillarSlug) throw new Error(`Could not parse pillar "${pillarSlug}".`);
+    //     const countrySlug = split[0];
+    //     const countryCode = slugToCountryCode(countrySlug, false);
 
-        const countryCode = slugToCountryCode(query.country);
-
-        return {
-            type: "bucket",
-            pillarSlug,
-            bucketSlug,
-            countryCode,
-        };
-    }
-
-    if (pathname.startsWith("/country")) {
-        const split = pathname.replace("/country/", "").split("/");
-
-        const countrySlug = split[0];
-        const countryCode = slugToCountryCode(countrySlug, false);
-
-        return {
-            type: "country",
-            countryCode,
-        };
-    }
+    //     return {
+    //         type: "country",
+    //         countryCode,
+    //     };
+    // }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
