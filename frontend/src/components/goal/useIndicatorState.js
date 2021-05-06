@@ -1,7 +1,12 @@
 import React from "react";
 import { flatten, uniqBy } from "lodash";
 
-export const getBivariateOptions = goal => goal.indicators.filter(d => !d.categorical);
+export const getBivariateOptions = (goal, commonPillar) => {
+    const goalOpts = goal.indicators.filter(d => !d.categorical);
+    const commonOpts = flatten(commonPillar.goals.map(goal => goal.indicators));
+
+    return [...goalOpts, ...commonOpts];
+};
 export const getMapVisualisationOptions = (goal, commonPillar) => {
     const goalOpts = goal.indicators.filter(d => d.isProgressIndicator);
     const commonOpts = flatten(commonPillar.goals.map(goal => goal.indicators));
@@ -18,8 +23,8 @@ const getDefaultIndicatorState = (goal, commonPillar) => {
         getMapVisualisationOptions(goal, commonPillar),
         d => d.label
     );
-    const bivariateOptions = getBivariateOptions(goal);
-    const chartOptions = getBivariateOptions(goal);
+    const bivariateOptions = getBivariateOptions(goal, commonPillar);
+    const chartOptions = getBivariateOptions(goal, commonPillar);
 
     return {
         // Remove duplicates in tracking indicator drop-down
