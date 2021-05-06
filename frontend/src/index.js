@@ -40,9 +40,9 @@ function slugToCountryCode(slug, allowEmpty = true) {
 function getUrlParams() {
     const { pathname, search } = window.location;
 
-    const split = pathname.replace("/undps-response/", "").replace("/covid-19/", "").split("/");
-    const pillarSlug = split[0];
-    const bucketSlug = split[1] || null;
+    const split = pathname.split("/");
+    const pillarSlug = split[split.length - 2];
+    const bucketSlug = split[split.length - 1] || null;
     const query = qs.parse(search.replace("?", ""));
     const countryCode = slugToCountryCode(query.country);
 

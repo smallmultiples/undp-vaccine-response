@@ -148,6 +148,7 @@ const colourMatricesHex = {
     "economic-recovery": yellowColourMatrixHex,
     "macro-response": greenColourMatrixHex,
     "social-cohesion": blueDarkMatrixHex,
+    "vaccine-equality": blueLightColourMatrixHex,
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
