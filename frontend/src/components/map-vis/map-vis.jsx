@@ -368,6 +368,7 @@ const CircleVis = props => {
             flatten(
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
+                    console.log(d, indicator)
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
