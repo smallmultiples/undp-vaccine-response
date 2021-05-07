@@ -216,7 +216,7 @@ const MapVis = props => {
 const getFormattedMapValue = (row, indicator) => {
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
-    return indicator.format(val);
+    return typeof val === 'string' ? val : indicator.format(val);
 };
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
@@ -363,7 +363,7 @@ const CircleVis = props => {
     const indicator = React.useMemo(() => currentIndicators.mapVisualisation, [currentIndicators]);
 
     const uniqueVals = React.useMemo(() => {
-        if (!indicator || !indicator.categorical) return null;
+        if (!indicator || !(indicator.categorical || indicator.binary)) return null;
         return uniq(
             flatten(
                 Object.values(normalizedData).map(d => {
@@ -385,7 +385,7 @@ const CircleVis = props => {
 
     let content = null;
 
-    if (indicator.categorical) {
+    if (indicator.categorical || indicator.binary) {
         const numCircles = uniqueVals.length;
         const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
         const groupRadius = minimumCircumference / (Math.PI * 2);
@@ -401,6 +401,7 @@ const CircleVis = props => {
             const groupCircles = uniqueVals.map((cat, i) => {
                 const a = i * angleEach - 90;
                 const active = cats.includes(cat);
+                if (!active) return null;
                 return (
                     <circle
                         key={row[SHEET_ROW_ID] + cat}

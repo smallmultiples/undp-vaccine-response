@@ -212,7 +212,7 @@ const BivariateIndicatorSelection = props => {
 };
 
 const CategoricalLegend = props => {
-    const { normalizedData, currentIndicators } = props;
+    const { normalizedData, currentIndicators, isBinary } = props;
 
     const indicator = currentIndicators.mapVisualisation;
 
@@ -250,10 +250,12 @@ const CategoricalLegend = props => {
                 data-visible={currentIndicators.mapVisualisationEnabled}
             >
                 {items}
-                <li className={styles.categoryItemRow}>
-                    <div className={styles.categoryIcon} />
-                    <span className={styles.categoryText}>Not available</span>
-                </li>
+                {!isBinary && (
+                    <li className={styles.categoryItemRow}>
+                        <div className={styles.categoryIcon} />
+                        <span className={styles.categoryText}>Not available</span>
+                    </li>
+                )}
             </ul>
         </div>
     );
@@ -289,8 +291,8 @@ const MapVisualisationControls = props => {
                     </div>
                 )}
             </div>
-            {mapVisIndicator.categorical ? (
-                <CategoricalLegend {...props} />
+            {mapVisIndicator.categorical || mapVisIndicator.binary ? (
+                <CategoricalLegend {...props} isBinary={mapVisIndicator.binary} />
             ) : (
                 <MapVisualisationRadiusLegend {...props} />
             )}

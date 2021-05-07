@@ -111,6 +111,7 @@ export const parseMetaSheet = raw => {
                 },
                 flipped: row["Invert Scale"],
                 categorical: row["Data Format"] === "category",
+                binary: row["Data Format"] === "binary",
                 categoryFormat: row["Category Format"],
                 format: mapFormat,
                 formatLegend: formats[row["Data Format"]]
