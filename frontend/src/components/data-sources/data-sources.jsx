@@ -1,8 +1,10 @@
 import React from "react";
 import styles from "./data-sources.module.scss";
 import { uniqBy } from "lodash";
+import axios from "axios";
 
 import regionsLookup from "../../modules/data/region-lookup.json";
+import { SOURCES_URL } from "../../config/constants";
 const COUNTRIES_TOTAL = regionsLookup.length;
 
 const IconData = props => (
@@ -23,6 +25,13 @@ const IconData = props => (
 
 export default function DataSources(props) {
     const { currentIndicators } = props;
+    const [sourcesData, setSourcesData] = React.useState([]);
+
+    React.useEffect(() => {
+        axios(SOURCES_URL)
+            .then(res => res.data)
+            .then(setSourcesData);
+    }, []);
 
     const indicators = uniqBy(
         Object.values(currentIndicators).filter(d => d.label),
@@ -36,14 +45,20 @@ export default function DataSources(props) {
         const label = indicator.tableLabel || indicator.label;
         const countryCount = COUNTRIES_TOTAL || meta.countryCount;
 
-        const timePeriod = meta.timePeriod || "";
         const sources = meta.sources.map((s, i) => {
+            const sourceMetaData = sourcesData.find(x => x["Data source name"] === s.name);
             return (
                 <span key={`link_${i}`}>
                     <a href={s.url} target="_blank" rel="noopener noreferrer">
-                        {s.name}
+                        {sourceMetaData &&
+                            sourceMetaData["Last updated start"] &&
+                            `Data last updated ${sourceMetaData["Last updated start"]}${
+                                sourceMetaData["Last updated end"] &&
+                                ` - ${sourceMetaData["Last updated end"]}`
+                            }, `}
+                        source: {s.name}
                     </a>
-                    {i < meta.sources.length - 1 && ", "}
+                    {i < meta.sources.length - 1 && "; "}
                 </span>
             );
         });
@@ -61,7 +76,8 @@ export default function DataSources(props) {
                     {label}
                 </span>
                 <span className={styles.indicatorSource}>
-                    {countrysString}Data last updated {timePeriod}, source: {sources}
+                    {countrysString}
+                    {sources}
                 </span>
             </li>
         );

@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import {
     PILLAR_URL,
+    SOURCES_URL,
     DATA_SHEET_URL,
     USE_SHEET,
     STATIC_DATA_BASE_URL,
@@ -41,12 +42,17 @@ async function downloadIndicator(indicator) {
 const usePillarData = pillarSlug => {
     const [pillars, setPillars] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
+    const [sourcesData, setSourcesData] = React.useState([]);
 
     React.useEffect(() => {
         axios(PILLAR_URL)
             .then(res => parseMetaSheet(res.data))
             .then(setPillars)
             .then(() => setLoading(false));
+
+        axios(SOURCES_URL)
+            .then(res => res.data)
+            .then(setSourcesData);
     }, []);
 
     const pillar = React.useMemo(() => {
@@ -57,6 +63,7 @@ const usePillarData = pillarSlug => {
     return {
         pillar,
         pillarLoading: loading,
+        sourcesData,
     };
 };
 
@@ -80,7 +87,7 @@ function IconDownload(props) {
 
 export default function IndicatorTable(props) {
     const { pillarSlug, bucketSlug } = props;
-    const { pillar } = usePillarData(pillarSlug, bucketSlug);
+    const { pillar, sourcesData } = usePillarData(pillarSlug, bucketSlug);
 
     const goal = React.useMemo(() => {
         if (!pillar) return null;
@@ -104,7 +111,25 @@ export default function IndicatorTable(props) {
             //     </div>
             // );
 
-            const currency = ind.meta.lastUpdated || "";
+            const lastUpdated = (
+                <div>
+                    {ind.meta?.sources.map((s, i) => {
+                        const sourceMetaData = sourcesData.find(
+                            x => x["Data source name"] === s.name
+                        );
+
+                        return (
+                            <span key={`link_${i}`}>
+                                {sourceMetaData && sourceMetaData["Last updated start"]}
+                                {sourceMetaData &&
+                                    sourceMetaData["Last updated end"] &&
+                                    ` - ${sourceMetaData["Last updated end"]}`}
+                                {i < ind.meta.sources.length - 1 && ", "}
+                            </span>
+                        );
+                    })}
+                </div>
+            );
 
             const sources = (
                 <div>
@@ -122,18 +147,18 @@ export default function IndicatorTable(props) {
             );
 
             const download = (
-                <button className={styles.downloadButton} onClick={() => downloadIndicator(ind)}>
+                <div className={styles.downloadButton} onClick={() => downloadIndicator(ind)}>
                     <IconDownload />
-                </button>
+                </div>
             );
 
-            return [label, currency, sources, download];
+            return [label, lastUpdated, sources, download];
         });
 
     return (
         <div className={styles.indicatorTable}>
             <Table
-                headings={["Data", "Currency", "Data source", ""]}
+                headings={["Data", "Last updated", "Data source", ""]}
                 rows={rowsForOverviewTable}
                 fixedColumns={2}
                 fixedColumnsWidth={30}

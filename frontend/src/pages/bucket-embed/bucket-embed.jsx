@@ -34,7 +34,6 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         if (!pillars) return null;
         if (!pillarSlug) return pillars.filter(d => d.visible)[0];
         return pillars.find(p => p.slug.toLowerCase() === pillarSlug.toLowerCase());
-
     }, [pillars, pillarSlug]);
 
     const commonPillar = React.useMemo(() => {
