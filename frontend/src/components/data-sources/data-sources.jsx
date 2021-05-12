@@ -70,7 +70,7 @@ export default function DataSources(props) {
                 : "";
 
         return (
-            <li className={styles.dataSourceRow}>
+            <li className={styles.dataSourceRow} key={label}>
                 <span className={styles.indicatorName}>
                     <IconData />
                     {label}
