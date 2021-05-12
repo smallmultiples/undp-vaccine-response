@@ -40,17 +40,16 @@ export default function BarChart(props) {
             <small>
                 {sources.map((x, i) => {
                     return (
-                        <>
+                        <span key={x}>
                             <a
                                 target="_parent"
                                 className={styles.dataSource}
                                 href={sourcesLinks[i]}
-                                key={x}
                             >
                                 {x}
                             </a>
                             {i !== sources.length - 1 ? ", " : ""}
-                        </>
+                        </span>
                     );
                 })}
             </small>
