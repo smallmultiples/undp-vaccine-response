@@ -26,6 +26,8 @@ export default function BarChart(props) {
             data: dataFinal,
         });
     });
+    const sources = dataSource.split(";");
+    const sourcesLinks = dataSourceLink.split(";");
     return (
         <div className={styles.lineChart}>
             <p>
@@ -35,7 +37,23 @@ export default function BarChart(props) {
                 <Chart data={data} format={format} />
             </div>
             <p className={styles.secondaryLabel}>{secondaryLabel.props.children}</p>
-            <small><a target="_parent" className={styles.dataSource} href={dataSourceLink}>{dataSource}</a></small>
+            <small>
+                {sources.map((x, i) => {
+                    return (
+                        <>
+                            <a
+                                target="_parent"
+                                className={styles.dataSource}
+                                href={sourcesLinks[i]}
+                                key={x}
+                            >
+                                {x}
+                            </a>
+                            {i !== sources.length - 1 ? ", " : ""}
+                        </>
+                    );
+                })}
+            </small>
         </div>
     );
 }
@@ -109,7 +127,7 @@ const Chart = props => {
 const Data = props => {
     const { scales, rawData, format } = props;
 
-    const bars = (data) => {
+    const bars = data => {
         const columns = values => {
             return values.map((d, i) => {
                 const left = scales.x(i);
