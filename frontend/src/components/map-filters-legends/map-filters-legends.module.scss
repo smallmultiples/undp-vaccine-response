@@ -209,6 +209,39 @@ $mapVisualisationControlsWidth: 220px;
                     border-color: $color-cerise;
                 }
             }
+            &[data-gradient="true"] {
+                stroke-width: 1px;
+                fill: $color-grey-c3;
+                // opacity: 0.9;
+                &[data-i="0"] {
+                    background: none;
+                    border-color: $color-navy;
+                }
+                &[data-i="1"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                    opacity: 0.2;
+                }
+                &[data-i="2"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                    opacity: 0.4;
+                }
+                &[data-i="3"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                    opacity: 0.6;
+                }
+                &[data-i="4"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                    opacity: 0.8;
+                }
+                &[data-i="5"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                }
+            }
         }
 
         .categoryText {

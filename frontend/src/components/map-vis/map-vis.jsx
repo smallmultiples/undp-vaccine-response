@@ -368,7 +368,6 @@ const CircleVis = props => {
             flatten(
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
-                    console.log(d, indicator)
                     if (isNil(val)) return null;
                     return categorySplit(val);
                 })
@@ -399,7 +398,7 @@ const CircleVis = props => {
             const xy = rowXY(row);
             if (!xy) return null;
 
-            const groupCircles = uniqueVals.map((cat, i) => {
+            const groupCircles = uniqueVals.sort().map((cat, i) => {
                 const a = i * angleEach - 90;
                 const active = cats.includes(cat);
                 if (!active) return null;
@@ -409,6 +408,7 @@ const CircleVis = props => {
                         className={styles.visCategoryCircle}
                         data-i={i}
                         data-active={active}
+                        data-gradient={indicator.label === "Vaccination policy"}
                         r={active ? circleRadius : circleRadiusInactive}
                         style={{
                             transform: `rotate(${a}deg) translateX(${groupRadius}px)`,

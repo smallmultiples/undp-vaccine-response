@@ -232,12 +232,17 @@ const CategoricalLegend = props => {
 
     if (!indicator) return null;
 
-    const items = uniqueVals.map((val, index) => {
+    const items = uniqueVals.sort().map((val, index) => {
         const fmtString = indicator.categoryFormat || "{v}";
         const categoryString = fmtString.replace("{v}", val);
         return (
             <li className={styles.categoryItemRow} key={val}>
-                <div className={styles.categoryIcon} data-i={index} data-selected />
+                <div
+                    className={styles.categoryIcon}
+                    data-i={index}
+                    data-selected
+                    data-gradient={indicator.label === "Vaccination policy"}
+                />
                 <span className={styles.categoryText}>{categoryString}</span>
             </li>
         );
