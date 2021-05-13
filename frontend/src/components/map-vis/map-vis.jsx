@@ -408,7 +408,7 @@ const CircleVis = props => {
                         className={styles.visCategoryCircle}
                         data-i={i}
                         data-active={active}
-                        data-gradient={indicator.label === "Vaccination policy"}
+                        data-gradient={indicator.isGradient}
                         r={active ? circleRadius : circleRadiusInactive}
                         style={{
                             transform: `rotate(${a}deg) translateX(${groupRadius}px)`,

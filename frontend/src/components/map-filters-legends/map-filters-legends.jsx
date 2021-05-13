@@ -241,7 +241,7 @@ const CategoricalLegend = props => {
                     className={styles.categoryIcon}
                     data-i={index}
                     data-selected
-                    data-gradient={indicator.label === "Vaccination policy"}
+                    data-gradient={indicator.isGradient}
                 />
                 <span className={styles.categoryText}>{categoryString}</span>
             </li>

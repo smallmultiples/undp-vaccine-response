@@ -50,6 +50,7 @@ export const parseMetaSheet = raw => {
                 sheet: row["Sheet"],
                 id: "",
                 incomplete: row["Goal status"] === "incomplete",
+                defaultBaseIndicator: row["Default base indicator"],
                 prioritizeCommonTrackingIndicators:
                     row["Prioritize Common Tracking Indicators"] || false,
             };
@@ -121,6 +122,7 @@ export const parseMetaSheet = raw => {
                 meta,
                 goal: out[currentPillar].goals[currentGoal],
                 isComposite: row["Composite Indicator"],
+                isGradient: row["Gradient Category Indicator"],
                 aggregations,
                 currentAggregation: aggregations[0],
             };
