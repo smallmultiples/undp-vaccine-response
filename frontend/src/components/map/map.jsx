@@ -149,6 +149,8 @@ const colourMatricesHex = {
     "macro-response": greenColourMatrixHex,
     "social-cohesion": blueDarkMatrixHex,
     "vaccine-equality": blueLightColourMatrixHex,
+    "accessibility": blueLightColourMatrixHex,
+    "affordability": yellowColourMatrixHex,
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
@@ -164,7 +166,7 @@ const getNormalFromJenks = (jenks, value, flip = false) => {
     return flip ? 1 - clamped : clamped;
 };
 
-const getColorMatrices = (pillar, currentIndicators) => {
+const getColorMatrices = (pillar, goal, currentIndicators) => {
     const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
     const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
     let colorMatrixHex = colourMatricesHex[pillar.label];
@@ -184,6 +186,9 @@ const getColorMatrices = (pillar, currentIndicators) => {
             .map((x, i) => hdiColorMatrixHex.map(x => x[i]).reverse())
             .reverse();
     }
+    if (goal) {
+        colorMatrixHex = colourMatricesHex[goal.slug];
+    }
 
     const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
 
@@ -197,7 +202,7 @@ const nullValue = val => isNil(val) || val === "";
 
 const areaToRadius = area => Math.sqrt(area / Math.PI);
 
-const useScales = (domains, currentIndicators, pillar) => {
+const useScales = (domains, currentIndicators, pillar, goal) => {
     return React.useMemo(() => {
         const circleScale = scaleLinear()
             .range([30, 1000])
@@ -209,7 +214,7 @@ const useScales = (domains, currentIndicators, pillar) => {
         mapVisualisationRadiusScale.range = () => circleScale.range().map(areaToRadius);
         mapVisualisationRadiusScale.domain = circleScale.domain;
 
-        let { colorMatrix, colorMatrixHex } = getColorMatrices(pillar, currentIndicators);
+        let { colorMatrix, colorMatrixHex } = getColorMatrices(pillar, goal, currentIndicators);
         const maxIndexX = colorMatrix[0].length - 1;
         const maxIndexY = colorMatrix.length - 1;
 
@@ -327,10 +332,10 @@ const useScales = (domains, currentIndicators, pillar) => {
 };
 
 const Map = props => {
-    const { currentIndicators, countryData, pillar } = props;
+    const { currentIndicators, countryData, pillar, goal } = props;
 
     const domains = useDomains(countryData, currentIndicators);
-    const scales = useScales(domains, currentIndicators, pillar);
+    const scales = useScales(domains, currentIndicators, pillar, goal);
 
     const { isMobile } = useMediaQuery();
 

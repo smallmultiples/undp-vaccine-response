@@ -212,34 +212,42 @@ $mapVisualisationControlsWidth: 220px;
             &[data-gradient="true"] {
                 stroke-width: 1px;
                 fill: $color-grey-c3;
-                // opacity: 0.9;
                 &[data-i="0"] {
                     background: none;
-                    border-color: $color-navy;
+                    border-color: $color-red;
                 }
                 &[data-i="1"] {
-                    background: $color-navy;
-                    border-color: $color-navy;
-                    opacity: 0.2;
+                    background: $color-red;
+                    border-color: $color-red;
                 }
                 &[data-i="2"] {
-                    background: $color-navy;
-                    border-color: $color-navy;
-                    opacity: 0.4;
+                    background: $color-yellow;
+                    border-color: $color-yellow;
                 }
                 &[data-i="3"] {
-                    background: $color-navy;
-                    border-color: $color-navy;
-                    opacity: 0.6;
+                    background: $color-green;
+                    border-color: $color-green;
                 }
                 &[data-i="4"] {
-                    background: $color-navy;
-                    border-color: $color-navy;
-                    opacity: 0.8;
+                    background: $color-dull-blue;
+                    border-color: $color-dull-blue;
                 }
                 &[data-i="5"] {
                     background: $color-navy;
                     border-color: $color-navy;
+                }
+            }
+            &[data-binary="true"] {
+                stroke-width: 1px;
+                fill: $color-grey-c3;
+                opacity: 0.9;
+                &[data-i="0"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                }
+                &[data-i="1"] {
+                    background: $color-red;
+                    border-color: $color-red;
                 }
             }
         }

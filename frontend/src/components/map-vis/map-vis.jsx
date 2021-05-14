@@ -216,7 +216,7 @@ const MapVis = props => {
 const getFormattedMapValue = (row, indicator) => {
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
-    return typeof val === 'string' ? val : indicator.format(val);
+    return typeof val === "string" ? val : indicator.format(val);
 };
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
@@ -398,24 +398,27 @@ const CircleVis = props => {
             const xy = rowXY(row);
             if (!xy) return null;
 
-            const groupCircles = uniqueVals.sort().map((cat, i) => {
-                const a = i * angleEach - 90;
-                const active = cats.includes(cat);
-                if (!active) return null;
-                return (
-                    <circle
-                        key={row[SHEET_ROW_ID] + cat}
-                        className={styles.visCategoryCircle}
-                        data-i={i}
-                        data-active={active}
-                        data-gradient={indicator.isGradient}
-                        r={active ? circleRadius : circleRadiusInactive}
-                        style={{
-                            transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
-                        }}
-                    />
-                );
-            });
+            const groupCircles = (indicator.binary ? ["Yes", "No"] : uniqueVals.sort()).map(
+                (cat, i) => {
+                    const a = i * angleEach - 90;
+                    const active = cats.includes(cat);
+                    if (!active) return null;
+                    return (
+                        <circle
+                            key={row[SHEET_ROW_ID] + cat}
+                            className={styles.visCategoryCircle}
+                            data-i={i}
+                            data-active={active}
+                            data-gradient={indicator.isGradient}
+                            data-binary={indicator.binary}
+                            r={active ? circleRadius : circleRadiusInactive}
+                            style={{
+                                transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
+                            }}
+                        />
+                    );
+                }
+            );
 
             return (
                 <g

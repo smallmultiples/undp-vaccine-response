@@ -387,8 +387,7 @@ const ChartArea = props => {
                 const hdiRow = commonData.find(
                     r =>
                         r[ROW_KEY] === d[ROW_KEY] &&
-                        r["Human development index (HDI)"] &&
-                        r.Year.getFullYear() === 2018
+                        r["Human development index (HDI)"]
                 );
                 const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
                 const isSelected = selectedCountryCode === d[ROW_KEY];
