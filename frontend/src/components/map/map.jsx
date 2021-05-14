@@ -328,7 +328,7 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
             colorX: xColourScale,
             colorY: yColourScale,
         };
-    }, [domains, currentIndicators, pillar]);
+    }, [domains, currentIndicators, pillar, goal]);
 };
 
 const Map = props => {
