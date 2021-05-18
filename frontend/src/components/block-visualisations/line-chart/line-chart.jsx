@@ -27,6 +27,8 @@ export default function LineChart(props) {
             data: dataFinal,
         });
     });
+    const sources = dataSource.split(";");
+    const sourcesLinks = dataSourceLink.split(";");
 
     return (
         <div className={styles.lineChart}>
@@ -50,7 +52,22 @@ export default function LineChart(props) {
                 <Chart data={data} format={format} />
             </div>
             <p className={styles.secondaryLabel}>{secondaryLabel.props.children}</p>
-            <small><a target="_parent" className={styles.dataSource} href={dataSourceLink}>{dataSource}</a></small>
+            <small>
+                {sources.map((x, i) => {
+                    return (
+                        <span key={x}>
+                            <a
+                                target="_parent"
+                                className={styles.dataSource}
+                                href={sourcesLinks[i]}
+                            >
+                                {x}
+                            </a>
+                            {i !== sources.length - 1 ? ", " : ""}
+                        </span>
+                    );
+                })}
+            </small>
         </div>
     );
 }
@@ -177,7 +194,7 @@ const Data = props => {
         const dotsSet = dots(data);
         const lines = [];
         for (let i = 0; i < data.length - 1; i++) {
-            lines.push(line(data, i, i+1));
+            lines.push(line(data, i, i + 1));
         }
         return (
             <g>

@@ -3,7 +3,8 @@ import styles from "./donut.module.scss";
 
 export default function Donut(props) {
     const { value, primaryLabel, secondaryLabel, dataSource, dataSourceLink } = props;
-
+    const sources = dataSource.split(";");
+    const sourcesLinks = dataSourceLink.split(";");
     return (
         <div className={styles.donut}>
             <p>
@@ -11,7 +12,22 @@ export default function Donut(props) {
             </p>
             {!isNaN(value) && <Chart value={value} />}
             <p className={styles.secondaryLabel}>{secondaryLabel.props.children}</p>
-            <small><a target="_parent" className={styles.dataSource} href={dataSourceLink}>{dataSource}</a></small>
+            <small>
+                {sources.map((x, i) => {
+                    return (
+                        <span key={x}>
+                            <a
+                                target="_parent"
+                                className={styles.dataSource}
+                                href={sourcesLinks[i]}
+                            >
+                                {x}
+                            </a>
+                            {i !== sources.length - 1 ? ", " : ""}
+                        </span>
+                    );
+                })}
+            </small>
         </div>
     );
 }
