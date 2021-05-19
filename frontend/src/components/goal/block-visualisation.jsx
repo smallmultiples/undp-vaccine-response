@@ -1,5 +1,6 @@
 import React from "react";
 import Donut from "../block-visualisations/donut-vis/donut";
+import Bubble from "../block-visualisations/bubble-vis/bubble";
 import Factoid from "../block-visualisations/factoid/factoid";
 import BarChart from "../block-visualisations/bar-chart/bar-chart";
 import LineChart from "../block-visualisations/line-chart/line-chart";
@@ -8,6 +9,7 @@ import styles from "./goal.module.scss";
 
 const BlockVisualisations = {
     Donut: Donut,
+    Bubble: Bubble,
     Factoid: Factoid,
     "Line chart": LineChart,
     "Bar chart": BarChart,

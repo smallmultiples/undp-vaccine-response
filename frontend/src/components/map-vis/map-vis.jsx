@@ -183,8 +183,8 @@ const MapVis = props => {
                     <div className={styles.mapZoomButton} onClick={() => zoomIncrement(0.5)}>
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
                             <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M13 17V30H17V17H30V13H17V0H13V13H0V17H13Z"
                                 fill="currentColor"
                             />
