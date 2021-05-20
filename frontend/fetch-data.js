@@ -3,10 +3,10 @@ const _ = require("lodash");
 const fs = require("fs").promises;
 
 const SHEET_ID =
-    process.env.REACT_APP_COUNTRY_DATA_SHEET || "17eYbe5bdRTzftD8TqWAvBiYmzxZhpsqIDA5jN9zKq9w";
+    process.env.REACT_APP_COUNTRY_DATA_SHEET || "14KGG13epWHEnmgZi63WUyPpfmweEdRihTjo5yU7kn0U";
 
 const META_SHEET_ID =
-    process.env.REACT_APP_META_DATA_SHEET || "1IjLAiaB0f_yPZ-SgAxE8I74aBi1L-BerfWonZxMYTXs";
+    process.env.REACT_APP_META_DATA_SHEET || "154wokmdJg8cUw8Nau346JghPgLoqGnO5xBIudRcJHjA";
 
 async function main() {
     console.log("Saving data to src directory");
