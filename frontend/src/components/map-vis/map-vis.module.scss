@@ -287,6 +287,48 @@
                 stroke: $color-cerise;
             }
         }
+        &[data-gradient="true"] {
+            stroke-width: 1px;
+            fill: $color-grey-c3;
+            opacity: 0.9;
+            &[data-i="0"] {
+                fill: none;
+                stroke: $color-red;
+            }
+            &[data-i="1"] {
+                fill: $color-red;
+                stroke: $color-red;
+            }
+            &[data-i="2"] {
+                fill: $color-yellow;
+                stroke: $color-yellow;
+            }
+            &[data-i="3"] {
+                fill: $color-green;
+                stroke: $color-green;
+            }
+            &[data-i="4"] {
+                fill: $color-dull-blue;
+                stroke: $color-dull-blue;
+            }
+            &[data-i="5"] {
+                fill: $color-navy;
+                stroke: $color-navy;
+            }
+        }
+        &[data-binary="true"] {
+            stroke-width: 1px;
+            fill: $color-grey-c3;
+            opacity: 0.9;
+            &[data-i="0"] {
+                fill: $color-navy;
+                stroke: $color-navy;
+            }
+            &[data-i="1"] {
+                fill: $color-red;
+                stroke: $color-red;
+            }
+        }
     }
 }
 

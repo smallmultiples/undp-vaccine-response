@@ -232,12 +232,18 @@ const CategoricalLegend = props => {
 
     if (!indicator) return null;
 
-    const items = uniqueVals.map((val, index) => {
+    const items = (isBinary ? ["Yes", "No"] : uniqueVals.sort()).map((val, index) => {
         const fmtString = indicator.categoryFormat || "{v}";
         const categoryString = fmtString.replace("{v}", val);
         return (
             <li className={styles.categoryItemRow} key={val}>
-                <div className={styles.categoryIcon} data-i={index} data-selected />
+                <div
+                    className={styles.categoryIcon}
+                    data-i={index}
+                    data-selected
+                    data-gradient={indicator.isGradient}
+                    data-binary={isBinary}
+                />
                 <span className={styles.categoryText}>{categoryString}</span>
             </li>
         );
@@ -253,7 +259,7 @@ const CategoricalLegend = props => {
                 {!isBinary && (
                     <li className={styles.categoryItemRow}>
                         <div className={styles.categoryIcon} />
-                        <span className={styles.categoryText}>Not available</span>
+                        <span className={styles.categoryText}>No data available</span>
                     </li>
                 )}
             </ul>

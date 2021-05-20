@@ -189,78 +189,6 @@ export default function Goal(props) {
 
     return (
         <div className={styles.goal}>
-            {goal.incomplete ? (
-                <div className={styles.comingSoonBanner}>
-                    <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M12 2V6"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M12 18V22"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M4.93018 4.93005L7.76018 7.76005"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M16.2402 16.24L19.0702 19.07"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M2 12H6"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M18 12H22"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M4.93018 19.07L7.76018 16.24"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M16.2402 7.76005L19.0702 4.93005"
-                            stroke="#0969FA"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                    </svg>
-
-                    <p>
-                        <strong>We're still working</strong> on adding more indicators to this tool.
-                    </p>
-                </div>
-            ) : null}
             <div className={styles.mapArea}>
                 {sideBlocks && sideBlocks.length > 0 && (
                     <div className={styles.mapSidebar}>
@@ -387,8 +315,7 @@ const ChartArea = props => {
                 const hdiRow = commonData.find(
                     r =>
                         r[ROW_KEY] === d[ROW_KEY] &&
-                        r["Human development index (HDI)"] &&
-                        r.Year.getFullYear() === 2018
+                        r["Human development index (HDI)"]
                 );
                 const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
                 const isSelected = selectedCountryCode === d[ROW_KEY];

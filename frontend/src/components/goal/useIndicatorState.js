@@ -40,7 +40,9 @@ const getDefaultIndicatorState = (goal, commonPillar) => {
         bivariateY: bivariateOptions.length > 1 ? bivariateOptions[1] : bivariateOptions[0],
         bivariateYEnabled: false,
         // "above-map" layer, be it simple circles or whatever. Is a "progress indicator".
-        mapVisualisation: mapVisualisationOptions[0],
+        mapVisualisation:
+            mapVisualisationOptions.find(x => x.dataKey === goal.defaultBaseIndicator) ||
+            mapVisualisationOptions[0],
         mapVisualisationEnabled: mapVisualisationOptions.length > 0,
         chart: chartOptions[0],
     };

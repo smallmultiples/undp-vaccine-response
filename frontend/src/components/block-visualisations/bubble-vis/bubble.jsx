@@ -1,12 +1,12 @@
 import React from "react";
-import styles from "./donut.module.scss";
+import styles from "./bubble.module.scss";
 
-export default function Donut(props) {
+export default function Bubble(props) {
     const { value, primaryLabel, secondaryLabel, dataSource, dataSourceLink } = props;
     const sources = dataSource.split(";");
     const sourcesLinks = dataSourceLink.split(";");
     return (
-        <div className={styles.donut}>
+        <div className={styles.bubbleChart}>
             <p>
                 <strong>{primaryLabel}</strong>
             </p>
@@ -32,38 +32,33 @@ export default function Donut(props) {
     );
 }
 
-const PADDING = 5;
-const CENTER = 150 / 2;
-const RADIUS = CENTER - PADDING;
-
 const Chart = props => {
     const { value } = props;
 
-    const startX = CENTER;
-    const startY = PADDING;
+    const v = (250 * value) / 100;
 
-    const angle = Math.min(value, 99.99) * 3.6;
-    const angleRadians = (angle - 90) * (Math.PI / 180);
-
-    const endX = CENTER + Math.cos(angleRadians) * RADIUS;
-    const endY = CENTER + Math.sin(angleRadians) * RADIUS;
-
-    const largeFlag = angle > 180 ? "1" : "0";
-
-    const path = `
-        M ${startX} ${startY}
-        A ${RADIUS} ${RADIUS} 0 ${largeFlag} 1 ${endX} ${endY}
-    `;
+    const bubbles = [];
+    for (let i = 0; i < 250; i++) {
+        const colored =
+            i === Math.floor(v) && v !== Math.floor(v) ? "half" : i <= v ? "full" : "empty";
+        bubbles.push(colored);
+    }
 
     return (
-        <div className={styles.container}>
-            <svg className={styles.svg}>
-                <circle className={styles.pathEmpty} r={RADIUS} cx={CENTER} cy={CENTER} />
-                <path className={styles.pathFill} d={path} />
-            </svg>
-            <div className={styles.textOverlay}>
-                <span className={styles.valueText}>{value}%</span>
+        <div>
+            <div className={styles.container}>
+                {bubbles.map((x, i) => {
+                    return (
+                        <div
+                            key={`bubble-${i}`}
+                            className={styles.bubble}
+                            data-full={x === "full"}
+                            data-half={x === "half"}
+                        />
+                    );
+                })}
             </div>
+            <div className={styles.percentText}>{value}%</div>
         </div>
     );
 };
