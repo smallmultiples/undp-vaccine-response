@@ -49,7 +49,6 @@ export const parseMetaSheet = raw => {
                 hidden: qs === "-",
                 sheet: row["Sheet"],
                 id: "",
-                incomplete: row["Goal status"] === "incomplete",
                 defaultBaseIndicator: row["Default base indicator"],
                 prioritizeCommonTrackingIndicators:
                     row["Prioritize Common Tracking Indicators"] || false,
