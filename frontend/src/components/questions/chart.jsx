@@ -93,28 +93,8 @@ const Data = props => {
             const height = Math.abs(scales.y(0) - scales.y(d.data));
             const isHovered = hoveredData && hoveredData.item.country === d.country;
 
-            const selectedGroup = d.isSelected ? (
-                <g>
-                    <rect
-                        className={styles.barSelected}
-                        x={left - width * 0.25}
-                        width={width * 1.5}
-                        y={scales.frame.top}
-                        height={scales.frame.height}
-                    />
-                    <text
-                        className={styles.barSelectedLabel}
-                        y={scales.frame.bottom}
-                        x={left + width * 0.5}
-                    >
-                        {d.country}
-                    </text>
-                </g>
-            ) : null;
-
             return (
                 <g key={i}>
-                    {selectedGroup}
                     <rect
                         className={styles.bar}
                         x={isHovered ? left - 1 : left}
