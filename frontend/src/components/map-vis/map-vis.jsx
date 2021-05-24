@@ -216,7 +216,7 @@ const MapVis = props => {
 const getFormattedMapValue = (row, indicator) => {
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
-    return typeof val === "string" ? val : indicator.format(val);
+    return typeof val === "string" ? val : indicator.binary ? (val ? 'Yes' : 'No') : indicator.format(val);
 };
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
@@ -369,7 +369,7 @@ const CircleVis = props => {
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
-                    return categorySplit(val);
+                    return indicator.binary ? val === true ? 'Yes' : 'No' : categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
@@ -394,7 +394,7 @@ const CircleVis = props => {
         const groups = Object.values(normalizedData).map(row => {
             const val = getRowIndicatorValue(row, indicator);
             if (isNil(val)) return null;
-            const cats = categorySplit(val);
+            const cats = indicator.binary ? val === true ? 'Yes' : 'No' : categorySplit(val);
             const xy = rowXY(row);
             if (!xy) return null;
 
