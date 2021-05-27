@@ -360,7 +360,7 @@ const MapTooltip = props => {
     );
 };
 
-const circlePadding = 2; // this includes the stroke
+// const circlePadding = 2; // this includes the stroke
 const circleRadius = 4;
 const circleRadiusInactive = 3;
 
@@ -393,10 +393,10 @@ const CircleVis = props => {
     let content = null;
 
     if (indicator.categorical || indicator.binary) {
-        const numCircles = uniqueVals.length;
-        const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
-        const groupRadius = minimumCircumference / (Math.PI * 2);
-        const angleEach = 360 / numCircles;
+        // const numCircles = uniqueVals.length;
+        // const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
+        // const groupRadius = minimumCircumference / (Math.PI * 2);
+        // const angleEach = 360 / numCircles;
 
         const groups = Object.values(normalizedData).map(row => {
             const val = getRowIndicatorValue(row, indicator);
@@ -407,7 +407,7 @@ const CircleVis = props => {
 
             const groupCircles = (indicator.binary ? ["Yes", "No"] : uniqueVals.sort()).map(
                 (cat, i) => {
-                    const a = i * angleEach - 90;
+                    // const a = i * angleEach - 90;
                     const active = cats.includes(cat);
                     if (!active) return null;
                     return (
