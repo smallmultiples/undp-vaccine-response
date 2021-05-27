@@ -8,6 +8,7 @@ import { categorySplit, getRowIndicatorValue } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
 import useMediaQuery from "../../hooks/use-media-query";
 import { Chevron, Plus } from "../icons/icons";
+import { differenceInDays, format } from "date-fns";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -216,7 +217,13 @@ const MapVis = props => {
 const getFormattedMapValue = (row, indicator) => {
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
-    return typeof val === "string" ? val : indicator.binary ? (val ? 'Yes' : 'No') : indicator.format(val);
+    if (indicator.binary) {
+        return val ? "Yes" : "No";
+    }
+    if (indicator.isDate) {
+        return format(val, 'dd MMM yyyy')
+    }
+    return typeof val === "string" ? val : indicator.format(val);
 };
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
@@ -369,7 +376,7 @@ const CircleVis = props => {
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
-                    return indicator.binary ? val === true ? 'Yes' : 'No' : categorySplit(val);
+                    return indicator.binary ? (val === true ? "Yes" : "No") : categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
@@ -394,7 +401,7 @@ const CircleVis = props => {
         const groups = Object.values(normalizedData).map(row => {
             const val = getRowIndicatorValue(row, indicator);
             if (isNil(val)) return null;
-            const cats = indicator.binary ? val === true ? 'Yes' : 'No' : categorySplit(val);
+            const cats = indicator.binary ? (val === true ? "Yes" : "No") : categorySplit(val);
             const xy = rowXY(row);
             if (!xy) return null;
 
@@ -412,9 +419,9 @@ const CircleVis = props => {
                             data-gradient={indicator.isGradient}
                             data-binary={indicator.binary}
                             r={active ? circleRadius : circleRadiusInactive}
-                            style={{
-                                transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
-                            }}
+                            // style={{
+                            //     transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
+                            // }}
                         />
                     );
                 }
@@ -437,7 +444,17 @@ const CircleVis = props => {
             const xy = rowXY(row);
             if (!xy) return null;
             const [x, y] = xy;
-            const r = scales.mapVisualisationRadius(row);
+            let rowData = row;
+            if (indicator.isDate) {
+                rowData = {
+                    ...row,
+                    [currentIndicators.mapVisualisation.currentAggregation.key]: differenceInDays(
+                        new Date(),
+                        getRowIndicatorValue(row, currentIndicators.mapVisualisation)
+                    ),
+                };
+            }
+            const r = scales.mapVisualisationRadius(rowData);
             if (isNaN(r)) return null;
             return (
                 <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />

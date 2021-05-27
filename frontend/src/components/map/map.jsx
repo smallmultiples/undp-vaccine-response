@@ -1,5 +1,6 @@
 import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
+import { differenceInDays } from "date-fns";
 import { isNil, last } from "lodash";
 import React from "react";
 import { HDI_BUCKETS } from "../../config/scales";
@@ -41,7 +42,12 @@ const useDomains = (countryData, currentIndicators) => {
             : [];
         const valuesMapVis = ready
             ? Object.values(countryData)
-                  .map(row => getRowIndicatorValue(row, currentIndicators.mapVisualisation))
+                  .map(row => {
+                      if (currentIndicators.mapVisualisation.isDate) {
+                          return differenceInDays(new Date(), getRowIndicatorValue(row, currentIndicators.mapVisualisation));
+                      }
+                      return getRowIndicatorValue(row, currentIndicators.mapVisualisation);
+                  })
                   .filter(d => d !== undefined && d !== "")
             : [];
 
@@ -149,8 +155,8 @@ const colourMatricesHex = {
     "macro-response": greenColourMatrixHex,
     "social-cohesion": blueDarkMatrixHex,
     "vaccine-equality": blueLightColourMatrixHex,
-    "accessibility": blueLightColourMatrixHex,
-    "affordability": yellowColourMatrixHex,
+    accessibility: blueLightColourMatrixHex,
+    affordability: yellowColourMatrixHex,
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {

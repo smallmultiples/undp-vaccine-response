@@ -11,6 +11,9 @@ export const categorySplit = val => {
 };
 
 export function parseSheetDate(raw) {
+    if (raw === "") {
+        return;
+    }
     if (!isNaN(raw) && raw < 100000) {
         // Excel date. Days since 1/1/1900
         const utcDate = new Date((raw - (25567 + 2)) * 86400 * 1000);

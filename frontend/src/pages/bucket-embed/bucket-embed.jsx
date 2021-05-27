@@ -64,6 +64,9 @@ const usePillarData = (pillarSlug, bucketSlug) => {
                         data.map(d => ({
                             ...d,
                             Year: parseSheetDate(d.Year),
+                            FIRST_VACCINE_DATE: parseSheetDate(d.FIRST_VACCINE_DATE),
+                            AUTHORIZATION_DATE: parseSheetDate(d.AUTHORIZATION_DATE),
+                            START_DATE: parseSheetDate(d.START_DATE),
                         }))
                     )
                     .then(d => (newGoalData[sheet] = d))
