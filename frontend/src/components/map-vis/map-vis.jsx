@@ -8,7 +8,7 @@ import { categorySplit, getRowIndicatorValue } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
 import useMediaQuery from "../../hooks/use-media-query";
 import { Chevron, Plus } from "../icons/icons";
-import { differenceInDays, format } from "date-fns";
+import { format, subDays } from "date-fns";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -217,13 +217,21 @@ const MapVis = props => {
 const getFormattedMapValue = (row, indicator) => {
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
+    let value = "";
+    let extraValue = "";
     if (indicator.binary) {
-        return val ? "Yes" : "No";
+        value = val ? "Yes" : "No";
+    } else if (indicator.isDaysAgo) {
+        value = val ? `${format(subDays(new Date(), val), "dd MMM yyyy")} (${val} days ago)` : '-';
+    } else {
+        value = typeof val === "string" ? val : indicator.format(val);
     }
-    if (indicator.isDate) {
-        return format(val, 'dd MMM yyyy')
+
+    if (indicator.tooltipExtraDataKey) {
+        extraValue = ` (${row[indicator.tooltipExtraDataKey]})`;
     }
-    return typeof val === "string" ? val : indicator.format(val);
+
+    return value + extraValue;
 };
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
@@ -444,17 +452,7 @@ const CircleVis = props => {
             const xy = rowXY(row);
             if (!xy) return null;
             const [x, y] = xy;
-            let rowData = row;
-            if (indicator.isDate) {
-                rowData = {
-                    ...row,
-                    [currentIndicators.mapVisualisation.currentAggregation.key]: differenceInDays(
-                        new Date(),
-                        getRowIndicatorValue(row, currentIndicators.mapVisualisation)
-                    ),
-                };
-            }
-            const r = scales.mapVisualisationRadius(rowData);
+            const r = scales.mapVisualisationRadius(row);
             if (isNaN(r)) return null;
             return (
                 <circle key={row[SHEET_ROW_ID]} className={styles.visCircle} cx={x} cy={y} r={r} />

@@ -112,7 +112,7 @@ export const parseMetaSheet = raw => {
                 flipped: row["Invert Scale"],
                 categorical: row["Data Format"] === "category",
                 binary: row["Data Format"] === "binary",
-                isDate: row["Data Format"] === "date",
+                isDaysAgo: row["Data Format"] === "daysAgo",
                 categoryFormat: row["Category Format"],
                 format: mapFormat,
                 formatLegend: formats[row["Data Format"]]
@@ -125,6 +125,7 @@ export const parseMetaSheet = raw => {
                 isGradient: row["Gradient Category Indicator"],
                 aggregations,
                 currentAggregation: aggregations[0],
+                tooltipExtraDataKey: row["Tooltip extra data key"],
             };
         }
 

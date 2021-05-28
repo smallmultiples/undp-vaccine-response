@@ -35,13 +35,21 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
             currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
         ].filter(Boolean);
 
-        const selectedDatums = groupBy(
-            enabledIndicators.map(indicator => ({
+        const tmp = [];
+        enabledIndicators.forEach(indicator => {
+            tmp.push({
                 dataKey: getIndicatorDataKey(indicator),
                 sheet: indicator.goal.sheet,
-            })),
-            d => d.sheet
-        );
+            });
+            if (indicator.tooltipExtraDataKey) {
+                tmp.push({
+                    dataKey: indicator.tooltipExtraDataKey,
+                    sheet: indicator.goal.sheet,
+                });
+            }
+        });
+
+        const selectedDatums = groupBy(tmp, d => d.sheet);
 
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
             // NEWEST data is first. This let's us build the map faster.
@@ -104,6 +112,13 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
             currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
         ].filter(Boolean);
 
+        const extraDatums = [
+            currentIndicators.bivariateXEnabled && currentIndicators.bivariateX.tooltipExtraDataKey,
+            currentIndicators.bivariateYEnabled && currentIndicators.bivariateY.tooltipExtraDataKey,
+            currentIndicators.mapVisualisationEnabled &&
+                currentIndicators.mapVisualisation.tooltipExtraDataKey,
+        ].filter(Boolean);
+
         Object.entries(countryGrouped).forEach(([rowKey, rows]) => {
             const region = regionLookup.find(r => r["ISO-alpha3 Code"] === rowKey);
             ret[rowKey] = {
@@ -112,7 +127,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                 dates: {},
             };
 
-            let keysToFill = uniq(selectedDatums.map(getIndicatorDataKey));
+            let keysToFill = uniq(selectedDatums.map(getIndicatorDataKey).concat(extraDatums));
 
             for (let row of rows) {
                 for (let dataKey of keysToFill.slice()) {
@@ -313,9 +328,7 @@ const ChartArea = props => {
             const data = selectedYearData.map(d => {
                 const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
                 const hdiRow = commonData.find(
-                    r =>
-                        r[ROW_KEY] === d[ROW_KEY] &&
-                        r["Human development index (HDI)"]
+                    r => r[ROW_KEY] === d[ROW_KEY] && r["Human development index (HDI)"]
                 );
                 const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
                 const isSelected = selectedCountryCode === d[ROW_KEY];
