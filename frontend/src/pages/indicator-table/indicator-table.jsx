@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import {
     PILLAR_URL,
     SOURCES_URL,
@@ -12,31 +12,77 @@ import styles from "./indicator-table.module.scss";
 import Table from "../../components/questions/table";
 // import regionsLookup from "../../modules/data/region-lookup.json";
 import { getIndicatorDataKey, parseSheetDate, saveBlob } from "../../modules/utils";
-import { isNil } from "lodash";
 import { csvFormat } from "d3";
+import useDimensions from "../../hooks/use-dimensions";
 
 // const COUNTRIES_TOTAL = regionsLookup.length;
 
-async function downloadIndicator(indicator) {
-    const sheet = indicator.goal.sheet;
-    const dataKey = getIndicatorDataKey(indicator);
+async function downloadIndicators(goal) {
+    const sheet = goal.indicators[0].goal.sheet;
     const res = await axios(
         USE_SHEET ? `${DATA_SHEET_URL}?range=${sheet}` : `${STATIC_DATA_BASE_URL}/${sheet}.json`
     );
-    const indicatorData = res.data
-        .filter(d => !isNil(d[dataKey]))
-        .map(d => ({
-            // TODO: incldue anything starting with dataKey
-            country: d["Country or Area"],
+
+    const indicatorData = res.data.map(d => {
+        const tmp = {};
+        goal.indicators.forEach(x => {
+            const dataKey = getIndicatorDataKey(x);
+            tmp[dataKey] = d[dataKey];
+        });
+        return {
             iso: d["Alpha-3 code"],
             date: parseSheetDate(d.Year),
-            [dataKey]: d[dataKey],
-        }));
+            ...tmp,
+        };
+    });
 
     const csv = csvFormat(indicatorData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
-    saveBlob(indicator.label + ".csv", blob);
+    saveBlob(`${goal.label}_data` + ".csv", blob);
+}
+
+async function downloadMetaData(goal, sourcesData) {
+    const metaData = goal.indicators
+        .filter(d => d.meta)
+        .map(ind => {
+            const label = ind.tableLabel || ind.label;
+            const sources = ind.meta?.sources.map((s, i) => {
+                const sourceMetaData = sourcesData.find(x => x["Data source name"] === s.name);
+                let lastUpdated = "";
+                if (sourceMetaData) {
+                    if (
+                        sourceMetaData["Last updated start"] &&
+                        sourceMetaData["Last updated end"]
+                    ) {
+                        lastUpdated =
+                            sourceMetaData["Last updated start"] +
+                            " - " +
+                            sourceMetaData["Last updated end"];
+                    } else {
+                        lastUpdated = sourceMetaData["Last updated start"];
+                    }
+                }
+
+                return {
+                    name: s.name,
+                    lastUpdated,
+                };
+            });
+
+            const sourcesObj = {};
+            sources.forEach((x, i) => {
+                sourcesObj[`Source #${i + 1} name`] = x.name;
+                sourcesObj[`Source #${i + 1} date last updated`] = x.lastUpdated;
+            });
+
+            return { label, ...sourcesObj };
+        });
+
+    const csv = csvFormat(metaData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+    saveBlob(`${goal.label}_meta_data` + ".csv", blob);
 }
 
 const usePillarData = pillarSlug => {
@@ -88,6 +134,7 @@ function IconDownload(props) {
 export default function IndicatorTable(props) {
     const { pillarSlug, bucketSlug } = props;
     const { pillar, sourcesData } = usePillarData(pillarSlug, bucketSlug);
+    const [showMetaData, setShowMetaData] = useState(false);
 
     const goal = React.useMemo(() => {
         if (!pillar) return null;
@@ -146,23 +193,43 @@ export default function IndicatorTable(props) {
                 </div>
             );
 
-            const download = (
-                <div className={styles.downloadButton} onClick={() => downloadIndicator(ind)}>
-                    <IconDownload />
-                </div>
-            );
-
-            return [label, lastUpdated, sources, download];
+            return [label, lastUpdated, sources];
         });
 
     return (
         <div className={styles.indicatorTable}>
-            <Table
-                headings={["Data", "Last updated", "Data source", ""]}
-                rows={rowsForOverviewTable}
-                fixedColumns={2}
-                fixedColumnsWidth={30}
-            />
+            <div className={styles.buttonRow}>
+                <div className={styles.downloadButton} onClick={() => downloadIndicators(goal)}>
+                    Download data <IconDownload />
+                </div>
+                <div
+                    className={styles.showHideButton}
+                    onClick={() => setShowMetaData(!showMetaData)}
+                >
+                    {showMetaData ? `Hide meta data` : `Show meta data`}
+                </div>
+                <a
+                    href="#"
+                    className={styles.downloadLink}
+                    onClick={() => downloadMetaData(goal, sourcesData)}
+                >
+                    Download meta data
+                </a>
+            </div>
+            <div
+                style={{
+                    maxHeight: showMetaData ? rowsForOverviewTable.length * 45 + 150 : 0,
+                    transition: "all 0.5s ease-in-out",
+                    overflow: "hidden",
+                }}
+            >
+                <Table
+                    headings={["Data", "Last updated", "Data source", ""]}
+                    rows={rowsForOverviewTable}
+                    fixedColumns={3}
+                    fixedColumnsWidth={33}
+                />
+            </div>
         </div>
     );
 }

@@ -247,6 +247,7 @@ export default function Goal(props) {
                         })}
                     </div>
                 )}
+                <h3>Explore data about the {goal.label} of vaccines across the world</h3>
                 <div className={styles.mapContainer}>
                     <Map
                         countryData={timeFilteredData}
@@ -350,7 +351,7 @@ const ChartArea = props => {
 
     return (
         <div className={styles.chartArea}>
-            <h3>Explore indicators</h3>
+            <h3>Compare countries, territories and areas</h3>
             <p>
                 Select an indicator and a year to plot to see how countries compare. Hover to see
                 the country’s data.
