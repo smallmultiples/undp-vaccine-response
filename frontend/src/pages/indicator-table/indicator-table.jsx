@@ -207,13 +207,12 @@ export default function IndicatorTable(props) {
                 >
                     {showMetaData ? `Hide meta data` : `Show meta data`}
                 </div>
-                <a
-                    href="#"
+                <div
                     className={styles.downloadLink}
                     onClick={() => downloadMetaData(goal, sourcesData)}
                 >
                     Download meta data
-                </a>
+                </div>
             </div>
             <div
                 style={{
