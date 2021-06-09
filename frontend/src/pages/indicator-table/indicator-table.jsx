@@ -13,7 +13,6 @@ import Table from "../../components/questions/table";
 // import regionsLookup from "../../modules/data/region-lookup.json";
 import { getIndicatorDataKey, parseSheetDate, saveBlob } from "../../modules/utils";
 import { csvFormat } from "d3";
-import useDimensions from "../../hooks/use-dimensions";
 
 // const COUNTRIES_TOTAL = regionsLookup.length;
 
@@ -39,7 +38,7 @@ async function downloadIndicators(goal) {
     const csv = csvFormat(indicatorData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
-    saveBlob(`${goal.label}_data` + ".csv", blob);
+    saveBlob(`${goal.label}_data.csv`, blob);
 }
 
 async function downloadMetaData(goal, sourcesData) {
@@ -82,7 +81,7 @@ async function downloadMetaData(goal, sourcesData) {
     const csv = csvFormat(metaData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
-    saveBlob(`${goal.label}_meta_data` + ".csv", blob);
+    saveBlob(`${goal.label}_meta_data.csv`, blob);
 }
 
 const usePillarData = pillarSlug => {
