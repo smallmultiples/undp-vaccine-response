@@ -262,9 +262,11 @@ export default function Goal(props) {
                     />
                 </div>
             </div>
-            <div className={styles.timeArea}>
-                <Timeline timelineState={timelineState} />
-            </div>
+            {timelineState.timespan > 1 && (
+                <div className={styles.timeArea}>
+                    <Timeline timelineState={timelineState} />
+                </div>
+            )}
             <ChartArea
                 goalDatasets={goalDatasets}
                 regionLookup={regionLookup}
@@ -373,6 +375,7 @@ const ChartArea = props => {
                     className={styles.indicatorSelector}
                     noGap
                 />
+                { yearsArray.length > 1 && (
                 <Select
                     options={yearsArray}
                     onChange={x => setYear(x)}
@@ -384,6 +387,7 @@ const ChartArea = props => {
                     className={styles.yearSelector}
                     noGap
                 />
+                )}
                 <Legend />
             </div>
             {chart}
