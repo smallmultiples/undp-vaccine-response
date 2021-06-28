@@ -230,6 +230,36 @@ export default function Goal(props) {
                                         }}
                                     />
                                 );
+                            } else {
+                                const indicator = sideBlock["Indicator"].split(",");
+                                const dataFiltered =
+                                    goalDatasets &&
+                                    goalDatasets["BASELINE-01"].filter(
+                                        x => x[indicator[0]] === indicator[1]
+                                    );
+                                const value =
+                                    dataFiltered &&
+                                    dataFiltered.reduce((a, b) => a + (b[indicator[2]] || 0), 0) /
+                                        dataFiltered.length;
+                                const primaryLabel = sideBlock["Primary label"].replace(
+                                    "X",
+                                    value ? Math.round(100 / value) : "..."
+                                );
+                                return (
+                                    <ManualBlockVis
+                                        type={sideBlock["Chart type"]}
+                                        key={`manual-chart-${i}`}
+                                        configuration={sideBlock["Configuration"]}
+                                        manualEntry={{
+                                            value: Math.round(value * 100) / 100,
+                                            primaryLabel,
+                                            secondaryLabel: sideBlock["Secondary label"],
+                                            dataSource: sideBlock["Data source"],
+                                            dataSourceLink: sideBlock["Data source link"],
+                                            format: sideBlock["Stat A type"],
+                                        }}
+                                    />
+                                );
                             }
                             const ind = goal.indicators.find(
                                 x => x.dataKey === sideBlock["Indicator"].split(";")[0]
