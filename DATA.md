@@ -11,6 +11,7 @@ The existing format of the data is close to being compatible, it needs just a fe
         -   `date`, `date2`, `Date`
     -   The date is in _excel format_ (i.e. days since 1/1/1990, as a number)
     -   This is an artefact of how the prototype was built. If this is difficult to provide, a consistent date format can be supported.
+    -   We don't use this in Vaccine
 -   Only include country data (e.g. Jurisdiction = 'NAT_TOTAL'). There should be one row per country, per date.
 -   Please ensure that numerical data is provided as numbers, not as strings
     -   e.g. `"life_expectancy":"83.73"` should instead be `"life_expectancy":83.73`
