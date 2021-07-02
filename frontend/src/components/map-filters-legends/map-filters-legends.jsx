@@ -224,11 +224,11 @@ const CategoricalLegend = props => {
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
-                    return categorySplit(val);
+                    return isBinary ? val === true ? 'Yes' : 'No' : categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
-    }, [normalizedData, indicator]);
+    }, [normalizedData, indicator, isBinary]);
 
     if (!indicator) return null;
 

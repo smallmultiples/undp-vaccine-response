@@ -99,32 +99,14 @@ const blueLightColourMatrixHex = [
     ["#4978E3", "#727AD4", "#9F7DC5", "#D180B3", "#F782A5"],
     ["#3690EB", "#6494DF", "#9697D3", "#C89BC6", "#F99FBA"],
     ["#21ABF5", "#57B2ED", "#88B8E5", "#BFBEDD", "#F6C5D4"],
-    ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#F2F2F3"],
+    ["#0BC6FF", "#41D0FC", "#7FDCF9", "#BAE7F6", "#FF0000"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
 
-const blueMidColourMatrixHex = [
-    ["#002656", "#3D3664", "#794471", "#B6527F", "#F4618D"],
-    ["#003665", "#3D4875", "#7B5B85", "#B96F95", "#F782A5"],
-    ["#004072", "#3E5884", "#7C7096", "#BA87A8", "#F99FBA"],
-    ["#005082", "#3C6D97", "#7A8BAB", "#B8A8C0", "#F6C5D4"],
-    ["#006295", "#3C86AD", "#78AAC4", "#B5CEDC", "#F2F2F3"],
-].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
-
-const blueDarkMatrixHex = [
-    ["#9001FE", "#A919E1", "#C130C7", "#D947AC", "#F4618D"],
-    ["#7E09FF", "#8935E9", "#AB4DD5", "#CC6AC2", "#F782A5"],
-    ["#6316FF", "#7547EF", "#9965E0", "#C383D1", "#F99FBA"],
-    ["#3D29FF", "#5B5EF5", "#887BEB", "#B7A2E4", "#F6C5D4"],
-    ["#0247FF", "#4175FC", "#7298F9", "#ACC0F7", "#F2F2F3"],
-].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
-
-const greenColourMatrixHex = [
-    ["#007892", "#50739E", "#7C70A5", "#AB6A9C", "#F4618D"],
-    ["#11878D", "#4A889B", "#8589AB", "#B185A9", "#F782A5"],
-    ["#219588", "#579B9B", "#8EA1B0", "#B8A3B7", "#F99FBA"],
-    ["#32A483", "#62AD9B", "#96B7B5", "#C0C4C7", "#F6C5D4"],
-    ["#43B37E", "#70C39B", "#A0D4BC", "#C7E3D6", "#F2F2F3"],
-].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
+const blueLightColourMatrixCornerColours = {
+    x: "#def3fa",
+    y: "#f7e1e8",
+    xy: "#e9e8fc",
+};
 
 const yellowColourMatrixHex = [
     ["#F0B110", "#F19935", "#F2894F", "#F37967", "#F4618D"],
@@ -133,6 +115,12 @@ const yellowColourMatrixHex = [
     ["#D9DF0D", "#E1DA54", "#E7D27D", "#ECD1A7", "#F6C5D4"],
     ["#D0F00C", "#DCF15F", "#E3F190", "#EAF2BF", "#F2F2F3"],
 ].map(d => (FLIP_COLOURS_HORIZONTALLY ? d.reverse() : d));
+
+const yellowColourMatrixCornerColours = {
+    x: "#f1f5df",
+    y: "#f7e1e8",
+    xy: "#f5eada",
+};
 
 const hdiColorMatrixHex = [
     ["#EDD0C1", "#F1EBC8", "#EAEED3", "#CBE2D2"],
@@ -143,14 +131,15 @@ const hdiColorMatrixHex = [
 ];
 
 const colourMatricesHex = {
-    "health-first": blueLightColourMatrixHex,
-    "protect-people": blueMidColourMatrixHex,
-    "economic-recovery": yellowColourMatrixHex,
-    "macro-response": greenColourMatrixHex,
-    "social-cohesion": blueDarkMatrixHex,
     "vaccine-equality": blueLightColourMatrixHex,
-    "accessibility": blueLightColourMatrixHex,
-    "affordability": yellowColourMatrixHex,
+    accessibility: blueLightColourMatrixHex,
+    affordability: yellowColourMatrixHex,
+};
+
+const colourMatricesCornerColours = {
+    "vaccine-equality": blueLightColourMatrixCornerColours,
+    accessibility: blueLightColourMatrixCornerColours,
+    affordability: yellowColourMatrixCornerColours,
 };
 
 const getNormalFromJenks = (jenks, value, flip = false) => {
@@ -170,6 +159,32 @@ const getColorMatrices = (pillar, goal, currentIndicators) => {
     const xHdi = currentIndicators.bivariateX.hdi && currentIndicators.bivariateXEnabled;
     const yHdi = currentIndicators.bivariateY.hdi && currentIndicators.bivariateYEnabled;
     let colorMatrixHex = colourMatricesHex[pillar.label];
+    let cornerColours = colourMatricesCornerColours[pillar.label];
+
+    if (goal) {
+        colorMatrixHex = colourMatricesHex[goal.slug];
+        cornerColours = colourMatricesCornerColours[goal.slug];
+    }
+
+    if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
+        if (FLIP_COLOURS_HORIZONTALLY) {
+            colorMatrixHex[4][0] = cornerColours.x;
+        } else {
+            colorMatrixHex[4][4] = cornerColours.x;
+        }
+    } else if (!currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
+        if (FLIP_COLOURS_HORIZONTALLY) {
+            colorMatrixHex[4][0] = cornerColours.y;
+        } else {
+            colorMatrixHex[4][4] = cornerColours.y;
+        }
+    } else if (currentIndicators.bivariateXEnabled && currentIndicators.bivariateYEnabled) {
+        if (FLIP_COLOURS_HORIZONTALLY) {
+            colorMatrixHex[4][0] = cornerColours.xy;
+        } else {
+            colorMatrixHex[4][4] = cornerColours.xy;
+        }
+    }
 
     if (xHdi && yHdi) {
         colorMatrixHex = [
@@ -185,9 +200,6 @@ const getColorMatrices = (pillar, goal, currentIndicators) => {
         colorMatrixHex = hdiColorMatrixHex[0]
             .map((x, i) => hdiColorMatrixHex.map(x => x[i]).reverse())
             .reverse();
-    }
-    if (goal) {
-        colorMatrixHex = colourMatricesHex[goal.slug];
     }
 
     const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
@@ -333,7 +345,6 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
 
 const Map = props => {
     const { currentIndicators, countryData, pillar, goal } = props;
-
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
 

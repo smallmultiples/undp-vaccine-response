@@ -8,6 +8,7 @@ import { categorySplit, getRowIndicatorValue } from "../../modules/utils";
 import styles from "./map-vis.module.scss";
 import useMediaQuery from "../../hooks/use-media-query";
 import { Chevron, Plus } from "../icons/icons";
+import { format, subDays } from "date-fns";
 
 const SHEET_ROW_ID = "Alpha-3 code";
 const GEO_SHAPE_ID = "ISO3";
@@ -216,7 +217,21 @@ const MapVis = props => {
 const getFormattedMapValue = (row, indicator) => {
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
-    return typeof val === "string" ? val : indicator.format(val);
+    let value = "";
+    let extraValue = "";
+    if (indicator.binary) {
+        value = val ? "Yes" : "No";
+    } else if (indicator.isDaysAgo) {
+        value = val ? `${format(subDays(new Date(), val), "dd MMM yyyy")} (${val} days ago)` : '-';
+    } else {
+        value = typeof val === "string" ? val : indicator.format(val);
+    }
+
+    if (indicator.tooltipExtraDataKey) {
+        extraValue = ` (${row[indicator.tooltipExtraDataKey]})`;
+    }
+
+    return value + extraValue;
 };
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
@@ -353,7 +368,7 @@ const MapTooltip = props => {
     );
 };
 
-const circlePadding = 2; // this includes the stroke
+// const circlePadding = 2; // this includes the stroke
 const circleRadius = 4;
 const circleRadiusInactive = 3;
 
@@ -369,7 +384,7 @@ const CircleVis = props => {
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
-                    return categorySplit(val);
+                    return indicator.binary ? (val === true ? "Yes" : "No") : categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
@@ -386,21 +401,21 @@ const CircleVis = props => {
     let content = null;
 
     if (indicator.categorical || indicator.binary) {
-        const numCircles = uniqueVals.length;
-        const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
-        const groupRadius = minimumCircumference / (Math.PI * 2);
-        const angleEach = 360 / numCircles;
+        // const numCircles = uniqueVals.length;
+        // const minimumCircumference = numCircles * (circleRadius + circlePadding * 2);
+        // const groupRadius = minimumCircumference / (Math.PI * 2);
+        // const angleEach = 360 / numCircles;
 
         const groups = Object.values(normalizedData).map(row => {
             const val = getRowIndicatorValue(row, indicator);
             if (isNil(val)) return null;
-            const cats = categorySplit(val);
+            const cats = indicator.binary ? (val === true ? "Yes" : "No") : categorySplit(val);
             const xy = rowXY(row);
             if (!xy) return null;
 
             const groupCircles = (indicator.binary ? ["Yes", "No"] : uniqueVals.sort()).map(
                 (cat, i) => {
-                    const a = i * angleEach - 90;
+                    // const a = i * angleEach - 90;
                     const active = cats.includes(cat);
                     if (!active) return null;
                     return (
@@ -412,9 +427,9 @@ const CircleVis = props => {
                             data-gradient={indicator.isGradient}
                             data-binary={indicator.binary}
                             r={active ? circleRadius : circleRadiusInactive}
-                            style={{
-                                transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
-                            }}
+                            // style={{
+                            //     transform: `rotate(${a}deg) translateX(${groupRadius}px)`,
+                            // }}
                         />
                     );
                 }

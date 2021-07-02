@@ -35,13 +35,21 @@ function useSelectedIndicatorData(goalDatasets, pillarLoading, currentIndicators
             currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
         ].filter(Boolean);
 
-        const selectedDatums = groupBy(
-            enabledIndicators.map(indicator => ({
+        const tmp = [];
+        enabledIndicators.forEach(indicator => {
+            tmp.push({
                 dataKey: getIndicatorDataKey(indicator),
                 sheet: indicator.goal.sheet,
-            })),
-            d => d.sheet
-        );
+            });
+            if (indicator.tooltipExtraDataKey) {
+                tmp.push({
+                    dataKey: indicator.tooltipExtraDataKey,
+                    sheet: indicator.goal.sheet,
+                });
+            }
+        });
+
+        const selectedDatums = groupBy(tmp, d => d.sheet);
 
         Object.entries(selectedDatums).forEach(([sheet, datums]) => {
             // NEWEST data is first. This let's us build the map faster.
@@ -104,6 +112,13 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
             currentIndicators.mapVisualisationEnabled && currentIndicators.mapVisualisation,
         ].filter(Boolean);
 
+        const extraDatums = [
+            currentIndicators.bivariateXEnabled && currentIndicators.bivariateX.tooltipExtraDataKey,
+            currentIndicators.bivariateYEnabled && currentIndicators.bivariateY.tooltipExtraDataKey,
+            currentIndicators.mapVisualisationEnabled &&
+                currentIndicators.mapVisualisation.tooltipExtraDataKey,
+        ].filter(Boolean);
+
         Object.entries(countryGrouped).forEach(([rowKey, rows]) => {
             const region = regionLookup.find(r => r["ISO-alpha3 Code"] === rowKey);
             ret[rowKey] = {
@@ -112,7 +127,7 @@ function useTimeFilteredData(selectedIndicatorData, currentIndicators, timelineS
                 dates: {},
             };
 
-            let keysToFill = uniq(selectedDatums.map(getIndicatorDataKey));
+            let keysToFill = uniq(selectedDatums.map(getIndicatorDataKey).concat(extraDatums));
 
             for (let row of rows) {
                 for (let dataKey of keysToFill.slice()) {
@@ -215,6 +230,36 @@ export default function Goal(props) {
                                         }}
                                     />
                                 );
+                            } else {
+                                const indicator = sideBlock["Indicator"].split(",");
+                                const dataFiltered =
+                                    goalDatasets &&
+                                    goalDatasets["BASELINE-01"].filter(
+                                        x => x[indicator[0]] === indicator[1]
+                                    );
+                                const value =
+                                    dataFiltered &&
+                                    dataFiltered.reduce((a, b) => a + (b[indicator[2]] || 0), 0) /
+                                        dataFiltered.length;
+                                const primaryLabel = sideBlock["Primary label"].replace(
+                                    "X",
+                                    value ? Math.round(100 / value) : "..."
+                                );
+                                return (
+                                    <ManualBlockVis
+                                        type={sideBlock["Chart type"]}
+                                        key={`manual-chart-${i}`}
+                                        configuration={sideBlock["Configuration"]}
+                                        manualEntry={{
+                                            value: Math.round(value * 100) / 100,
+                                            primaryLabel,
+                                            secondaryLabel: sideBlock["Secondary label"],
+                                            dataSource: sideBlock["Data source"],
+                                            dataSourceLink: sideBlock["Data source link"],
+                                            format: sideBlock["Stat A type"],
+                                        }}
+                                    />
+                                );
                             }
                             const ind = goal.indicators.find(
                                 x => x.dataKey === sideBlock["Indicator"].split(";")[0]
@@ -232,6 +277,7 @@ export default function Goal(props) {
                         })}
                     </div>
                 )}
+                <h3>Explore data about the {goal.label} of vaccines across the world</h3>
                 <div className={styles.mapContainer}>
                     <Map
                         countryData={timeFilteredData}
@@ -246,9 +292,11 @@ export default function Goal(props) {
                     />
                 </div>
             </div>
-            <div className={styles.timeArea}>
-                <Timeline timelineState={timelineState} />
-            </div>
+            {timelineState.timespan > 1 && (
+                <div className={styles.timeArea}>
+                    <Timeline timelineState={timelineState} />
+                </div>
+            )}
             <ChartArea
                 goalDatasets={goalDatasets}
                 regionLookup={regionLookup}
@@ -313,9 +361,7 @@ const ChartArea = props => {
             const data = selectedYearData.map(d => {
                 const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
                 const hdiRow = commonData.find(
-                    r =>
-                        r[ROW_KEY] === d[ROW_KEY] &&
-                        r["Human development index (HDI)"]
+                    r => r[ROW_KEY] === d[ROW_KEY] && r["Human development index (HDI)"]
                 );
                 const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
                 const isSelected = selectedCountryCode === d[ROW_KEY];
@@ -337,7 +383,7 @@ const ChartArea = props => {
 
     return (
         <div className={styles.chartArea}>
-            <h3>Explore indicators</h3>
+            <h3>Compare countries, territories and areas</h3>
             <p>
                 Select an indicator and a year to plot to see how countries compare. Hover to see
                 the country’s data.
@@ -359,6 +405,7 @@ const ChartArea = props => {
                     className={styles.indicatorSelector}
                     noGap
                 />
+                { yearsArray.length > 1 && (
                 <Select
                     options={yearsArray}
                     onChange={x => setYear(x)}
@@ -370,6 +417,7 @@ const ChartArea = props => {
                     className={styles.yearSelector}
                     noGap
                 />
+                )}
                 <Legend />
             </div>
             {chart}

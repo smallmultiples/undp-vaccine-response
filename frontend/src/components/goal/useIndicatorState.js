@@ -4,7 +4,9 @@ import { flatten, uniqBy } from "lodash";
 export const getBivariateOptions = (goal, commonPillar) => {
     const goalOpts = goal.indicators.filter(d => !(d.categorical || d.binary));
     const commonOpts = flatten(
-        commonPillar.goals.map(goal => goal.indicators.filter(d => !(d.categorical || d.binary)))
+        commonPillar.goals.map(goal =>
+            goal.indicators.filter(d => !(d.categorical || d.binary))
+        )
     );
 
     return [...goalOpts, ...commonOpts];

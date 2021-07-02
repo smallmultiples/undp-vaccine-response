@@ -49,14 +49,15 @@ export default function DataSources(props) {
             const sourceMetaData = sourcesData.find(x => x["Data source name"] === s.name);
             return (
                 <span key={`link_${i}`}>
+                    {sourceMetaData &&
+                        sourceMetaData["Last updated start"] &&
+                        `Data last updated ${sourceMetaData["Last updated start"]}${
+                            sourceMetaData["Last updated end"] &&
+                            ` - ${sourceMetaData["Last updated end"]}`
+                        }, `}
+                    source:{' '}
                     <a href={s.url} target="_blank" rel="noopener noreferrer">
-                        {sourceMetaData &&
-                            sourceMetaData["Last updated start"] &&
-                            `Data last updated ${sourceMetaData["Last updated start"]}${
-                                sourceMetaData["Last updated end"] &&
-                                ` - ${sourceMetaData["Last updated end"]}`
-                            }, `}
-                        source: {s.name}
+                        {s.name}
                     </a>
                     {i < meta.sources.length - 1 && "; "}
                 </span>
