@@ -3,7 +3,7 @@ The existing format of the data is close to being compatible, it needs just a fe
 -   `CountryName` should be named `Country or Area`
     -   The name of the country
     -   `location` and `continent` are redundant
--   `CountryCode` should be named `Alpha-3 code`
+-   `CountryCode` should be named `iso3`
     -   ISO 3166 alpha-3 country code
     -   `iso_code` is redundant
 -   Data timestamp is `Year`

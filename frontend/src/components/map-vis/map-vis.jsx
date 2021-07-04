@@ -10,7 +10,7 @@ import useMediaQuery from "../../hooks/use-media-query";
 import { Chevron, Plus } from "../icons/icons";
 import { format, subDays } from "date-fns";
 
-const SHEET_ROW_ID = "Alpha-3 code";
+const SHEET_ROW_ID = "iso3";
 const GEO_SHAPE_ID = "ISO3";
 
 // Bounds we zoom to on load.
