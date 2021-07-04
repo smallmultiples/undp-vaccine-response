@@ -56,7 +56,7 @@ const Question = props => {
     );
 
     const rowsForCountryTable = dataset?.map(x => {
-        const country = countryData && countryData[x["Alpha-3 code"]];
+        const country = countryData && countryData[x["iso3"]];
         const arr = [x["Country or Area"], (country && country["Region Name"]) || ""];
         question.indicators.forEach(ind => {
             arr.push(ind.format(getRowIndicatorValue(x, ind)));
@@ -79,7 +79,7 @@ const Question = props => {
                     data: getRowIndicatorValue(d, ind),
                     hdi:
                         countryData &&
-                        countryData[d["Alpha-3 code"]][getIndicatorDataKey(hdiIndicator)],
+                        countryData[d["iso3"]][getIndicatorDataKey(hdiIndicator)],
                 });
             }
             const isNumericData = tmp.every(t => typeof t.data === "number" || t.data === "");

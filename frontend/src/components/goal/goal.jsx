@@ -13,7 +13,7 @@ import dropdownStyle from "../../modules/dropdown.style";
 import DataSources from "../data-sources/data-sources";
 import { getIndicatorDataKey, getRowIndicatorValue } from "../../modules/utils";
 
-const ROW_KEY = "Alpha-3 code";
+const ROW_KEY = "iso3";
 const TIME_KEY = "Year";
 
 const isOptionSelected = (item, selections) => {
@@ -361,9 +361,9 @@ const ChartArea = props => {
             const data = selectedYearData.map(d => {
                 const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
                 const hdiRow = commonData.find(
-                    r => r[ROW_KEY] === d[ROW_KEY] && r["Human development index (HDI)"]
+                    r => r[ROW_KEY] === d[ROW_KEY] && r["hdi"]
                 );
-                const hdi = hdiRow ? hdiRow["Human development index (HDI)"] : undefined;
+                const hdi = hdiRow ? hdiRow["hdi"] : undefined;
                 const isSelected = selectedCountryCode === d[ROW_KEY];
 
                 return {

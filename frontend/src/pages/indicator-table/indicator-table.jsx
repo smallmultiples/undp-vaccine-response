@@ -29,7 +29,7 @@ async function downloadIndicators(goal) {
             tmp[dataKey] = d[dataKey];
         });
         return {
-            iso: d["Alpha-3 code"],
+            iso: d["iso3"],
             date: parseSheetDate(d.Year),
             ...tmp,
         };

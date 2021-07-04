@@ -55,7 +55,7 @@ export default function Country(props) {
 
     const countryHdiData = React.useMemo(() => {
         if (!hdiData) return [];
-        return hdiData.filter(row => row["Alpha-3 code"] === countryCode);
+        return hdiData.filter(row => row["iso3"] === countryCode);
     }, [countryCode, hdiData]);
 
     // const countryName = React.useMemo(() => {
