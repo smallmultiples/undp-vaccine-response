@@ -6,7 +6,7 @@ import { groupBy, uniq, isNil, uniqBy } from "lodash";
 import useTimelineState from "./useTimelineState";
 import Timeline from "../timeline/timeline";
 import regionLookup from "../../modules/data/region-lookup.json";
-import { MapBlockVis, formatManualValue, ManualBlockVis } from "./block-visualisation";
+import { formatManualValue, ManualBlockVis } from "../block-visualisations/block-visualisation";
 import Chart from "../questions/chart";
 import Select from "react-select";
 import dropdownStyle from "../../modules/dropdown.style";
@@ -164,12 +164,6 @@ export default function Goal(props) {
         commonPillar,
     } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
-    const selectedCountryLabel = React.useMemo(() => {
-        if (!selectedCountryCode) return "Global";
-        const row = regionLookup.find(row => row["ISO-alpha3 Code"] === selectedCountryCode);
-        if (!row) throw new Error("Could not find country code row " + selectedCountryCode);
-        return row["Country or Area"];
-    }, [selectedCountryCode]);
 
     const onCountryPage = React.useMemo(() => Boolean(props.countryCode), [props.countryCode]);
 
@@ -195,12 +189,6 @@ export default function Goal(props) {
 
     const sideBlocks =
         !onCountryPage && keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
-    const blockProps = {
-        selectedCountryCode,
-        selectedCountryLabel,
-        timeFilteredData,
-        selectedIndicatorData,
-    };
 
     return (
         <div className={styles.goal}>
@@ -261,19 +249,6 @@ export default function Goal(props) {
                                     />
                                 );
                             }
-                            const ind = goal.indicators.find(
-                                x => x.dataKey === sideBlock["Indicator"].split(";")[0]
-                            );
-                            if (!ind) return null;
-                            return (
-                                <MapBlockVis
-                                    indicator={ind}
-                                    type={sideBlock["Chart type"]}
-                                    configuration={sideBlock["Configuration"]}
-                                    key={ind.label}
-                                    {...blockProps}
-                                />
-                            );
                         })}
                     </div>
                 )}

@@ -3,7 +3,7 @@ import { scaleLinear, scaleBand } from "d3-scale";
 import { range } from "d3-array";
 import styles from "./line-chart.module.scss";
 import useDimensions from "../../../hooks/use-dimensions";
-import { formatManualValue } from "../../goal/block-visualisation";
+import { formatManualValue } from "../block-visualisation";
 import { max } from "d3";
 
 export default function LineChart(props) {
