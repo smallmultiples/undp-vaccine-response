@@ -1,11 +1,11 @@
 import React from "react";
-import Donut from "../block-visualisations/donut-vis/donut";
-import Bubble from "../block-visualisations/bubble-vis/bubble";
-import Factoid from "../block-visualisations/factoid/factoid";
-import BarChart from "../block-visualisations/bar-chart/bar-chart";
-import LineChart from "../block-visualisations/line-chart/line-chart";
-import { getBlockVisValue } from "../block-visualisations/block-vis-utils";
-import styles from "./goal.module.scss";
+import Donut from "./donut-vis/donut";
+import Bubble from "./bubble-vis/bubble";
+import Factoid from "./factoid/factoid";
+import BarChart from "./bar-chart/bar-chart";
+import LineChart from "./line-chart/line-chart";
+import { getBlockVisValue } from "./block-vis-utils";
+import styles from "./block-visualisation.module.scss";
 
 const BlockVisualisations = {
     Donut: Donut,

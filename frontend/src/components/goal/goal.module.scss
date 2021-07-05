@@ -42,38 +42,6 @@
         }
     }
 
-    .sidebarBlock {
-        flex-grow: 1;
-        flex-basis: 0;
-        padding: 10px 20px;
-        box-sizing: border-box;
-        background-color: $color-light-blue;
-        border-radius: 10px;
-
-        &:not(:last-child) {
-            margin-right: 20px;
-        }
-
-        @include mobileOnly {
-            width: 100%;
-            flex-grow: 0;
-            &:not(:last-child) {
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-        }
-
-        small {
-            padding-bottom: 10px;
-            a {
-                color: $color-highlight-blue;
-                text-decoration: underline;
-                font-size: 1em;
-                font-weight: normal;
-            }
-        }
-    }
-
     .mapContainer {
         flex-grow: 1;
     }
