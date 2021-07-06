@@ -403,7 +403,7 @@ const ChartArea = props => {
 const Legend = props => {
     return (
         <div className={styles.legendContainer}>
-            <div className={styles.legendTitle}>Human Development Group (2018)</div>
+            <div className={styles.legendTitle}>Human Development Group (2019)</div>
             <div className={styles.legend}>
                 <div className={styles.legendItem}>
                     <div className={styles.box} data-na={true} />
