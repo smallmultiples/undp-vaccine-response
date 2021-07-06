@@ -7,5 +7,4 @@
     environment = { REACT_APP_USE_SHEET = "true", REACT_APP_COUNTRY_DATA_SHEET="18kNssP6H4GjGoK0C9K2L-B3UWq74R7R_rWvj9b4iOV0", REACT_APP_META_DATA_SHEET="1HZnH-5_1eEiVrWDxcZPjqYBghkPhDIUFbaqZaGj7OJo" }
 [context.production]
     command = "node fetch-data.js && yarn build"
-    environment = { REACT_APP_COUNTRY_DATA_SHEET="14KGG13epWHEnmgZi63WUyPpfmweEdRihTjo5yU7kn0U", REACT_APP_META_DATA_SHEET="154wokmdJg8cUw8Nau346JghPgLoqGnO5xBIudRcJHjA" }
-    PUBLIC_URL = "https://undp-vaccine-equity.netlify.app"
+    environment = { REACT_APP_COUNTRY_DATA_SHEET="14KGG13epWHEnmgZi63WUyPpfmweEdRihTjo5yU7kn0U", REACT_APP_META_DATA_SHEET="154wokmdJg8cUw8Nau346JghPgLoqGnO5xBIudRcJHjA", PUBLIC_URL="https://undp-vaccine-equity.netlify.app" }
