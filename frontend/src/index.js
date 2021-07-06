@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const params = getUrlParams();
 
     if (params) {
-        console.log("Embed Params");
+        console.log("Embed params");
         console.table(params);
 
         if (params.type === "bucket") {
