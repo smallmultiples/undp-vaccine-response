@@ -52,6 +52,7 @@ const MapVis = props => {
         currentIndicators,
         goal,
         countryCode,
+        sourcesData,
     } = props;
 
     const [tooltip, setTooltip] = React.useState(null);
@@ -179,6 +180,7 @@ const MapVis = props => {
                     goal={goal}
                     scales={scales}
                     mapContainerDimensions={mapContainerDimensions}
+                    sourcesData={sourcesData}
                 />
                 <div className={styles.mapControls}>
                     <div className={styles.mapZoomButton} onClick={() => zoomIncrement(0.5)}>
@@ -222,7 +224,7 @@ const getFormattedMapValue = (row, indicator) => {
     if (indicator.binary) {
         value = val ? "Yes" : "No";
     } else if (indicator.isDaysAgo) {
-        value = val ? `${format(subDays(new Date(), val), "dd MMM yyyy")} (${val} days ago)` : '-';
+        value = val ? `${format(subDays(new Date(), val), "dd MMM yyyy")} (${val} days ago)` : "-";
     } else {
         value = typeof val === "string" ? val : indicator.format(val);
     }
@@ -240,7 +242,7 @@ const renderFormattedMapDate = (row, indicator) => {
     const lastUpdated =
         indicator.meta && indicator.meta.lastUpdated ? " (" + indicator.meta.lastUpdated + ")" : "";
     const dateStr = `${year}${lastUpdated}`;
-    return <div className={styles.tooltipDatumDate}>{dateStr}</div>;
+    return <span className={styles.tooltipDatumDate}>{dateStr}</span>;
 };
 
 const MapTooltip = props => {
@@ -252,12 +254,27 @@ const MapTooltip = props => {
         currentIndicators,
         scales,
         mapContainerDimensions,
+        sourcesData,
     } = props;
 
     const data = React.useMemo(() => {
         if (!tooltip) return null;
         return normalizedData[tooltip.object.properties[GEO_SHAPE_ID]];
     }, [tooltip, normalizedData]);
+
+    const getSourceLastUpdated = sourceName => {
+        const sourceMetaData = sourcesData.find(x => x["Data source name"] === sourceName);
+        return (
+            <span className={styles.tooltipDatumDate}>
+                {sourceMetaData &&
+                    sourceMetaData["Last updated start"] &&
+                    `(Last updated ${sourceMetaData["Last updated start"]}${
+                        sourceMetaData["Last updated end"] &&
+                        ` - ${sourceMetaData["Last updated end"]}`
+                    })`}
+            </span>
+        );
+    };
 
     if (!data) return null;
 
@@ -270,7 +287,12 @@ const MapTooltip = props => {
                     data-category={currentIndicators.mapVisualisation.categorical}
                 />
                 <div className={styles.tooltipDatumText}>
-                    {renderFormattedMapDate(data, currentIndicators.mapVisualisation)}
+                    <div>
+                        {renderFormattedMapDate(data, currentIndicators.mapVisualisation)}{" "}
+                        {getSourceLastUpdated(
+                            currentIndicators.mapVisualisation.meta.sources[0].name
+                        )}
+                    </div>
                     <div className={styles.tooltipDatumLabel}>
                         {currentIndicators.mapVisualisation.label}
                     </div>
@@ -292,7 +314,10 @@ const MapTooltip = props => {
                 }}
             />
             <div className={styles.tooltipDatumText}>
-                {renderFormattedMapDate(data, currentIndicators.bivariateX)}
+                <div>
+                    {renderFormattedMapDate(data, currentIndicators.bivariateX)}{" "}
+                    {getSourceLastUpdated(currentIndicators.bivariateX.meta.sources[0].name)}
+                </div>
                 <div className={styles.tooltipDatumLabel}>
                     {currentIndicators.bivariateX.tableLabel
                         ? currentIndicators.bivariateX.tableLabel
@@ -316,7 +341,10 @@ const MapTooltip = props => {
                 }}
             />
             <div className={styles.tooltipDatumText}>
-                {renderFormattedMapDate(data, currentIndicators.bivariateY)}
+                <div>
+                    {renderFormattedMapDate(data, currentIndicators.bivariateY)}{" "}
+                    {getSourceLastUpdated(currentIndicators.bivariateY.meta.sources[0].name)}
+                </div>
                 <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateY.label}</div>
                 <div className={styles.tooltipDatumValue}>
                     {getFormattedMapValue(data, currentIndicators.bivariateY)}

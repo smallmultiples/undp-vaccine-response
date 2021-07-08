@@ -162,6 +162,7 @@ export default function Goal(props) {
         countryCode,
         keyStats,
         commonPillar,
+        sourcesData,
     } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
 
@@ -264,6 +265,7 @@ export default function Goal(props) {
                         onCountryClicked={handleCountryClicked}
                         selectedCountryCode={selectedCountryCode}
                         countryCode={countryCode}
+                        sourcesData={sourcesData}
                     />
                 </div>
             </div>
@@ -280,7 +282,7 @@ export default function Goal(props) {
                 selectedIndicatorData={selectedIndicatorData}
                 selectedCountryCode={selectedCountryCode}
             />
-            <DataSources currentIndicators={currentIndicators} />
+            <DataSources currentIndicators={currentIndicators} sourcesData={sourcesData} />
         </div>
     );
 }
