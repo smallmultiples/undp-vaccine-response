@@ -4,22 +4,17 @@ import {
     PILLAR_URL,
     SOURCES_URL,
     DATA_SHEET_URL,
-    USE_SHEET,
-    STATIC_DATA_BASE_URL,
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import styles from "./indicator-table.module.scss";
 import Table from "../../components/questions/table";
-// import regionsLookup from "../../modules/data/region-lookup.json";
 import { getIndicatorDataKey, parseSheetDate, saveBlob } from "../../modules/utils";
 import { csvFormat } from "d3";
-
-// const COUNTRIES_TOTAL = regionsLookup.length;
 
 async function downloadIndicators(goal) {
     const sheet = goal.indicators[0].goal.sheet;
     const res = await axios(
-        USE_SHEET ? `${DATA_SHEET_URL}?range=${sheet}` : `${STATIC_DATA_BASE_URL}/${sheet}.json`
+        `${DATA_SHEET_URL}?range=${sheet}`
     );
 
     const indicatorData = res.data.map(d => {

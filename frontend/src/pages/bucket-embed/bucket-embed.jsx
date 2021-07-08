@@ -5,8 +5,6 @@ import Goal from "../../components/goal/goal";
 import {
     DATA_SHEET_URL,
     PILLAR_URL,
-    STATIC_DATA_BASE_URL,
-    USE_SHEET,
     KEY_STATS_URL,
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
@@ -56,9 +54,7 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         Promise.all(
             sheets.map(sheet =>
                 axios(
-                    USE_SHEET
-                        ? `${DATA_SHEET_URL}?range=${sheet}`
-                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
+                    `${DATA_SHEET_URL}?range=${sheet}`
                 )
                     .then(d => d.data)
                     .then(data =>

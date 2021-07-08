@@ -8,7 +8,6 @@ import {
     MAPBOX_BASEMAP_STYLE_ID,
     MAPBOX_TOKEN,
     STATIC_DATA_BASE_URL,
-    USE_SHEET,
 } from "../../config/constants";
 import useDeckViewport from "../../hooks/use-deck-viewport";
 import bbox from "@turf/bbox";
@@ -45,9 +44,7 @@ export default function Country(props) {
 
     React.useEffect(() => {
         // TODO: add to import script
-        const url = USE_SHEET
-            ? `https://holy-sheet.visualise.today/sheet/${DATA_SHEET_ID}?range=SUBDIVISION-HDI`
-            : `https://holy-sheet.visualise.today/sheet/${DATA_SHEET_ID}?range=SUBDIVISION-HDI`;
+        const url =`https://holy-sheet.visualise.today/sheet/${DATA_SHEET_ID}?range=SUBDIVISION-HDI`
         axios(url)
             .then(d => d.data)
             .then(setHdiData);
