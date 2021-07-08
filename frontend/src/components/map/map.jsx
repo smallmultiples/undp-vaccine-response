@@ -131,13 +131,13 @@ const hdiColorMatrixHex = [
 ];
 
 const colourMatricesHex = {
-    "vaccine-equality": blueLightColourMatrixHex,
+    "vaccine-equity": blueLightColourMatrixHex,
     accessibility: blueLightColourMatrixHex,
     affordability: yellowColourMatrixHex,
 };
 
 const colourMatricesCornerColours = {
-    "vaccine-equality": blueLightColourMatrixCornerColours,
+    "vaccine-equity": blueLightColourMatrixCornerColours,
     accessibility: blueLightColourMatrixCornerColours,
     affordability: yellowColourMatrixCornerColours,
 };
@@ -344,7 +344,7 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
 };
 
 const Map = props => {
-    const { currentIndicators, countryData, pillar, goal } = props;
+    const { currentIndicators, countryData, pillar, goal, sourcesData } = props;
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
 
@@ -360,7 +360,13 @@ const Map = props => {
                     {...props}
                 />
             )}
-            <MapVis {...props} domains={domains} scales={scales} normalizedData={countryData} />
+            <MapVis
+                {...props}
+                domains={domains}
+                scales={scales}
+                normalizedData={countryData}
+                sourcesData={sourcesData}
+            />
             {isMobile && (
                 <MapFiltersLegendMobile
                     domains={domains}

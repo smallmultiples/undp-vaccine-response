@@ -2,13 +2,7 @@ import axios from "axios";
 import { differenceInDays } from "date-fns";
 import React from "react";
 import Goal from "../../components/goal/goal";
-import {
-    DATA_SHEET_URL,
-    PILLAR_URL,
-    STATIC_DATA_BASE_URL,
-    USE_SHEET,
-    KEY_STATS_URL,
-} from "../../config/constants";
+import { DATA_SHEET_URL, PILLAR_URL, KEY_STATS_URL, SOURCES_URL } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
 import { parseSheetDate } from "../../modules/utils";
 import styles from "./bucket-embed.module.scss";
@@ -16,6 +10,7 @@ import styles from "./bucket-embed.module.scss";
 const usePillarData = (pillarSlug, bucketSlug) => {
     const [pillars, setPillars] = React.useState(null);
     const [keyStats, setKeyStats] = React.useState(null);
+    const [sourcesData, setSourcesData] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [goalDatasets, setGoalDatasets] = React.useState(null);
 
@@ -28,6 +23,10 @@ const usePillarData = (pillarSlug, bucketSlug) => {
             axios(KEY_STATS_URL)
                 .then(res => res.data)
                 .then(setKeyStats),
+
+            axios(SOURCES_URL)
+                .then(res => res.data)
+                .then(setSourcesData),
         ]);
     }, []);
 
@@ -55,19 +54,21 @@ const usePillarData = (pillarSlug, bucketSlug) => {
 
         Promise.all(
             sheets.map(sheet =>
-                axios(
-                    USE_SHEET
-                        ? `${DATA_SHEET_URL}?range=${sheet}`
-                        : `${STATIC_DATA_BASE_URL}/${sheet}.json`
-                )
+                axios(`${DATA_SHEET_URL}?range=${sheet}`)
                     .then(d => d.data)
                     .then(data =>
                         data.map(d => ({
                             ...d,
                             Year: parseSheetDate("1/1/2021 00:00"),
-                            FIRST_VACCINE_DATE: parseSheetDate(d.FIRST_VACCINE_DATE) ? differenceInDays(new Date(), parseSheetDate(d.FIRST_VACCINE_DATE)) : null,
-                            AUTHORIZATION_DATE: parseSheetDate(d.AUTHORIZATION_DATE) ? differenceInDays(new Date(), parseSheetDate(d.AUTHORIZATION_DATE)) : null,
-                            START_DATE: parseSheetDate(d.START_DATE) ? differenceInDays(new Date(), parseSheetDate(d.START_DATE)) : null,
+                            FIRST_VACCINE_DATE: parseSheetDate(d.FIRST_VACCINE_DATE)
+                                ? differenceInDays(new Date(), parseSheetDate(d.FIRST_VACCINE_DATE))
+                                : null,
+                            AUTHORIZATION_DATE: parseSheetDate(d.AUTHORIZATION_DATE)
+                                ? differenceInDays(new Date(), parseSheetDate(d.AUTHORIZATION_DATE))
+                                : null,
+                            START_DATE: parseSheetDate(d.START_DATE)
+                                ? differenceInDays(new Date(), parseSheetDate(d.START_DATE))
+                                : null,
                         }))
                     )
                     .then(d => (newGoalData[sheet] = d))
@@ -88,13 +89,14 @@ const usePillarData = (pillarSlug, bucketSlug) => {
         goalDatasets,
         keyStats: keyStatsPerPillar,
         commonPillar,
+        sourcesData,
     };
 };
 
 export default function BucketEmbed(props) {
     const { pillarSlug, bucketSlug, countryCode } = props;
     const pillarData = usePillarData(pillarSlug, bucketSlug);
-    const { pillar, goalDatasets, keyStats, commonPillar } = pillarData;
+    const { pillar, goalDatasets, keyStats, commonPillar, sourcesData } = pillarData;
 
     const goal = React.useMemo(() => {
         if (!pillar) return null;
@@ -117,6 +119,7 @@ export default function BucketEmbed(props) {
                     countryCode={countryCode}
                     keyStats={keyStats}
                     commonPillar={commonPillar}
+                    sourcesData={sourcesData}
                 />
             )}
         </div>

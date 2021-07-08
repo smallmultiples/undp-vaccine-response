@@ -162,6 +162,7 @@ export default function Goal(props) {
         countryCode,
         keyStats,
         commonPillar,
+        sourcesData,
     } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
 
@@ -252,7 +253,9 @@ export default function Goal(props) {
                         })}
                     </div>
                 )}
-                <h3>Explore data about the {goal.label} of vaccines across the world</h3>
+                <h3 className={styles.title}>
+                    Explore data about the {goal.label} of vaccines across the world
+                </h3>
                 <div className={styles.mapContainer}>
                     <Map
                         countryData={timeFilteredData}
@@ -264,6 +267,7 @@ export default function Goal(props) {
                         onCountryClicked={handleCountryClicked}
                         selectedCountryCode={selectedCountryCode}
                         countryCode={countryCode}
+                        sourcesData={sourcesData}
                     />
                 </div>
             </div>
@@ -280,7 +284,7 @@ export default function Goal(props) {
                 selectedIndicatorData={selectedIndicatorData}
                 selectedCountryCode={selectedCountryCode}
             />
-            <DataSources currentIndicators={currentIndicators} />
+            <DataSources currentIndicators={currentIndicators} sourcesData={sourcesData} />
         </div>
     );
 }
@@ -335,9 +339,7 @@ const ChartArea = props => {
                 .filter(d => isDef(d[selectedIndicator.dataKey]));
             const data = selectedYearData.map(d => {
                 const region = regionLookup.find(r => r["ISO-alpha3 Code"] === d[ROW_KEY]);
-                const hdiRow = commonData.find(
-                    r => r[ROW_KEY] === d[ROW_KEY] && r["hdi"]
-                );
+                const hdiRow = commonData.find(r => r[ROW_KEY] === d[ROW_KEY] && r["hdi"]);
                 const hdi = hdiRow ? hdiRow["hdi"] : undefined;
                 const isSelected = selectedCountryCode === d[ROW_KEY];
 
@@ -358,7 +360,7 @@ const ChartArea = props => {
 
     return (
         <div className={styles.chartArea}>
-            <h3>Compare countries, territories and areas</h3>
+            <h3 className={styles.title}>Compare countries, territories and areas</h3>
             <p>
                 Select an indicator and a year to plot to see how countries compare. Hover to see
                 the country’s data.
@@ -380,18 +382,18 @@ const ChartArea = props => {
                     className={styles.indicatorSelector}
                     noGap
                 />
-                { yearsArray.length > 1 && (
-                <Select
-                    options={yearsArray}
-                    onChange={x => setYear(x)}
-                    value={year}
-                    styles={dropdownStyle}
-                    isOptionSelected={isOptionSelected}
-                    isDisabled={yearsArray.length <= 1}
-                    isSearchable={true}
-                    className={styles.yearSelector}
-                    noGap
-                />
+                {yearsArray.length > 1 && (
+                    <Select
+                        options={yearsArray}
+                        onChange={x => setYear(x)}
+                        value={year}
+                        styles={dropdownStyle}
+                        isOptionSelected={isOptionSelected}
+                        isDisabled={yearsArray.length <= 1}
+                        isSearchable={true}
+                        className={styles.yearSelector}
+                        noGap
+                    />
                 )}
                 <Legend />
             </div>

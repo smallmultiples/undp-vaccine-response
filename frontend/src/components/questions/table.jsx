@@ -7,7 +7,7 @@ const Table = props => {
         <div className={styles.tableContainer}>
             <table className={styles.table} data-with-borders={withBorders}>
                 <thead className={styles.header}>
-                    <tr>
+                    <tr className={styles.headerRow}>
                         {headings.map((h, i) => (
                             <th
                                 key={`heading_${i}`}

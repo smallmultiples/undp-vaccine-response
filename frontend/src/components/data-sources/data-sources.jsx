@@ -1,10 +1,8 @@
 import React from "react";
 import styles from "./data-sources.module.scss";
 import { uniqBy } from "lodash";
-import axios from "axios";
 
 import regionsLookup from "../../modules/data/region-lookup.json";
-import { SOURCES_URL } from "../../config/constants";
 const COUNTRIES_TOTAL = regionsLookup.length;
 
 const IconData = props => (
@@ -24,21 +22,14 @@ const IconData = props => (
 );
 
 export default function DataSources(props) {
-    const { currentIndicators } = props;
-    const [sourcesData, setSourcesData] = React.useState([]);
-
-    React.useEffect(() => {
-        axios(SOURCES_URL)
-            .then(res => res.data)
-            .then(setSourcesData);
-    }, []);
+    const { currentIndicators, sourcesData } = props;
 
     const indicators = uniqBy(
         Object.values(currentIndicators).filter(d => d.label),
         d => d.label
     ).filter(d => d.meta);
 
-    if (!indicators.length) return null;
+    if (!indicators.length || !sourcesData) return null;
 
     const rows = indicators.map(indicator => {
         const { meta } = indicator;
