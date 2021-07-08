@@ -131,13 +131,13 @@ const hdiColorMatrixHex = [
 ];
 
 const colourMatricesHex = {
-    "vaccine-equality": blueLightColourMatrixHex,
+    "vaccine-equity": blueLightColourMatrixHex,
     accessibility: blueLightColourMatrixHex,
     affordability: yellowColourMatrixHex,
 };
 
 const colourMatricesCornerColours = {
-    "vaccine-equality": blueLightColourMatrixCornerColours,
+    "vaccine-equity": blueLightColourMatrixCornerColours,
     accessibility: blueLightColourMatrixCornerColours,
     affordability: yellowColourMatrixCornerColours,
 };

@@ -19,7 +19,7 @@ Currently the embed selected is based on the URL. (See rules below)
 
 ## Pillar/Bucket
 
-Pages must follow this pattern - `/vaccine-equality/:bucketSlug`
+Pages must follow this pattern - `/vaccine-equity/:bucketSlug`
 
 On window event `DOMContentLoaded` the embed will initialize itself into the first element with the attribute `data-bucket-embed` e.g. `<div id="root" data-bucket-embed></div>`
 
