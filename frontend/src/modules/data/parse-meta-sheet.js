@@ -64,8 +64,7 @@ export const parseMetaSheet = raw => {
                 row["Time period"] ||
                 row["Data source name"] ||
                 row["Data source link"] ||
-                row["Number of Countries"] ||
-                row["Last updated"]
+                row["Number of Countries"]
             ) {
                 const names = (row["Data source name"] || "").split(";").map(d => d.trim());
                 const urls = (row["Data source link"] || "").split(";").map(d => d.trim());
@@ -78,7 +77,6 @@ export const parseMetaSheet = raw => {
                 const countryCount = row["Number of Countries"] || 0;
                 meta = {
                     timePeriod: row["Time period"],
-                    lastUpdated: row["Last updated"],
                     sources,
                     countryCount,
                 };
