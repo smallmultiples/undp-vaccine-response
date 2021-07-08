@@ -1,10 +1,8 @@
 import React from "react";
 import styles from "./data-sources.module.scss";
 import { uniqBy } from "lodash";
-import axios from "axios";
 
 import regionsLookup from "../../modules/data/region-lookup.json";
-import { SOURCES_URL } from "../../config/constants";
 const COUNTRIES_TOTAL = regionsLookup.length;
 
 const IconData = props => (

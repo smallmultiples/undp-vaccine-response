@@ -5,7 +5,6 @@ import Factoid from "../../components/factoid/factoid";
 import {
     DATA_SHEET_URL,
     PILLAR_URL,
-    STATIC_DATA_BASE_URL,
     KEY_STATS_URL,
 } from "../../config/constants";
 import parseMetaSheet from "../../modules/data/parse-meta-sheet";
