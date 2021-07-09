@@ -4,7 +4,6 @@ import { formatManualValue, ManualBlockVis } from "../block-visualisations/block
 
 export default function Factoid(props) {
     const {
-        goal,
         goalDatasets,
         keyStats,
         factoidNumber,
@@ -13,7 +12,7 @@ export default function Factoid(props) {
     const onCountryPage = React.useMemo(() => Boolean(props.countryCode), [props.countryCode]);
 
     const sideBlocks =
-        !onCountryPage && keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
+        !onCountryPage && keyStats?.filter(s => s["Chart type"] !== "");
 
     const sideBlock = sideBlocks ? sideBlocks[factoidNumber - 1] : undefined
 
