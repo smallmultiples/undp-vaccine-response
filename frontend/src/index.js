@@ -54,11 +54,19 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!params.bucketSlug) {
                 const factoidOneElement = getEl("[data-factoid-1-embed]")
                 const factoidTwoElement = getEl("[data-factoid-2-embed]")
+                const factoidThreeElement = getEl("[data-factoid-3-embed]")
+                const factoidFourElement = getEl("[data-factoid-4-embed]")
                 if (factoidOneElement) {
                     ReactDOM.render(<FactoidEmbed {...params} factoidNumber={1} />, factoidOneElement);
                 }
                 if (factoidTwoElement) {
                     ReactDOM.render(<FactoidEmbed {...params} factoidNumber={2} />, factoidTwoElement);
+                }
+                if (factoidThreeElement) {
+                    ReactDOM.render(<FactoidEmbed {...params} factoidNumber={3} />, factoidThreeElement);
+                }
+                if (factoidFourElement) {
+                    ReactDOM.render(<FactoidEmbed {...params} factoidNumber={4} />, factoidFourElement);
                 }
             } else {
                 ReactDOM.render(<BucketEmbed {...params} />, getEl("[data-bucket-embed]"));

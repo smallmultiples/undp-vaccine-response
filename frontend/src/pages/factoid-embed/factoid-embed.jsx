@@ -91,20 +91,12 @@ export default function FactoidEmbed(props) {
     const pillarData = usePillarData(pillarSlug, bucketSlug);
     const { pillar, goalDatasets, keyStats } = pillarData;
 
-    const goal = React.useMemo(() => {
-        if (!pillar) return null;
-        if (!bucketSlug) return pillar.goals[0];
-        return pillar.goals.find(d => d.slug === bucketSlug);
-    }, [pillar, bucketSlug]);
-
-    if (!goal) return null; // TODO loader
+    if (!pillar) return null;
 
     return (
         <div className={styles.bucketEmbed}>
             {!pillarData.loading && (
                 <Factoid
-                    key={goal.label}
-                    goal={goal}
                     goalDatasets={goalDatasets}
                     keyStats={keyStats}
                     factoidNumber={factoidNumber}

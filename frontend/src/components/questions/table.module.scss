@@ -26,7 +26,7 @@
 }
 
 .headerCell {
-    border: none;
+    border: none !important;
     text-align: start;
     vertical-align: top;
     padding: 12px 24px;
@@ -40,13 +40,13 @@
 }
 
 .row, .headerRow {
-    border: 0;
-    border-bottom: 1px solid $color-blue-bg;
+    border-bottom: 1px solid $color-blue-bg !important;
 }
 
 .cell {
+    border: none !important;
     padding: 12px 24px;
-    background-color: #fff;
+    background-color: #fff !important;
 
     @include mobileOnly() {
         padding: 6px;
