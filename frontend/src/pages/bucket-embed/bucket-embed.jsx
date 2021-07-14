@@ -60,14 +60,8 @@ const usePillarData = (pillarSlug, bucketSlug) => {
                         data.map(d => ({
                             ...d,
                             Year: parseSheetDate("1/1/2021 00:00"),
-                            FIRST_VACCINE_DATE: parseSheetDate(d.FIRST_VACCINE_DATE)
-                                ? differenceInDays(new Date(), parseSheetDate(d.FIRST_VACCINE_DATE))
-                                : null,
-                            AUTHORIZATION_DATE: parseSheetDate(d.AUTHORIZATION_DATE)
-                                ? differenceInDays(new Date(), parseSheetDate(d.AUTHORIZATION_DATE))
-                                : null,
-                            START_DATE: parseSheetDate(d.START_DATE)
-                                ? differenceInDays(new Date(), parseSheetDate(d.START_DATE))
+                            first_vaccine_date: parseSheetDate(d.first_vaccine_date)
+                                ? differenceInDays(new Date(), parseSheetDate(d.first_vaccine_date))
                                 : null,
                         }))
                     )
