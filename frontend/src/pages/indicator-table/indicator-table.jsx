@@ -25,7 +25,6 @@ async function downloadIndicators(goal) {
         });
         return {
             iso: d["iso3"],
-            date: parseSheetDate(d.Year),
             ...tmp,
         };
     });
@@ -61,6 +60,7 @@ async function downloadMetaData(goal, sourcesData) {
                 return {
                     name: s.name,
                     lastUpdated,
+                    link: s.url,
                 };
             });
 
@@ -68,6 +68,7 @@ async function downloadMetaData(goal, sourcesData) {
             sources.forEach((x, i) => {
                 sourcesObj[`Source #${i + 1} name`] = x.name;
                 sourcesObj[`Source #${i + 1} date last updated`] = x.lastUpdated;
+                sourcesObj[`Source #${i + 1} link`] = x.link;
             });
 
             return { label, ...sourcesObj };
