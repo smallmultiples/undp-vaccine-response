@@ -361,12 +361,6 @@ const MapTooltip = props => {
         <div className={styles.tooltipClickTrap} onClick={() => setClickTooltip(null)} />
     );
 
-    const link = isClickTooltip && (
-        <a className={styles.tooltipLink} href={`/country/${data["CMS slug"]}`}>
-            View country data <Chevron />
-        </a>
-    );
-
     return (
         <>
             {clickTrap}
@@ -390,7 +384,6 @@ const MapTooltip = props => {
                     {bivariateXRow}
                     {bivariateYRow}
                 </div>
-                {link}
             </div>
         </>
     );
