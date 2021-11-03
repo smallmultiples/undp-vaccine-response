@@ -7,9 +7,11 @@ import useMediaQuery from "../../hooks/use-media-query";
 import { hexToRgb, getRowIndicatorValue } from "../../modules/utils";
 import MapFiltersLegends, {
     MapFiltersLegendMobile,
-} from "../map-filters-legends/map-filters-legends";
-import MapVis from "../map-vis/map-vis";
-import styles from "./map.module.scss";
+} from "./scatterPlot-filter/map-filters-legends";
+import _ from "lodash";
+import styles from "./scatterPlot.module.scss";
+import Graph from "./graph/graph";
+import countryGroup from "./data/country-territory-groups.json";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -343,12 +345,38 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
     }, [domains, currentIndicators, pillar, goal]);
 };
 
-const Map = props => {
-    const { currentIndicators, countryData, pillar, goal, sourcesData } = props;
+const ScatterPlot = props => {
+    const { currentIndicators, countryData, pillar, goal, data, goalData } = props;
+    const selectedGroup = "Group 2";
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
     const { isMobile } = useMediaQuery();
-
+    const datawithCountryGroups = data.map(d => ({
+        ...d,
+        "Group 1":countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3) !== -1 ? countryGroup[countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3)]["Group 1"] : null,
+        "Group 2":countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3) !== -1 ? countryGroup[countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3)]["Group 2"] : null,
+        "Group 3":countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3) !== -1 ? countryGroup[countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3)]["Group 3"] : null,
+    }))
+    const regions = _.uniqBy(datawithCountryGroups,selectedGroup).map(d => d[selectedGroup])
+    const dataGroupedByRegion = regions.map(d => {
+        const dataGroup = datawithCountryGroups.filter(el => el[selectedGroup] === d);
+        const aggregateData = currentIndicators.regionalAggregationOptions.map(el => {
+            let value = 0;
+            if (el.regionalAggregationType === "Average") value = (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) / dataGroup.filter(l => !nullValue(l[el.dataKey])).length
+            if (el.regionalAggregationType === "Summation") value = (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey))
+            if (el.regionalAggregationType === "Population") value = (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), l => l[el.dataKey] * l.population)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), 'population')
+            return {
+                dataKey: el.dataKey,
+                value
+            }
+        });
+        return {
+            region: d,
+            countryData: dataGroup,
+            data: aggregateData
+        }
+    })
+    console.log(dataGroupedByRegion)
     return (
         <div className={styles.map}>
             {!isMobile && scales && countryData && (
@@ -359,12 +387,10 @@ const Map = props => {
                     {...props}
                 />
             )}
-            <MapVis
-                {...props}
-                domains={domains}
-                scales={scales}
-                normalizedData={countryData}
-                sourcesData={sourcesData}
+            <Graph
+                data={dataGroupedByRegion} 
+                isMobile={isMobile}
+                currentIndicators={currentIndicators}
             />
             {isMobile && (
                 <MapFiltersLegendMobile
@@ -378,4 +404,4 @@ const Map = props => {
     );
 };
 
-export default Map;
+export default ScatterPlot;
