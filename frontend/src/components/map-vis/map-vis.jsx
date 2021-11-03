@@ -226,10 +226,10 @@ const getFormattedMapValue = (row, indicator) => {
     } else if (indicator.isDaysAgo) {
         value = val ? `${format(subDays(new Date(), val), "dd MMM yyyy")} (${val} days ago)` : "-";
     } else {
-        value = typeof val === "string" ? val : indicator.format(val);
+        value = typeof val === "string" ? val : indicator.tooltipExtraDataKey === "scale" ? indicator.format(val).replace("USD", "Billion USD") : indicator.format(val);
     }
 
-    if (indicator.tooltipExtraDataKey) {
+    if (indicator.tooltipExtraDataKey && indicator.tooltipExtraDataKey !== "scale") {
         extraValue = ` (${row[indicator.tooltipExtraDataKey]})`;
     }
 

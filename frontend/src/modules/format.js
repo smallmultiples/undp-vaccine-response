@@ -16,9 +16,9 @@ export const formatSI = (decimals = 2) => {
         var si = [
             { value: 1, symbol: "" },
             { value: 1e3, symbol: "K" },
-            { value: 1e6, symbol: "M" },
-            { value: 1e9, symbol: "B" },
-            { value: 1e12, symbol: "T" },
+            { value: 1e6, symbol: " Million" },
+            { value: 1e9, symbol: " Billion" },
+            { value: 1e12, symbol: " Trillion" },
         ];
         var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
         var i;
