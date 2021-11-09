@@ -346,7 +346,7 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
 };
 
 const ScatterPlot = props => {
-    const { currentIndicators, countryData, pillar, goal, data, goalData } = props;
+    const { currentIndicators, countryData, pillar, goal, data } = props;
     const selectedGroup = "Group 2";
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
@@ -376,7 +376,6 @@ const ScatterPlot = props => {
             data: aggregateData
         }
     })
-    console.log(dataGroupedByRegion)
     return (
         <div className={styles.map}>
             {!isMobile && scales && countryData && (

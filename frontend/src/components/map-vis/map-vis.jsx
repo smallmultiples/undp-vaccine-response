@@ -216,7 +216,7 @@ const MapVis = props => {
 
 // TODO: module these
 const getFormattedMapValue = (row, indicator) => {
-    console.log(indicator)
+    
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
     let value = "";

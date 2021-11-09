@@ -1,6 +1,26 @@
-@import "../../variables.scss";
+@import "../../../variables.scss";
 
 // ------
+
+.breadcrumbEl {
+    font-weight: bold;
+    font-size: 14px;
+    margin: 20px 0;
+
+}
+
+.breadcrumb {
+    color: $color-grey;
+    cursor: pointer;
+}
+
+.breadcrumb:hover {
+    color: $color-blue;
+}
+
+.breadcrumbSelected {
+    color: $color-blue;
+}
 
 .mapTitle {
     font-weight: normal;
