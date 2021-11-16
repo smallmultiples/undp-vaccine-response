@@ -144,12 +144,14 @@ const Graph = props => {
                                         const rowData = [
                                             {
                                             title: props.currentIndicators.regionalX.label,
+                                            indicator: props.currentIndicators.regionalX,
                                             value: d[props.currentIndicators.regionalX.dataKey],
                                             type: 'x-axis',
                                             metaData: '2021',
                                             },
                                             {
                                             title: props.currentIndicators.regionalY.label,
+                                            indicator: props.currentIndicators.regionalY,
                                             value: d[props.currentIndicators.regionalY.dataKey],
                                             type: 'y-axis',
                                             metaData: '2021',
@@ -158,6 +160,7 @@ const Graph = props => {
                                         if (props.currentIndicators.mapVisualisationEnabled) {
                                             rowData.push({
                                             title: props.currentIndicators.mapVisualisation.label,
+                                            indicator: props.currentIndicators.mapVisualisation,
                                             value: d[props.currentIndicators.mapVisualisation.dataKey],
                                             type: 'size',
                                             metaData: '2021',

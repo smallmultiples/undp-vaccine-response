@@ -96,8 +96,7 @@ const SubNote = styled.div`
     font-style: italic;
 `;
 
-const getFormattedMapValue = (val, indicator, extraValue) => {
-    
+const getFormattedMapValue = (val, indicator) => {
     if (isNil(val) || val === "") return "-";
     let value = "";
     if (indicator.binary) {
@@ -107,8 +106,8 @@ const getFormattedMapValue = (val, indicator, extraValue) => {
     } else {
         value = typeof val === "string" ? val : indicator.format(val);
     }
-
-    return value + extraValue;
+    value = indicator.tooltipExtraDataKey === "scale" ? value.replace("USD","Billion USD") : value;
+    return value;
 };
 
 export const HoverTooltip = (props) => {
@@ -137,7 +136,7 @@ export const HoverTooltip = (props) => {
             <div>
               <RowMetaData>{d.metaData}</RowMetaData>
               <RowTitleEl>{d.title}</RowTitleEl>
-              <RowValue>{getFormattedMapValue(d.value)}</RowValue>
+              <RowValue>{getFormattedMapValue(d.value, d.indicator)}</RowValue>
             </div>
           </RowEl>
         ))
