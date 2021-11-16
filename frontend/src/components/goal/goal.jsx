@@ -1,5 +1,6 @@
 import React from "react";
 import Map from "../map/map";
+import ScatterPlot from "../scatterPlot/scatterPlot";
 import styles from "./goal.module.scss";
 import { useIndicatorState } from "./useIndicatorState";
 import { groupBy, uniq, isNil, uniqBy } from "lodash";
@@ -163,8 +164,10 @@ export default function Goal(props) {
         keyStats,
         commonPillar,
         sourcesData,
+        goalData
     } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
+    const [selectedView, setSelectedView] = React.useState("countryView");
 
     const onCountryPage = React.useMemo(() => Boolean(props.countryCode), [props.countryCode]);
 
@@ -190,7 +193,6 @@ export default function Goal(props) {
 
     const sideBlocks =
         !onCountryPage && keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
-
     return (
         <div className={styles.goal}>
             <div className={styles.mapArea}>
@@ -253,23 +255,57 @@ export default function Goal(props) {
                         })}
                     </div>
                 )}
-                <h3 className={styles.title}>
-                    Explore data about the {goal.label} of vaccines across the world
-                </h3>
-                <div className={styles.mapContainer}>
-                    <Map
-                        countryData={timeFilteredData}
-                        countryDataLoading={pillarLoading}
-                        pillar={pillar}
-                        goal={goal}
-                        currentIndicators={currentIndicators}
-                        setCurrentIndicators={setCurrentIndicators}
-                        onCountryClicked={handleCountryClicked}
-                        selectedCountryCode={selectedCountryCode}
-                        countryCode={countryCode}
-                        sourcesData={sourcesData}
-                    />
+                <div className={styles.headerEl}>
+                    <h3 className={styles.title}>
+                        Explore data about the {goal.label} of vaccines across the world
+                    </h3>
+                    <div className={styles.chartSelectionEl}>
+                        <div 
+                            className={selectedView === "countryView" ? styles.selected : null}
+                            onClick={() => { setSelectedView("countryView") }}
+                        >
+                            Country Level
+                        </div>
+                        <div 
+                            className={selectedView === "regionalView" ? styles.selected : null}
+                            onClick={() => { setSelectedView("regionalView") }}
+                        >
+                            Regional Level
+                        </div>
+                    </div>
                 </div>
+                {
+                    selectedView === "countryView" ?
+                        <div className={styles.mapContainer}>
+                            <Map
+                                countryData={timeFilteredData}
+                                countryDataLoading={pillarLoading}
+                                pillar={pillar}
+                                goal={goal}
+                                currentIndicators={currentIndicators}
+                                setCurrentIndicators={setCurrentIndicators}
+                                onCountryClicked={handleCountryClicked}
+                                selectedCountryCode={selectedCountryCode}
+                                countryCode={countryCode}
+                                sourcesData={sourcesData}
+                            />
+                        </div> : 
+                        <div className={styles.mapContainer}>
+                            <ScatterPlot
+                                countryData={timeFilteredData}
+                                data={goalData}
+                                countryDataLoading={pillarLoading}
+                                pillar={pillar}
+                                goal={goal}
+                                currentIndicators={currentIndicators}
+                                setCurrentIndicators={setCurrentIndicators}
+                                onCountryClicked={handleCountryClicked}
+                                selectedCountryCode={selectedCountryCode}
+                                countryCode={countryCode}
+                                sourcesData={sourcesData}
+                            />
+                        </div> 
+                }
             </div>
             {timelineState.timespan > 1 && (
                 <div className={styles.timeArea}>

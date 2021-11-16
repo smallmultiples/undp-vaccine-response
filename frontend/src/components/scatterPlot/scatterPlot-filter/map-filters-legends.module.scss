@@ -1,0 +1,609 @@
+@import "../../../variables.scss";
+
+$bottomPadding: 27px;
+$mapVisualisationControlsWidth: 220px;
+
+.mapFiltersLegends {
+    width: 20%;
+    min-width: 256px;
+
+    @include mobileOnly() {
+        width: 100%;
+    }
+}
+
+// ------
+
+.bivariateIndicatorSelection {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+
+    &[data-fullwidth="true"] {
+        border-right: none;
+        padding-right: 0;
+        margin-right: 0;
+    }
+
+    @include mobileOnly() {
+        width: 100%;
+        border-right: none;
+    }
+
+    .bivariateIndicatorItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        &:not(:last-child) {
+            // margin-bottom: 6px;
+        }
+
+        &[data-y="true"] {
+            .bivariateIndicatorDropdownWrap:after {
+                content: "↕";
+                transform: translateY(6px) translateX(6px);
+            }
+        }
+        &[data-x="true"] {
+            .bivariateIndicatorDropdownWrap:after {
+                content: "↔";
+                transform: translateY(3px);
+            }
+        }
+
+        .bivariateIndicatorDropdownLabel {
+            font-size: 12px;
+            margin: 0 0 7px -26px;
+        }
+
+        .bivariateIndicatorDropdownWrap {
+            width: calc(100% - 70px);
+            margin-left: 8px;
+            position: relative;
+            &:after {
+                position: absolute;
+                z-index: 8;
+                left: 12px;
+                top: 50%;
+                @include mobileOnly() {
+                    top: 48%;
+                }
+            }
+
+            @include mobileOnly() {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.aggregationSelectWrapper {
+    display: block;
+    width: 100%;
+}
+
+.aggregationSelect {
+    width: calc(100% - 74px);
+    margin: 6px 0 12px;
+    padding: 0 24px 0 28px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    @include mobileOnly() {
+        width: calc(100% - 60px);
+    }
+    button {
+        font-family: $font-proxima;
+        color: $color-navy;
+        font-size: 12px;
+        padding: 5px 0;
+        border-width: 1px;
+        border-color: hsl(0, 0%, 70%);
+        background: $color-light-blue;
+        border: none;
+
+        &[data-selected="true"] {
+            font-weight: bold;
+        }
+    }
+    button:focus {
+        border: none;
+    }
+    button:first-child {
+        border-radius: 12px 0 0 12px;
+        margin-left: -1px;
+    }
+    button:last-child {
+        border-radius: 0 12px 12px 0;
+        margin-left: -1px;
+    }
+    > button {
+        flex: 1;
+    }
+    button:only-child {
+        border-radius: 12px;
+        margin-left: 0;
+    }
+    button:not(:first-child) {
+        border-left: 1px solid $color-grey;
+    }
+    button:not(:last-child) {
+        border-right: none; /* Prevent double borders */
+    }
+
+    /* Add a background color on hover */
+    button:hover {
+        border-color: hsl(0, 0%, 70%);
+    }
+}
+/* Clear floats (clearfix hack) */
+.aggregationSelect:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+// -----
+
+.categoryLegend {
+    width: calc(100% - 60px);
+}
+
+.categoryList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 130px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    transition: opacity 0.2s;
+    &[data-visible="false"] {
+        opacity: 0.4;
+    }
+
+    .categoryItemRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .categoryIcon {
+            display: block;
+            max-width: 9px;
+            max-height: 9px;
+            min-width: 9px;
+            min-height: 9px;
+            border-radius: 50%;
+            border: 2px solid $color-grey-c3;
+            margin-right: 8px;
+
+            &[data-selected="true"] {
+                background: $color-grey-c3;
+                &[data-i="0"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                }
+                &[data-i="1"] {
+                    background: $color-yellow;
+                    border-color: $color-yellow;
+                }
+                &[data-i="2"] {
+                    background: $color-red;
+                    border-color: $color-red;
+                }
+                &[data-i="3"] {
+                    background: $color-green;
+                    border-color: $color-green;
+                }
+                &[data-i="4"] {
+                    background: $color-blue;
+                    border-color: $color-blue;
+                }
+                &[data-i="5"] {
+                    background: $color-purple;
+                    border-color: $color-purple;
+                }
+                &[data-i="6"] {
+                    background: $color-cerise;
+                    border-color: $color-cerise;
+                }
+            }
+            &[data-gradient="true"] {
+                stroke-width: 1px;
+                fill: $color-grey-c3;
+                &[data-i="0"] {
+                    background: none;
+                    border-color: $color-red;
+                }
+                &[data-i="1"] {
+                    background: $color-red;
+                    border-color: $color-red;
+                }
+                &[data-i="2"] {
+                    background: $color-yellow;
+                    border-color: $color-yellow;
+                }
+                &[data-i="3"] {
+                    background: $color-green;
+                    border-color: $color-green;
+                }
+                &[data-i="4"] {
+                    background: $color-dull-blue;
+                    border-color: $color-dull-blue;
+                }
+                &[data-i="5"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                }
+            }
+            &[data-binary="true"] {
+                stroke-width: 1px;
+                fill: $color-grey-c3;
+                opacity: 0.9;
+                &[data-i="0"] {
+                    background: $color-navy;
+                    border-color: $color-navy;
+                }
+                &[data-i="1"] {
+                    background: $color-red;
+                    border-color: $color-red;
+                }
+            }
+        }
+
+        .categoryText {
+            @include body();
+            font-weight: $weight-medium;
+            font-size: 12px;
+            display: inline-block;
+            padding: 6px 0 6px 4px;
+            line-height: 1.2;
+        }
+    }
+}
+
+// -----
+
+.mapVisualisationControls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .mapVisualisationControlsLabel {
+        font-size: 12px;
+        margin: 0 0 7px -26px;
+    }
+}
+
+.mapVisualisationLegend {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .legendSvg {
+        width: 105px;
+        height: 40px;
+    }
+
+    .legendPoly {
+        fill: $color-blue-bg;
+    }
+
+    .legendCircle {
+        stroke: $color-navy;
+        fill: white;
+        stroke-width: 2;
+    }
+
+    .legendLabels {
+        width: 100%;
+        max-width: 105px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        font-weight: bold;
+        position: relative;
+        height: 15px;
+        > span {
+            width: 40px;
+            text-align: center;
+            position: absolute;
+        }
+        span:first-child {
+            left: -16px;
+        }
+        span:last-child {
+            right: -3px;
+        }
+    }
+}
+// -----
+
+.mapVisualisationIndicatorSelection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+
+    .mapVisualisationIndicatorDropdownWrap {
+        width: calc(100% - 70px);
+        margin-left: 8px;
+        position: relative;
+        &:after {
+            position: absolute;
+            z-index: 8;
+            left: 12px;
+            top: 50%;
+            @include mobileOnly() {
+                top: 25%;
+            }
+        }
+    }
+}
+
+.mapVisualisationIndicatorFineprint {
+    p {
+        font-size: 12px;
+        width: $mapVisualisationControlsWidth;
+        margin: 0 0 0 30px;
+        padding: 0;
+
+        @include mobileOnly {
+            width: 190px;
+            margin-left: 6px;
+        }
+    }
+}
+
+// ------
+
+.bivariateLegend {
+    position: relative;
+    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin: 40px 30px 20px 30px;
+
+    @include mobileOnly() {
+        width: 50%;
+    }
+}
+
+.bivariateLegendTop {
+    display: flex;
+    align-items: center;
+}
+
+.bivariateLegendBottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+$l-w: 105px;
+$lc-w: $l-w / 5;
+$lc-w-hdi: $l-w / 4;
+.legendColour {
+    display: flex;
+    flex-direction: column;
+    width: $l-w;
+}
+
+.legendColourRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.legendColourCell {
+    width: $lc-w;
+    height: $lc-w;
+    transition: background 0.2s, border-color 0.2s;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    position: relative;
+    &[data-disabled="true"] {
+        background: none !important;
+        border-color: rgba($color-blue-bg, 0.5);
+    }
+    &[data-hdi-x="true"] {
+        width: $lc-w-hdi;
+    }
+    &[data-hdi-y="true"] {
+        height: $lc-w-hdi;
+    }
+    &[data-hovered="true"] {
+        border: 2px solid $color-navy;
+    }
+
+    .legendColourTooltip {
+        pointer-events: none;
+        position: absolute;
+        top: calc(100% + 2px);
+        left: calc(100% + 2px);
+        background: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 16px 9px 16px 16px;
+        z-index: 23;
+
+        .legendColourTooltipEntry {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            &:not(:last-child) {
+                margin-bottom: 24px;
+            }
+
+            .legendColourTooltipIcon {
+                min-width: 12px;
+                min-height: 12px;
+                margin-right: 12px;
+            }
+
+            .legendColourTooltipText {
+                display: flex;
+                flex-direction: column;
+                font-size: 14px;
+                line-height: 14px;
+                white-space: nowrap;
+                .legendColourTooltipLabel {
+                    font-weight: bold;
+                }
+
+                .legendColourTooltipValue {
+                    margin-top: 6px;
+                }
+            }
+        }
+    }
+}
+.legendColourSpan {
+    display: flex;
+    justify-content: space-between;
+
+    &[data-y="true"] {
+        flex-direction: column;
+        align-items: center;
+        height: $l-w;
+    }
+    &[data-x="true"] {
+        width: $l-w;
+        margin-top: 4px;
+        align-items: center;
+    }
+}
+
+.legendColourSpanValue {
+    @include body();
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+
+    &[data-y="true"] {
+        flex-direction: column;
+        align-items: center;
+        svg:first-child {
+            margin-bottom: 4px;
+        }
+        svg:last-child {
+            margin-top: 4px;
+        }
+    }
+    &[data-x="true"] {
+        align-items: center;
+        svg {
+            margin-top: 4px;
+        }
+        svg:first-child {
+            margin-right: 4px;
+        }
+        svg:last-child {
+            margin-left: 4px;
+        }
+    }
+}
+
+.legendYLabelContainer {
+    position: relative;
+    width: 42px;
+}
+
+.legendYLabelContainer,
+.bivariateLegendBottom {
+    transition: opacity 0.2s;
+    &[data-visible="false"] {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.bivariateAxisLabelX,
+.bivariateAxisLabelY {
+    @include buttonFont(center);
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: $weight-medium;
+    min-width: $l-w;
+    max-width: $l-w;
+}
+
+.bivariateAxisLabelX {
+}
+
+.bivariateAxisLabelY {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform-origin: center center;
+    transform: translateY(-50%) rotate(-90deg) translateY(-100%) translateY(-34px);
+}
+
+.indicatorTooltip {
+    position: relative; /* making the .tooltip span a container for the tooltip text */
+    border-radius: 50%;
+    border: 1px solid $color-blue-bg;
+    width: 20px;
+    height: 20px;
+    top: 10px;
+    text-align: center;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1.4em;
+    margin-top: 11px;
+}
+
+.indicatorTooltip:hover {
+    cursor: pointer;
+}
+
+.indicatorTooltip:before,
+.indicatorTooltip:after {
+    position: absolute;
+
+    /* vertically center */
+
+    /* move to right */
+    left: 150%;
+    margin-left: 15px; /* and add a small left margin */
+
+    /* basic styles */
+    width: 200px;
+    background: white;
+    // box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+    z-index: 23;
+    display: none; /* hide by default */
+    text-align: left;
+
+    opacity: 0;
+    transition: 0.3s opacity;
+    border: solid 1px $color-light-blue;
+}
+
+.indicatorTooltip:before {
+    content: attr(data-text); /* here's the magic */
+    top: 50%;
+    padding: 8px 9px 16px 16px;
+    border-top: none;
+}
+
+.indicatorTooltip:after {
+    content: attr(data-meta); /* here's the magic */
+    bottom: 50%;
+    @include body();
+    font-size: 12px;
+    line-height: 12px;
+    padding: 16px 9px 0px 16px;
+    border-bottom: none;
+}
+
+.indicatorTooltip:hover:before,
+.indicatorTooltip:hover:after {
+    display: block;
+    opacity: 1;
+}

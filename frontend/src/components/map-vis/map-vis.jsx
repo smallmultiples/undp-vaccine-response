@@ -54,7 +54,6 @@ const MapVis = props => {
         countryCode,
         sourcesData,
     } = props;
-
     const [tooltip, setTooltip] = React.useState(null);
     const [clickTooltip, setClickTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
@@ -217,6 +216,7 @@ const MapVis = props => {
 
 // TODO: module these
 const getFormattedMapValue = (row, indicator) => {
+    
     const val = getRowIndicatorValue(row, indicator);
     if (isNil(val) || val === "") return "-";
     let value = "";

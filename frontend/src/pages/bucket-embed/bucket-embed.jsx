@@ -15,7 +15,6 @@ export default function BucketEmbed(props) {
     }, [pillar, bucketSlug]);
 
     if (!goal) return null; // TODO loader
-
     return (
         <div className={styles.bucketEmbed}>
             {!pillarData.loading && (
