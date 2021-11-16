@@ -143,7 +143,7 @@ export const HoverTooltip = (props) => {
       }
       {
           data.regional ? 
-          <SubNote>Click to see the country data</SubNote> : null
+          <SubNote>Click to see country data</SubNote> : null
       }
       </TooltipBody>
     </TooltipEl>
