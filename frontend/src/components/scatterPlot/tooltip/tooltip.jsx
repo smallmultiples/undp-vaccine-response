@@ -1,6 +1,8 @@
 import { HorizontalArrow, VerticalArrow } from './icons';
 import React from 'react';
 import styled from 'styled-components';
+import { isNil } from "lodash";
+import { format, subDays } from "date-fns";
 
 const TooltipEl = styled.div`
   display: block;
@@ -94,6 +96,21 @@ const SubNote = styled.div`
     font-style: italic;
 `;
 
+const getFormattedMapValue = (val, indicator, extraValue) => {
+    
+    if (isNil(val) || val === "") return "-";
+    let value = "";
+    if (indicator.binary) {
+        value = val ? "Yes" : "No";
+    } else if (indicator.isDaysAgo) {
+        value = val ? `${format(subDays(new Date(), val), "dd MMM yyyy")} (${val} days ago)` : "-";
+    } else {
+        value = typeof val === "string" ? val : indicator.format(val);
+    }
+
+    return value + extraValue;
+};
+
 export const HoverTooltip = (props) => {
   const {
     data,
@@ -120,7 +137,7 @@ export const HoverTooltip = (props) => {
             <div>
               <RowMetaData>{d.metaData}</RowMetaData>
               <RowTitleEl>{d.title}</RowTitleEl>
-              <RowValue>{typeof d.value === "number" ? d.value.toFixed(2) : d.value}</RowValue>
+              <RowValue>{getFormattedMapValue(d.value)}</RowValue>
             </div>
           </RowEl>
         ))

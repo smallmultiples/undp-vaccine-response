@@ -259,23 +259,20 @@ export default function Goal(props) {
                     <h3 className={styles.title}>
                         Explore data about the {goal.label} of vaccines across the world
                     </h3>
-                    {
-                        goal.label === "accessibility" ? 
-                            <div className={styles.chartSelectionEl}>
-                                <div 
-                                    className={selectedView === "countryView" ? styles.selected : null}
-                                    onClick={() => { setSelectedView("countryView") }}
-                                >
-                                    Country Level
-                                </div>
-                                <div 
-                                    className={selectedView === "regionalView" ? styles.selected : null}
-                                    onClick={() => { setSelectedView("regionalView") }}
-                                >
-                                    Regional Level
-                                </div>
-                            </div> : null
-                    }
+                    <div className={styles.chartSelectionEl}>
+                        <div 
+                            className={selectedView === "countryView" ? styles.selected : null}
+                            onClick={() => { setSelectedView("countryView") }}
+                        >
+                            Country Level
+                        </div>
+                        <div 
+                            className={selectedView === "regionalView" ? styles.selected : null}
+                            onClick={() => { setSelectedView("regionalView") }}
+                        >
+                            Regional Level
+                        </div>
+                    </div>
                 </div>
                 {
                     selectedView === "countryView" ?

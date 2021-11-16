@@ -362,9 +362,9 @@ const ScatterPlot = props => {
         const dataGroup = datawithCountryGroups.filter(el => el[selectedGroup] === d);
         const aggregateData = currentIndicators.regionalAggregationOptions.map(el => {
             let value = 0;
-            if (el.regionalAggregationType === "Average") value = (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) / dataGroup.filter(l => !nullValue(l[el.dataKey])).length
-            if (el.regionalAggregationType === "Summation") value = (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey))
-            if (el.regionalAggregationType === "Population") value = (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), l => l[el.dataKey] * l.population)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), 'population')
+            if (el.regionalAggregationType === "Average") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) / dataGroup.filter(l => !nullValue(l[el.dataKey])).length : "";
+            if (el.regionalAggregationType === "Summation") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) : "";
+            if (el.regionalAggregationType === "Population") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), l => l[el.dataKey] * l.population)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), 'population') : "";
             return {
                 dataKey: el.dataKey,
                 value

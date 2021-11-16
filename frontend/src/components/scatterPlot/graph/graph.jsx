@@ -47,6 +47,7 @@ const Graph = props => {
         scaleLinear().domain(getDomainForCountry(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.mapVisualisation.dataKey)).range([0, 20]).nice();
     const xTick = xScale.ticks(5);
     const yTick = yScale.ticks(5);
+    console.log(props.data)
     return <>
     
     {
@@ -208,16 +209,18 @@ const Graph = props => {
                                             </g>
                                         )
                                     }) :
-                                    props.data.filter(d => d.region !== null).map((d,i) => {
+                                    props.data.filter(d => d.region !== null && d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalX.dataKey)].value !== "" && d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalY.dataKey)].value !== "").map((d,i) => {
                                         const rowData = [
                                             {
                                             title: props.currentIndicators.regionalX.label,
+                                            indicator: props.currentIndicators.regionalX,
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalX.dataKey)].value,
                                             type: 'x-axis',
                                             metaData: '2021',
                                             },
                                             {
                                             title: props.currentIndicators.regionalY.label,
+                                            indicator: props.currentIndicators.regionalY,
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalY.dataKey)].value,
                                             type: 'y-axis',
                                             metaData: '2021',
@@ -226,6 +229,7 @@ const Graph = props => {
                                         if (props.currentIndicators.mapVisualisationEnabled) {
                                             rowData.push({
                                             title: props.currentIndicators.mapVisualisation.label,
+                                            indicator: props.currentIndicators.mapVisualisation,
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value,
                                             type: 'size',
                                             metaData: '2021',
@@ -262,7 +266,7 @@ const Graph = props => {
                                                 <circle 
                                                     cx={0}
                                                     cy={0}
-                                                    r={props.currentIndicators.mapVisualisationEnabled ? radiusScale(d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value) : 5}
+                                                    r={props.currentIndicators.mapVisualisationEnabled ? d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value !== "" ? radiusScale(d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value) : 0 : 5}
                                                     fill="#0bc6ff"
                                                     fillOpacity={0.6}
                                                     stroke="#0bc6ff"
@@ -275,7 +279,7 @@ const Graph = props => {
                                                     textAnchor="middle"
                                                     dy={props.currentIndicators.mapVisualisationEnabled ? radiusScale(d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value) + 10 : 15}
                                                 >
-                                                    {regionAbbreviations[d.region]}    
+                                                    {props.currentIndicators.mapVisualisationEnabled ? d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value !== "" ? regionAbbreviations[d.region] : "" : regionAbbreviations[d.region]}    
                                                 </text>
                                             </g>
                                         )
