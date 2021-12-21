@@ -151,7 +151,6 @@ const MapVisualisationRadiusLegend = props => {
     ]
         .map(d => d.join(","))
         .join(" ");
-
     return (
         <div className={styles.mapVisualisationLegend}>
             <svg className={styles.legendSvg}>

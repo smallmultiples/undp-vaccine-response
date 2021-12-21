@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, {useEffect} from "react";
 import { scaleLinear } from "d3-scale";
 import { HoverTooltip } from '../tooltip/tooltip'
 import regionAbbreviations from '../data/regionAbbreviations.json';
@@ -22,14 +22,22 @@ const getDomainForCountry = (data, metric) => {
     const min = minTemp ? minTemp > 0 ? 0 : minTemp : 0;
     return [min, max];
 };
+const getDomainForCountryForArea = (data, metric, metric1, metric2) => {
+    const values = data.countryData.filter(d => d[metric1] !== "" && d[metric2] !== "").map((d) => d[metric]);
+    const minTemp = _.min(values);
+    const maxTemp = _.max(values);
+    const max = maxTemp || 0;
+    const min = minTemp ? minTemp > 0 ? 0 : minTemp : 0;
+    return [min, max];
+};
   
 const Graph = props => {
     const width = 1024;
     const height = 560;
     const margin = {
       top: 10,
-      bottom: 20,
-      left: 30,
+      bottom: 40,
+      left: 50,
       right: 10,
     };
     const [selectedRegion, setSelectedRegion] = React.useState(null);
@@ -44,12 +52,32 @@ const Graph = props => {
         scaleLinear().domain(getDomainForCountry(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.regionalX.dataKey)).range([0, graphWidth]).nice();
     const radiusScale = !selectedRegion ? 
         scaleLinear().domain(getDomain(props.data,props.currentIndicators.mapVisualisation.dataKey)).range([0, 20]).nice() : 
-        scaleLinear().domain(getDomainForCountry(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.mapVisualisation.dataKey)).range([0, 20]).nice();
+        scaleLinear().domain(getDomainForCountryForArea(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.mapVisualisation.dataKey, props.currentIndicators.regionalX.dataKey ,props.currentIndicators.regionalY.dataKey)).range([1, 20]).nice();
+    
+    useEffect(() => {
+        if(selectedRegion) {
+            props.setSizeRange(getDomainForCountryForArea(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.mapVisualisation.dataKey, props.currentIndicators.regionalX.dataKey ,props.currentIndicators.regionalY.dataKey))
+        } else {
+            props.setSizeRange(getDomain(props.data,props.currentIndicators.mapVisualisation.dataKey))
+        }
+    // eslint-disable-next-line 
+    },[selectedRegion, props.currentIndicators.mapVisualisation.dataKey])
+
+        
     const xTick = xScale.ticks(5);
     const yTick = yScale.ticks(5);
-    console.log(props.data)
+    const dataFormatted = props.data.map(d => {
+        const dataTemp = {
+            countryData: d.countryData,
+            data: d.data,
+            region: d.region
+        };
+        for(let k = 0; k < d.data.length; k++){
+            dataTemp[d.data[k].dataKey] = d.data[k].value
+        }
+        return dataTemp
+    })
     return <>
-    
     {
         props.data ? 
             <> 
@@ -84,6 +112,28 @@ const Graph = props => {
                                 stroke={"#222"}
                                 strokeWidth={1}
                             />
+                            <text 
+                                x={graphWidth / 2}
+                                y={graphHeight + 30}
+                                fill={"#222"}
+                                textAnchor="middle"
+                                fontSize="14px"
+                                dy={0}
+                            >
+                                {props.currentIndicators.regionalX.label}
+                            </text>
+                            <text 
+
+                                x={0}
+                                y={0}
+                                fill={"#222"}
+                                textAnchor="middle"
+                                fontSize="14px"
+                                transform={`translate(${0 - margin.left}, ${graphHeight / 2}) rotate(-90)`}
+                                dy={12}
+                            >
+                                {props.currentIndicators.regionalY.label}
+                            </text>
                             {
                                 xTick.map((d,i) => (
                                     <text 
@@ -139,7 +189,7 @@ const Graph = props => {
                             }
                             {
                                 selectedRegion ? 
-                                    props.data[props.data.findIndex(d => d.region === selectedRegion)].countryData.filter(d => d[props.currentIndicators.regionalX.dataKey] !== "" && d[props.currentIndicators.regionalY.dataKey] !== "").map((d,i) => {
+                                _.reverse(_.sortBy(props.data[props.data.findIndex(d => d.region === selectedRegion)].countryData.filter(d => d[props.currentIndicators.regionalX.dataKey] !== "" && d[props.currentIndicators.regionalY.dataKey] !== ""), props.currentIndicators.mapVisualisation.dataKey)).map((d,i) => {
                                         
                                         const rowData = [
                                             {
@@ -212,7 +262,7 @@ const Graph = props => {
                                             </g>
                                         )
                                     }) :
-                                    props.data.filter(d => d.region !== null && d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalX.dataKey)].value !== "" && d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalY.dataKey)].value !== "").map((d,i) => {
+                                    _.reverse(_.sortBy(dataFormatted, props.currentIndicators.mapVisualisation.dataKey)).filter(d => d.region !== null && d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalX.dataKey)].value !== "" && d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalY.dataKey)].value !== "").map((d,i) => {
                                         const rowData = [
                                             {
                                             title: props.currentIndicators.regionalX.label,
@@ -277,7 +327,7 @@ const Graph = props => {
                                                 />
                                                 <text
                                                     x={0}
-                                                    y={0}
+                                                    y={0} 
                                                     fontSize="8px"
                                                     textAnchor="middle"
                                                     dy={props.currentIndicators.mapVisualisationEnabled ? radiusScale(d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value) + 10 : 15}

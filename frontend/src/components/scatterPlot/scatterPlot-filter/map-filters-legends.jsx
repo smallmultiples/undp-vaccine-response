@@ -209,9 +209,8 @@ const MapVisualisationControls = props => {
 };
 
 const MapVisualisationRadiusLegend = props => {
-    const { currentIndicators } = props;
+    const { currentIndicators, sizeRange } = props;
     if (!props.scales.mapVisualisationRadius) return null;
-    const domain = props.scales.mapVisualisationRadius.domain();
     const range = props.scales.mapVisualisationRadius.range();
 
     const stroke = 2;
@@ -250,8 +249,8 @@ const MapVisualisationRadiusLegend = props => {
                 <circle className={styles.legendCircle} cx={bx} r={br} cy={cy} />
             </svg>
             <div className={styles.legendLabels}>
-                <span>{currentIndicators.mapVisualisation.formatLegend(domain[0])}</span>
-                <span>{currentIndicators.mapVisualisation.formatLegend(domain[1])}</span>
+                <span>{currentIndicators.mapVisualisation.formatLegend(sizeRange[0])}</span>
+                <span>{currentIndicators.mapVisualisation.formatLegend(sizeRange[1])}</span>
             </div>
             {/* <div className={styles.mapVisualisationIndicatorFineprint}>
                 <p>*Number of confirmed cases, number of deaths, and case fatality rate</p>
