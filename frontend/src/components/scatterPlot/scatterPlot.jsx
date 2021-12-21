@@ -1,7 +1,7 @@
 import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import { isNil, last } from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import { HDI_BUCKETS } from "../../config/scales";
 import useMediaQuery from "../../hooks/use-media-query";
 import { hexToRgb, getRowIndicatorValue } from "../../modules/utils";
@@ -348,6 +348,7 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
 const ScatterPlot = props => {
     const { currentIndicators, countryData, pillar, goal, data } = props;
     const selectedGroup = "Group 2";
+    const [sizeRange, setSizeRange] = useState([0,0])
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
     const { isMobile } = useMediaQuery();
@@ -383,6 +384,7 @@ const ScatterPlot = props => {
                     domains={domains}
                     scales={scales}
                     normalizedData={countryData}
+                    sizeRange={sizeRange}
                     {...props}
                 />
             )}
@@ -390,12 +392,14 @@ const ScatterPlot = props => {
                 data={dataGroupedByRegion} 
                 isMobile={isMobile}
                 currentIndicators={currentIndicators}
+                setSizeRange={setSizeRange}
             />
             {isMobile && (
                 <MapFiltersLegendMobile
                     domains={domains}
                     scales={scales}
                     normalizedData={countryData}
+                    sizeRange={sizeRange}
                     {...props}
                 />
             )}

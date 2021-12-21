@@ -33,12 +33,12 @@
 
 .chartSelectionEl {
     display: flex;
-    background-color: #FFFFFF;
+    background-color: $color-light-blue;
     border-radius: 30rem;
-    border: 2px solid $color-light-blue;
+    border: 2px solid $color-highlight-blue;
     width: fit-content;
     div {
-        background-color: #FFFFFF;
+        background-color: $color-light-blue;
         font-size: 18px;
         color: $color-highlight-blue;
         padding: 5px 24px;
@@ -48,7 +48,6 @@
         display: flex;
         align-items: center;
         border-radius: 48px;
-        opacity: 0.5,
     }
 
     div:hover {
@@ -57,7 +56,8 @@
 
     .selected {
         opacity: 1;
-        background-color: $color-light-blue;
+        color:#fff;
+        background-color: $color-highlight-blue;
     }
 }
 
