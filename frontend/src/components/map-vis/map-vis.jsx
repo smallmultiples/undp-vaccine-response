@@ -58,7 +58,6 @@ const MapVis = props => {
     const [clickTooltip, setClickTooltip] = React.useState(null);
     const { shapeData, loading: geoLoading } = useGeoData();
     const { isMobile } = useMediaQuery();
-
     const initialBoundsOrFeature = React.useMemo(() => {
         if (countryCode) {
             if (!shapeData) return undefined;
@@ -399,7 +398,6 @@ const MapTooltip = props => {
 // const circlePadding = 2; // this includes the stroke
 const circleRadius = 4;
 const circleRadiusInactive = 3;
-
 const CircleVis = props => {
     const { viewport, scales, normalizedData, currentIndicators } = props;
 
@@ -412,12 +410,11 @@ const CircleVis = props => {
                 Object.values(normalizedData).map(d => {
                     const val = getRowIndicatorValue(d, indicator);
                     if (isNil(val)) return null;
-                    return indicator.binary ? (val === true ? "Yes" : "No") : categorySplit(val);
+                    return indicator.binary ? (val === 1 ? "Yes" : "No") : categorySplit(val);
                 })
             ).filter(d => d && d.length)
         );
     }, [normalizedData, indicator]);
-
     const rowXY = row => {
         const [lng, lat] = [row["Longitude (average)"], row["Latitude (average)"]];
         if ([lng, lat].some(d => !d)) return null;
@@ -437,7 +434,7 @@ const CircleVis = props => {
         const groups = Object.values(normalizedData).map(row => {
             const val = getRowIndicatorValue(row, indicator);
             if (isNil(val)) return null;
-            const cats = indicator.binary ? (val === true ? "Yes" : "No") : categorySplit(val);
+            const cats = indicator.binary ? (val === 1 ? "Yes" : "No") : categorySplit(val);
             const xy = rowXY(row);
             if (!xy) return null;
 
@@ -491,5 +488,4 @@ const CircleVis = props => {
 
     return <svg className={styles.circleVis}>{content}</svg>;
 };
-
 export default MapVis;

@@ -22,7 +22,7 @@ export const getRegionalOptions = (goal, commonPillar) => {
     return [...goalOpts, ...commonOpts];
 };
 export const getMapVisualisationOptions = (goal, commonPillar) => {
-    const goalOpts = goal.indicators.filter(d => d.isProgressIndicator);
+    const goalOpts = goal.indicators.filter(d => d.isProgressIndicator || d.binary);
     const commonOpts = flatten(commonPillar.goals.map(goal => goal.indicators));
 
     if (goal.prioritizeCommonTrackingIndicators) {

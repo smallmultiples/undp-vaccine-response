@@ -242,12 +242,12 @@ $mapVisualisationControlsWidth: 220px;
                 fill: $color-grey-c3;
                 opacity: 0.9;
                 &[data-i="0"] {
-                    background: $color-navy;
-                    border-color: $color-navy;
+                    background: $color-green;
+                    border-color: $color-green;
                 }
                 &[data-i="1"] {
-                    background: $color-red;
-                    border-color: $color-red;
+                    background: $color-cerise;
+                    border-color: $color-cerise;
                 }
             }
         }
