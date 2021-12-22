@@ -51,28 +51,46 @@ const useDomains = (countryData, currentIndicators) => {
         if (ready) {
             const xHdi = currentIndicators.bivariateX.hdi;
             const yHdi = currentIndicators.bivariateY.hdi;
+            const xCategorical = currentIndicators.bivariateX.isCategorical;
+            const yCategorical = currentIndicators.bivariateY.isCategorical;
 
-            if (xHdi) {
-                jenksX = HDI_BUCKETS;
-            } else {
-                if (USE_QUANTILE) {
-                    jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
+            if(xCategorical)
+            {   
+                if(currentIndicators.bivariateX.categories.length === 5)
+                    jenksX = [0, 1, 2, 3, 4, 5]
+                else jenksX = [0, 1]
+            }
+            else {
+                if (xHdi) {
+                    jenksX = HDI_BUCKETS;
                 } else {
-                    const extents = extent(valuesX);
-                    const scale = scaleLinear().range(extents).domain([0, 1]);
-                    jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                    if (USE_QUANTILE) {
+                        jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
+                    } else {
+                        const extents = extent(valuesX);
+                        const scale = scaleLinear().range(extents).domain([0, 1]);
+                        jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                    }
                 }
             }
 
-            if (yHdi) {
-                jenksY = HDI_BUCKETS;
-            } else {
-                if (USE_QUANTILE) {
-                    jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
+            if(yCategorical)
+            {
+                if(currentIndicators.bivariateY.categories.length === 5)
+                    jenksY = [0, 1, 2, 3, 4, 5]
+                else jenksY = [0, 1]
+            }
+            else {
+                if (yHdi) {
+                    jenksY = HDI_BUCKETS;
                 } else {
-                    const extents = extent(valuesY);
-                    const scale = scaleLinear().range(extents).domain([0, 1]);
-                    jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                    if (USE_QUANTILE) {
+                        jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
+                    } else {
+                        const extents = extent(valuesY);
+                        const scale = scaleLinear().range(extents).domain([0, 1]);
+                        jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
+                    }
                 }
             }
         }
@@ -165,7 +183,6 @@ const getColorMatrices = (pillar, goal, currentIndicators) => {
         colorMatrixHex = colourMatricesHex[goal.slug];
         cornerColours = colourMatricesCornerColours[goal.slug];
     }
-
     if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
         if (FLIP_COLOURS_HORIZONTALLY) {
             colorMatrixHex[4][0] = cornerColours.x;
@@ -201,6 +218,7 @@ const getColorMatrices = (pillar, goal, currentIndicators) => {
             .map((x, i) => hdiColorMatrixHex.map(x => x[i]).reverse())
             .reverse();
     }
+
 
     const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
 
@@ -331,7 +349,6 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
             }
             return GOOD_SHAPE_STROKE;
         };
-
         return {
             mapVisualisationRadius: mapVisualisationRadiusScale,
             color: bivariateColourScale,
@@ -348,7 +365,6 @@ const Map = props => {
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
     const { isMobile } = useMediaQuery();
-
     return (
         <div className={styles.map}>
             {!isMobile && scales && countryData && (

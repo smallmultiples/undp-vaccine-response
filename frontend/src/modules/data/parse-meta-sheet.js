@@ -125,7 +125,9 @@ export const parseMetaSheet = raw => {
                 currentAggregation: aggregations[0],
                 tooltipExtraDataKey: row["Tooltip extra data key"],
                 regionalAggregation: row['Regional'],
-                regionalAggregationType: row['Aggregration Type']
+                regionalAggregationType: row['Aggregration Type'],
+                isCategorical: row['isCategorical'],
+                categories: row['isCategorical'] ? row['Categories'].split(',').map((d) => parseInt(d, 10)): null
             };
         }
 
