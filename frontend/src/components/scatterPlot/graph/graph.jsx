@@ -1,13 +1,14 @@
 
 import React, {useEffect} from "react";
 import { scaleLinear } from "d3-scale";
+import { format } from "d3-format";
 import { HoverTooltip } from '../tooltip/tooltip'
 import regionAbbreviations from '../data/regionAbbreviations.json';
 import styles from "./graph.module.scss";
 import _ from "lodash";
 
 const getDomain = (data, metric) => {
-    const values = data.map((d) => d.data[d.data.findIndex((el) => el.dataKey === metric)]?.value);
+    const values = _.filter(data,d => d.region !== null).map((d) => d.data[d.data.findIndex((el) => el.dataKey === metric)]?.value);
     const minTemp = _.min(values);
     const maxTemp = _.max(values);
     const max = maxTemp || 0;
@@ -145,7 +146,7 @@ const Graph = props => {
                                         dy={12}
                                         key={i}
                                     >
-                                        {d}
+                                        {d < 1 ? d : format(".2s")(d).replace(/G/, "B")}
                                     </text>
                                 ))
                             }
@@ -183,7 +184,7 @@ const Graph = props => {
                                         dx={-2}
                                         key={i}
                                     >
-                                        {d}
+                                        {d < 1 ? d : format(".2s")(d).replace(/G/, "B")}
                                     </text>
                                 ))
                             }

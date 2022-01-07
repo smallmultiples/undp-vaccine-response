@@ -268,7 +268,16 @@ export default function Goal(props) {
                         </div>
                         <div 
                             className={selectedView === "regionalView" ? styles.selected : null}
-                            onClick={() => { setSelectedView("regionalView") }}
+                            onClick={() => { 
+                                setSelectedView("regionalView") 
+                                let overlaySelectedOption = currentIndicators.mapVisualisation;
+                                let overlayEnabled = currentIndicators.mapVisualisationEnabled
+                                if(!currentIndicators.mapVisualisation.regionalAggregation) {
+                                    overlaySelectedOption = currentIndicators.regionalAggregationOptions[2];
+                                    overlayEnabled = false;
+                                }
+                                setCurrentIndicators(d => ({ ...d, mapVisualisation: overlaySelectedOption, mapVisualisationEnabled: overlayEnabled }))
+                            }}
                         >
                             Regional Level
                         </div>

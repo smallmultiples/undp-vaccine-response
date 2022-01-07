@@ -35,7 +35,6 @@ const BivariateIndicatorSelection = props => {
         [currentIndicators.mapVisualisationOptions]
     );
 
-
     // Disable Y axis if there is only one indicator.
 
     const xSources = currentIndicators.regionalX.meta?.sources
@@ -261,7 +260,6 @@ const MapVisualisationRadiusLegend = props => {
 
 const MapVisualisationIndicatorSelection = props => {
     const { setCurrentIndicators, currentIndicators } = props;
-
     const mapVisualisationSources = currentIndicators.mapVisualisation.meta?.sources
         .map((s, i) => {
             return s.name;
@@ -271,7 +269,7 @@ const MapVisualisationIndicatorSelection = props => {
     const mapVisualisationLastUpdated = currentIndicators.mapVisualisation.meta?.timePeriod
         ? " (" + currentIndicators.mapVisualisation.meta.timePeriod + ")"
         : "";
-
+    
     return (
         <div className={styles.mapVisualisationIndicatorSelection}>
             <Checkbox
