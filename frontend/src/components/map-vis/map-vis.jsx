@@ -234,6 +234,8 @@ const getFormattedMapValue = (row, indicator) => {
 
     return value + extraValue;
 };
+
+/*
 const renderFormattedMapDate = (row, indicator) => {
     const date = row.dates[indicator.dataKey];
     const year = date ? date.getFullYear() : null;
@@ -243,7 +245,7 @@ const renderFormattedMapDate = (row, indicator) => {
     const dateStr = `${year}${lastUpdated}`;
     return <span className={styles.tooltipDatumDate}>{dateStr}</span>;
 };
-
+*/
 const MapTooltip = props => {
     const {
         tooltip,
@@ -267,10 +269,10 @@ const MapTooltip = props => {
             <span className={styles.tooltipDatumDate}>
                 {sourceMetaData &&
                     sourceMetaData["Last updated start"] &&
-                    `(Last updated ${sourceMetaData["Last updated start"]}${
+                    `Last updated ${sourceMetaData["Last updated start"]}${
                         sourceMetaData["Last updated end"] &&
                         ` - ${sourceMetaData["Last updated end"]}`
-                    })`}
+                    }`}
             </span>
         );
     };
@@ -287,7 +289,6 @@ const MapTooltip = props => {
                 />
                 <div className={styles.tooltipDatumText}>
                     <div>
-                        {renderFormattedMapDate(data, currentIndicators.mapVisualisation)}{" "}
                         {getSourceLastUpdated(
                             currentIndicators.mapVisualisation.meta.sources[0].name
                         )}
@@ -314,7 +315,6 @@ const MapTooltip = props => {
             />
             <div className={styles.tooltipDatumText}>
                 <div>
-                    {renderFormattedMapDate(data, currentIndicators.bivariateX)}{" "}
                     {getSourceLastUpdated(currentIndicators.bivariateX.meta.sources[0].name)}
                 </div>
                 <div className={styles.tooltipDatumLabel}>
@@ -341,7 +341,6 @@ const MapTooltip = props => {
             />
             <div className={styles.tooltipDatumText}>
                 <div>
-                    {renderFormattedMapDate(data, currentIndicators.bivariateY)}{" "}
                     {getSourceLastUpdated(currentIndicators.bivariateY.meta.sources[0].name)}
                 </div>
                 <div className={styles.tooltipDatumLabel}>{currentIndicators.bivariateY.label}</div>
