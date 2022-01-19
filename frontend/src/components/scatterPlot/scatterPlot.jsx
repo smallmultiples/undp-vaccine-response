@@ -346,7 +346,7 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
 };
 
 const ScatterPlot = props => {
-    const { currentIndicators, countryData, pillar, goal, data } = props;
+    const { currentIndicators, countryData, pillar, goal, data, sourcesData } = props;
     const selectedGroup = "Group 2";
     const [sizeRange, setSizeRange] = useState([0,0])
     const domains = useDomains(countryData, currentIndicators);
@@ -393,6 +393,7 @@ const ScatterPlot = props => {
                 isMobile={isMobile}
                 currentIndicators={currentIndicators}
                 setSizeRange={setSizeRange}
+                sourcesData={sourcesData}
             />
             {isMobile && (
                 <MapFiltersLegendMobile
