@@ -344,7 +344,7 @@ const Graph = props => {
                 </div>
                 {
                     hoverInfo 
-                    ? <HoverTooltip data={hoverInfo} />
+                    ? <HoverTooltip data={hoverInfo} sourcesData={props.sourcesData} />
                     : null
                 } 
             </> : null

@@ -110,9 +110,25 @@ const getFormattedMapValue = (val, indicator) => {
     return value;
 };
 
+
+const getSourceLastUpdated = (sourcesData,sourceName) => {
+  const sourceMetaData = sourcesData.find(x => x["Data source name"] === sourceName);
+  return (
+    <RowMetaData>
+          {sourceMetaData &&
+              sourceMetaData["Last updated start"] &&
+              `Last updated ${sourceMetaData["Last updated start"]}${
+                  sourceMetaData["Last updated end"] &&
+                  ` - ${sourceMetaData["Last updated end"]}`
+              }`}
+    </RowMetaData>
+  );
+};
+
 export const HoverTooltip = (props) => {
   const {
     data,
+    sourcesData
   } = props;
   return (
     <TooltipEl x={data.xPosition} y={data.yPosition}>
@@ -134,7 +150,7 @@ export const HoverTooltip = (props) => {
               }
             </IconDiv>
             <div>
-              <RowMetaData>{d.metaData}</RowMetaData>
+              {getSourceLastUpdated(sourcesData,d.indicator.meta.sources[0].name)}
               <RowTitleEl>{d.title}</RowTitleEl>
               <RowValue>{getFormattedMapValue(d.value, d.indicator)}</RowValue>
             </div>
