@@ -469,6 +469,7 @@ $lc-w-hdi: $l-w / 4;
         flex-direction: column;
         align-items: center;
         height: $l-w;
+        margin-left: 5px;
     }
     &[data-x="true"] {
         width: $l-w;
@@ -529,6 +530,7 @@ $lc-w-hdi: $l-w / 4;
     font-weight: $weight-medium;
     min-width: $l-w;
     max-width: $l-w;
+    margin-left: -6px;
 }
 
 .bivariateAxisLabelX {

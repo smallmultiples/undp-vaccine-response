@@ -232,9 +232,16 @@ export default function Goal(props) {
                                     dataFiltered &&
                                     dataFiltered.reduce((a, b) => a + (b[indicator[2]] || 0), 0) /
                                         dataFiltered.length;
+
+                               const valueTemp = 100 - value;
+                                let numerator = Math.round(100 / valueTemp) - 1 === 0 ? 1 : Math.round(100 / valueTemp) - 1;
                                 const primaryLabel = sideBlock["Primary label"].replace(
+                                    "1",
+                                    value ? numerator : "..."
+                                )
+                                .replace(
                                     "X",
-                                    value ? Math.round(100 / value) : "..."
+                                    value ? Math.round(numerator * 100 / value) : "..."
                                 );
                                 return (
                                     <ManualBlockVis
