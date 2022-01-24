@@ -45,6 +45,7 @@ const Graph = props => {
     const [hoverInfo, setHoverInfo] = React.useState(null);
     const graphWidth = width - margin.left - margin.right;
     const graphHeight = height - margin.top - margin.bottom;
+    console.log(props.data,props.currentIndicators.regionalY)
     const yScale = !selectedRegion ? 
         scaleLinear().domain(getDomain(props.data,props.currentIndicators.regionalY.dataKey)).range([graphHeight, 0]).nice() :
         scaleLinear().domain(getDomainForCountry(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.regionalY.dataKey)).range([graphHeight, 0]).nice();
@@ -78,6 +79,7 @@ const Graph = props => {
         }
         return dataTemp
     })
+    const isAggregationSame = props.currentIndicators.regionalX.regionalAggregationType === props.currentIndicators.regionalY.regionalAggregationType ? true : false;
     return <>
     {
         props.data ? 
@@ -87,6 +89,32 @@ const Graph = props => {
                         <span className={selectedRegion ? styles.breadcrumb : styles.breadcrumbSelected} onClick={() => {setSelectedRegion(null)}}>All Regions</span>
                         {
                             selectedRegion ? <span className={styles.breadcrumbSelected}> | {selectedRegion}</span> : null
+                        }
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#919399', fontWeight: 700}}>
+                        {
+                            isAggregationSame ? 
+                                props.currentIndicators.regionalX.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total population of countries for which they are available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Average' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as the average across countries in that region for which they are available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Summation' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as total sum across countries in that region for which they are available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Vaccine' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total delivered vaccines in that region for which they are available</>
+                                : null : null
+                        }
+                        {
+                            !isAggregationSame ? 
+                                props.currentIndicators.regionalX.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total population of countries for which its available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Average' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as the average across countries in that region for which its available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Summation' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as total sum across countries in that region for which its available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Vaccine' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total delivered vaccines in that region for which its available</>
+                                : null : null
+                        }
+                        {
+                            !isAggregationSame ? 
+                                props.currentIndicators.regionalY.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total population of countries for which its available</>
+                                : props.currentIndicators.regionalY.regionalAggregationType === 'Average' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as the average across countries in that region for which its available</>
+                                : props.currentIndicators.regionalY.regionalAggregationType === 'Summation' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as total sum across countries in that region for which its available</>
+                                : props.currentIndicators.regionalY.regionalAggregationType === 'Vaccine' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total delivered vaccines in that region for which its available</>
+                                : null : null
                         }
                     </div>
                     <svg width='100%' viewBox={`0 0 ${width} ${height}`} style={{border:"1px solid #f2f7ff", padding:"10px"}}>
