@@ -366,6 +366,7 @@ const ScatterPlot = props => {
             if (el.regionalAggregationType === "Average") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) / dataGroup.filter(l => !nullValue(l[el.dataKey])).length : "";
             if (el.regionalAggregationType === "Summation") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) : "";
             if (el.regionalAggregationType === "Population") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), l => l[el.dataKey] * l.population)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), 'population') : "";
+            if (el.regionalAggregationType === "Vaccine") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.vaccinesdelivered)), l => l[el.dataKey] * l.vaccinesdelivered)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), 'vaccinesdelivered') : "";
             return {
                 dataKey: el.dataKey,
                 value
@@ -377,6 +378,7 @@ const ScatterPlot = props => {
             data: aggregateData
         }
     })
+    console.log(dataGroupedByRegion)
     return (
         <div className={styles.map}>
             {!isMobile && scales && countryData && (
