@@ -45,7 +45,6 @@ const Graph = props => {
     const [hoverInfo, setHoverInfo] = React.useState(null);
     const graphWidth = width - margin.left - margin.right;
     const graphHeight = height - margin.top - margin.bottom;
-    console.log(props.data,props.currentIndicators.regionalY)
     const yScale = !selectedRegion ? 
         scaleLinear().domain(getDomain(props.data,props.currentIndicators.regionalY.dataKey)).range([graphHeight, 0]).nice() :
         scaleLinear().domain(getDomainForCountry(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.regionalY.dataKey)).range([graphHeight, 0]).nice();
@@ -98,6 +97,7 @@ const Graph = props => {
                                 : props.currentIndicators.regionalX.regionalAggregationType === 'Average' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as the average across countries in that region for which they are available</>
                                 : props.currentIndicators.regionalX.regionalAggregationType === 'Summation' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as total sum across countries in that region for which they are available</>
                                 : props.currentIndicators.regionalX.regionalAggregationType === 'Vaccine' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total delivered vaccines in that region for which they are available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'VaccineLag' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total delivered vaccines 2 weeks ago in that region for which they are available</>
                                 : null : null
                         }
                         {
@@ -105,15 +105,17 @@ const Graph = props => {
                                 props.currentIndicators.regionalX.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total population of countries for which its available</>
                                 : props.currentIndicators.regionalX.regionalAggregationType === 'Average' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as the average across countries in that region for which its available</>
                                 : props.currentIndicators.regionalX.regionalAggregationType === 'Summation' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as total sum across countries in that region for which its available</>
-                                : props.currentIndicators.regionalX.regionalAggregationType === 'Vaccine' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total delivered vaccines in that region for which its available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'Vaccine'  ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total delivered vaccines in that region for which its available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'VaccineLag' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total delivered vaccines 2 weeks ago in that region for which its available</>
                                 : null : null
                         }
                         {
                             !isAggregationSame ? 
-                                props.currentIndicators.regionalY.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total population of countries for which its available</>
-                                : props.currentIndicators.regionalY.regionalAggregationType === 'Average' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as the average across countries in that region for which its available</>
-                                : props.currentIndicators.regionalY.regionalAggregationType === 'Summation' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as total sum across countries in that region for which its available</>
-                                : props.currentIndicators.regionalY.regionalAggregationType === 'Vaccine' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total delivered vaccines in that region for which its available</>
+                                props.currentIndicators.regionalY.regionalAggregationType === 'Population' ? <>. Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total population of countries for which its available</>
+                                : props.currentIndicators.regionalY.regionalAggregationType === 'Average' ? <>. Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as the average across countries in that region for which its available</>
+                                : props.currentIndicators.regionalY.regionalAggregationType === 'Summation' ? <>. Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as total sum across countries in that region for which its available</>
+                                : props.currentIndicators.regionalY.regionalAggregationType === 'Vaccine' ? <>. Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total delivered vaccines in that region for which its available</>
+                                : props.currentIndicators.regionalX.regionalAggregationType === 'VaccineLag' ? <>. Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> are calculated as a % of total delivered vaccines 2 weeks ago in that region for which its available</>
                                 : null : null
                         }
                     </div>
