@@ -379,7 +379,6 @@ const ScatterPlot = props => {
             data: aggregateData
         }
     })
-    console.log(dataGroupedByRegion)
     return (
         <div className={styles.map}>
             {!isMobile && scales && countryData && (

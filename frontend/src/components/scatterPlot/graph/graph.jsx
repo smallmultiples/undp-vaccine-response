@@ -45,7 +45,6 @@ const Graph = props => {
     const [hoverInfo, setHoverInfo] = React.useState(null);
     const graphWidth = width - margin.left - margin.right;
     const graphHeight = height - margin.top - margin.bottom;
-    console.log(props.data,props.currentIndicators.regionalY)
     const yScale = !selectedRegion ? 
         scaleLinear().domain(getDomain(props.data,props.currentIndicators.regionalY.dataKey)).range([graphHeight, 0]).nice() :
         scaleLinear().domain(getDomainForCountry(props.data[props.data.findIndex(d => d.region === selectedRegion)],props.currentIndicators.regionalY.dataKey)).range([graphHeight, 0]).nice();
