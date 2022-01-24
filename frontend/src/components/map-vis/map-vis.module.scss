@@ -321,12 +321,12 @@
             fill: $color-grey-c3;
             opacity: 0.9;
             &[data-i="0"] {
-                fill: $color-navy;
-                stroke: $color-navy;
+                fill: $color-green;
+                stroke: $color-green;
             }
             &[data-i="1"] {
-                fill: $color-red;
-                stroke: $color-red;
+                fill: $color-cerise;
+                stroke: $color-cerise;
             }
         }
     }

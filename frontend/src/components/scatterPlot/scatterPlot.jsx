@@ -1,15 +1,17 @@
 import { extent, quantile } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import { isNil, last } from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import { HDI_BUCKETS } from "../../config/scales";
 import useMediaQuery from "../../hooks/use-media-query";
 import { hexToRgb, getRowIndicatorValue } from "../../modules/utils";
 import MapFiltersLegends, {
     MapFiltersLegendMobile,
-} from "../map-filters-legends/map-filters-legends";
-import MapVis from "../map-vis/map-vis";
-import styles from "./map.module.scss";
+} from "./scatterPlot-filter/map-filters-legends";
+import _ from "lodash";
+import styles from "./scatterPlot.module.scss";
+import Graph from "./graph/graph";
+import countryGroup from "./data/country-territory-groups.json";
 
 const GOOD_SHAPE_STROKE = [255, 255, 255];
 const NULL_SHAPE_FILL = [255, 255, 255]; // #FFFFFF
@@ -51,46 +53,28 @@ const useDomains = (countryData, currentIndicators) => {
         if (ready) {
             const xHdi = currentIndicators.bivariateX.hdi;
             const yHdi = currentIndicators.bivariateY.hdi;
-            const xCategorical = currentIndicators.bivariateX.isCategorical;
-            const yCategorical = currentIndicators.bivariateY.isCategorical;
 
-            if(xCategorical)
-            {   
-                if(currentIndicators.bivariateX.categories.length === 5)
-                    jenksX = [0, 1, 2, 3, 4, 5]
-                else jenksX = [0, 1]
-            }
-            else {
-                if (xHdi) {
-                    jenksX = HDI_BUCKETS;
+            if (xHdi) {
+                jenksX = HDI_BUCKETS;
+            } else {
+                if (USE_QUANTILE) {
+                    jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
                 } else {
-                    if (USE_QUANTILE) {
-                        jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesX, p));
-                    } else {
-                        const extents = extent(valuesX);
-                        const scale = scaleLinear().range(extents).domain([0, 1]);
-                        jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
-                    }
+                    const extents = extent(valuesX);
+                    const scale = scaleLinear().range(extents).domain([0, 1]);
+                    jenksX = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
                 }
             }
 
-            if(yCategorical)
-            {
-                if(currentIndicators.bivariateY.categories.length === 5)
-                    jenksY = [0, 1, 2, 3, 4, 5]
-                else jenksY = [0, 1]
-            }
-            else {
-                if (yHdi) {
-                    jenksY = HDI_BUCKETS;
+            if (yHdi) {
+                jenksY = HDI_BUCKETS;
+            } else {
+                if (USE_QUANTILE) {
+                    jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
                 } else {
-                    if (USE_QUANTILE) {
-                        jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(p => quantile(valuesY, p));
-                    } else {
-                        const extents = extent(valuesY);
-                        const scale = scaleLinear().range(extents).domain([0, 1]);
-                        jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
-                    }
+                    const extents = extent(valuesY);
+                    const scale = scaleLinear().range(extents).domain([0, 1]);
+                    jenksY = [0, 0.2, 0.4, 0.6, 0.8, 1.0].map(d => scale(d));
                 }
             }
         }
@@ -183,6 +167,7 @@ const getColorMatrices = (pillar, goal, currentIndicators) => {
         colorMatrixHex = colourMatricesHex[goal.slug];
         cornerColours = colourMatricesCornerColours[goal.slug];
     }
+
     if (currentIndicators.bivariateXEnabled && !currentIndicators.bivariateYEnabled) {
         if (FLIP_COLOURS_HORIZONTALLY) {
             colorMatrixHex[4][0] = cornerColours.x;
@@ -218,7 +203,6 @@ const getColorMatrices = (pillar, goal, currentIndicators) => {
             .map((x, i) => hdiColorMatrixHex.map(x => x[i]).reverse())
             .reverse();
     }
-
 
     const colorMatrix = colorMatrixHex.map(row => row.map(hexToRgb));
 
@@ -349,6 +333,7 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
             }
             return GOOD_SHAPE_STROKE;
         };
+
         return {
             mapVisualisationRadius: mapVisualisationRadiusScale,
             color: bivariateColourScale,
@@ -360,11 +345,40 @@ const useScales = (domains, currentIndicators, pillar, goal) => {
     }, [domains, currentIndicators, pillar, goal]);
 };
 
-const Map = props => {
-    const { currentIndicators, countryData, pillar, goal, sourcesData } = props;
+const ScatterPlot = props => {
+    const { currentIndicators, countryData, pillar, goal, data, sourcesData } = props;
+    const selectedGroup = "Group 2";
+    const [sizeRange, setSizeRange] = useState([0,0])
     const domains = useDomains(countryData, currentIndicators);
     const scales = useScales(domains, currentIndicators, pillar, goal);
     const { isMobile } = useMediaQuery();
+    const datawithCountryGroups = data.map(d => ({
+        ...d,
+        "Group 1":countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3) !== -1 ? countryGroup[countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3)]["Group 1"] : null,
+        "Group 2":countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3) !== -1 ? countryGroup[countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3)]["Group 2"] : null,
+        "Group 3":countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3) !== -1 ? countryGroup[countryGroup.findIndex(el => el["Alpha-3 code-1"] === d.iso3)]["Group 3"] : null,
+    }))
+    const regions = _.uniqBy(datawithCountryGroups,selectedGroup).map(d => d[selectedGroup])
+    const dataGroupedByRegion = regions.map(d => {
+        const dataGroup = datawithCountryGroups.filter(el => el[selectedGroup] === d);
+        const aggregateData = currentIndicators.regionalAggregationOptions.map(el => {
+            let value = 0;
+            if (el.regionalAggregationType === "Average") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) / dataGroup.filter(l => !nullValue(l[el.dataKey])).length : "";
+            if (el.regionalAggregationType === "Summation") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey])), el.dataKey)) : "";
+            if (el.regionalAggregationType === "Population") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), l => l[el.dataKey] * l.population)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.population)), 'population') : "";
+            if (el.regionalAggregationType === "Vaccine") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.vaccinesdelivered)), l => l[el.dataKey] * l.vaccinesdelivered)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.vaccinesdelivered)), 'vaccinesdelivered') : "";
+            if (el.regionalAggregationType === "VaccineLag") value = dataGroup.filter(l => !nullValue(l[el.dataKey])).length !== 0 ? (_.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.vaccinesdelivered_lag)), l => l[el.dataKey] * l.vaccinesdelivered_lag)) / _.sumBy(dataGroup.filter(l => !nullValue(l[el.dataKey]) && !nullValue(l.vaccinesdelivered_lag)), 'vaccinesdelivered_lag') : "";
+            return {
+                dataKey: el.dataKey,
+                value
+            }
+        });
+        return {
+            region: d,
+            countryData: dataGroup,
+            data: aggregateData
+        }
+    })
     return (
         <div className={styles.map}>
             {!isMobile && scales && countryData && (
@@ -372,14 +386,15 @@ const Map = props => {
                     domains={domains}
                     scales={scales}
                     normalizedData={countryData}
+                    sizeRange={sizeRange}
                     {...props}
                 />
             )}
-            <MapVis
-                {...props}
-                domains={domains}
-                scales={scales}
-                normalizedData={countryData}
+            <Graph
+                data={dataGroupedByRegion} 
+                isMobile={isMobile}
+                currentIndicators={currentIndicators}
+                setSizeRange={setSizeRange}
                 sourcesData={sourcesData}
             />
             {isMobile && (
@@ -387,6 +402,7 @@ const Map = props => {
                     domains={domains}
                     scales={scales}
                     normalizedData={countryData}
+                    sizeRange={sizeRange}
                     {...props}
                 />
             )}
@@ -394,4 +410,4 @@ const Map = props => {
     );
 };
 
-export default Map;
+export default ScatterPlot;

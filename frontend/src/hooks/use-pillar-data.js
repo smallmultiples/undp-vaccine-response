@@ -27,7 +27,6 @@ const usePillarData = (pillarSlug, bucketSlug) => {
                 .then(setSourcesData),
         ]);
     }, []);
-
     const pillar = React.useMemo(() => {
         if (!pillars) return null;
         if (!pillarSlug) return pillars.filter(d => d.visible)[0];

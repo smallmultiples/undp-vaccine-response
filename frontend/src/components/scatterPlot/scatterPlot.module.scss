@@ -1,0 +1,11 @@
+@import "../../variables.scss";
+
+// ------
+
+.map {
+    display: flex;
+
+    @include mobileOnly() {
+        display: block;
+    }
+}

@@ -1,4 +1,4 @@
-@import "../../variables.scss";
+@import "../../../variables.scss";
 
 $bottomPadding: 27px;
 $mapVisualisationControlsWidth: 220px;
@@ -242,12 +242,12 @@ $mapVisualisationControlsWidth: 220px;
                 fill: $color-grey-c3;
                 opacity: 0.9;
                 &[data-i="0"] {
-                    background: $color-green;
-                    border-color: $color-green;
+                    background: $color-navy;
+                    border-color: $color-navy;
                 }
                 &[data-i="1"] {
-                    background: $color-cerise;
-                    border-color: $color-cerise;
+                    background: $color-red;
+                    border-color: $color-red;
                 }
             }
         }
@@ -469,7 +469,6 @@ $lc-w-hdi: $l-w / 4;
         flex-direction: column;
         align-items: center;
         height: $l-w;
-        margin-left: 5px;
     }
     &[data-x="true"] {
         width: $l-w;
@@ -530,7 +529,6 @@ $lc-w-hdi: $l-w / 4;
     font-weight: $weight-medium;
     min-width: $l-w;
     max-width: $l-w;
-    margin-left: -6px;
 }
 
 .bivariateAxisLabelX {

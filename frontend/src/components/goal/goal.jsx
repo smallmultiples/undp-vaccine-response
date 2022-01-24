@@ -1,5 +1,6 @@
 import React from "react";
 import Map from "../map/map";
+import ScatterPlot from "../scatterPlot/scatterPlot";
 import styles from "./goal.module.scss";
 import { useIndicatorState } from "./useIndicatorState";
 import { groupBy, uniq, isNil, uniqBy } from "lodash";
@@ -163,8 +164,10 @@ export default function Goal(props) {
         keyStats,
         commonPillar,
         sourcesData,
+        goalData
     } = props;
     const [selectedCountryCode, setSelectedCountryCode] = React.useState(countryCode || null);
+    const [selectedView, setSelectedView] = React.useState("countryView");
 
     const onCountryPage = React.useMemo(() => Boolean(props.countryCode), [props.countryCode]);
 
@@ -190,7 +193,6 @@ export default function Goal(props) {
 
     const sideBlocks =
         !onCountryPage && keyStats?.filter(s => s["Bucket"] === goal.id && s["Chart type"] !== "");
-
     return (
         <div className={styles.goal}>
             <div className={styles.mapArea}>
@@ -230,9 +232,16 @@ export default function Goal(props) {
                                     dataFiltered &&
                                     dataFiltered.reduce((a, b) => a + (b[indicator[2]] || 0), 0) /
                                         dataFiltered.length;
+
+                               const valueTemp = 100 - value;
+                                let numerator = Math.round(100 / valueTemp) - 1 === 0 ? 1 : Math.round(100 / valueTemp) - 1;
                                 const primaryLabel = sideBlock["Primary label"].replace(
+                                    "1",
+                                    value ? numerator : "..."
+                                )
+                                .replace(
                                     "X",
-                                    value ? Math.round(100 / value) : "..."
+                                    value ? Math.round(numerator * 100 / value) : "..."
                                 );
                                 return (
                                     <ManualBlockVis
@@ -253,23 +262,66 @@ export default function Goal(props) {
                         })}
                     </div>
                 )}
-                <h3 className={styles.title}>
-                    Explore data about the {goal.label} of vaccines across the world
-                </h3>
-                <div className={styles.mapContainer}>
-                    <Map
-                        countryData={timeFilteredData}
-                        countryDataLoading={pillarLoading}
-                        pillar={pillar}
-                        goal={goal}
-                        currentIndicators={currentIndicators}
-                        setCurrentIndicators={setCurrentIndicators}
-                        onCountryClicked={handleCountryClicked}
-                        selectedCountryCode={selectedCountryCode}
-                        countryCode={countryCode}
-                        sourcesData={sourcesData}
-                    />
+                <div className={styles.headerEl}>
+                    <h3 className={styles.title}>
+                        Explore data about the {goal.label} of vaccines across the world
+                    </h3>
+                    <div className={styles.chartSelectionEl}>
+                        <div 
+                            className={selectedView === "countryView" ? styles.selected : null}
+                            onClick={() => { setSelectedView("countryView") }}
+                        >
+                            Country Level
+                        </div>
+                        <div 
+                            className={selectedView === "regionalView" ? styles.selected : null}
+                            onClick={() => { 
+                                setSelectedView("regionalView") 
+                                let overlaySelectedOption = currentIndicators.mapVisualisation;
+                                let overlayEnabled = currentIndicators.mapVisualisationEnabled
+                                if(!currentIndicators.mapVisualisation.regionalAggregation) {
+                                    overlaySelectedOption = currentIndicators.regionalAggregationOptions[2];
+                                    overlayEnabled = false;
+                                }
+                                setCurrentIndicators(d => ({ ...d, mapVisualisation: overlaySelectedOption, mapVisualisationEnabled: overlayEnabled }))
+                            }}
+                        >
+                            Regional Level
+                        </div>
+                    </div>
                 </div>
+                {
+                    selectedView === "countryView" ?
+                        <div className={styles.mapContainer}>
+                            <Map
+                                countryData={timeFilteredData}
+                                countryDataLoading={pillarLoading}
+                                pillar={pillar}
+                                goal={goal}
+                                currentIndicators={currentIndicators}
+                                setCurrentIndicators={setCurrentIndicators}
+                                onCountryClicked={handleCountryClicked}
+                                selectedCountryCode={selectedCountryCode}
+                                countryCode={countryCode}
+                                sourcesData={sourcesData}
+                            />
+                        </div> : 
+                        <div className={styles.mapContainer}>
+                            <ScatterPlot
+                                countryData={timeFilteredData}
+                                data={goalData}
+                                countryDataLoading={pillarLoading}
+                                pillar={pillar}
+                                goal={goal}
+                                currentIndicators={currentIndicators}
+                                setCurrentIndicators={setCurrentIndicators}
+                                onCountryClicked={handleCountryClicked}
+                                selectedCountryCode={selectedCountryCode}
+                                countryCode={countryCode}
+                                sourcesData={sourcesData}
+                            />
+                        </div> 
+                }
             </div>
             {timelineState.timespan > 1 && (
                 <div className={styles.timeArea}>
