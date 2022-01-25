@@ -288,7 +288,7 @@ const Graph = props => {
                                                     textAnchor="middle"
                                                     dy={props.currentIndicators.mapVisualisationEnabled ? radiusScale(d[props.currentIndicators.mapVisualisation.dataKey]) + 10 : 15}
                                                 >
-                                                    {d[props.currentIndicators.mapVisualisation.dataKey] !== "" ? d.iso3 : ""}    
+                                                    {props.currentIndicators.mapVisualisationEnabled ? d[props.currentIndicators.mapVisualisation.dataKey] !== "" ? d.iso3 : "" : d.iso3}    
                                                 </text>
                                             </g>
                                         )
