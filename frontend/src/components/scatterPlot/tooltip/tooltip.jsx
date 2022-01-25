@@ -130,6 +130,7 @@ export const HoverTooltip = (props) => {
     data,
     sourcesData
   } = props;
+  console.log(data.rows)
   return (
     <TooltipEl x={data.xPosition} y={data.yPosition}>
       <TooltipHead>
@@ -152,7 +153,7 @@ export const HoverTooltip = (props) => {
             <div>
               {getSourceLastUpdated(sourcesData,d.indicator.meta.sources[0].name)}
               <RowTitleEl>{d.title}</RowTitleEl>
-              <RowValue>{getFormattedMapValue(d.value, d.indicator)}</RowValue>
+              <RowValue>{getFormattedMapValue(d.value, d.indicator)}{d.tooltipExtraDataKey ? ` (${d.tooltipExtraDataKey})` : null}</RowValue>
             </div>
           </RowEl>
         ))

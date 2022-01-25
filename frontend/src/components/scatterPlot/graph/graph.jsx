@@ -226,6 +226,7 @@ const Graph = props => {
                                             {
                                             title: props.currentIndicators.regionalX.label,
                                             indicator: props.currentIndicators.regionalX,
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalX.tooltipExtraDataKey],
                                             value: d[props.currentIndicators.regionalX.dataKey],
                                             type: 'x-axis',
                                             metaData: '2021',
@@ -234,6 +235,7 @@ const Graph = props => {
                                             title: props.currentIndicators.regionalY.label,
                                             indicator: props.currentIndicators.regionalY,
                                             value: d[props.currentIndicators.regionalY.dataKey],
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalY.tooltipExtraDataKey],
                                             type: 'y-axis',
                                             metaData: '2021',
                                             },
@@ -243,6 +245,7 @@ const Graph = props => {
                                             title: props.currentIndicators.mapVisualisation.label,
                                             indicator: props.currentIndicators.mapVisualisation,
                                             value: d[props.currentIndicators.mapVisualisation.dataKey],
+                                            tooltipExtraDataKey: d[props.currentIndicators.mapVisualisation.tooltipExtraDataKey],
                                             type: 'size',
                                             metaData: '2021',
                                             });
@@ -298,6 +301,7 @@ const Graph = props => {
                                             {
                                             title: props.currentIndicators.regionalX.label,
                                             indicator: props.currentIndicators.regionalX,
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalX.tooltipExtraDataKey],
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalX.dataKey)].value,
                                             type: 'x-axis',
                                             metaData: '2021',
@@ -305,6 +309,7 @@ const Graph = props => {
                                             {
                                             title: props.currentIndicators.regionalY.label,
                                             indicator: props.currentIndicators.regionalY,
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalY.tooltipExtraDataKey],
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalY.dataKey)].value,
                                             type: 'y-axis',
                                             metaData: '2021',
@@ -314,6 +319,7 @@ const Graph = props => {
                                             rowData.push({
                                             title: props.currentIndicators.mapVisualisation.label,
                                             indicator: props.currentIndicators.mapVisualisation,
+                                            tooltipExtraDataKey: d[props.currentIndicators.mapVisualisation.tooltipExtraDataKey],
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value,
                                             type: 'size',
                                             metaData: '2021',
