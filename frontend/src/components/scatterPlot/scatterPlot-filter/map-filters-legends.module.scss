@@ -36,7 +36,7 @@ $mapVisualisationControlsWidth: 220px;
         align-items: center;
 
         &:not(:last-child) {
-            // margin-bottom: 6px;
+            margin-bottom: 24px;
         }
 
         &[data-y="true"] {
@@ -281,7 +281,7 @@ $mapVisualisationControlsWidth: 220px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    margin-top: 16px;
     .legendSvg {
         width: 105px;
         height: 40px;

@@ -1,4 +1,3 @@
-import axios from "axios";
 import DeckGL, { GeoJsonLayer, MapController } from "deck.gl";
 import { flatten, isNil, uniq } from "lodash";
 import React from "react";
@@ -9,6 +8,7 @@ import styles from "./map-vis.module.scss";
 import useMediaQuery from "../../hooks/use-media-query";
 import { Chevron, Plus } from "../icons/icons";
 import { format, subDays } from "date-fns";
+import worldMap from './worldMap.json';
 
 const SHEET_ROW_ID = "iso3";
 const GEO_SHAPE_ID = "ISO3";
@@ -27,8 +27,7 @@ const useGeoData = () => {
     React.useEffect(() => {
         // Only load shapes once.
         (async () => {
-            const res = await axios(`${process.env.PUBLIC_URL}/data/world.topojson`);
-            const fc = topojsonParse(res.data, "world");
+            const fc = topojsonParse(worldMap, "world");
             setShapeData(fc);
         })();
     }, []);
