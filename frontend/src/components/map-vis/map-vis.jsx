@@ -1,4 +1,3 @@
-import axios from "axios";
 import DeckGL, { GeoJsonLayer, MapController } from "deck.gl";
 import { flatten, isNil, uniq } from "lodash";
 import React from "react";

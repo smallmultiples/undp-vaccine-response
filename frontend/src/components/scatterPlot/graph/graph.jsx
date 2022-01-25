@@ -90,7 +90,7 @@ const Graph = props => {
                             selectedRegion ? <span className={styles.breadcrumbSelected}> | {selectedRegion}</span> : null
                         }
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#919399', fontWeight: 700}}>
+                    <div style={{ fontSize: '0.75rem', lineHeight: '1.2em', color: '#919399', fontWeight: 700, marginBottom: '10px'}}>
                         {
                             isAggregationSame ? 
                                 props.currentIndicators.regionalX.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total population of countries for which they are available</>
