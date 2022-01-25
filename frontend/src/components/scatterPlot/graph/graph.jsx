@@ -90,7 +90,7 @@ const Graph = props => {
                             selectedRegion ? <span className={styles.breadcrumbSelected}> | {selectedRegion}</span> : null
                         }
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#919399', fontWeight: 700}}>
+                    <div style={{ fontSize: '0.75rem', lineHeight: '1.2em', color: '#919399', fontWeight: 700, marginBottom: '10px'}}>
                         {
                             isAggregationSame ? 
                                 props.currentIndicators.regionalX.regionalAggregationType === 'Population' ? <>Regional estimates for <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalX.label}</span> and <span style={{textTransform: 'uppercase'}}>{props.currentIndicators.regionalY.label}</span> are calculated as a % of total population of countries for which they are available</>
@@ -226,6 +226,7 @@ const Graph = props => {
                                             {
                                             title: props.currentIndicators.regionalX.label,
                                             indicator: props.currentIndicators.regionalX,
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalX.tooltipExtraDataKey],
                                             value: d[props.currentIndicators.regionalX.dataKey],
                                             type: 'x-axis',
                                             metaData: '2021',
@@ -234,6 +235,7 @@ const Graph = props => {
                                             title: props.currentIndicators.regionalY.label,
                                             indicator: props.currentIndicators.regionalY,
                                             value: d[props.currentIndicators.regionalY.dataKey],
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalY.tooltipExtraDataKey],
                                             type: 'y-axis',
                                             metaData: '2021',
                                             },
@@ -243,6 +245,7 @@ const Graph = props => {
                                             title: props.currentIndicators.mapVisualisation.label,
                                             indicator: props.currentIndicators.mapVisualisation,
                                             value: d[props.currentIndicators.mapVisualisation.dataKey],
+                                            tooltipExtraDataKey: d[props.currentIndicators.mapVisualisation.tooltipExtraDataKey],
                                             type: 'size',
                                             metaData: '2021',
                                             });
@@ -288,7 +291,7 @@ const Graph = props => {
                                                     textAnchor="middle"
                                                     dy={props.currentIndicators.mapVisualisationEnabled ? radiusScale(d[props.currentIndicators.mapVisualisation.dataKey]) + 10 : 15}
                                                 >
-                                                    {d[props.currentIndicators.mapVisualisation.dataKey] !== "" ? d.iso3 : ""}    
+                                                    {props.currentIndicators.mapVisualisationEnabled ? d[props.currentIndicators.mapVisualisation.dataKey] !== "" ? d.iso3 : "" : d.iso3}    
                                                 </text>
                                             </g>
                                         )
@@ -298,6 +301,7 @@ const Graph = props => {
                                             {
                                             title: props.currentIndicators.regionalX.label,
                                             indicator: props.currentIndicators.regionalX,
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalX.tooltipExtraDataKey],
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalX.dataKey)].value,
                                             type: 'x-axis',
                                             metaData: '2021',
@@ -305,6 +309,7 @@ const Graph = props => {
                                             {
                                             title: props.currentIndicators.regionalY.label,
                                             indicator: props.currentIndicators.regionalY,
+                                            tooltipExtraDataKey: d[props.currentIndicators.regionalY.tooltipExtraDataKey],
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.regionalY.dataKey)].value,
                                             type: 'y-axis',
                                             metaData: '2021',
@@ -314,6 +319,7 @@ const Graph = props => {
                                             rowData.push({
                                             title: props.currentIndicators.mapVisualisation.label,
                                             indicator: props.currentIndicators.mapVisualisation,
+                                            tooltipExtraDataKey: d[props.currentIndicators.mapVisualisation.tooltipExtraDataKey],
                                             value: d.data[d.data.findIndex(el => el.dataKey === props.currentIndicators.mapVisualisation.dataKey)].value,
                                             type: 'size',
                                             metaData: '2021',

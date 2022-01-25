@@ -125,7 +125,7 @@ const BivariateIndicatorSelection = props => {
                 </div>
                 <span
                     className={styles.indicatorTooltip}
-                    data-text={currentIndicators.bivariateY.description}
+                    data-text={currentIndicators.regionalY.description}
                     data-meta={ySources + " " + yLastUpdated}
                 >
                     ?
